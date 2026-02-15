@@ -1,5 +1,7 @@
 import '../styles/globals.css'
 import React from 'react'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
 
 export const metadata = {
   title: 'La Guarida — Catálogo de Instrumentos',
@@ -14,8 +16,12 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
       </head>
-      <body className="min-h-screen bg-white text-gray-900 font-sans">
-        {children}
+      <body className="min-h-screen font-sans">
+        <Header />
+        <main>
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   )

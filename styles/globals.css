@@ -70,29 +70,48 @@ body{
 .tight-tracking{ letter-spacing: -0.02em }
 
 /* Minimal CTA buttons */
-.btn-minimal{
-  @apply inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded transition-colors duration-200 ease-in-out bg-transparent text-gray-900 border border-transparent;
+.btn-minimal,
+.btn-outline,
+.btn-ghost-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.75rem; /* vertical ~6px, horizontal 12px (more compact) */
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  /* slightly warm fill to match the soft cream page background */
+  background: #F7F4EE;
+  color: #0f172a;
+  border: 1px solid rgba(15,23,42,0.06);
+  text-transform: none;
+  letter-spacing: 0.03em;
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+  box-shadow: 0 4px 12px rgba(34,24,18,0.06);
 }
-.btn-minimal:hover{
-  @apply bg-gray-50;
-  transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(15,23,42,0.04);
+.btn-minimal:hover,
+.btn-outline:hover,
+.btn-ghost-dark:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(34,24,18,0.08);
+  background: #FFF8F0;
 }
-.btn-outline{
-  @apply inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded transition-transform duration-200 ease-in-out bg-white text-gray-900 border border-gray-200;
+
+/* Keep focus accessibility */
+.btn-minimal:focus,
+.btn-outline:focus,
+.btn-ghost-dark:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
 }
-.btn-outline:hover{
-  @apply bg-gray-50;
-  transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(15,23,42,0.04);
-}
-.btn-ghost-dark{
-  @apply inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded transition-transform duration-200 ease-in-out bg-transparent text-white border border-white/10;
-}
-.btn-ghost-dark:hover{
-  background-color: rgba(255,255,255,0.04);
-  transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(255,255,255,0.04);
+
+/* Dark theme: keep pill light so it pops on dark backgrounds */
+.dark .btn-minimal,
+.dark .btn-outline,
+.dark .btn-ghost-dark {
+  background: #eef2ff; /* subtle light on dark */
+  color: #0b1220;
+  border-color: rgba(255,255,255,0.08);
 }
 
 .btn-focus{
@@ -103,6 +122,244 @@ body{
 html, body {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
   color: #0f172a;
+}
+
+/* Light theme defaults */
+/* Use a soft cream background instead of pure white for a warmer editorial tone */
+html { background-color: #FBF7EE }
+body { background-color: #FBF7EE }
+
+/* Dark theme overrides applied when `dark` class is on <html> */
+.dark html,
+.dark body {
+  /* Neutral dark gray background for dark mode (avoid blue tint) */
+  background-color: #0b0d0f !important;
+  color: #ffffff;
+}
+
+/* Dark theme system variables (used by mappings below) */
+:root.dark,
+.dark {
+  --dark-bg-page: #0b0d0f;
+  --dark-bg-surface: #0f1113;
+  --dark-bg-card: #0f1726;
+  --dark-surface-2: #0c1216;
+  --dark-text-primary: #ffffff;
+  --dark-text-secondary: #e6e7ea;
+  --dark-muted: #9ca3af;
+  --dark-border: rgba(255,255,255,0.04);
+  --dark-ring: rgba(79,70,229,0.10);
+}
+
+/* Systematic mappings: convert common Tailwind bg/text/border utilities to dark equivalents */
+/* Backgrounds */
+.dark .bg-white,
+.dark .bg-gray-50,
+.dark .bg-gray-100,
+.dark .bg-gray-200,
+.dark .bg-gray-300 {
+  background-color: var(--dark-bg-surface) !important;
+}
+.dark .bg-gray-50 {
+  background-color: var(--dark-bg-surface) !important;
+}
+.dark .bg-gray-100 { background-color: var(--dark-bg-surface) !important }
+.dark .bg-gray-200 { background-color: var(--dark-bg-surface) !important }
+.dark .bg-gray-300 { background-color: var(--dark-bg-surface) !important }
+.dark .bg-gray-900 { background-color: var(--dark-bg-page) !important }
+
+/* Text colors */
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-gray-700 { color: var(--dark-text-primary) !important }
+.dark .text-gray-600,
+.dark .text-gray-500 { color: var(--dark-text-secondary) !important }
+.dark .text-gray-400 { color: var(--dark-muted) !important }
+
+/* Borders */
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .border-gray-300 { border-color: var(--dark-border) !important }
+
+/* Hover / focus utilities that reference gray tones should behave in dark */
+.dark .hover\:bg-gray-500:hover { background-color: #2f3740 !important }
+.dark .hover\:text-gray-900:hover { color: var(--dark-text-primary) !important }
+
+/* Focus ring for accessibility in dark mode (subtle, brand-tinted) */
+.btn-focus:focus-visible { box-shadow: 0 0 0 4px rgba(59,130,246,0.12); }
+.dark .btn-focus:focus-visible { box-shadow: 0 0 0 4px var(--dark-ring); }
+
+/* Ensure sections and main containers inherit the dark background (fix white strip under Hero) */
+.dark section,
+.dark main,
+.dark .container-tight,
+.dark header,
+.dark footer {
+  background-color: #0b0d0f !important;
+}
+
+/* Muted / secondary text in dark */
+.dark .muted-text { color: #9ca3af }
+.dark .subtitle-compact { color: #c7c7cf }
+.dark .body-copy { color: #e6e7ea }
+.dark .price-large { color: #ffffff }
+
+/* Panels and cards in dark */
+.dark .card-compact { background: #0f1726 }
+.dark .subtle-border { border-color: rgba(255,255,255,0.04) }
+
+/* Buttons adjustments for dark mode */
+.dark .btn-minimal { color: #fff }
+.dark .btn-outline { background: transparent; color: #e6e7ea; border-color: rgba(255,255,255,0.06) }
+.dark .btn-ghost-dark { border-color: rgba(255,255,255,0.08) }
+
+/* Convert common Tailwind background/text utility classes to dark variants when needed */
+.dark .bg-white { background-color: #0b0d0f !important }
+.dark .bg-gray-50 { background-color: #111214 !important }
+.dark .bg-gray-100 { background-color: #111214 !important }
+
+/* Ensure text utilities that target dark text flip to light */
+.dark .text-gray-900 { color: #ffffff !important }
+.dark .text-gray-800 { color: #f3f4f6 !important }
+.dark .border-gray-100 { border-color: rgba(255,255,255,0.04) !important }
+
+/* Footer specific: slightly lighter than page background */
+.dark footer { background-color: #0c1420 }
+
+/* Dark gradient for image placeholders */
+.dark .image-placeholder { background: linear-gradient(180deg,#0f1216,#0b1220) !important }
+.dark article.card-compact .image-placeholder { background: linear-gradient(180deg,#11151a,#0f1726) !important }
+
+/* Smooth theme transitions: background, text and opacity (logos) */
+html, body, header, main, footer, .container-tight, .card-compact, .image-placeholder {
+  transition: background-color 320ms ease, color 320ms ease;
+}
+
+.theme-toggle, .thumb {
+  transition: background-color 240ms ease, transform 240ms ease;
+}
+
+/* Logo opacity swap to avoid layout jumps */
+.header-logo-wrapper { position: relative }
+.header-logo-wrapper .logo-light,
+.header-logo-wrapper .logo-dark {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transition: opacity 300ms ease;
+}
+.header-logo-wrapper .logo-light { opacity: 1 }
+.header-logo-wrapper .logo-dark { opacity: 0 }
+.dark .header-logo-wrapper .logo-light { opacity: 0 }
+.dark .header-logo-wrapper .logo-dark { opacity: 1 }
+
+/* Prefer not to transition layout-affecting properties */
+.image-placeholder, .card-compact { will-change: background-color, color }
+
+/* Footer logo: subtle, centered, and proportional without changing footer height */
+.footer-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: visible;
+}
+.footer-logo-wrapper .logo-light,
+.footer-logo-wrapper .logo-dark {
+  position: absolute;
+  inset: 0;
+  transition: opacity 300ms ease, transform 300ms ease;
+  object-fit: contain;
+}
+.footer-logo-wrapper .logo-light { opacity: 1 }
+.footer-logo-wrapper .logo-dark { opacity: 0 }
+.dark .footer-logo-wrapper .logo-light { opacity: 0 }
+.dark .footer-logo-wrapper .logo-dark { opacity: 1 }
+
+/* Slight scale to make the footer logo feel premium but subtle */
+.footer-logo-wrapper { transform-origin: center center }
+/* Footer logo: increase to medium-large while preserving footer height (transform only) */
+@media (min-width: 1400px) {
+  .footer-logo-wrapper { transform: scale(3.2) }
+}
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .footer-logo-wrapper { transform: scale(2.8) }
+}
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .footer-logo-wrapper { transform: scale(2.4) }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .footer-logo-wrapper { transform: scale(1.9) }
+}
+@media (max-width: 767px) {
+  .footer-logo-wrapper { transform: scale(1.5) }
+}
+
+/* Scale logo visually without affecting header layout (uses transform only) */
+.header-logo-wrapper {
+  overflow: visible;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+
+.header-logo-wrapper .logo-light,
+.header-logo-wrapper .logo-dark {
+  transform-origin: center center;
+  transition: opacity 300ms ease, transform 320ms ease;
+  will-change: opacity, transform;
+}
+
+/* Desktop: much larger logo via transform only (no layout change) */
+@media (min-width: 1400px) {
+  .header-logo-wrapper .logo-light,
+  .header-logo-wrapper .logo-dark {
+    transform: scale(3.6);
+  }
+}
+
+/* Hero right panel explicit neutral gray to override utility class issues */
+.hero-right {
+  /* Neutral charcoal (less blue) */
+  background-color: #111214 !important;
+  background-image: none !important;
+}
+.dark .hero-right {
+  background-color: #0b0d0f !important;
+  background-image: none !important;
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .header-logo-wrapper .logo-light,
+  .header-logo-wrapper .logo-dark {
+    transform: scale(3.2);
+  }
+}
+
+/* Large laptop / desktop: very prominent */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .header-logo-wrapper .logo-light,
+  .header-logo-wrapper .logo-dark {
+    transform: scale(2.8);
+  }
+}
+
+/* Tablet: prominent but contained */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .header-logo-wrapper .logo-light,
+  .header-logo-wrapper .logo-dark {
+    transform: scale(2.0);
+  }
+}
+
+/* Mobile: modest increase to keep header compact */
+@media (max-width: 767px) {
+  .header-logo-wrapper .logo-light,
+  .header-logo-wrapper .logo-dark {
+    transform: scale(1.4);
+  }
 }
 
 section {
@@ -119,15 +376,40 @@ section {
 }
 
 /* Make borders extremely subtle or remove when not needed */
-.subtle-border { border-color: rgba(15,23,42,0.04) }
+.subtle-border { border-color: rgba(34,24,18,0.06) }
 
 /* Product card refinement */
 .card-compact {
-  background: white;
+  /* warm-card background to sit softly on the cream page */
+  background: #FFF8F0;
   padding: 1.25rem;
   border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(34,24,18,0.06);
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+.card-compact:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(34,24,18,0.09);
 }
 
 .muted-text { color: #6b7280 }
+
+/* Scroll reveal animation: lightweight, respects reduced-motion */
+.reveal {
+  opacity: 0;
+  transform: translateY(4px) scale(0.999);
+  transition: opacity 760ms cubic-bezier(0.22,0.8,0.25,1), transform 760ms cubic-bezier(0.22,0.8,0.25,1);
+  will-change: opacity, transform;
+}
+.reveal--visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal--visible { transition: none; transform: none; opacity: 1 }
+}
+
 
 

@@ -1,15 +1,24 @@
 import React from 'react'
-import MiniNav from './MiniNav'
+// MiniNav removed from header UI per request
+import Image from 'next/image'
 
 export default function Header(){
   return (
-    <header className="pt-8 pb-6">
-      <div className="flex items-center justify-between container-tight">
-        <div>
-          <h1 className="display-xl">La Guarida</h1>
+    <header className="pt-8 pb-12">
+      <div className="flex items-center justify-between container-tight relative">
+        <div className="flex items-center">
+          {/* left slot (kept empty for layout symmetry) */}
         </div>
+
+        <a href="/" aria-label="Ir al inicio" className="block absolute left-1/2 top-6 transform -translate-x-1/2 z-10">
+          <div className="relative h-20 md:h-24 w-[220px] md:w-[320px] header-logo-wrapper flex items-center justify-center">
+            <Image src="/images/logo/logo-fondo-claro.PNG" alt="La Guarida logo claro" fill style={{objectFit:'contain'}} className="logo-light" quality={100} sizes="(min-width:768px) 320px, 220px" />
+            <Image src="/images/logo/logo-fondo-oscuro.PNG" alt="La Guarida logo oscuro" fill style={{objectFit:'contain'}} className="logo-dark" quality={100} sizes="(min-width:768px) 320px, 220px" />
+          </div>
+        </a>
+
         <div className="flex items-center gap-4">
-          <MiniNav />
+          {/* right slot (kept empty for layout symmetry) */}
         </div>
       </div>
     </header>

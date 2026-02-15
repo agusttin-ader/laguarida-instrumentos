@@ -1,33 +1,53 @@
 import React from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import ScrollReveal from './ScrollReveal'
 
 export default function Hero(){
   return (
     <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch mt-10 container-tight">
-      {/* Left column: light gray background, big title, CTA */}
-      <div className="bg-gray-50 p-10 flex flex-col justify-center rounded-lg subtle-border">
-        <h2 className="display-xxl tight-tracking">La Clásica 58</h2>
-        <p className="mt-3 subtitle-compact muted-text">Guitarra acústica · cuerpo artesanal</p>
-        <div className="mt-6">
-          <a href="#" className="btn-minimal btn-focus">Descubrir</a>
-        </div>
-      </div>
-
-      {/* Center: tall image placeholder with breathing room */}
-      <div className="flex items-center justify-center">
-        <div className="image-placeholder w-full rounded transform transition-transform duration-200 hover:-translate-y-1 hover:shadow-md" style={{maxWidth: '540px', width: '100%', paddingTop: '150%'}}></div>
-      </div>
-
-      {/* Right: lighter dark panel, price and concise copy */}
-      <div className="bg-gray-800 text-white p-10 flex flex-col justify-center rounded-lg">
-        <div className="text-right">
-          <div className="price-large">€1,499</div>
-          <p className="mt-3 subtitle-compact text-gray-300">Edición limitada · 2026</p>
-          <p className="mt-6 body-copy text-gray-200">Tapa de abeto, diapasón de palisandro. Presencia y calidez en grabación acústica.</p>
-          <div className="mt-8 flex justify-end">
-            <a href="#" className="btn-ghost-dark btn-focus">Pedir info</a>
+      {/* Left column: light gray background, big title, CTA (matches image height) */}
+      <ScrollReveal>
+        <div className="relative w-full max-w-[540px] rounded overflow-hidden subtle-border bg-gray-50 dark:bg-[#0b0d0f]" style={{paddingTop: '150%'}}>
+          <div className="absolute inset-0 p-10 flex flex-col justify-center">
+            <h2 className="display-xxl tight-tracking">Fender Am Vintage 59’</h2>
+            <p className="mt-3 subtitle-compact muted-text">Strat Vintage · Alder · Nitro 3T Sunburst</p>
+            <div className="mt-6">
+              <Link href="/guitars/avri-59" className="btn-minimal btn-focus">Descubrir</Link>
+            </div>
           </div>
         </div>
-      </div>
+      </ScrollReveal>
+
+      {/* Center: tall image (hero) */}
+      <ScrollReveal>
+        <div className="flex items-center justify-center">
+          <div className="relative w-full max-w-[540px] rounded overflow-hidden transform transition-transform duration-200 hover:-translate-y-1 hover:shadow-md" style={{paddingTop: '150%'}}>
+            <Image src="/images/hero-image-home-2.jpg" alt="Guitarra - La Clásica" fill style={{objectFit: 'cover', objectPosition: 'center'}} quality={100} priority sizes="(min-width:1024px) 540px, 100vw" />
+          </div>
+        </div>
+      </ScrollReveal>
+
+      {/* Right: lighter dark panel, price and concise copy */}
+      <ScrollReveal>
+        <div className="relative w-full max-w-[540px] rounded overflow-hidden hero-right" style={{paddingTop: '150%'}}>
+          <div className="absolute inset-0 p-10 flex flex-col justify-center text-right text-white">
+            <div className="price-large">U$S 2,990</div>
+            <p className="mt-3 subtitle-compact text-white/60">Ingreso 2025 · Strat Vintage</p>
+            <p className="mt-6 body-copy text-white font-medium leading-7" style={{maxWidth: '36ch'}}>Strat Vintage 2015 en perfecto estado. Mástil Arce D-shape · trastera Arce · 3 pickups Vintage 59’.</p>
+            <div className="mt-8 flex justify-end">
+              <a
+                href={`https://wa.me/541168696491?text=${encodeURIComponent(`Hola me interesa la Fender Am Vintage 59’, me podrias dar mas info?`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-ghost-dark btn-focus"
+              >
+                Pedir info
+              </a>
+            </div>
+          </div>
+        </div>
+      </ScrollReveal>
     </section>
   )
 }
