@@ -1,0 +1,48 @@
+"use client";
+import React from "react";
+import ImageWithSkeleton from "./ImageWithSkeleton";
+
+// Accessibility & Performance notes:
+// - Uses Next/Image (via ImageWithSkeleton) for responsive, optimized images and automatic lazy-loading.
+// - Skeleton placeholder reduces perceived load and prevents layout shift (improves CLS).
+// - Button uses clear ARIA label and high-contrast text on accent background to meet contrast requirements.
+import RippleButton from "./RippleButton";
+
+export default function MobileProductCard({ product }) {
+  const waLink = `https://wa.me/541168696491?text=${encodeURIComponent(
+    `Hola! Quisiera info del producto: ${product.name}`
+  )}`;
+
+  return (
+    <article className="w-full bg-white dark:bg-neutral-900 card-compact overflow-hidden">
+      <div className="w-full bg-neutral-50 dark:bg-neutral-800 overflow-hidden rounded-[12px]">
+        {/* Use ImageWithSkeleton to show a skeleton while Next/Image loads for better perceived performance */}
+        <ImageWithSkeleton
+          src={product.image}
+          alt={product.name}
+          width={1200}
+          height={900}
+          quality={80}
+          sizes="(min-width:1024px) 600px, 100vw"
+          className="w-full h-auto"
+        />
+      </div>
+
+      <div className="p-4">
+        <h3 className="text-base font-medium leading-snug text-neutral-900 dark:text-neutral-100">{product.name}</h3>
+        <div className="mt-2 flex items-center justify-between">
+          <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">${product.price}</span>
+          {/* Use RippleButton for press / ripple micro-interaction. */}
+          {/* Tailwind handles color/scale transitions; Framer Motion is optional for advanced physics. */}
+          <RippleButton
+            href={waLink}
+            className="ml-4 inline-flex items-center gap-2 px-3 py-2 btn-gradient rounded-[12px] text-sm transition-transform duration-150 active:translate-y-0.5"
+            aria-label={`Pedir info ${product.name}`}
+          >
+            Pedir Info
+          </RippleButton>
+        </div>
+      </div>
+    </article>
+  );
+}

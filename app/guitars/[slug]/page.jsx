@@ -185,6 +185,12 @@ export default async function GuitarPage({ params }) {
       <header className="mt-8">
         <p className="text-sm muted-text">Catálogo · Guitarras</p>
       </header>
+      {/* Mobile: title first, then images. Desktop keeps original two-column layout. */}
+      <div className="block lg:hidden mt-6">
+        <p className="text-sm muted-text">{guitar.brand} · {guitar.model}</p>
+        <h1 className="mt-2 display-xxl tight-tracking">{guitar.name}</h1>
+        <p className="mt-3 subtitle-compact muted-text">{guitar.subtitle}</p>
+      </div>
 
       <main className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-8 items-start">
         <section className="lg:col-span-1">
@@ -194,9 +200,12 @@ export default async function GuitarPage({ params }) {
         <aside className="lg:col-span-1">
           <div className="flex flex-col gap-4">
             <div>
-              <p className="text-sm muted-text">{guitar.brand} · {guitar.model}</p>
-              <h1 className="mt-2 display-xxl tight-tracking">{guitar.name}</h1>
-              <p className="mt-3 subtitle-compact muted-text">{guitar.subtitle}</p>
+              {/* Desktop title only (hidden on mobile to avoid duplicate) */}
+              <div className="hidden lg:block">
+                <p className="text-sm muted-text">{guitar.brand} · {guitar.model}</p>
+                <h1 className="mt-2 display-xxl tight-tracking">{guitar.name}</h1>
+                <p className="mt-3 subtitle-compact muted-text">{guitar.subtitle}</p>
+              </div>
 
               <div className="mt-4">
                 <div className="price-large">{guitar.price}</div>
