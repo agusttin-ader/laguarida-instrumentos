@@ -4,32 +4,24 @@ import path from 'path'
 export const dynamic = 'force-dynamic'
 import GuitarGallery from '../../../components/GuitarGallery'
 import normalizeProduct from '../../../lib/utils/normalizeProduct'
-import { createClient } from '@supabase/supabase-js'
+import { getSupabaseServerClient } from '../../../lib/supabase/server'
 import ProductCard from '../../../components/ProductCard'
 
 export default async function GuitarPage({ params }) {
   const resolvedParams = await params
   const { slug } = resolvedParams ?? {}
 
-  // Query Supabase directly for the product by slug (debugging)
-  const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
-  const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  // Query Supabase directly for the product by slug
   let product = null
   try {
     console.log('slug:', slug)
-    if (!SUPABASE_URL || !SUPABASE_KEY) {
-      console.log('Supabase config missing')
-    } else {
-      if (!slug) {
-        console.log('slug is undefined, skipping query')
-      } else {
-      const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, { global: { fetch } })
-      // Only filter by slug; use maybeSingle while debugging
+    if (slug) {
+      const supabase = getSupabaseServerClient()
+      // Only filter by slug; use maybeSingle
       const { data, error } = await supabase.from('products').select('*').eq('slug', slug).maybeSingle()
       console.log('product:', data)
       console.log('error:', error)
       if (data) product = normalizeProduct(data)
-      }
     }
   } catch (err) {
     console.log('error:', err)
@@ -64,8 +56,8 @@ export default async function GuitarPage({ params }) {
   // Fetch related products: we'll load a batch and filter by shared words
   let relatedProducts = []
   try {
-    if (product && SUPABASE_URL && SUPABASE_KEY) {
-      const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, { global: { fetch } })
+    if (product) {
+      const supabase = getSupabaseServerClient()
       const { data: allProducts } = await supabase.from('products').select('*').limit(200)
       const wordsSource = (`${product.model || ''} ${product.name || ''}`).toLowerCase()
       const words = Array.from(new Set(
