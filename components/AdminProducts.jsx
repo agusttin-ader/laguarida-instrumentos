@@ -42,7 +42,7 @@ export default function AdminProducts(){
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/products')
+      const res = await fetch('/api/products', { credentials: 'include' })
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
       const data = await res.json()
       setItems(Array.isArray(data) ? data.map(d => normalizeProduct(d)) : [])
