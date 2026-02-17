@@ -239,7 +239,7 @@ export default function AdminProducts(){
         setUploadError(null)
         const fd = new FormData()
         fd.append('file', mainFile)
-        const upRes = await fetch('/api/upload-image', { method: 'POST', body: fd })
+        const upRes = await fetch('/api/upload-image', { method: 'POST', credentials: 'include', body: fd })
         if (!upRes.ok) {
           const txt = await upRes.text().catch(() => '')
           const msg = `Error al subir la imagen principal: ${upRes.status} ${txt}`
@@ -259,7 +259,7 @@ export default function AdminProducts(){
         for (const f of galleryFiles) {
           const fd = new FormData()
           fd.append('file', f)
-          const upRes = await fetch('/api/upload-image', { method: 'POST', body: fd })
+          const upRes = await fetch('/api/upload-image', { method: 'POST', credentials: 'include', body: fd })
           if (!upRes.ok) {
             const txt = await upRes.text().catch(() => '')
             const msg = `Error al subir una imagen de galería: ${upRes.status} ${txt}`
@@ -285,6 +285,7 @@ export default function AdminProducts(){
       }
       const res = await fetch('/api/products', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       })
@@ -319,7 +320,7 @@ export default function AdminProducts(){
     setDeletingId(id)
     setError(null)
     try {
-      const res = await fetch(`/api/products?id=${encodeURIComponent(id)}`, { method: 'DELETE' })
+      const res = await fetch(`/api/products?id=${encodeURIComponent(id)}`, { method: 'DELETE', credentials: 'include' })
       if (!res.ok) {
         const txt = await res.text().catch(() => '')
         throw new Error(`${res.status} ${res.statusText} ${txt}`)

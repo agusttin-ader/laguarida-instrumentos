@@ -18,6 +18,7 @@ export default function AdminLoginPage() {
     try {
       const res = await fetch('/api/auth/sign-in', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       })
