@@ -9,8 +9,9 @@ export async function GET() {
     async function getUserFromRequest() {
       // Try cookie-based token first (common when client includes credentials)
       try {
-        const cookieStore = cookies()
-        const tokenCookie = cookieStore?.get?.('sb-access-token')
+        const cookieStore = await cookies()
+        // cookieStore may be a RequestCookies-like API; prefer .get when available
+        const tokenCookie = typeof cookieStore.get === 'function' ? cookieStore.get('sb-access-token') : null
         const token = tokenCookie?.value || headers().get('authorization')?.replace(/^Bearer\s+/i, '') || null
         if (!token) return null
 

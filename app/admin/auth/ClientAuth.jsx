@@ -101,8 +101,10 @@ export default function ClientAuth({ children }){
 
   async function signOut() {
     try {
-      await supabase.auth.signOut()
-      // clear local state and redirect to login
+      // call server endpoint to clear HttpOnly cookies and sign out server-side
+      await fetch('/api/auth/sign-out', { method: 'POST', credentials: 'include' })
+      // also call client SDK signOut to clear any client state
+      try { await supabase.auth.signOut() } catch (e) {}
       setSession(null)
       setUser(null)
       router.push('/admin/login')
