@@ -16,11 +16,11 @@ export default function Footer(){
               <InstagramLogo size={20} weight="duotone" />
             </a>
 
-            <a href="mailto:info@example.com" aria-label="Correo" className="text-gray-600 hover:text-indigo-600 transition-colors">
+            <a href="mailto:leonardo_ruberti@hotmail.com" aria-label="Correo" className="text-gray-600 hover:text-indigo-600 transition-colors">
               <EnvelopeSimple size={20} weight="duotone" />
             </a>
 
-            <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-gray-600 hover:text-emerald-500 transition-colors">
+            <a href="https://wa.me/5491154661749" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-gray-600 hover:text-emerald-500 transition-colors">
               <WhatsappLogo size={20} weight="duotone" />
             </a>
           </nav>

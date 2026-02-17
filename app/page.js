@@ -1,6 +1,7 @@
 import React from 'react'
 import Hero from '../components/Hero'
 import ProductGrid from '../components/ProductGrid'
+import About from '../components/About'
 
 export default function Page() {
   return (
@@ -12,6 +13,8 @@ export default function Page() {
           <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-6">Selección destacada</h2>
           <ProductGrid />
         </section>
+
+        <About />
       </main>
     </div>
   )

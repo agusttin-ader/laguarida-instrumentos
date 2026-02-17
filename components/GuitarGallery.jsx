@@ -51,10 +51,11 @@ export default function GuitarGallery({ images = [], image_url }){
   try {
     if (main) {
       const u = new URL(main)
+      // keep a preconnect for the image host, but avoid preloading arbitrary
+      // image URLs which may not be used immediately (preload warnings in dev).
       preloadLinks = (
         <>
           <link rel="preconnect" href={u.origin} crossOrigin="anonymous" />
-          <link rel="preload" href={main} as="image" fetchpriority="high" />
         </>
       )
     }

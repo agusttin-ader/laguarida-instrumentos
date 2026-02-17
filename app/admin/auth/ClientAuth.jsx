@@ -118,19 +118,19 @@ export default function ClientAuth({ children }){
   return (
     <AdminAuthContext.Provider value={value}>
       <div>
-        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
-          <div>
+        <div className="flex items-center justify-end gap-4 mb-6 -mt-10 md:-mt-0 relative z-20">
+          <div className="text-sm text-gray-600">
             {loading ? (
-              <span style={{color:'#666'}}>Checking auth…</span>
+              <span className="text-gray-500">Comprobando sesión…</span>
             ) : user ? (
-              <span style={{color:'#333'}}>Signed in as {user.email}</span>
+              <span className="text-gray-800">{user.email}</span>
             ) : (
-              <Link href="/admin/login">Sign in</Link>
+              <Link href="/admin/login" className="text-indigo-600">Iniciar sesión</Link>
             )}
           </div>
           <div>
             {user && (
-              <button onClick={signOut} style={{padding:'6px 10px'}}>Sign out</button>
+              <button onClick={signOut} className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 hover:shadow-sm">Cerrar sesión</button>
             )}
           </div>
         </div>

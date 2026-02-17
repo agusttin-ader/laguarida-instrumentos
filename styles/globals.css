@@ -176,6 +176,25 @@ body{
 /* Keep legacy helper class for compatibility (maps to elegant dark) */
 .btn-dark-short{ display: inline-flex }
 
+/* Informational CTA used in Hero: slightly larger, soft gradient, subtle shadow */
+.btn-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  background: linear-gradient(180deg,#fffaf6,#fff3ea);
+  color: #0b1220;
+  border: 1px solid rgba(15,23,42,0.06);
+  box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+  transition: transform 180ms cubic-bezier(.2,.9,.2,1), box-shadow 180ms ease, background-color 180ms ease;
+}
+.btn-info:hover{ transform: translateY(-3px); box-shadow: 0 18px 40px rgba(15,23,42,0.10); background: linear-gradient(180deg,#fff7f0,#fff0e4) }
+.dark .btn-info{ background: linear-gradient(180deg,#0f1726,#0c1420); color: #fff; border-color: rgba(255,255,255,0.06); box-shadow: 0 8px 24px rgba(0,0,0,0.28) }
+
+
 /* Editorial layout refinements */
 html, body {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
@@ -512,6 +531,58 @@ section {
 @media (prefers-reduced-motion: reduce) {
   .reveal, .reveal--visible { transition: none; transform: none; opacity: 1 }
 }
+
+/* ===================== Admin responsive helpers ===================== */
+/* Centered admin container to control large layouts */
+.admin-container { max-width: 1100px; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+@media (min-width: 768px) { .admin-container { padding-left: 1.5rem; padding-right: 1.5rem; } }
+
+/* Card styling used by admin panels */
+.admin-card { background: #fff; border-radius: 12px; box-shadow: var(--shadow-soft); }
+@media (min-width: 768px) { .admin-card { padding: 1.25rem; } }
+
+/* Form grid: 1 column mobile, 2 columns on md+ */
+.admin-form-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+@media (min-width: 768px) { .admin-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } }
+
+/* Thumbnails responsive sizing */
+.thumb-xs { width: 48px; height: 48px; }
+@media (min-width: 768px) { .thumb-xs { width: 56px; height: 56px; } }
+
+/* Panel list style */
+.list-panel { border-radius: 10px; overflow: hidden; box-shadow: var(--shadow-soft); }
+.list-row { padding: 0.9rem 1rem; }
+.list-row:hover { background-color: #fafaf9; }
+
+/* Button sizing helpers */
+.btn-admin-primary { background: #0b0b0b; color: #fff; padding: 0.6rem 1rem; border-radius: 10px; }
+.btn-admin-secondary { background: #fff; border: 1px solid rgba(15,23,42,0.06); color: #111827; padding: 0.5rem 0.9rem; border-radius: 10px; }
+
+/* Responsive adjustments for admin header spacing */
+@media (max-width: 767px) {
+  .admin-header-stack { display: grid; gap: 0.5rem; }
+  .admin-header-right { justify-self: start; }
+}
+
+/* small utility to keep consistent input heights across breakpoints */
+.admin-input { padding: 0.6rem 0.9rem; border-radius: 10px; border: 1px solid #e6e6e6; }
+
+/* End admin helpers */
+
+/* Related products slider styles */
+.related-slider { -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+.related-slider::-webkit-scrollbar { height: 10px; }
+.related-slider::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 8px; }
+.related-slider.no-scrollbar::-webkit-scrollbar { display: none; }
+.related-slider { scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.12) transparent; }
+
+/* Utility to hide scrollbar on all browsers when desired */
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Make sure children snap cleanly */
+.related-slider > * { scroll-snap-align: start; }
+
 
 
 

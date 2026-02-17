@@ -1,7 +1,9 @@
+"use client"
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import ScrollReveal from './ScrollReveal'
+import { Info } from 'phosphor-react'
 
 export default function Hero(){
   const HERO_PRODUCT = { slug: 'fender-american-vintage-59-2015', name: 'Fender American Vintage 59 (2015)' }
@@ -14,8 +16,20 @@ export default function Hero(){
           <div className="absolute inset-0 p-10 flex flex-col justify-center">
             <h2 className="display-xl tight-tracking hero-title">{HERO_PRODUCT.name}</h2>
             <p className="mt-3 subtitle-compact muted-text hero-subtitle">Strat Vintage · Alder · Nitro 3T Sunburst</p>
-            <div className="mt-6">
+            <div className="mt-6 flex flex-col items-start gap-3">
               <Link href={`/guitars/${HERO_PRODUCT.slug}`} className="btn-minimal btn-focus">Descubrir</Link>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const el = document.getElementById('about-section')
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }}
+                className="btn-info btn-focus flex items-center gap-2"
+              >
+                <Info size={18} weight="bold" />
+                Sobre la guarida
+              </button>
             </div>
           </div>
         </div>

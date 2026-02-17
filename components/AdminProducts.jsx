@@ -337,31 +337,31 @@ export default function AdminProducts(){
 
   return (
     <div className="space-y-6">
-      <section className="p-4 bg-white rounded shadow">
-        <h2 className="text-lg font-semibold">Crear producto</h2>
-        {error ? <div className="mt-2 p-2 bg-red-50 text-red-800 rounded">{error}</div> : null}
-        {success ? <div className="mt-2 p-2 bg-green-50 text-green-800 rounded">{success}</div> : null}
-        <form onSubmit={handleCreate} className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <section className="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+        <h2 className="text-lg font-semibold text-gray-900">Crear producto</h2>
+        {error ? <div className="mt-3 p-3 bg-rose-50 text-rose-700 rounded border border-rose-100 text-sm">{error}</div> : null}
+        {success ? <div className="mt-3 p-3 bg-emerald-50 text-emerald-800 rounded border border-emerald-100 text-sm">{success}</div> : null}
+        <form onSubmit={handleCreate} className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="text-sm block mb-1">Nombre</label>
-            <input name="name" value={form.name} onChange={handleChange} className="input w-full" />
+            <label className="text-sm block mb-1 text-gray-700">Nombre</label>
+            <input name="name" value={form.name} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-gray-800" />
           </div>
           <div>
-            <label className="text-sm block mb-1">Slug</label>
-            <input name="slug" value={form.slug} onChange={handleChange} className="input w-full" />
+            <label className="text-sm block mb-1 text-gray-700">Slug</label>
+            <input name="slug" value={form.slug} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-gray-800" />
           </div>
           <div>
-            <label className="text-sm block mb-1">Precio</label>
-            <input name="price" value={form.price} onChange={handleChange} className="input w-full" />
+            <label className="text-sm block mb-1 text-gray-700">Precio</label>
+            <input name="price" value={form.price} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-gray-800" />
           </div>
           <div className="space-y-2">
-            <label className="text-sm block mb-1">Imagen principal (requerida)</label>
-            <div className="flex items-start gap-3">
-              <div className="w-36 h-28 rounded overflow-hidden border bg-neutral-50 flex items-center justify-center">
+            <label className="text-sm block mb-1 text-gray-700">Imagen principal (requerida)</label>
+            <div className="flex items-start gap-4">
+              <div className="w-36 h-28 rounded-lg overflow-hidden border bg-neutral-50 flex items-center justify-center">
                 {mainPreview ? (
                   <div className="w-full h-full relative">
                     <img src={mainPreview.url} alt={mainPreview.name || 'Imagen principal'} className="w-full h-full object-cover" />
-                    <button type="button" onClick={removeMainSelected} className="absolute top-1 right-1 bg-white/80 rounded px-1 text-xs">Eliminar</button>
+                    <button type="button" onClick={removeMainSelected} className="absolute top-2 right-2 bg-white/90 rounded px-2 text-xs">Eliminar</button>
                   </div>
                 ) : form.image_url ? (
                   <div className="w-full h-full">
@@ -372,30 +372,30 @@ export default function AdminProducts(){
                 )}
               </div>
               <div className="flex-1">
-                <input name="mainFile" type="file" accept="image/*" onChange={handleMainFileChange} className="input w-full bg-transparent" />
-                <div className="text-xs mt-2 text-muted">Selecciona una imagen principal o pega una URL en el campo <strong>image_url</strong>.</div>
+                <input name="mainFile" type="file" accept="image/*" onChange={handleMainFileChange} className="w-full" />
+                <div className="text-xs mt-2 text-gray-600">Selecciona una imagen principal o pega una URL en el campo <strong>image_url</strong>.</div>
                 <div className="mt-2">
-                  <label className="text-sm block mb-1">O escribe la URL de la imagen principal</label>
-                  <input name="image_url" value={form.image_url} onChange={handleChange} className="input w-full" placeholder="https://..." />
+                  <label className="text-sm block mb-1 text-gray-700">O escribe la URL de la imagen principal</label>
+                  <input name="image_url" value={form.image_url} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-gray-800" placeholder="https://..." />
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="text-sm block mb-1">Galería (opcional)</label>
+              <label className="text-sm block mb-1 text-gray-700">Galería (opcional)</label>
               <div
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`p-2 border rounded ${dragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-200'}`}
+                className={`p-3 border rounded-lg ${dragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-200'}`}
               >
-                <input name="gallery" type="file" accept="image/*" multiple onChange={handleFileChange} className="input w-full bg-transparent" />
-                <div className="text-xs mt-2 text-muted">Arrastra imágenes de galería aquí o haz clic para seleccionar (puedes seleccionar varias).</div>
+                <input name="gallery" type="file" accept="image/*" multiple onChange={handleFileChange} className="w-full" />
+                <div className="text-xs mt-2 text-gray-600">Arrastra imágenes de galería aquí o hacé clic para seleccionar (varias).</div>
               </div>
-              {fileValidationError ? <div className="mt-2 p-2 bg-red-50 text-red-800 rounded text-sm">{fileValidationError}</div> : null}
-              {uploadError && !fileValidationError ? <div className="mt-2 p-2 bg-red-50 text-red-800 rounded text-sm">{uploadError}</div> : null}
+              {fileValidationError ? <div className="mt-2 p-2 bg-rose-50 text-rose-700 rounded text-sm">{fileValidationError}</div> : null}
+              {uploadError && !fileValidationError ? <div className="mt-2 p-2 bg-rose-50 text-rose-700 rounded text-sm">{uploadError}</div> : null}
               {uploading ? (
-                <div className="mt-2 flex items-center gap-2 text-sm text-muted">
+                <div className="mt-2 flex items-center gap-2 text-sm text-gray-600">
                   <svg className="animate-spin h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
                   <div>Subiendo imágenes…</div>
                 </div>
@@ -403,7 +403,7 @@ export default function AdminProducts(){
               {galleryPreviews.length > 0 ? (
                 <div className="mt-2 flex gap-2 flex-wrap">
                   {galleryPreviews.map((p, i) => (
-                    <div key={p.id} className={`w-32 ${i === 0 ? 'ring-2 ring-blue-300' : ''}`}>
+                    <div key={p.id} className={`w-32 ${i === 0 ? 'ring-2 ring-amber-200' : ''}`}>
                       <div className="w-32 h-24 rounded overflow-hidden border relative">
                         <img src={p.url} alt={p.name || ('Imagen ' + (i+1))} className="w-full h-full object-cover" />
                         <button type="button" onClick={() => removeGallerySelected(i)} className="absolute top-1 right-1 bg-white/80 rounded px-1 text-xs">Eliminar</button>
@@ -416,44 +416,44 @@ export default function AdminProducts(){
             </div>
           </div>
           <div className="sm:col-span-2">
-            <label className="text-sm block mb-1">Descripción</label>
-            <textarea name="description" value={form.description} onChange={handleChange} className="input w-full" rows="3" />
+            <label className="text-sm block mb-1 text-gray-700">Descripción</label>
+            <textarea name="description" value={form.description} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-gray-800" rows="3" />
           </div>
 
           <div className="sm:col-span-2 flex gap-2">
-            <button type="submit" className="btn btn-primary" disabled={submitting || uploading || !!fileValidationError || !form.name || String(form.price).trim() === '' || (!mainFile && (!form.image_url || String(form.image_url).trim() === ''))}>{submitting ? 'Creando…' : (uploading ? 'Subiendo…' : 'Crear producto')}</button>
-            <button type="button" className="btn" onClick={() => setForm({ name: '', slug: '', price: '', image_url: '', description: '' })}>Limpiar</button>
+            <button type="submit" className="px-4 py-2 bg-black text-white rounded-lg shadow-sm" disabled={submitting || uploading || !!fileValidationError || !form.name || String(form.price).trim() === '' || (!mainFile && (!form.image_url || String(form.image_url).trim() === ''))}>{submitting ? 'Creando…' : (uploading ? 'Subiendo…' : 'Crear producto')}</button>
+            <button type="button" className="px-4 py-2 bg-white border border-gray-200 rounded-lg" onClick={() => setForm({ name: '', slug: '', price: '', image_url: '', description: '' })}>Limpiar</button>
           </div>
         </form>
       </section>
 
-      <section className="p-4 bg-white rounded shadow">
-        <h2 className="text-lg font-semibold">Productos</h2>
+      <section className="p-4 bg-white rounded-xl shadow-sm border border-gray-100">
+        <h2 className="text-lg font-semibold text-gray-900">Productos</h2>
         {loading ? <div className="py-4">Cargando…</div> : null}
         {!loading && items.length === 0 ? (
-          <div className="py-4 text-sm muted-text">No hay productos.</div>
+          <div className="py-4 text-sm text-gray-600">No hay productos.</div>
         ) : null}
-        <div className="mt-4 space-y-3">
-          {items.map(p => {
+        <div className="mt-4 bg-white rounded-lg shadow-sm overflow-hidden divide-y divide-gray-100">
+          {items.map((p, idx) => {
             const imgSrc = imageService.resolve(p.image_url || (p.images && p.images[0]))
             return (
-            <div key={p.id} className="flex items-center justify-between p-3 border rounded">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded overflow-hidden bg-neutral-100">
+            <div key={p.id} className="flex items-center justify-between gap-4 px-4 py-4 hover:bg-gray-50">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 md:w-14 md:h-14 rounded-md overflow-hidden border border-gray-100 bg-neutral-50 flex items-center justify-center">
                   {imgSrc ? (
-                    <ImageWithSkeleton src={imgSrc} alt={p.name || p.slug || 'Imagen'} width={48} height={48} quality={95} />
+                    <ImageWithSkeleton src={imgSrc} alt={p.name || p.slug || 'Imagen'} width={56} height={56} quality={95} />
                   ) : (
                     <div className="image-placeholder w-full h-full" />
                   )}
                 </div>
                 <div>
-                  <div className="font-medium">{p.name || p.slug || p.id}</div>
-                  <div className="text-sm muted-text">{p.price || '-'}</div>
+                  <div className="font-medium text-gray-900">{p.name || p.slug || p.id}</div>
+                  <div className="text-sm text-gray-600">{p.price || '-'}</div>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <a href={`/guitars/${p.slug || p.id}`} className="text-sm muted-link">Ver</a>
-                <button className="text-sm text-red-600" onClick={() => handleDelete(p.id, p.name)} disabled={deletingId === p.id}>{deletingId === p.id ? 'Eliminando…' : 'Eliminar'}</button>
+              <div className="flex items-center gap-4">
+                <a href={`/guitars/${p.slug || p.id}`} className="text-sm text-gray-700 hover:underline">Ver</a>
+                <button className="text-sm text-rose-600" onClick={() => handleDelete(p.id, p.name)} disabled={deletingId === p.id}>{deletingId === p.id ? 'Eliminando…' : 'Eliminar'}</button>
               </div>
             </div>
             )

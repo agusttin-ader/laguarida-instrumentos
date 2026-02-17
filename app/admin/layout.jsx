@@ -7,19 +7,34 @@ export const metadata = {
 
 export default function AdminLayout({ children }){
   return (
-    <div style={{padding:20,fontFamily:'Inter, system-ui, sans-serif'}}>
-      <header style={{marginBottom:20}}>
-        <h1 style={{margin:0,fontSize:20}}>Admin — La Guarida</h1>
-        <p style={{margin:0,color:'#666',fontSize:13}}>Sección administrativa (scaffold). Protected placeholder.</p>
-      </header>
+    <div className="min-h-screen bg-[#f6efe6] text-gray-900">
+      <div className="admin-container mx-auto px-4 md:px-6 py-8 md:py-12">
+        <header className="bg-white border-b border-gray-100 p-6 mb-8 rounded-xl shadow-sm relative">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="header-logo-wrapper w-36">
+                <img src="/images/logo/logo-fondo-claro.PNG" alt="La Guarida" loading="eager" style={{height: 'auto', width: '100%'}} className="logo-light w-full h-auto" />
+              </div>
+              <div>
+                <div className="text-lg font-semibold">Panel de Administración</div>
+                <div className="text-xs text-gray-600">Área de administración</div>
+              </div>
+            </div>
 
-      <ClientAuth>
-        <main>{children}</main>
-      </ClientAuth>
+            <div className="hidden md:block" aria-hidden>
+              {/* decorative spacer to keep header balanced */}
+            </div>
+          </div>
+        </header>
 
-      <footer style={{marginTop:40,color:'#666',fontSize:12}}>
-        <div>Admin scaffold — no DB or providers implemented.</div>
-      </footer>
+        <ClientAuth>
+          <main className="space-y-8">{children}</main>
+        </ClientAuth>
+
+        <footer className="mt-12 text-sm text-gray-600">
+          <div>Admin — interfaz de administración.</div>
+        </footer>
+      </div>
     </div>
   )
 }
