@@ -31,22 +31,8 @@ export default function AdminLoginPage() {
         return
       }
 
-      // Server sets HttpOnly session cookie. Also update the client-side
-      // Supabase instance with the returned session so client components
-      // (which rely on `supabase.auth.getSession()`) see the user.
-      try {
-        const session = json?.session ?? null
-        if (session && supabase?.auth?.setSession) {
-          // supabase.auth.setSession accepts the session object
-          await supabase.auth.setSession({
-            access_token: session.access_token,
-            refresh_token: session.refresh_token,
-          })
-        }
-      } catch (e) {
-        // ignore — we'll still navigate and server-side cookies should be authoritative
-      }
-
+      // Server sets HttpOnly session cookie; navigate to admin and let the
+      // client auth provider verify the server-side session via /api/auth/me.
       router.push('/admin')
     } catch (err) {
       setError(err?.message || 'An unexpected error occurred')

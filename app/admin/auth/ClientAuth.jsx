@@ -58,8 +58,9 @@ export default function ClientAuth({ children }){
 
     if (!user && !isLogin) {
       // Double-check session in case of a short race between sign-in and
-      // session restoration. If a session exists, trust it and wait for the
-      // onAuthStateChange listener to populate `user`.
+      // session restoration. First try client-side session, then fall back
+      // to a server-side check (`/api/auth/me`) which will inspect the
+      // HttpOnly cookie set by the server.
       (async () => {
         try {
           const { data } = await supabase.auth.getSession()
@@ -68,6 +69,21 @@ export default function ClientAuth({ children }){
             setSession(sessionNow)
             setUser(sessionNow.user ?? null)
             return
+          }
+        } catch (e) {
+          // ignore
+        }
+
+        try {
+          const res = await fetch('/api/auth/me', { credentials: 'include' })
+          if (res.ok) {
+            const j = await res.json()
+            if (j?.authenticated) {
+              // populate user from server response (no tokens returned)
+              setUser({ id: j.user?.id, email: j.user?.email || null })
+              setSession(null)
+              return
+            }
           }
         } catch (e) {
           // ignore
