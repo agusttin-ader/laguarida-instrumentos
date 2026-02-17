@@ -2,6 +2,7 @@ export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '../../../lib/supabase/server'
+import { cookies } from 'next/headers'
 const BUCKET = 'products'
 
 function sanitizeFilename(name){
@@ -10,6 +11,24 @@ function sanitizeFilename(name){
 
 export async function POST(req){
   try {
+    // Temporary debug logging: record cookie store info and raw Cookie header
+    try {
+      const cookieStore = cookies()
+      if (cookieStore && typeof cookieStore.getAll === 'function') {
+        const all = await cookieStore.getAll()
+        console.log('DEBUG /api/upload-image cookies.getAll length=', Array.isArray(all) ? all.length : String(all))
+      } else if (cookieStore && typeof cookieStore.get === 'function') {
+        const names = ['sb-access-token','sb-refresh-token','sb-session']
+        const found = names.map(n => cookieStore.get(n)).filter(Boolean)
+        console.log('DEBUG /api/upload-image cookies.get available count=', found.length)
+      } else {
+        console.log('DEBUG /api/upload-image cookies() shape=', cookieStore ? Object.keys(cookieStore) : 'no-cookie-store')
+      }
+    } catch (e) {
+      console.log('DEBUG /api/upload-image cookies error', String(e))
+    }
+
+    console.log('DEBUG /api/upload-image request Cookie header=', req.headers.get('cookie'))
 
     const supabase = getSupabaseServerClient()
     // require authenticated user for uploads

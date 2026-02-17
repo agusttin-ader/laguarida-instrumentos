@@ -21,7 +21,8 @@ export async function POST(req) {
     }
 
     // On success the auth-helpers will have set the session cookie (HttpOnly).
-    return NextResponse.json({ user: data.user ?? null, session: data.session ?? null }, { status: 200 })
+    // Do NOT return the session object here — let the cookie be authoritative.
+    return NextResponse.json({ user: data.user ?? null }, { status: 200 })
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 })
   }
