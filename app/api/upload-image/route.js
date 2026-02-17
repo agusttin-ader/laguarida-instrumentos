@@ -16,7 +16,27 @@ export async function POST(req){
     const { data: authData, error: authErr } = await supabase.auth.getUser()
     const user = authData?.user ?? null
     if (authErr || !user) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+      // Collect cookie names (no values) for debugging — avoids leaking sensitive values
+      let cookieNames = []
+      try {
+        const cookieStore = cookies()
+        if (cookieStore && typeof cookieStore.getAll === 'function') {
+          const all = await cookieStore.getAll()
+          cookieNames = all.map(c => c.name)
+        } else if (cookieStore && typeof cookieStore.get === 'function') {
+          cookieNames = ['sb-access-token','sb-refresh-token','sb-session']
+        }
+      } catch (e) {
+        // ignore
+      }
+
+      // Also include request header names for debugging (no header values)
+      const headerNames = []
+      try {
+        for (const [k] of req.headers) headerNames.push(k)
+      } catch (e) {}
+
+      return NextResponse.json({ error: 'Authentication required', cookies: cookieNames, headers: headerNames }, { status: 401 })
     }
 
     const contentType = req.headers.get('content-type') || ''
