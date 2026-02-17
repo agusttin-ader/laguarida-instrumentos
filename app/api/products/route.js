@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getSupabaseServerClient } from '../../../lib/supabase/server'
+import { getSupabaseServerClient, getUserFromRequest } from '../../../lib/supabase/server'
 
 export async function GET(req) {
   try {
@@ -21,6 +21,11 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
+    const user = await getUserFromRequest(req)
+    if (!user) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    }
+
     const body = await req.json()
     const { name, slug, brand = null, price = null, image_url = null, images = [], description = null } = body || {}
 
@@ -45,6 +50,11 @@ export async function POST(req) {
 
 export async function DELETE(req) {
   try {
+    const user = await getUserFromRequest(req)
+    if (!user) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    }
+
     const url = new URL(req.url)
     const id = url.searchParams.get('id')
 

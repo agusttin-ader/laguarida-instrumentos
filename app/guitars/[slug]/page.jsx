@@ -1,4 +1,6 @@
 import React from 'react'
+import fs from 'fs/promises'
+import path from 'path'
 export const dynamic = 'force-dynamic'
 import GuitarGallery from '../../../components/GuitarGallery'
 import normalizeProduct from '../../../lib/utils/normalizeProduct'
@@ -32,6 +34,31 @@ export default async function GuitarPage({ params }) {
   } catch (err) {
     console.log('error:', err)
     product = null
+  }
+
+  // Fallback: try to load local markdown data if Supabase has no product
+  if (!product) {
+    try {
+      if (slug) {
+        const filePath = path.join(process.cwd(), 'data', 'guitars', `${slug}.md`)
+        const raw = await fs.readFile(filePath, 'utf8')
+        // Simple parsing: title (# ), **Model:**, **Price:**, rest as description
+        const titleMatch = raw.match(/^#\s+(.+)$/m)
+        const modelMatch = raw.match(/\*\*Model:\*\*\s*(.+)/i)
+        const priceMatch = raw.match(/\*\*Price:\*\*\s*(.+)/i)
+        const body = raw.replace(/^#.+$/m, '').replace(/\*\*Model:\*\*.+$/im, '').replace(/\*\*Price:\*\*.+$/im, '').trim()
+
+        product = {
+          slug,
+          name: titleMatch ? titleMatch[1].trim() : (modelMatch ? modelMatch[1].trim() : slug),
+          model: modelMatch ? modelMatch[1].trim() : '',
+          price: priceMatch ? priceMatch[1].trim() : null,
+          description: body
+        }
+      }
+    } catch (err) {
+      console.log('local fallback read error:', err)
+    }
   }
 
   // Fetch related products: we'll load a batch and filter by shared words

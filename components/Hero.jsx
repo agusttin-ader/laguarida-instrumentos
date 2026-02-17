@@ -4,16 +4,18 @@ import Link from 'next/link'
 import ScrollReveal from './ScrollReveal'
 
 export default function Hero(){
+  const HERO_PRODUCT = { slug: 'fender-american-vintage-59-2015', name: 'Fender American Vintage 59 (2015)' }
+
   return (
     <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch mt-10 container-tight">
       {/* Left column: light gray background, big title, CTA (matches image height) */}
       <ScrollReveal>
         <div className="relative w-full max-w-[540px] rounded overflow-hidden subtle-border bg-gray-50 dark:bg-[#0b0d0f]" style={{paddingTop: '150%'}}>
           <div className="absolute inset-0 p-10 flex flex-col justify-center">
-            <h2 className="display-xxl tight-tracking">Fender Am Vintage 59’</h2>
+            <h2 className="display-xxl tight-tracking">{HERO_PRODUCT.name}</h2>
             <p className="mt-3 subtitle-compact muted-text">Strat Vintage · Alder · Nitro 3T Sunburst</p>
             <div className="mt-6">
-              <Link href="/guitars/avri-59" className="btn-minimal btn-focus">Descubrir</Link>
+              <Link href={`/guitars/${HERO_PRODUCT.slug}`} className="btn-minimal btn-focus">Descubrir</Link>
             </div>
           </div>
         </div>
@@ -32,12 +34,12 @@ export default function Hero(){
       <ScrollReveal>
         <div className="relative w-full max-w-[540px] rounded overflow-hidden hero-right" style={{paddingTop: '150%'}}>
           <div className="absolute inset-0 p-10 flex flex-col justify-center text-right text-white">
-            <div className="price-large">U$S 2,990</div>
+              <div className="price-large">U$S 2,990</div>
             <p className="mt-3 subtitle-compact text-white/60">Ingreso 2025 · Strat Vintage</p>
             <p className="mt-6 body-copy text-white font-medium leading-7" style={{maxWidth: '36ch'}}>Strat Vintage 2015 en perfecto estado. Mástil Arce D-shape · trastera Arce · 3 pickups Vintage 59’.</p>
             <div className="mt-8 flex justify-end">
               <a
-                href={`https://wa.me/541168696491?text=${encodeURIComponent(`Hola me interesa la Fender Am Vintage 59’, me podrias dar mas info?`)}`}
+                href={`https://wa.me/541168696491?text=${encodeURIComponent(`Hola me interesa la ${HERO_PRODUCT.name}, me podrias dar mas info?`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-ghost-dark btn-focus"
