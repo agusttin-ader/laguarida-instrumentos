@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import ImageWithSkeleton from "./ImageWithSkeleton";
+import imageService from "../lib/utils/imageService";
 
 // Accessibility & Performance notes:
 // - Uses Next/Image (via ImageWithSkeleton) for responsive, optimized images and automatic lazy-loading.
@@ -18,7 +19,7 @@ export default function MobileProductCard({ product }) {
       <div className="w-full bg-neutral-50 dark:bg-neutral-800 overflow-hidden rounded-[12px]">
         {/* Use ImageWithSkeleton to show a skeleton while Next/Image loads for better perceived performance */}
         <ImageWithSkeleton
-          src={product.image}
+          src={imageService.resolve(product.image_url || (product.images && product.images[0]) || product.image)}
           alt={product.name}
           width={1200}
           height={900}
