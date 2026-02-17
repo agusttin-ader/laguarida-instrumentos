@@ -30,7 +30,7 @@ export async function POST(req){
 
     console.log('DEBUG /api/upload-image request Cookie header=', req.headers.get('cookie'))
 
-    const supabase = getSupabaseServerClient()
+    const supabase = await getSupabaseServerClient()
     // require authenticated user for uploads
     const { data: authData, error: authErr } = await supabase.auth.getUser()
     const user = authData?.user ?? null

@@ -27,8 +27,8 @@ export default function Footer(){
 
           <div className="flex items-center justify-center">
             <div className="footer-logo-wrapper relative w-[140px] h-6 md:w-[200px] md:h-8">
-              <Image src="/images/logo/logo-fondo-claro.PNG" alt="La Guarida logo claro" fill style={{objectFit:'contain'}} className="logo-light" quality={80} sizes="(min-width:768px) 200px, 140px" />
-              <Image src="/images/logo/logo-fondo-oscuro.PNG" alt="La Guarida logo oscuro" fill style={{objectFit:'contain'}} className="logo-dark" quality={80} sizes="(min-width:768px) 200px, 140px" />
+              <Image src="/images/logo/logo-fondo-claro.PNG" alt="La Guarida logo claro" fill style={{objectFit:'contain'}} className="logo-light" quality={100} sizes="(min-width:768px) 200px, 140px" />
+              <Image src="/images/logo/logo-fondo-oscuro.PNG" alt="La Guarida logo oscuro" fill style={{objectFit:'contain'}} className="logo-dark" quality={100} sizes="(min-width:768px) 200px, 140px" />
             </div>
           </div>
         </div>

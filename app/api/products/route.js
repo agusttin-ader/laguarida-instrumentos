@@ -5,7 +5,7 @@ import { getSupabaseServerClient } from '../../../lib/supabase/server'
 
 export async function GET(req) {
   try {
-    const supabase = getSupabaseServerClient()
+    const supabase = await getSupabaseServerClient()
     const { data, error } = await supabase
       .from('products')
       .select('*')
@@ -23,7 +23,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const supabase = getSupabaseServerClient()
+    const supabase = await getSupabaseServerClient()
     const { data: authData, error: authErr } = await supabase.auth.getUser()
     const user = authData?.user ?? null
     if (authErr || !user) {
@@ -53,7 +53,7 @@ export async function POST(req) {
 
 export async function DELETE(req) {
   try {
-    const supabase = getSupabaseServerClient()
+    const supabase = await getSupabaseServerClient()
     const { data: authData, error: authErr } = await supabase.auth.getUser()
     const user = authData?.user ?? null
     if (authErr || !user) {

@@ -441,7 +441,7 @@ export default function AdminProducts(){
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded overflow-hidden bg-neutral-100">
                   {imgSrc ? (
-                    <ImageWithSkeleton src={imgSrc} alt={p.name || p.slug || 'Imagen'} width={48} height={48} quality={60} />
+                    <ImageWithSkeleton src={imgSrc} alt={p.name || p.slug || 'Imagen'} width={48} height={48} quality={95} />
                   ) : (
                     <div className="image-placeholder w-full h-full" />
                   )}

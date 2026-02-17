@@ -59,25 +59,35 @@ export default async function GuitarPage({ params }) {
     if (product) {
       const supabase = getSupabaseServerClient()
       const { data: allProducts } = await supabase.from('products').select('*').limit(200)
-      const wordsSource = (`${product.model || ''} ${product.name || ''}`).toLowerCase()
+      // Build a normalized set of words from brand, model and name (remove diacritics)
+      const normalizeText = (s = '') => String(s || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
+      const wordsSource = `${product.brand || ''} ${product.model || ''} ${product.name || ''}`
       const words = Array.from(new Set(
-        wordsSource
+        normalizeText(wordsSource)
           .split(/\s+/)
-          .map(w => w.replace(/[^a-z0-9áéíóúüñ-]/gi, ''))
+          .map(w => w.replace(/[^a-z0-9-]/gi, ''))
           .filter(Boolean)
           .filter(w => w.length >= 3)
       ))
 
-      if (allProducts && words.length) {
+      if (allProducts) {
         const candidates = allProducts
           .filter(p => p.slug !== product.slug)
           .map(p => normalizeProduct(p))
-          .filter(p => {
-            const haystack = (`${p.model || ''} ${p.name || ''}`).toLowerCase()
-            return words.some(w => haystack.includes(w))
+          .map(p => {
+            // compute score: +2 for word match, +1 for brand exact match
+            const hay = normalizeText(`${p.brand || ''} ${p.model || ''} ${p.name || ''}`)
+            let score = 0
+            for (const w of words) if (hay.includes(w)) score += 2
+            if (p.brand && product.brand && normalizeText(p.brand) === normalizeText(product.brand)) score += 1
+            return { item: p, score }
           })
+          .filter(x => x.score > 0)
 
-        relatedProducts = candidates.slice(0, 4)
+        // sort by score desc, then by name to make deterministic
+        candidates.sort((a, b) => b.score - a.score || ('' + (a.item.name || '')).localeCompare(b.item.name || ''))
+
+        relatedProducts = candidates.slice(0, 4).map(c => c.item)
       }
     }
   } catch (err) {
