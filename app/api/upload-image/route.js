@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+import { getSupabaseServerClient } from '../../../lib/supabase/server'
 const BUCKET = 'products'
 
 function sanitizeFilename(name){
@@ -11,8 +8,13 @@ function sanitizeFilename(name){
 
 export async function POST(req){
   try {
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      return NextResponse.json({ error: 'Missing Supabase configuration' }, { status: 500 })
+
+    const supabase = getSupabaseServerClient()
+    // require authenticated user for uploads
+    const { data: authData, error: authErr } = await supabase.auth.getUser()
+    const user = authData?.user ?? null
+    if (authErr || !user) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
     const contentType = req.headers.get('content-type') || ''
@@ -33,8 +35,6 @@ export async function POST(req){
     const arrayBuffer = await file.arrayBuffer()
     // Use Node Buffer when available (server Node runtime); fall back to Uint8Array
     const buffer = (typeof Buffer !== 'undefined') ? Buffer.from(arrayBuffer) : new Uint8Array(arrayBuffer)
-
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { global: { fetch } })
 
     const { data: uploadData, error: uploadError } = await supabase.storage.from(BUCKET).upload(uniqueName, buffer, {
       contentType: file.type || 'application/octet-stream',

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getSupabaseServerClient, getUserFromRequest } from '../../../lib/supabase/server'
+import { getSupabaseServerClient } from '../../../lib/supabase/server'
 
 export async function GET(req) {
   try {
@@ -21,8 +21,10 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const user = await getUserFromRequest(req)
-    if (!user) {
+    const supabase = getSupabaseServerClient()
+    const { data: authData, error: authErr } = await supabase.auth.getUser()
+    const user = authData?.user ?? null
+    if (authErr || !user) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
@@ -33,7 +35,6 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Missing required fields: name and slug' }, { status: 400 })
     }
 
-    const supabase = getSupabaseServerClient()
     const payload = { name, slug, brand, price, image_url, images, description }
 
     const { data, error } = await supabase.from('products').insert([payload]).select()
@@ -50,8 +51,10 @@ export async function POST(req) {
 
 export async function DELETE(req) {
   try {
-    const user = await getUserFromRequest(req)
-    if (!user) {
+    const supabase = getSupabaseServerClient()
+    const { data: authData, error: authErr } = await supabase.auth.getUser()
+    const user = authData?.user ?? null
+    if (authErr || !user) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
