@@ -9,7 +9,7 @@ import { useEffect } from "react";
 // - Keeps `alt` for accessibility (screen readers) and avoids layout shift via width/height or `fill` usage.
 // - Next/Image is used for responsive, optimized delivery (AVIF/WebP) and automatic lazy-loading.
 
-export default function ImageWithSkeleton({ src, alt, width, height, sizes, quality = 95, priority = false, loading, className = "", style = {}, fill = false }) {
+export default function ImageWithSkeleton({ src, alt, width, height, sizes, quality = 95, priority = false, loading, className = "", style = {}, fill = false, fit }) {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
   const [blurDataURL, setBlurDataURL] = useState(null)
@@ -89,7 +89,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
           fetchPriority={priority ? 'high' : undefined}
           priority={priority}
           fill={fill}
-          className={`object-cover ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
+          className={`${(fit === 'contain' || (style && style.objectFit === 'contain')) ? 'object-contain' : 'object-cover'} ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
           onLoadingComplete={() => setLoaded(true)}
           onError={() => setErrored(true)}
         />

@@ -147,10 +147,10 @@ export default async function GuitarPage({ params }) {
 
             <div className="mt-8">
               <a
-                  href={`https://wa.me/541168696491?text=${encodeURIComponent(`Hola me interesa la ${product.name}, me podrias dar mas info?`)}`}
+                href={`https://wa.me/541168696491?text=${encodeURIComponent(`Hola me interesa la ${product.name}, me podrias dar mas info?`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-outline btn-focus w-full text-center"
+                className="btn-elegant btn-elegant--dark btn-focus"
               >
                 Consultar
               </a>

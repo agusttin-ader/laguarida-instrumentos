@@ -116,8 +116,22 @@ export default function GuitarGallery({ images = [], image_url }){
     <div className="lg:sticky lg:top-24">
       <div className="rounded-lg overflow-hidden transform transition-shadow duration-200 hover:shadow-md" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
         <div ref={mainRef} className="relative w-full h-96 md:h-[70vh] lg:h-[85vh] bg-white dark:bg-[#0b0d0f] flex items-center justify-center cursor-pointer" onClick={() => openModal(modalList.indexOf(main))} aria-live="polite">
-          <div className="w-full h-full transition-all duration-300 ease-in-out transform">
-            <ImageWithSkeleton key={main} src={main} alt={`Imagen del producto`} fill style={{objectFit: 'contain', objectPosition: 'center'}} sizes="(min-width: 1280px) 900px, (min-width: 768px) 60vw, 100vw" className="transition-opacity duration-300" quality={85} priority />
+          <div className="w-full h-full transition-all duration-300 ease-in-out transform flex items-center justify-center">
+            <div className="relative" style={{ width: '100%', maxWidth: 900, maxHeight: '85vh' }}>
+              <ImageWithSkeleton
+                key={main}
+                src={main}
+                alt={`Imagen del producto`}
+                width={900}
+                height={600}
+                fit="contain"
+                style={{ objectPosition: 'center' }}
+                sizes="(min-width: 1280px) 900px, (min-width: 768px) 60vw, 100vw"
+                className="transition-opacity duration-300 max-w-full max-h-full"
+                quality={85}
+                priority
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -158,7 +172,7 @@ export default function GuitarGallery({ images = [], image_url }){
 
           {/* Centered image box sized to original container (capped by viewport) */}
             <div style={{ width: modalSize?.width ?? 'auto', height: modalSize?.height ?? 'auto', maxWidth: '90vw', maxHeight: '85vh' }} className="flex items-center justify-center relative">
-            <ImageWithSkeleton src={modalList[modalIndex]} alt={`Imagen modal ${modalIndex+1}`} width={modalSize ? Math.min(modalSize.width, Math.floor((typeof window !== 'undefined' ? window.innerWidth : 1200) * 0.9)) : 800} height={modalSize ? Math.min(modalSize.height, Math.floor((typeof window !== 'undefined' ? window.innerHeight : 800) * 0.85)) : 600} style={{objectFit: 'contain'}} quality={90} />
+            <ImageWithSkeleton fit="contain" src={modalList[modalIndex]} alt={`Imagen modal ${modalIndex+1}`} width={modalSize ? Math.min(modalSize.width, Math.floor((typeof window !== 'undefined' ? window.innerWidth : 1200) * 0.9)) : 800} height={modalSize ? Math.min(modalSize.height, Math.floor((typeof window !== 'undefined' ? window.innerHeight : 800) * 0.85)) : 600} quality={90} />
           </div>
 
           {/* Visible right arrow */}

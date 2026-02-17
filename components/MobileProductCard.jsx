@@ -30,9 +30,9 @@ export default function MobileProductCard({ product }) {
       </div>
 
       <div className="p-4">
-        <h3 className="text-base font-medium leading-snug text-neutral-900 dark:text-neutral-100">{product.name}</h3>
+        <h3 className="card-title text-neutral-900 dark:text-neutral-100">{product.name}</h3>
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">${product.price}</span>
+          <span className="text-sm font-medium text-neutral-900 dark:text-neutral-100">${product.price}</span>
           {/* Use RippleButton for press / ripple micro-interaction. */}
           {/* Tailwind handles color/scale transitions; Framer Motion is optional for advanced physics. */}
           <RippleButton
