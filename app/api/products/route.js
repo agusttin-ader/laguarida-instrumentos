@@ -65,7 +65,6 @@ export async function DELETE(req) {
       return NextResponse.json({ error: 'Missing product id in query string (?id=)' }, { status: 400 })
     }
 
-    const supabase = getSupabaseServerClient()
     const { data, error } = await supabase.from('products').delete().eq('id', id).select()
 
     if (error) {
