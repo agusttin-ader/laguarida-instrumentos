@@ -84,6 +84,12 @@ export async function POST(req){
     // require authenticated user for uploads
     const { data: authData, error: authErr } = await supabase.auth.getUser()
     const user = authData?.user ?? null
+    // Safe debug logging: whether Supabase returned an error and whether a user was found
+    try {
+      console.log('DEBUG /api/upload-image authErr=', authErr ? (authErr.message || String(authErr)) : 'none', 'userPresent=', !!user)
+    } catch (e) {
+      // ignore logging failures
+    }
     if (authErr || !user) {
       // Collect cookie names (no values) for debugging — avoids leaking sensitive values
       let cookieNames = []
