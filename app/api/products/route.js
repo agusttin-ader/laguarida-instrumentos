@@ -2,10 +2,50 @@ export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '../../../lib/supabase/server'
+import { cookies } from 'next/headers'
+
+// helper to extract sb-access-token from cookie store or raw header
+async function extractAccessToken(req) {
+  try {
+    const cookieStore = cookies()
+    // cookieStore.get returns something like { name, value }
+    const at = cookieStore.get && cookieStore.get('sb-access-token')
+    if (at && at.value) return at.value
+
+    const session = cookieStore.get && cookieStore.get('sb-session') && cookieStore.get('sb-session').value
+    if (session) {
+      try {
+        const parsed = JSON.parse(session)
+        if (parsed?.access_token) return parsed.access_token
+        if (parsed?.accessToken) return parsed.accessToken
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    // fallback: parse raw Cookie header
+    const raw = req.headers.get('cookie') || ''
+    if (raw) {
+      const pairs = raw.split(/;\s*/).map(p => p.split('='))
+      const map = Object.fromEntries(pairs.map(([k, ...v]) => [k, v.join('=')]))
+      if (map['sb-access-token']) return map['sb-access-token']
+      if (map['sb-session']) {
+        try {
+          const parsed = JSON.parse(decodeURIComponent(map['sb-session']))
+          return parsed?.access_token || parsed?.accessToken || null
+        } catch (e) {}
+      }
+    }
+  } catch (e) {
+    // ignore
+  }
+  return null
+}
 
 export async function GET(req) {
   try {
-    const supabase = await getSupabaseServerClient()
+    const accessToken = await extractAccessToken(req)
+    const supabase = await getSupabaseServerClient(accessToken)
     const { data, error } = await supabase
       .from('products')
       .select('*')
@@ -23,7 +63,8 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const supabase = await getSupabaseServerClient()
+    const accessToken = await extractAccessToken(req)
+    const supabase = await getSupabaseServerClient(accessToken)
     const { data: authData, error: authErr } = await supabase.auth.getUser()
     const user = authData?.user ?? null
     if (authErr || !user) {
@@ -53,7 +94,8 @@ export async function POST(req) {
 
 export async function DELETE(req) {
   try {
-    const supabase = await getSupabaseServerClient()
+    const accessToken = await extractAccessToken(req)
+    const supabase = await getSupabaseServerClient(accessToken)
     const { data: authData, error: authErr } = await supabase.auth.getUser()
     const user = authData?.user ?? null
     if (authErr || !user) {
