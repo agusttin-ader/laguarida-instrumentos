@@ -1,6 +1,8 @@
-const SITE_URL = 'https://laguarida.com'
+export const dynamic = 'force-dynamic'
 
-export async function GET() {
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://laguarida.com'
+
+export async function GET(req) {
   const body = `User-agent: *\nAllow: /\nDisallow: /admin\nSitemap: ${SITE_URL}/sitemap.xml\n`
 
   return new Response(body, {

@@ -1,7 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 
-const SITE_URL = 'https://laguarida.com'
+export const dynamic = 'force-dynamic'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://laguarida.com'
 
 export async function GET() {
   const pages = [
