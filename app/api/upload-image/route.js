@@ -30,7 +30,57 @@ export async function POST(req){
 
     console.log('DEBUG /api/upload-image request Cookie header=', req.headers.get('cookie'))
 
-    const supabase = await getSupabaseServerClient()
+    // Read HttpOnly Supabase session token from cookies and pass it to server client
+    const cookieStore = cookies()
+    let accessToken = null
+    let tokenSource = null
+    try {
+      // Try cookie store first
+      const at = cookieStore.get && cookieStore.get('sb-access-token')
+      if (at && at.value) {
+        accessToken = at.value
+        tokenSource = 'cookieStore:sb-access-token'
+      } else {
+        const session = cookieStore.get && cookieStore.get('sb-session') && cookieStore.get('sb-session').value
+        if (session) {
+          try {
+            const parsed = JSON.parse(session)
+            accessToken = parsed?.access_token || parsed?.accessToken || null
+            if (accessToken) tokenSource = 'cookieStore:sb-session'
+          } catch (e) {
+            // session cookie not JSON — ignore
+          }
+        }
+      }
+
+      // Fallback: parse raw Cookie header if cookieStore didn't yield values
+      if (!accessToken) {
+        const raw = req.headers.get('cookie') || ''
+        if (raw) {
+          // parse key=value pairs
+          const pairs = raw.split(/;\s*/).map(p => p.split('='))
+          const map = Object.fromEntries(pairs.map(([k, ...v]) => [k, v.join('=')]))
+          if (map['sb-access-token']) {
+            accessToken = map['sb-access-token']
+            tokenSource = 'cookieHeader:sb-access-token'
+          } else if (map['sb-session']) {
+            try {
+              const parsed = JSON.parse(decodeURIComponent(map['sb-session']))
+              accessToken = parsed?.access_token || parsed?.accessToken || null
+              if (accessToken) tokenSource = 'cookieHeader:sb-session'
+            } catch (e) {
+              // ignore parse error
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.log('DEBUG /api/upload-image cookie extraction error', String(e))
+    }
+
+    console.log('DEBUG /api/upload-image tokenSource=', tokenSource ? tokenSource : 'none')
+
+    const supabase = await getSupabaseServerClient(accessToken)
     // require authenticated user for uploads
     const { data: authData, error: authErr } = await supabase.auth.getUser()
     const user = authData?.user ?? null
