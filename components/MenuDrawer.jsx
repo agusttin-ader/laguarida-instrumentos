@@ -25,6 +25,10 @@ export default function MenuDrawer({ open, setOpen }) {
     <div className={`fixed inset-0 z-40 ${open ? "" : "pointer-events-none"}`}>
       <div
         aria-hidden={!open}
+        role="button"
+        tabIndex={0}
+        aria-label="Cerrar menú"
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(false) } }}
         onClick={() => setOpen(false)}
         className={`fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"}`}
       />

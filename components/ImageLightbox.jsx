@@ -72,6 +72,7 @@ export default function ImageLightbox({ src, alt = "image", className = "", onPr
           src={src}
           alt={alt}
           fill
+          loading="lazy"
           sizes="(min-width:1280px) 900px, (min-width:768px) 60vw, 100vw"
           style={{
             objectFit: 'contain',

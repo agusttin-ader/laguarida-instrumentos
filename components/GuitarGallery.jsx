@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import ImageWithSkeleton from './ImageWithSkeleton'
 import imageService from '../lib/utils/imageService'
 
-export default function GuitarGallery({ images = [], image_url }){
+export default function GuitarGallery({ images = [], image_url, altBase }){
   // index is unused; gallery uses `mainSrc` to track the current main image
   const [modalOpen, setModalOpen] = useState(false)
   const [modalIndex, setModalIndex] = useState(0)
@@ -116,13 +116,22 @@ export default function GuitarGallery({ images = [], image_url }){
   return (
     <div className="lg:sticky lg:top-24">
       <div className="rounded-lg overflow-hidden transform transition-shadow duration-200 hover:shadow-md" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
-        <div ref={mainRef} className="relative w-full h-96 md:h-[70vh] lg:h-[85vh] bg-white dark:bg-[#0b0d0f] flex items-center justify-center cursor-pointer" onClick={() => openModal(modalList.indexOf(main))} aria-live="polite">
+        <div
+          ref={mainRef}
+          className="relative w-full h-96 md:h-[70vh] lg:h-[85vh] bg-white dark:bg-[#0b0d0f] flex items-center justify-center cursor-pointer"
+          onClick={() => openModal(modalList.indexOf(main))}
+          role="button"
+          tabIndex={0}
+          aria-label="Abrir galería"
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(modalList.indexOf(main)) } }}
+          aria-live="polite"
+        >
           <div className="w-full h-full transition-all duration-300 ease-in-out transform flex items-center justify-center">
             <div className="relative" style={{ width: '100%', maxWidth: 900, maxHeight: '85vh' }}>
               <ImageWithSkeleton
                 key={main}
                 src={main}
-                alt={`Imagen del producto`}
+                alt={altBase ? `${altBase}` : `Imagen del producto`}
                 width={900}
                 height={600}
                 fit="contain"
@@ -149,7 +158,7 @@ export default function GuitarGallery({ images = [], image_url }){
               className={`w-28 h-20 rounded overflow-hidden border focus:outline-none flex-shrink-0 transition-transform duration-200 ease-out ${src===main? 'border-gray-900 ring-2 ring-blue-300 scale-105' : 'border-gray-200 hover:scale-105'}`}
             >
               <div className="w-full h-full">
-                <ImageWithSkeleton src={src} alt={`Miniatura ${i+1}`} width={112} height={80} style={{objectFit: 'cover'}} sizes="120px" quality={95} loading="lazy" />
+                <ImageWithSkeleton src={src} alt={altBase ? `${altBase} — miniatura ${i+1}` : `Miniatura ${i+1}`} width={112} height={80} style={{objectFit: 'cover'}} sizes="120px" quality={95} loading="lazy" />
               </div>
             </button>
           ))}
@@ -173,7 +182,7 @@ export default function GuitarGallery({ images = [], image_url }){
 
           {/* Centered image box sized to original container (capped by viewport) */}
             <div style={{ width: modalSize?.width ?? 'auto', height: modalSize?.height ?? 'auto', maxWidth: '90vw', maxHeight: '85vh' }} className="flex items-center justify-center relative">
-            <ImageWithSkeleton fit="contain" src={modalList[modalIndex]} alt={`Imagen modal ${modalIndex+1}`} width={modalSize ? Math.min(modalSize.width, Math.floor((typeof window !== 'undefined' ? window.innerWidth : 1200) * 0.9)) : 800} height={modalSize ? Math.min(modalSize.height, Math.floor((typeof window !== 'undefined' ? window.innerHeight : 800) * 0.85)) : 600} quality={90} />
+            <ImageWithSkeleton fit="contain" src={modalList[modalIndex]} alt={altBase ? `${altBase} — imagen ${modalIndex+1}` : `Imagen modal ${modalIndex+1}`} width={modalSize ? Math.min(modalSize.width, Math.floor((typeof window !== 'undefined' ? window.innerWidth : 1200) * 0.9)) : 800} height={modalSize ? Math.min(modalSize.height, Math.floor((typeof window !== 'undefined' ? window.innerHeight : 800) * 0.85)) : 600} quality={90} />
           </div>
 
           {/* Visible right arrow */}

@@ -1,4 +1,5 @@
 import React from 'react'
+const SITE_URL = 'https://laguarida.com'
 import fs from 'fs/promises'
 import path from 'path'
 export const dynamic = 'force-dynamic'
@@ -6,6 +7,68 @@ import GuitarGallery from '../../../components/GuitarGallery'
 import normalizeProduct from '../../../lib/utils/normalizeProduct'
 import { getSupabaseServerClient } from '../../../lib/supabase/server'
 import ProductCard from '../../../components/ProductCard'
+import imageService from '../../../lib/utils/imageService'
+
+// Generate page metadata dynamically based on the product data
+export async function generateMetadata({ params }) {
+  const { slug } = params || {}
+  let product = null
+  try {
+    if (slug) {
+      const supabase = getSupabaseServerClient()
+      const { data } = await supabase.from('products').select('*').eq('slug', slug).maybeSingle()
+      if (data) product = normalizeProduct(data)
+    }
+  } catch (err) {
+    // ignore errors — metadata can fallback to defaults below
+    product = null
+  }
+
+  // local markdown fallback
+  if (!product && slug) {
+    try {
+      const filePath = path.join(process.cwd(), 'data', 'guitars', `${slug}.md`)
+      const raw = await fs.readFile(filePath, 'utf8')
+      const titleMatch = raw.match(/^#\s+(.+)$/m)
+      const modelMatch = raw.match(/\*\*Model:\*\*\s*(.+)/i)
+      const priceMatch = raw.match(/\*\*Price:\*\*\s*(.+)/i)
+      const body = raw.replace(/^#.+$/m, '').replace(/\*\*Model:\*\*.+$/im, '').replace(/\*\*Price:\*\*.+$/im, '').trim()
+      product = {
+        slug,
+        name: titleMatch ? titleMatch[1].trim() : (modelMatch ? modelMatch[1].trim() : slug),
+        model: modelMatch ? modelMatch[1].trim() : '',
+        price: priceMatch ? priceMatch[1].trim() : null,
+        description: body
+      }
+    } catch (e) {
+      product = null
+    }
+  }
+
+  const title = product && product.name ? `${product.name} | La Guarida Instrumentos` : 'La Guarida — Instrumentos'
+  const description = product ? `${(product.brand || '').toString()} ${(product.model || '').toString()} — ${String(product.description || '').slice(0, 150)}`.trim() : 'Tienda de instrumentos musicales en Argentina — guitarras, bajos, amplificadores y accesorios.'
+  const imageUrl = product ? imageService.resolve(product.image_url || (product.images && product.images[0])) : null
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+      type: 'website'
+    },
+    alternates: {
+      canonical: `${SITE_URL}/guitars/${slug}`
+    },
+    twitter: {
+      card: imageUrl ? 'summary_large_image' : 'summary',
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+    }
+  }
+}
 
 export default async function GuitarPage({ params }) {
   const resolvedParams = await params
@@ -117,13 +180,13 @@ export default async function GuitarPage({ params }) {
 
       <div className="block lg:hidden mt-6">
         <p className="text-sm muted-text">{product.brand || ''} · {product.model || ''}</p>
-        <h1 className="mt-2 display-xxl tight-tracking">{product.name}</h1>
+        <h2 className="mt-2 display-xxl tight-tracking">{product.name}</h2>
         <p className="mt-3 subtitle-compact muted-text">{product.subtitle || ''}</p>
       </div>
 
       <main className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-8 items-start">
         <section className="lg:col-span-1">
-          <GuitarGallery image_url={product.image_url} images={product.images} />
+          <GuitarGallery image_url={product.image_url} images={product.images} altBase={`${product.name}${product.brand ? ' — ' + product.brand : ''}`} />
         </section>
 
         <aside className="lg:col-span-1">
@@ -141,9 +204,40 @@ export default async function GuitarPage({ params }) {
               </div>
             </div>
 
-            <div className="mt-6 body-copy">
+            <section aria-labelledby="description-heading" className="mt-6 body-copy">
+              <h2 id="description-heading" className="sr-only">Descripción</h2>
               {product.description}
-            </div>
+            </section>
+
+            {/* Specifications: render when present in product object under common keys */}
+            { (product.specifications || product.specs || product.features || product.details) && (
+              <section aria-labelledby="specs-heading" className="mt-6">
+                <h2 id="specs-heading" className="text-lg font-semibold">Especificaciones</h2>
+                <div className="mt-3 text-sm text-gray-700 dark:text-gray-200">
+                  {Array.isArray(product.specifications || product.specs || product.features)
+                    ? (
+                      <ul className="list-disc pl-5">
+                        {(product.specifications || product.specs || product.features).map((s, i) => (
+                          <li key={i}>{typeof s === 'string' ? s : JSON.stringify(s)}</li>
+                        ))}
+                      </ul>
+                    ) : typeof (product.specifications || product.specs || product.features) === 'object'
+                    ? (
+                      <dl>
+                        {Object.entries(product.specifications || product.specs || product.features).map(([k,v]) => (
+                          <div key={k} className="mb-2">
+                            <dt className="font-medium">{k}</dt>
+                            <dd className="ml-2">{String(v)}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    ) : (
+                      <p>{String(product.specifications || product.specs || product.features)}</p>
+                    )
+                  }
+                </div>
+              </section>
+            )}
 
             <div className="mt-8">
               <a

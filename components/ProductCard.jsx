@@ -12,6 +12,7 @@ function ProductCard({item}){
   const img = imageService.resolve(rawImg)
     const [errored, setErrored] = useState(false)
   const titleText = p.name || ''
+  const headingId = `product-title-${p.slug || p.id}`
   function truncate(text, n = 60){
     if (!text) return ''
     return text.length > n ? text.slice(0, n-1).trimEnd() + '…' : text
@@ -50,7 +51,7 @@ function ProductCard({item}){
     )
   }
   return (
-    <article className="card-compact transform transition-transform duration-200 hover:-translate-y-1">
+    <article aria-labelledby={headingId} className="card-compact transform transition-transform duration-200 hover:-translate-y-1">
       {/* Reveal wrapper around the image and meta so cards animate on scroll */}
       <div>
           {img && !errored ? (
@@ -70,13 +71,13 @@ function ProductCard({item}){
 
       <div className="mt-4">
         <p className="text-sm subtitle-compact muted-text">{item.subtitle || ''}</p>
-        <h3 className="mt-2 card-title text-gray-900">
-            {splitTitle(titleText)}
+        <h3 id={headingId} className="mt-2 card-title text-gray-900">
+          {splitTitle(titleText)}
         </h3>
         {p.price && <div className="mt-2 price-large">{p.price}</div>}
         <p className="mt-4 card-desc">{keyFragment(p.description || 'Edición limitada — diseño editorial con foco en proporciones.', 14)}</p>
         <div className="mt-4">
-            <Link href={`/guitars/${p.slug || p.id}`} className="btn-elegant--light">Ver detalles</Link>
+            <Link href={`/guitars/${p.slug || p.id}`} className="btn-elegant--light" aria-label={`Ver detalles de ${titleText}`}>Ver detalles</Link>
         </div>
       </div>
     </article>

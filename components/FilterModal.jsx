@@ -36,7 +36,14 @@ export default function FilterModal({ open, setOpen, categories = [], filters = 
 
   return (
     <div className={`fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`}>
-      <div onClick={() => setOpen(false)} className={`absolute inset-0 bg-black/40 transition-opacity ${open ? "opacity-100" : "opacity-0"}`} />
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="Cerrar filtros"
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(false) } }}
+        onClick={() => setOpen(false)}
+        className={`absolute inset-0 bg-black/40 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
+      />
 
       <div
         className={`absolute left-0 right-0 bottom-0 bg-white dark:bg-neutral-900 rounded-t-xl shadow-xl transition-transform duration-300 ${
