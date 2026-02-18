@@ -13,21 +13,7 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Missing email or password' }, { status: 400 })
     }
 
-    // Debug: inspect incoming cookies and raw Cookie header
-    try {
-      const cookieStore = cookies()
-      if (cookieStore && typeof cookieStore.getAll === 'function') {
-        const all = await cookieStore.getAll()
-        console.log('DEBUG /api/auth/sign-in before signin cookies.getAll length=', Array.isArray(all) ? all.length : String(all))
-      } else if (cookieStore && typeof cookieStore.get === 'function') {
-        console.log('DEBUG /api/auth/sign-in before signin cookieStore has get/set keys')
-      } else {
-        console.log('DEBUG /api/auth/sign-in before signin cookies() shape=', cookieStore ? Object.keys(cookieStore) : 'no-cookie-store')
-      }
-    } catch (e) {
-      console.log('DEBUG /api/auth/sign-in cookies error', String(e))
-    }
-    console.log('DEBUG /api/auth/sign-in request Cookie header=', req.headers.get('cookie'))
+    // minimal: rely on supabase response; avoid verbose debug logs in production
 
     const supabase = getSupabaseServerClient()
 
@@ -38,18 +24,7 @@ export async function POST(req) {
       return NextResponse.json({ error: error.message || 'Authentication failed' }, { status: error.status || 401 })
     }
 
-    // After sign-in attempt, log cookies again to see if auth-helpers applied storage
-    try {
-      const cookieStore2 = cookies()
-      if (cookieStore2 && typeof cookieStore2.getAll === 'function') {
-        const all2 = await cookieStore2.getAll()
-        console.log('DEBUG /api/auth/sign-in after signin cookies.getAll length=', Array.isArray(all2) ? all2.length : String(all2))
-      } else {
-        console.log('DEBUG /api/auth/sign-in after signin cookieStore shape=', cookieStore2 ? Object.keys(cookieStore2) : 'no-cookie-store')
-      }
-    } catch (e) {
-      console.log('DEBUG /api/auth/sign-in cookies after error', String(e))
-    }
+    // no extra cookie inspection here
 
     // On success, set HttpOnly cookies so server-side checks can read the
     // access token (and refresh token) from subsequent requests.
@@ -60,13 +35,16 @@ export async function POST(req) {
     if (session) {
       const secure = process.env.NODE_ENV === 'production'
       const maxAge = session.expires_in || 60 * 60 // fallback 1h
+      const cookieDomain = process.env.SITE_COOKIE_DOMAIN || '.laguaridainstrumentos.com'
+      const sameSiteSetting = secure ? 'none' : 'lax'
 
       // Access token cookie (used by server-side helpers)
       res.cookies.set('sb-access-token', session.access_token, {
         httpOnly: true,
         path: '/',
-        sameSite: 'lax',
+        sameSite: sameSiteSetting,
         secure,
+        domain: cookieDomain,
         maxAge,
       })
 
@@ -75,8 +53,9 @@ export async function POST(req) {
         res.cookies.set('sb-refresh-token', session.refresh_token, {
           httpOnly: true,
           path: '/',
-          sameSite: 'lax',
+          sameSite: sameSiteSetting,
           secure,
+          domain: cookieDomain,
           // keep refresh token longer (7 days) as a reasonable default
           maxAge: 60 * 60 * 24 * 7,
         })

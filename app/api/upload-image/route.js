@@ -11,24 +11,7 @@ function sanitizeFilename(name){
 
 export async function POST(req){
   try {
-    // Temporary debug logging: record cookie store info and raw Cookie header
-    try {
-      const cookieStore = cookies()
-      if (cookieStore && typeof cookieStore.getAll === 'function') {
-        const all = await cookieStore.getAll()
-        console.log('DEBUG /api/upload-image cookies.getAll length=', Array.isArray(all) ? all.length : String(all))
-      } else if (cookieStore && typeof cookieStore.get === 'function') {
-        const names = ['sb-access-token','sb-refresh-token','sb-session']
-        const found = names.map(n => cookieStore.get(n)).filter(Boolean)
-        console.log('DEBUG /api/upload-image cookies.get available count=', found.length)
-      } else {
-        console.log('DEBUG /api/upload-image cookies() shape=', cookieStore ? Object.keys(cookieStore) : 'no-cookie-store')
-      }
-    } catch (e) {
-      console.log('DEBUG /api/upload-image cookies error', String(e))
-    }
-
-    console.log('DEBUG /api/upload-image request Cookie header=', req.headers.get('cookie'))
+    // No debug logs here — keep handler lean in production
 
     // Read HttpOnly Supabase session token from cookies and pass it to server client
     const cookieStore = cookies()
@@ -78,18 +61,10 @@ export async function POST(req){
       console.log('DEBUG /api/upload-image cookie extraction error', String(e))
     }
 
-    console.log('DEBUG /api/upload-image tokenSource=', tokenSource ? tokenSource : 'none')
-
     const supabase = await getSupabaseServerClient(accessToken)
     // require authenticated user for uploads
     const { data: authData, error: authErr } = await supabase.auth.getUser()
     const user = authData?.user ?? null
-    // Safe debug logging: whether Supabase returned an error and whether a user was found
-    try {
-      console.log('DEBUG /api/upload-image authErr=', authErr ? (authErr.message || String(authErr)) : 'none', 'userPresent=', !!user)
-    } catch (e) {
-      // ignore logging failures
-    }
     if (authErr || !user) {
       // Collect cookie names (no values) for debugging — avoids leaking sensitive values
       let cookieNames = []
@@ -109,9 +84,9 @@ export async function POST(req){
       const headerNames = []
       try {
         for (const [k] of req.headers) headerNames.push(k)
-      } catch (e) {}
-
-      return NextResponse.json({ error: 'Authentication required', cookies: cookieNames, headers: headerNames }, { status: 401 })
+      } catch (e) {
+        // ignore extraction errors
+      }
     }
 
     const contentType = req.headers.get('content-type') || ''
