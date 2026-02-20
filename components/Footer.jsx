@@ -6,7 +6,7 @@ import { InstagramLogo, EnvelopeSimple, WhatsappLogo } from 'phosphor-react'
 
 export default function Footer(){
   return (
-    <footer className="mt-20 bg-gray-50 dark:bg-[#0b0d0f] border-t border-gray-100 dark:border-gray-900">
+    <footer className="mt-20 bg-transparent dark:bg-transparent border-0">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-600">© {new Date().getFullYear()} La Guarida</p>

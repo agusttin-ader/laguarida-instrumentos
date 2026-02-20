@@ -3,7 +3,9 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function EditProduct({ params }){
-  const { id } = params
+  // `params` may be a Promise in Next.js new routing; unwrap with React.use()
+  // https://nextjs.org/docs/messages/sync-dynamic-apis
+  const { id } = React.use(params)
   const [title, setTitle] = useState('')
 
   function submit(e){

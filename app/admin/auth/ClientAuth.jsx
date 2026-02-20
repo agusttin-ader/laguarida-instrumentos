@@ -49,6 +49,8 @@ export default function ClientAuth({ children }){
   const pathname = usePathname()
   const router = useRouter()
 
+  const isLoginPath = typeof pathname === 'string' && (pathname === '/admin/login' || pathname === '/admin/login/')
+
   useEffect(() => {
     // only run on client after initial loading
     if (loading) return
@@ -118,14 +120,15 @@ export default function ClientAuth({ children }){
   return (
     <AdminAuthContext.Provider value={value}>
       <div>
-        <div className="flex items-center justify-end gap-4 mb-6 -mt-10 md:-mt-0 relative z-20">
+        <div className="flex items-center justify-end gap-4 mb-6 -mt-10 md:-mt-0 relative z-20" style={{ backgroundColor: isLoginPath ? 'var(--color-white)' : 'transparent' }}>
           <div className="text-sm text-gray-600">
             {loading ? (
               <span className="text-gray-500">Comprobando sesión…</span>
             ) : user ? (
               <span className="text-gray-800">{user.email}</span>
             ) : (
-              <Link href="/admin/login" className="text-indigo-600">Iniciar sesión</Link>
+              // No link shown when unauthenticated to avoid blue 'Iniciar sesión' text
+              null
             )}
           </div>
           <div>

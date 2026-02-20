@@ -194,6 +194,89 @@ body{
 .btn-info:hover{ transform: translateY(-3px); box-shadow: 0 18px 40px rgba(15,23,42,0.10); background: linear-gradient(180deg,#fff7f0,#fff0e4) }
 .dark .btn-info{ background: linear-gradient(180deg,#0f1726,#0c1420); color: #fff; border-color: rgba(255,255,255,0.06); box-shadow: 0 8px 24px rgba(0,0,0,0.28) }
 
+/* Hero-specific button overrides
+   Ensure hero buttons remain light/visible on darker hero panels and
+   remove any hover that darkens them to the point of losing contrast. */
+.hero .btn-info,
+.hero-right .btn-info,
+.hero .btn-elegant--dark,
+.hero-right .btn-elegant--dark {
+  background: linear-gradient(180deg,#fffaf6,#fff3ea) !important;
+  color: #0b1220 !important;
+  border: 1px solid rgba(15,23,42,0.06) !important;
+  box-shadow: none !important; /* remove all shadows for hero buttons */
+}
+.hero .btn-info:hover,
+.hero-right .btn-info:hover,
+.hero .btn-elegant--dark:hover,
+.hero-right .btn-elegant--dark:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: none !important; /* no shadow on hover */
+  background: linear-gradient(180deg,#fff7f0,#fff0e4) !important;
+  opacity: 0.98 !important;
+}
+
+/* If the hero uses a dark modifier class (e.g. .hero--dark), ensure buttons invert */
+.hero--dark .btn-info,
+.hero--dark .btn-elegant--dark,
+.hero--dark .btn-elegant--light {
+  background: #ffffff !important;
+  color: #0b0d0f !important;
+  border: 1px solid rgba(11,13,15,0.06) !important;
+  box-shadow: 0 6px 12px rgba(11,13,15,0.06) !important;
+}
+
+/* Target the specific hero layout used in `components/Hero.jsx` (container-tight grid)
+   and force light button variants so left/center/right CTAs remain visible. */
+.container-tight.grid .btn-minimal,
+.container-tight.grid .btn-info,
+.container-tight.grid .btn-ghost-dark,
+.container-tight.grid a.btn-ghost-dark,
+.container-tight.grid .btn-elegant--dark,
+.container-tight .btn-minimal,
+.container-tight .btn-info,
+.container-tight .btn-ghost-dark,
+.container-tight a.btn-ghost-dark,
+.container-tight .btn-elegant--dark {
+  background: linear-gradient(180deg,#fffaf6,#fff3ea) !important;
+  color: #0b1220 !important;
+  border: 1px solid rgba(15,23,42,0.06) !important;
+  box-shadow: none !important; /* remove heavy shadow for hero buttons */
+}
+.container-tight.grid .btn-minimal:hover,
+.container-tight.grid .btn-info:hover,
+.container-tight.grid .btn-ghost-dark:hover,
+.container-tight.grid a.btn-ghost-dark:hover,
+.container-tight .btn-minimal:hover,
+.container-tight .btn-info:hover,
+.container-tight .btn-ghost-dark:hover,
+.container-tight a.btn-ghost-dark:hover {
+  /* Elevate slightly like card buttons */
+  transform: translateY(-1px) !important;
+  box-shadow: none !important; /* remove hover shadow */
+  opacity: 1 !important;
+}
+
+/* Left hero panel uses bg-gray-50; when buttons sit on that light surface
+   we want the dark/filled variant (black background, white text) to match cards */
+.container-tight.grid .bg-gray-50 .btn-minimal,
+.container-tight.grid .bg-gray-50 .btn-info,
+.container-tight.grid .bg-gray-50 a.btn-minimal,
+.container-tight.grid .bg-gray-50 button.btn-info {
+  background: linear-gradient(180deg,#17181a 0%, #0b0d0f 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.08) !important;
+  box-shadow: none !important; /* remove shadow for dark hero-left buttons */
+}
+.container-tight.grid .bg-gray-50 .btn-minimal:hover,
+.container-tight.grid .bg-gray-50 .btn-info:hover,
+.container-tight.grid .bg-gray-50 a.btn-minimal:hover,
+.container-tight.grid .bg-gray-50 button.btn-info:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: none !important; /* no hover shadow */
+}
+
+
 
 /* Editorial layout refinements */
 html, body {
@@ -204,9 +287,10 @@ html, body {
 /* Prevent page-level horizontal scroll caused by overflow in children */
 html, body { overflow-x: hidden; }
 
-/* Light theme defaults */
-html { background-color: var(--color-white) }
-body { background-color: var(--color-white) }
+/* Light theme defaults: ensure entire app root uses vintage white */
+html, body, #__next, #root {
+  background-color: var(--color-white) !important;
+}
 
 /* Dark theme overrides applied when `dark` class is on <html> */
 .dark html,
@@ -384,6 +468,35 @@ html, body, header, main, footer, .container-tight, .card-compact, .image-placeh
   overflow: visible;
   z-index: 10;
   align-self: center;
+  /* Slight upward nudge to improve visual alignment in headers */
+  margin-top: -8px;
+}
+
+/* Override: increase header logo size across breakpoints (use transform only) */
+.header-logo-wrapper .logo-light,
+.header-logo-wrapper .logo-dark {
+  transform: scale(2.2) !important;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .header-logo-wrapper .logo-light,
+  .header-logo-wrapper .logo-dark {
+    transform: scale(2.6) !important;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .header-logo-wrapper .logo-light,
+  .header-logo-wrapper .logo-dark {
+    transform: scale(3.4) !important;
+  }
+}
+
+@media (min-width: 1400px) {
+  .header-logo-wrapper .logo-light,
+  .header-logo-wrapper .logo-dark {
+    transform: scale(4.4) !important;
+  }
 }
 
 .header-logo-wrapper .logo-light,
@@ -457,6 +570,233 @@ section {
   padding-right: 1.5rem;
 }
 
+/* Card layout: ensure consistent height and spacing for product cards */
+.card-compact {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.card-compact > div:first-child {
+  /* image wrapper should keep its aspect and not shrink */
+  flex: 0 0 auto;
+}
+.card-compact .card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+.card-compact .card-desc {
+  /* key description slightly bolder */
+  font-weight: 600;
+  color: #475569; /* slightly darker gray */
+}
+
+/* Ensure card titles occupy exactly 3 lines visually */
+.card-title {
+  line-height: 1.02;
+  /* Reserve space for 3 lines regardless of content */
+  min-height: calc(3 * 1.02em);
+  display: block;
+  overflow: hidden;
+  /* allow manual <br/> driven breaks to determine lines */
+}
+
+/* Increase gap between description and actions (buttons) inside cards */
+.card-compact .card-desc {
+  margin-bottom: 1rem;
+}
+
+.card-compact .card-actions {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 0.5rem; /* small breathing space from description */
+}
+
+/* Card buttons: slightly lighter typography than headings */
+.card-compact a, .card-compact button {
+  font-weight: 400; /* make buttons thinner */
+  letter-spacing: 0.01em;
+}
+
+/* Ensure card actions stay at bottom-left */
+.card-compact .card-actions {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Make card buttons smaller and remove heavy shadow to improve spacing */
+.card-compact .card-actions a,
+.card-compact .card-actions button {
+  box-shadow: none !important;
+  padding: 0.45rem 0.9rem !important; /* smaller pill */
+  font-size: 0.95rem !important;
+  min-height: 36px !important;
+  line-height: 1 !important;
+  border-radius: 999px !important;
+}
+
+.card-compact .card-actions a:hover,
+.card-compact .card-actions button:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: none !important;
+}
+
+.card-compact .card-actions a:active,
+.card-compact .card-actions button:active {
+  transform: translateY(0) !important;
+}
+
+/* Ensure grid items stretch to equal height (in case parent grid settings differ) */
+.grid > * {
+  align-self: stretch;
+}
+
+/* Global interactive pill button style (matches reference) */
+/* Applied to most interactive elements; add .no-custom-btn to opt-out */
+/* Target common interactive elements and any element whose class starts with "btn-" */
+button:not(.no-custom-btn),
+input[type="submit"]:not(.no-custom-btn),
+input[type="button"]:not(.no-custom-btn),
+.btn,
+.ripple-button,
+a.button,
+/* anchors or elements with classes like btn-*, btnSomething */
+[class^="btn-"],
+[class*=" btn-"],
+[class^="btn"],
+[class*=" btn"],
+.btn-{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(180deg, #17181a 0%, #0b0d0f 100%);
+  color: #ffffff;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 10px 22px rgba(8,10,12,0.35), inset 0 -8px 16px rgba(255,255,255,0.03);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: transform 160ms ease, box-shadow 160ms ease, opacity 120ms ease;
+  cursor: pointer;
+}
+
+/* Preserve existing padding/size — don’t override padding or height here */
+
+/* Reduce / remove aggressive hover for global pill buttons so they don't darken
+   or become invisible on dark surfaces. Keep a minimal visual affordance only. */
+button:not(.no-custom-btn):hover,
+input[type="submit"]:not(.no-custom-btn):hover,
+input[type="button"]:not(.no-custom-btn):hover,
+.btn:hover,
+.ripple-button:hover,
+a.button:hover {
+  transform: none; /* no translateY */
+  /* much lighter shadow so the button doesn't appear heavier/darker */
+  box-shadow: 0 6px 12px rgba(8,10,12,0.08);
+  opacity: 0.98;
+}
+
+button:not(.no-custom-btn):active,
+input[type="submit"]:not(.no-custom-btn):active,
+input[type="button"]:not(.no-custom-btn):active,
+.btn:active,
+.ripple-button:active,
+a.button:active {
+  transform: translateY(1px);
+  box-shadow: 0 6px 12px rgba(8,10,12,0.3), inset 0 -4px 8px rgba(255,255,255,0.02);
+}
+
+/* Focus state for accessibility */
+button:not(.no-custom-btn):focus-visible,
+input[type="submit"]:not(.no-custom-btn):focus-visible,
+input[type="button"]:not(.no-custom-btn):focus-visible,
+.btn:focus-visible,
+.ripple-button:focus-visible,
+a.button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(15,23,42,0.12), 0 10px 22px rgba(8,10,12,0.35);
+}
+
+/* Slightly lighter variant when button uses .btn-light */
+.btn-light,
+button.btn-light,
+input.btn-light {
+  background: linear-gradient(180deg,#2b2b2b,#171717);
+  color: #fff;
+}
+
+/* Allow designers to opt-out for tiny icon buttons where pill would look odd */
+.no-custom-btn { border-radius: 6px !important; box-shadow: none !important }
+
+/* Invert buttons inside dark contexts (sections, cards, or when `.dark` is present) */
+/* Applies when an ancestor has .dark or element has a dark-specific class like .dark-section or .dark-card */
+.dark button:not(.no-custom-btn),
+.dark input[type="submit"]:not(.no-custom-btn),
+.dark input[type="button"]:not(.no-custom-btn),
+.dark [class^="btn-"],
+.dark [class*=" btn-"],
+.dark a.button,
+.dark .btn,
+.dark .ripple-button,
+.dark .btn-elegant--light,
+.dark-section button:not(.no-custom-btn),
+.dark-section a:not(.no-custom-btn),
+.dark-card button:not(.no-custom-btn),
+.dark-card a:not(.no-custom-btn),
+.card-compact.dark button:not(.no-custom-btn),
+.card-compact.dark a:not(.no-custom-btn) {
+  background: #ffffff !important;
+  color: #0b0d0f !important;
+  border: 1px solid rgba(11,13,15,0.06) !important;
+  box-shadow: 0 10px 22px rgba(11,13,15,0.06), inset 0 -6px 12px rgba(0,0,0,0.02) !important;
+}
+
+/* Hover/active states for inverted buttons */
+.dark button:not(.no-custom-btn):hover,
+.dark a:hover:not(.no-custom-btn),
+.card-compact.dark button:not(.no-custom-btn):hover,
+.card-compact.dark a:hover:not(.no-custom-btn) {
+  transform: none;
+  /* keep inverted buttons from becoming visually heavy on hover */
+  box-shadow: 0 6px 12px rgba(11,13,15,0.06) !important;
+}
+.dark button:not(.no-custom-btn):active,
+.dark a:active:not(.no-custom-btn),
+.card-compact.dark button:not(.no-custom-btn):active,
+.card-compact.dark a:active:not(.no-custom-btn) {
+  transform: translateY(1px);
+  box-shadow: 0 6px 12px rgba(11,13,15,0.06), inset 0 -3px 6px rgba(0,0,0,0.02) !important;
+}
+
+/* Ensure any button variant that normally renders as dark (e.g. .btn-elegant--dark)
+   becomes the light/inverted variant when placed inside a dark card/section. */
+.card-compact.dark .btn-elegant--dark,
+.card-compact.dark button.btn-elegant--dark,
+.card-compact.dark a.btn-elegant--dark,
+.card-compact.dark .btn-elegant--dark:hover,
+.card-compact.dark .btn-elegant--dark:active {
+  background: #ffffff !important;
+  color: #0b0d0f !important;
+  border: 1px solid rgba(11,13,15,0.06) !important;
+  box-shadow: 0 6px 12px rgba(11,13,15,0.06) !important;
+  transform: none !important;
+}
+
+/* Focus visible for accessibility in dark contexts */
+.dark button:not(.no-custom-btn):focus-visible,
+.dark a:not(.no-custom-btn):focus-visible,
+.card-compact.dark button:not(.no-custom-btn):focus-visible,
+.card-compact.dark a:not(.no-custom-btn):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(11,13,15,0.06), 0 10px 22px rgba(11,13,15,0.06) !important;
+}
+
 /* Make borders extremely subtle or remove when not needed */
 .subtle-border { border-color: rgba(34,24,18,0.06) }
 
@@ -471,16 +811,18 @@ section {
   overflow: hidden;
 }
 
-/* Card title: large but constrained to fit within card (max 2 lines) */
+/* Card title: reserve visual space for 3 lines and disable CSS ellipsis */
 .card-title {
   font-weight: 900;
-  /* Increased size and weight so title stands out more above the price */
   font-size: clamp(1.2rem, 3vw, 2rem);
   line-height: 1.04;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  /* disable any line-clamp based ellipsis and allow manual <br/> splits */
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+  -webkit-box-orient: unset !important;
+  overflow: visible !important;
+  /* reserve three lines height */
+  min-height: calc(3 * 1.04em) !important;
 }
 
 /* Card description: concise fragment (we programmatically provide a short fragment), keep normal flow without ellipsis */
