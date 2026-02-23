@@ -14,6 +14,8 @@
   --color-surface: #F5F5F5;
   --shadow-soft: 0 6px 18px rgba(0,0,0,0.06);
   --shadow-hover: 0 14px 32px rgba(0,0,0,0.09);
+  --card-bg: #F5F3F2; /* warm light gray (avoid blue tones) for cards */
+  --auth-bg: var(--color-white); /* login/admin small header background */
 }
 
 html,body,#root{
@@ -317,23 +319,98 @@ html, body, #__next, #root {
 /* Dark theme overrides applied when `dark` class is on <html> */
 .dark html,
 .dark body {
-  /* Neutral dark gray background for dark mode (avoid blue tint) */
-  background-color: #0b0d0f !important;
+  /* Neutral dark gray background for dark mode (avoid black) */
+  background-color: var(--dark-bg-page) !important;
   color: #ffffff;
 }
 
 /* Dark theme system variables (used by mappings below) */
 :root.dark,
 .dark {
-  --dark-bg-page: #0b0d0f;
+  --dark-bg-page: #171717; /* slightly lighter matte dark gray page background */
   --dark-bg-surface: #0f1113;
-  --dark-bg-card: #0f1726;
+  --dark-bg-card: #1f2937; /* mid-dark gray for cards */
   --dark-surface-2: #0c1216;
   --dark-text-primary: #ffffff;
   --dark-text-secondary: #e6e7ea;
   --dark-muted: #9ca3af;
   --dark-border: rgba(255,255,255,0.04);
   --dark-ring: rgba(79,70,229,0.10);
+  --auth-bg: var(--dark-bg-page);
+}
+
+/* Inputs, selects, textareas: ensure readable colors in dark mode */
+.dark input,
+.dark textarea,
+.dark select,
+.dark .w-full.border,
+.dark input.w-full,
+.dark textarea.w-full {
+  background-color: var(--dark-bg-card) !important;
+  color: var(--dark-text-primary) !important;
+  border-color: var(--dark-border) !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder,
+.dark select::placeholder {
+  color: var(--dark-muted) !important;
+  opacity: 1 !important;
+}
+
+/* Map a few common utility text classes to dark equivalents to ensure contrast */
+.dark .text-gray-600 { color: var(--dark-text-secondary) !important }
+.dark .text-gray-700 { color: var(--dark-text-primary) !important }
+.dark .text-gray-800 { color: var(--dark-text-primary) !important }
+
+/* Admin/Auth small header: ensure the area uses --auth-bg variable so login shows dark background */
+.admin-auth-bar {
+  background-color: var(--auth-bg);
+}
+
+/* Admin wrapper and card helpers
+   - Use CSS variables so admin areas follow light/dark tokens
+   - Apply .admin-card to panels that should flip between light card and dark card surfaces */
+.admin-root {
+  background-color: var(--auth-bg);
+  color: inherit;
+}
+.admin-card {
+  background-color: var(--card-bg);
+  color: inherit;
+}
+.dark .admin-root {
+  background-color: var(--dark-bg-page) !important;
+  color: var(--dark-text-primary) !important;
+}
+.dark .admin-card {
+  background-color: var(--dark-bg-card) !important;
+  color: var(--dark-text-primary) !important;
+  border-color: var(--dark-border) !important;
+}
+
+/* Admin logout / small buttons used in header */
+.admin-logout {
+  background-color: #ffffff;
+  color: #0b0b0b;
+  border: 1px solid rgba(15,23,42,0.06);
+  padding: 0.35rem 0.7rem;
+}
+.dark .admin-logout {
+  background-color: var(--dark-bg-surface) !important;
+  color: var(--dark-text-primary) !important;
+  border-color: var(--dark-border) !important;
+}
+
+/* Admin list item hover — not pure white, subtle lift for light and dark */
+.admin-item {
+  transition: background-color 140ms ease, color 140ms ease;
+}
+.admin-item:hover {
+  background-color: rgba(15,23,42,0.03); /* subtle warm lift on light */
+}
+.dark .admin-item:hover {
+  background-color: rgba(255,255,255,0.03) !important; /* subtle light overlay on dark */
 }
 
 /* Systematic mappings: convert common Tailwind bg/text/border utilities to dark equivalents */
@@ -380,7 +457,7 @@ html, body, #__next, #root {
 .dark .container-tight,
 .dark header,
 .dark footer {
-  background-color: #0b0d0f !important;
+  background-color: var(--dark-bg-page) !important;
 }
 
 /* Muted / secondary text in dark */
@@ -390,7 +467,8 @@ html, body, #__next, #root {
 .dark .price-large { color: #ffffff }
 
 /* Panels and cards in dark */
-.dark .card-compact { background: #0f1726 }
+.card-compact { background: var(--card-bg); }
+.dark .card-compact { background: var(--dark-bg-card) !important; }
 .dark .subtle-border { border-color: rgba(255,255,255,0.04) }
 
 /* Buttons adjustments for dark mode */
@@ -458,7 +536,7 @@ html, body, header, main, footer, .container-tight, .card-compact, .image-placeh
 .header-logo-wrapper .logo-dark {
   grid-area: 1/1;
   display: block;
-  transition: opacity 300ms ease, transform 320ms ease;
+  transition: opacity 300ms ease; /* avoid transform transitions that can shift layout on hover */
 }
 .header-logo-wrapper .logo-light { opacity: 1 }
 .header-logo-wrapper .logo-dark { opacity: 0 }
@@ -512,8 +590,6 @@ html, body, header, main, footer, .container-tight, .card-compact, .image-placeh
   overflow: visible;
   z-index: 10;
   align-self: center;
-  /* Slight upward nudge to improve visual alignment in headers */
-  margin-top: -8px;
 }
 
 /* Override: increase header logo size across breakpoints (use transform only) */
@@ -546,9 +622,35 @@ html, body, header, main, footer, .container-tight, .card-compact, .image-placeh
 .header-logo-wrapper .logo-light,
 .header-logo-wrapper .logo-dark {
   transform-origin: center center;
-  transform: none !important;
-  transition: opacity 300ms ease, transform 320ms ease;
-  will-change: opacity, transform;
+  transition: opacity 300ms ease; /* avoid transform transitions that shift layout */
+  will-change: opacity;
+}
+
+/* Prevent the header logo link from being affected by global link hover rules
+   (some global .dark a:hover rules add box-shadow/transform to links). Ensure
+   hovering the logo does not change its position or add shadows. */
+.header-logo-wrapper a,
+.header-logo-wrapper a:focus,
+.header-logo-wrapper a:hover {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.header-logo-wrapper a:hover,
+.header-logo-wrapper a:focus {
+  /* Keep the original horizontal centering transform on hover so the
+     logo doesn't jump (the anchor uses translateX(-50%) via utility class). */
+  transform: translateX(-50%) !important;
+}
+
+/* Target the explicit logo-link anchor (wraps header logo) to prevent
+   global link hover rules from adding transforms or shadows. */
+.logo-link,
+.logo-link:focus,
+.logo-link:hover {
+  box-shadow: none !important;
+  outline: none !important;
+  transform: translateX(-50%) !important; /* preserve centering */
 }
 
 /* Desktop: much larger logo via transform only (no layout change) */

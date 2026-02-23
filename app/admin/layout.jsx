@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function AdminLayout({ children }){
   return (
-    <div className="min-h-screen bg-[#f6efe6] text-gray-900">
+    <div className="min-h-screen admin-root">
       <div className="admin-container mx-auto px-4 md:px-6 py-8 md:py-12">
         <ClientAuth>
           <main className="space-y-8">{children}</main>

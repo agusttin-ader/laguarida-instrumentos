@@ -115,7 +115,7 @@ export default function ClientAuth({ children }){
   return (
     <AdminAuthContext.Provider value={value}>
       <div>
-        <div className="flex items-center justify-end gap-4 mb-6 -mt-10 md:-mt-0 relative z-20" style={{ backgroundColor: isLoginPath ? 'var(--color-white)' : 'transparent' }}>
+        <div className="flex items-center justify-end gap-4 mb-6 -mt-10 md:-mt-0 relative z-20 admin-auth-bar" style={{ backgroundColor: isLoginPath ? 'var(--auth-bg)' : 'transparent' }}>
           <div className="text-sm text-gray-600">
             {loading ? (
               <span className="text-gray-500">Comprobando sesión…</span>
@@ -128,8 +128,8 @@ export default function ClientAuth({ children }){
           </div>
           <div>
               {user && (
-              <button onClick={signOut} className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 no-custom-btn">Cerrar sesión</button>
-            )}
+                  <button onClick={signOut} className="px-3 py-2 admin-logout rounded-lg text-sm no-custom-btn">Cerrar sesión</button>
+                )}
           </div>
         </div>
 

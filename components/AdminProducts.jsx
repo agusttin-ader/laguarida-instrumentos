@@ -671,7 +671,7 @@ export default function AdminProducts(){
           </div>
         </div>
       ) : null}
-      <section className="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+      <section className="p-6 admin-card rounded-xl shadow-sm border border-gray-100">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-gray-900">Crear producto</h2>
           <div className="flex items-center gap-2">
@@ -684,7 +684,7 @@ export default function AdminProducts(){
         <div className="mt-4 text-sm text-gray-600">Usa el botón &apos;Crear producto&apos; para abrir el editor en un modal.</div>
       </section>
 
-      <section className="p-4 bg-white rounded-xl shadow-sm border border-gray-100">
+      <section className="p-4 admin-card rounded-xl shadow-sm border border-gray-100">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-gray-900">Productos</h2>
           <button type="button" onClick={() => setListOpen(v => !v)} className="inline-flex items-center gap-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-md px-3 py-1 hover:bg-gray-50 no-custom-btn">
@@ -698,11 +698,11 @@ export default function AdminProducts(){
         {!loading && items.length === 0 ? (
           <div className="py-4 text-sm text-gray-600">No hay productos.</div>
         ) : null}
-        <div className={`mt-4 bg-white rounded-lg shadow-sm overflow-hidden divide-y divide-gray-100 transition-all duration-200 ${listOpen ? 'max-h-[2000px] py-0' : 'max-h-0'}`}>
+        <div className={`mt-4 admin-card rounded-lg shadow-sm overflow-hidden divide-y divide-gray-100 transition-all duration-200 ${listOpen ? 'max-h-[2000px] py-0' : 'max-h-0'}`}>
           {items.map((p) => {
             const imgSrc = imageService.resolve(p.image_url || (p.images && p.images[0]))
             return (
-            <div key={p.id} className="flex items-center justify-between gap-4 px-4 py-4 hover:bg-gray-50">
+            <div key={p.id} className="flex items-center justify-between gap-4 px-4 py-4 admin-item">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-md overflow-hidden border border-gray-100 bg-neutral-50 flex items-center justify-center">
                   {imgSrc ? (

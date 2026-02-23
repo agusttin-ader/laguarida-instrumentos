@@ -70,7 +70,7 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-transparent px-4 md:px-6">
-      <div className="w-full max-w-6xl h-[80vh] bg-white rounded-3xl overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2">
+      <div className="w-full max-w-6xl h-[80vh] admin-card rounded-3xl overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2">
         {/* Left hero */}
         <div className="relative hidden md:block">
           <div className="absolute inset-0 bg-black/55"></div>
@@ -82,7 +82,7 @@ export default function AdminLoginPage() {
 
         {/* Right form */}
         <div className="flex items-center justify-center p-8 md:p-12 bg-transparent">
-          <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 md:p-10 -mt-8 md:mt-0">
+          <div className="w-full max-w-md admin-card rounded-2xl shadow-lg p-8 md:p-10 -mt-8 md:mt-0">
             <div className="flex flex-col items-start">
               <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-1">Bienvenido Leo !</h1>
               <p className="text-sm text-gray-600 mb-6">Ingresá con tus credenciales para acceder al panel de administración</p>
