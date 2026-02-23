@@ -1,6 +1,5 @@
 "use client"
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import supabase from '../../../lib/supabase/client'
 
@@ -41,7 +40,7 @@ export default function ClientAuth({ children }){
 
     return () => {
       mounted = false
-      try { subscription?.unsubscribe() } catch (e) {}
+      try { subscription?.unsubscribe() } catch { /* empty */ }
     }
   }, [])
 
@@ -72,9 +71,7 @@ export default function ClientAuth({ children }){
             setUser(sessionNow.user ?? null)
             return
           }
-        } catch (e) {
-          // ignore
-        }
+        } catch { /* empty */ }
 
         try {
           const res = await fetch('/api/auth/me', { credentials: 'include' })
@@ -87,9 +84,7 @@ export default function ClientAuth({ children }){
               return
             }
           }
-        } catch (e) {
-          // ignore
-        }
+        } catch { /* empty */ }
 
         router.push('/admin/login')
       })()
@@ -106,7 +101,7 @@ export default function ClientAuth({ children }){
       // call server endpoint to clear HttpOnly cookies and sign out server-side
       await fetch('/api/auth/sign-out', { method: 'POST', credentials: 'include' })
       // also call client SDK signOut to clear any client state
-      try { await supabase.auth.signOut() } catch (e) {}
+      try { await supabase.auth.signOut() } catch { /* empty */ }
       setSession(null)
       setUser(null)
       router.push('/admin/login')
@@ -132,8 +127,8 @@ export default function ClientAuth({ children }){
             )}
           </div>
           <div>
-            {user && (
-              <button onClick={signOut} className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 hover:shadow-sm">Cerrar sesión</button>
+              {user && (
+              <button onClick={signOut} className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 no-custom-btn">Cerrar sesión</button>
             )}
           </div>
         </div>

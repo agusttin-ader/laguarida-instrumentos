@@ -2,7 +2,6 @@ export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '../../../../lib/supabase/server'
-import { cookies } from 'next/headers'
 
 export async function POST(req) {
   try {

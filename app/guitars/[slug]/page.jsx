@@ -11,7 +11,8 @@ import imageService from '../../../lib/utils/imageService'
 
 // Generate page metadata dynamically based on the product data
 export async function generateMetadata({ params }) {
-  const { slug } = params || {}
+  const resolvedParams = await params
+  const { slug } = resolvedParams || {}
   let product = null
   try {
     if (slug) {
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }) {
       const { data } = await supabase.from('products').select('*').eq('slug', slug).maybeSingle()
       if (data) product = normalizeProduct(data)
     }
-  } catch (err) {
+  } catch {
     // ignore errors — metadata can fallback to defaults below
     product = null
   }
@@ -40,7 +41,7 @@ export async function generateMetadata({ params }) {
         price: priceMatch ? priceMatch[1].trim() : null,
         description: body
       }
-    } catch (e) {
+    } catch {
       product = null
     }
   }
@@ -178,68 +179,42 @@ export default async function GuitarPage({ params }) {
         <p className="text-sm muted-text">Catálogo · Guitarras</p>
       </header>
 
-      <div className="block lg:hidden mt-6">
+      <div className="block lg:hidden mt-2">
         <p className="text-sm muted-text">{product.brand || ''} · {product.model || ''}</p>
-        <h2 className="mt-2 display-xxl tight-tracking">{product.name}</h2>
-        <p className="mt-3 subtitle-compact muted-text">{product.subtitle || ''}</p>
+        <h2 className="mt-0 display-xxl tight-tracking">{product.name}</h2>
+        <p className="mt-0 subtitle-compact muted-text">{product.subtitle || ''}</p>
       </div>
 
-      <main className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-8 items-start">
-        <section className="lg:col-span-1">
-          <GuitarGallery image_url={product.image_url} images={product.images} altBase={`${product.name}${product.brand ? ' — ' + product.brand : ''}`} />
+      <main className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-8 items-start">
+        {/* Left column: gallery (balanced) */}
+        <section className="w-full lg:col-span-6 flex justify-center">
+          <div className="w-full overflow-hidden" style={{ height: 'auto', maxWidth: '640px' }}>
+            <GuitarGallery image_url={product.image_url} images={product.images} altBase={`${product.name}${product.brand ? ' — ' + product.brand : ''}`} />
+          </div>
         </section>
 
-        <aside className="lg:col-span-1">
-          <div className="flex flex-col gap-4">
+        {/* Right column: details (balanced) */}
+        <aside className="w-full lg:col-span-6 lg:sticky lg:top-24 self-start flex items-center">
+          <div className="flex flex-col gap-2 w-full">
             <div>
-              <div className="hidden lg:block">
-                <p className="text-sm muted-text">{product.brand || ''} · {product.model || ''}</p>
-                <h1 className="mt-2 display-xxl tight-tracking">{product.name}</h1>
-                <p className="mt-3 subtitle-compact muted-text">{product.subtitle || ''}</p>
-              </div>
+              <p className="text-sm muted-text">{product.brand || ''} · {product.model || ''}</p>
+              <h1 className="mt-0 display-xxl product-title tight-tracking">{product.name}</h1>
+              <p className="mt-0 subtitle-compact muted-text">{product.subtitle || ''}</p>
+            </div>
 
-              <div className="mt-4">
+            <div>
+              <div className="mt-3">
                 <div className="price-large">{product.price}</div>
-                <p className="mt-1 subtitle-compact muted-text">Edición limitada · {product.year || ''}</p>
+                <p className="mt-0 subtitle-compact muted-text">Edición limitada · {product.year || ''}</p>
               </div>
             </div>
 
-            <section aria-labelledby="description-heading" className="mt-6 body-copy">
+            <section aria-labelledby="description-heading" className="-mt-8 body-copy">
               <h2 id="description-heading" className="sr-only">Descripción</h2>
               {product.description}
             </section>
 
-            {/* Specifications: render when present in product object under common keys */}
-            { (product.specifications || product.specs || product.features || product.details) && (
-              <section aria-labelledby="specs-heading" className="mt-6">
-                <h2 id="specs-heading" className="text-lg font-semibold">Especificaciones</h2>
-                <div className="mt-3 text-sm text-gray-700 dark:text-gray-200">
-                  {Array.isArray(product.specifications || product.specs || product.features)
-                    ? (
-                      <ul className="list-disc pl-5">
-                        {(product.specifications || product.specs || product.features).map((s, i) => (
-                          <li key={i}>{typeof s === 'string' ? s : JSON.stringify(s)}</li>
-                        ))}
-                      </ul>
-                    ) : typeof (product.specifications || product.specs || product.features) === 'object'
-                    ? (
-                      <dl>
-                        {Object.entries(product.specifications || product.specs || product.features).map(([k,v]) => (
-                          <div key={k} className="mb-2">
-                            <dt className="font-medium">{k}</dt>
-                            <dd className="ml-2">{String(v)}</dd>
-                          </div>
-                        ))}
-                      </dl>
-                    ) : (
-                      <p>{String(product.specifications || product.specs || product.features)}</p>
-                    )
-                  }
-                </div>
-              </section>
-            )}
-
-            <div className="mt-8">
+            <div className="-mt-5 self-start">
               <a
                 href={`https://wa.me/541168696491?text=${encodeURIComponent(`Hola me interesa la ${product.name}, me podrias dar mas info?`)}`}
                 target="_blank"

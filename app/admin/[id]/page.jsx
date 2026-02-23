@@ -1,6 +1,5 @@
 "use client"
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
 
 export default function EditProduct({ params }){
   // `params` may be a Promise in Next.js new routing; unwrap with React.use()

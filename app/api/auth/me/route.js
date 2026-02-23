@@ -19,7 +19,7 @@ export async function GET() {
         const { data, error } = await supabase.auth.getUser()
         if (error) return null
         return data?.user || null
-      } catch (e) {
+      } catch {
         return null
       }
     }
@@ -40,9 +40,7 @@ export async function GET() {
         // best-effort: list common Supabase cookie names
         cookieNames = ['sb-access-token', 'sb-refresh-token', 'sb-session']
       }
-    } catch (e) {
-      // ignore
-    }
+    } catch { /* empty */ }
 
     return NextResponse.json({ authenticated: false, cookies: cookieNames }, { status: 200 })
   } catch (err) {

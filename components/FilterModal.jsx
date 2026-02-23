@@ -14,12 +14,12 @@ export default function FilterModal({ open, setOpen, categories = [], filters = 
     try {
       if (open) document.body.classList.add("modal-open");
       else document.body.classList.remove("modal-open");
-    } catch (e) {}
+    } catch { /* empty */ }
 
     return () => {
       try {
         document.body.classList.remove("modal-open");
-      } catch (e) {}
+      } catch { /* empty */ }
     };
   }, [open]);
 

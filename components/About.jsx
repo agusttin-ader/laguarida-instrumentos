@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { InstagramLogo, WhatsappLogo, Phone, EnvelopeSimple } from 'phosphor-react'
+import { InstagramLogo, WhatsappLogo, EnvelopeSimple } from 'phosphor-react'
 
 export default function About(){
   const insta = 'https://www.instagram.com/laguaridainstrumentos/'

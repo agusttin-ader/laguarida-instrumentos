@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useId } from "react";
 
 // SearchAutoSuggest: simple autosuggest input.
 // - Uses local `suggestions` prop to filter suggestions.
@@ -12,6 +12,8 @@ export default function SearchAutoSuggest({ suggestions = [], placeholder = "Bus
   const [results, setResults] = useState([]);
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
+  const id = useId()
+  const listId = `search-results-${id}`
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -48,16 +50,20 @@ export default function SearchAutoSuggest({ suggestions = [], placeholder = "Bus
         onFocus={() => value && results.length && setOpen(true)}
         placeholder={placeholder}
         className="w-full px-3 py-2 rounded-md border bg-neutral-50 dark:bg-neutral-800 text-sm"
+        role="combobox"
         aria-autocomplete="list"
         aria-expanded={open}
+        aria-controls={listId}
+        aria-haspopup="listbox"
       />
 
       {open && (
-        <ul role="listbox" className="absolute left-0 right-0 mt-2 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-md shadow-md z-40 overflow-hidden">
+        <ul id={listId} role="listbox" className="absolute left-0 right-0 mt-2 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800 rounded-md shadow-md z-40 overflow-hidden">
           {results.map((r) => (
             <li
               key={r}
               role="option"
+              aria-selected={r === value}
               onClick={() => {
                 setValue(r);
                 setOpen(false);

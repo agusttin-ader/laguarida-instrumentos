@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import normalizeProduct from '../lib/utils/normalizeProduct'
 import imageService from '../lib/utils/imageService'
 import Link from 'next/link'
-import ImageWithSkeleton from './ImageWithSkeleton'
 
 function ProductCard({item}){
   const p = normalizeProduct(item)
@@ -13,16 +12,11 @@ function ProductCard({item}){
     const [errored, setErrored] = useState(false)
   const titleText = p.name || ''
   const headingId = `product-title-${p.slug || p.id}`
-  function truncate(text, n = 60){
-    if (!text) return ''
-    // Return truncated text without adding ellipsis character
-    return text.length > n ? text.slice(0, n-1).trimEnd() : text
-  }
   function keyFragment(text, words = 12){
     if (!text) return ''
     // prefer first full sentence
     const s = String(text).trim()
-    const firstSentenceMatch = s.match(/^(.*?[\.\!\?])\s+/)
+    const firstSentenceMatch = s.match(/^(.*?[.!?])\s+/)
     if (firstSentenceMatch && firstSentenceMatch[1]){
       const sent = firstSentenceMatch[1].trim()
       const wordCount = sent.split(/\s+/).length
@@ -48,10 +42,10 @@ function ProductCard({item}){
 
     // More specific pickups patterns with normalized labels
     const pickupsPatterns = [
-      [/\\b(p90|p-?90)\\b/i, 'P90'],
-      [/\\b(humbucker|humbuckers|hh)\\b/i, 'Humbuckers'],
-      [/\\b(single-?coil|single coil|single|sss)\\b/i, 'Single-coil'],
-      [/\\b(hss|sss)\\b/i, 'SSS/HSS']
+      [/\b(p90|p-?90)\b/i, 'P90'],
+      [/\b(humbucker|humbuckers|hh)\b/i, 'Humbuckers'],
+      [/\b(single-?coil|single coil|single|sss)\b/i, 'Single-coil'],
+      [/\b(hss|sss)\b/i, 'SSS/HSS']
     ]
 
     const bridgePattern = /\b(bridge|puente|tremolo|vibrato|hardtail|lyre)\b/i
@@ -100,9 +94,9 @@ function ProductCard({item}){
     // If none of the three were found but we can capture a detailed pickups
     // description like "Pickups CS Fat 50'", extract the text after "pickups".
     if (found.length < 3){
-      const pickmatch = s.match(/pickups?[:\s\-–—]+([^\.\n\r]+)/i)
+      const pickmatch = s.match(/pickups?[:\s\-–—]+([^\n\r.]+)/i)
       if (pickmatch && pickmatch[1]){
-        const desc = String(pickmatch[1]).trim().replace(/[\.,;:]+$/,'')
+        const desc = String(pickmatch[1]).trim().replace(/[.,;:]+$/,'')
         if (desc && !found.some(f => f.toLowerCase() === desc.toLowerCase())){
           found.push(desc)
         }
@@ -127,25 +121,7 @@ function ProductCard({item}){
     })
     return truncated.slice(0,3)
   }
-  function splitTitle(text){
-    if (!text) return text
-    const s = text.trim()
-    // If short, don't split
-    if (s.length < 20) return s
-    const mid = Math.floor(s.length / 2)
-    // find nearest space to the middle, prefer breaking at a space
-    let left = s.lastIndexOf(' ', mid)
-    let right = s.indexOf(' ', mid + 1)
-    let idx = left > -1 ? left : (right > -1 ? right : -1)
-    if (idx === -1) return s
-    const first = s.slice(0, idx).trim()
-    const second = s.slice(idx + 1).trim()
-    return (
-      <>
-        {first}<br />{second}
-      </>
-    )
-  }
+  
   
   function renderTitleThreeLines(text){
     if (!text) return <>&nbsp;<br />&nbsp;<br />&nbsp;</>
@@ -182,19 +158,21 @@ function ProductCard({item}){
     <article aria-labelledby={headingId} className="card-compact transform transition-transform duration-200 hover:-translate-y-1">
       {/* Reveal wrapper around the image and meta so cards animate on scroll */}
       <div>
+        <Link href={`/guitars/${p.slug || p.id}`} aria-label={`Ir a ${titleText || 'producto'}`} className="block w-full">
           {img && !errored ? (
-           <div className="w-full rounded-md overflow-hidden relative" style={{aspectRatio: '3 / 4'}}>
-             <img
-               src={img}
-               alt={titleText || 'Imagen del producto'}
-               onError={() => setErrored(true)}
-               onLoad={() => setErrored(false)}
-               style={{ objectFit: 'cover', objectPosition: 'center', width: '100%', height: '100%', position: 'absolute', inset: 0 }}
-             />
-          </div>
-        ) : (
-          <div className="image-placeholder w-full rounded-md overflow-hidden" style={{aspectRatio: '3 / 4'}}></div>
-        )}
+            <div className="w-full rounded-md overflow-hidden flex items-center justify-center bg-white" style={{aspectRatio: '3 / 4'}}>
+              <img
+                src={img}
+                alt={titleText || 'Imagen del producto'}
+                onError={() => setErrored(true)}
+                onLoad={() => setErrored(false)}
+                style={{ objectFit: 'contain', objectPosition: 'center', width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%' }}
+              />
+            </div>
+          ) : (
+            <div className="image-placeholder w-full rounded-md overflow-hidden flex items-center justify-center bg-white" style={{aspectRatio: '3 / 4'}}></div>
+          )}
+        </Link>
       </div>
 
       <div className="mt-4 card-body">
@@ -205,8 +183,19 @@ function ProductCard({item}){
         {p.price && <div className="mt-2 price-large">{p.price}</div>}
         <p className="mt-4 card-desc">
           {(() => {
-            const specs = extractSpecs(p.description || '')
-            if (specs.length) return specs.join(' · ')
+            // Start with explicit spec fields if present
+            const specsFromFields = []
+            if (p.wood) specsFromFields.push(String(p.wood).trim())
+            if (p.mics) specsFromFields.push(String(p.mics).trim())
+            if (p.model) specsFromFields.push(String(p.model).trim())
+
+            // Then extract from description, avoiding duplicates
+            const extracted = extractSpecs(p.description || '')
+            for (const s of extracted) {
+              if (!specsFromFields.some(x => x.toLowerCase() === String(s).toLowerCase())) specsFromFields.push(s)
+            }
+
+            if (specsFromFields.length) return specsFromFields.join(' · ')
             return keyFragment(p.description || 'Edición limitada — diseño editorial con foco en proporciones.', 14)
           })()}
         </p>

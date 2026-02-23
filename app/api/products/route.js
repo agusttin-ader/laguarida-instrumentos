@@ -18,9 +18,7 @@ async function extractAccessToken(req) {
         const parsed = JSON.parse(session)
         if (parsed?.access_token) return parsed.access_token
         if (parsed?.accessToken) return parsed.accessToken
-      } catch (e) {
-        // ignore
-      }
+      } catch { /* empty */ }
     }
 
     // fallback: parse raw Cookie header
@@ -33,12 +31,10 @@ async function extractAccessToken(req) {
         try {
           const parsed = JSON.parse(decodeURIComponent(map['sb-session']))
           return parsed?.access_token || parsed?.accessToken || null
-        } catch (e) {}
+        } catch { /* empty */ }
       }
     }
-  } catch (e) {
-    // ignore
-  }
+  } catch { /* empty */ }
   return null
 }
 
@@ -72,13 +68,13 @@ export async function POST(req) {
     }
 
     const body = await req.json()
-    const { name, slug, brand = null, price = null, image_url = null, images = [], description = null } = body || {}
+    const { name, slug, brand = null, price = null, image_url = null, images = [], description = null, mics = null, wood = null, model = null } = body || {}
 
     if (!name || !slug) {
       return NextResponse.json({ error: 'Missing required fields: name and slug' }, { status: 400 })
     }
 
-    const payload = { name, slug, brand, price, image_url, images, description }
+    const payload = { name, slug, brand, price, image_url, images, description, mics, wood, model }
 
     const { data, error } = await supabase.from('products').insert([payload]).select()
 
@@ -87,6 +83,37 @@ export async function POST(req) {
     }
 
     return NextResponse.json(data, { status: 201 })
+  } catch (err) {
+    return NextResponse.json({ error: err.message || String(err) }, { status: 500 })
+  }
+}
+
+export async function PATCH(req) {
+  try {
+    const accessToken = await extractAccessToken(req)
+    const supabase = await getSupabaseServerClient(accessToken)
+    const { data: authData, error: authErr } = await supabase.auth.getUser()
+    const user = authData?.user ?? null
+    if (authErr || !user) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    }
+
+    const body = await req.json()
+    const { id, ...fields } = body || {}
+    if (!id) {
+      return NextResponse.json({ error: 'Missing product id for update' }, { status: 400 })
+    }
+
+    // Prevent updating id
+    delete fields.id
+
+    const { data, error } = await supabase.from('products').update(fields).eq('id', id).select()
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: error.status || 500 })
+    }
+
+    return NextResponse.json(data, { status: 200 })
   } catch (err) {
     return NextResponse.json({ error: err.message || String(err) }, { status: 500 })
   }

@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable react/no-unknown-property */
 import React from "react";
 
 // RippleButton: simple press / ripple effect using minimal JS + Tailwind.

@@ -17,8 +17,8 @@ export async function GET() {
     productUrls = files
       .filter(f => f.endsWith('.md'))
       .map(f => `/guitars/${f.replace(/\.md$/, '')}`)
-  } catch (e) {
-    // ignore if folder not present in some environments
+  } catch {
+    /* empty */
   }
 
   const urls = [...pages, ...productUrls]

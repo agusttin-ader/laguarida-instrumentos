@@ -10,14 +10,12 @@ export default function MenuDrawer({ open, setOpen }) {
       } else {
         document.body.classList.remove("menu-open");
       }
-    } catch (e) {
-      // ignore during SSR or if document not available
-    }
+    } catch { /* empty */ }
 
     return () => {
       try {
         document.body.classList.remove("menu-open");
-      } catch (e) {}
+      } catch { /* empty */ }
     };
   }, [open]);
 

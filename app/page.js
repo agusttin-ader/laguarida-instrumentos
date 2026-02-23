@@ -23,7 +23,7 @@ export default function Page() {
           <Hero />
         </section>
 
-        <section id="seleccion-destacada" className="mt-20" aria-labelledby="seleccion-heading">
+        <section id="seleccion-destacada" className="mt-6" aria-labelledby="seleccion-heading">
           <h2 id="seleccion-heading" className="text-2xl md:text-3xl font-semibold text-gray-900 mb-6">Selección destacada</h2>
           <article>
             <ProductGrid />

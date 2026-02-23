@@ -34,7 +34,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
           img.onerror = reject
           img.src = src
         })
-        const w = 24
+        const w = 16
         const h = Math.max(1, Math.round((w * imgEl.naturalHeight) / imgEl.naturalWidth))
         const canvas = document.createElement('canvas')
         canvas.width = w
@@ -42,10 +42,10 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
         const ctx = canvas.getContext('2d')
         if (!ctx) return
         ctx.drawImage(imgEl, 0, 0, w, h)
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.6)
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.5)
         if (mounted) setBlurDataURL(dataUrl)
-      } catch (e) {
-        // Fail silently; leaving blurDataURL null is acceptable
+      } catch {
+        /* empty */
       }
     }
     // Run on next tick so client-only APIs exist
@@ -69,8 +69,19 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
     )
   }
 
+  // compute an aspect-ratio placeholder when width/height are provided
+  const aspectRatio = (width && height) ? `${width} / ${height}` : undefined
+
   return (
-    <div className={`relative overflow-hidden ${className}`} style={{ width: fill ? '100%' : width, height: fill ? '100%' : height, ...style }}>
+    <div
+      className={`relative overflow-hidden ${className}`}
+      style={{
+        width: '100%',
+        ...(fill ? { height: '100%' } : {}),
+        ...(aspectRatio ? { aspectRatio } : {}),
+        ...style
+      }}
+    >
       {!loaded && !errored && (
         <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 animate-pulse" aria-hidden="true" style={blurDataURL ? { backgroundImage: `url(${blurDataURL})`, backgroundSize: 'cover', filter: 'blur(6px) saturate(1.1)' } : {}} />
       )}
