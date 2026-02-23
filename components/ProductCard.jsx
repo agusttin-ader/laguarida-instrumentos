@@ -28,8 +28,7 @@ function ProductCard({item}){
   }
   
   // Extract up to 3 specifications from a free-form description.
-  // Priority: madera (wood), color, pickups (type). If none of the three
-  // are present, try to include 'puente' (bridge). Return an array of up
+  // Priority: madera (wood), color, pickups (type). Return an array of up
   // to 3 short spec strings.
   function extractSpecs(text){
     if (!text) return []
@@ -48,7 +47,8 @@ function ProductCard({item}){
       [/\b(hss|sss)\b/i, 'SSS/HSS']
     ]
 
-    const bridgePattern = /\b(bridge|puente|tremolo|vibrato|hardtail|lyre)\b/i
+    // Note: we intentionally do not include bridge/puente here so that
+    // bridge specifications are not surfaced in the compact card specs.
 
     const found = []
 
@@ -103,16 +103,7 @@ function ProductCard({item}){
       }
     }
 
-    // If still space and bridge exists, include bridge
-    if (found.length < 3){
-      const mb = s.match(bridgePattern)
-      if (mb && mb[0]){
-        const val = String(mb[0]).trim()
-        if (!found.some(f => f.toLowerCase() === val.toLowerCase())){
-          found.push(titleCase(val))
-        }
-      }
-    }
+    // Do not add bridge specifications to card-level specs.
 
     // Truncate each spec to at most 6 words, and limit to 3 specs total
     const truncated = found.map(f => {
@@ -183,19 +174,16 @@ function ProductCard({item}){
         {p.price && <div className="mt-2 price-large">{p.price}</div>}
         <p className="mt-4 card-desc">
           {(() => {
-            // Start with explicit spec fields if present
+            // Only surface these explicit spec fields (in this order):
+            // model · wood · mics — these come from the database (Supabase).
             const specsFromFields = []
+            if (p.model) specsFromFields.push(String(p.model).trim())
             if (p.wood) specsFromFields.push(String(p.wood).trim())
             if (p.mics) specsFromFields.push(String(p.mics).trim())
-            if (p.model) specsFromFields.push(String(p.model).trim())
 
-            // Then extract from description, avoiding duplicates
-            const extracted = extractSpecs(p.description || '')
-            for (const s of extracted) {
-              if (!specsFromFields.some(x => x.toLowerCase() === String(s).toLowerCase())) specsFromFields.push(s)
-            }
-
+            // If any of the spec fields are present, show them joined by ' · '.
             if (specsFromFields.length) return specsFromFields.join(' · ')
+            // Fallback: short description fragment when no spec fields exist.
             return keyFragment(p.description || 'Edición limitada — diseño editorial con foco en proporciones.', 14)
           })()}
         </p>
