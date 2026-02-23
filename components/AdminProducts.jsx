@@ -35,6 +35,8 @@ export default function AdminProducts(){
   const [modalUploadingMain, setModalUploadingMain] = useState(false)
   const [modalGalleryUploading, setModalGalleryUploading] = useState(false)
   const [modalClosing, setModalClosing] = useState(false)
+  // Filters
+  const [filters, setFilters] = useState({ brand: '', model: '', mics: '', bridge: '' })
 
   useEffect(() => {
     return () => {
@@ -50,6 +52,66 @@ export default function AdminProducts(){
   useEffect(() => {
     load()
   }, [])
+
+  const BRANDS = [
+    { key: 'fender', label: 'Fender' },
+    { key: 'gibson', label: 'Gibson' },
+    { key: 'ibanez', label: 'Ibanez' },
+    { key: 'squier', label: 'Squier' },
+    { key: 'prs', label: 'PRS / Paul Reed Smith' },
+    { key: 'other', label: 'Otros' }
+  ]
+
+  const MODELS = [
+    'Stratocaster',
+    'Super Strat',
+    'Les Paul',
+    'Telecaster',
+    'RG',
+    'Player',
+    'Silver Sky',
+    'LPJ',
+    'Other'
+  ]
+
+  const MICS = ['SSS','HSS','HH','SS','Other']
+  const BRIDGES = ['Tremolo','Fixed','Tune-O-Matic','Hardtail','Vibrato','Other']
+
+  function detectBrand(p){
+    const name = String(p.name || '') .toLowerCase()
+    for (const b of BRANDS) {
+      if (b.key === 'other') continue
+      if (name.includes(b.key)) return b.label
+    }
+    return ''
+  }
+
+  const filteredItems = React.useMemo(() => {
+    if (!Array.isArray(items)) return []
+    return items.filter(p => {
+      // brand
+      if (filters.brand) {
+        const brandLabel = detectBrand(p)
+        if (!brandLabel || (!brandLabel.toLowerCase().includes(filters.brand.toLowerCase()) && filters.brand !== 'other')) return false
+      }
+      // model
+      if (filters.model) {
+        const model = String(p.model || p.name || '').toLowerCase()
+        if (!model.includes(filters.model.toLowerCase())) return false
+      }
+      // mics
+      if (filters.mics) {
+        const m = String(p.mics || '').toLowerCase()
+        if (!m.includes(filters.mics.toLowerCase())) return false
+      }
+      // bridge (best-effort: check description or name)
+      if (filters.bridge) {
+        const hay = (String(p.description || '') + ' ' + String(p.name || '')).toLowerCase()
+        if (!hay.includes(filters.bridge.toLowerCase())) return false
+      }
+      return true
+    })
+  }, [items, filters])
 
   async function load(){
     setLoading(true)
@@ -672,8 +734,11 @@ export default function AdminProducts(){
         </div>
       ) : null}
       <section className="p-6 admin-card rounded-xl shadow-sm border border-gray-100">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">Crear producto</h2>
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">Crear producto</h2>
+            <p className="text-sm text-gray-600">Usa el botón &apos;Crear producto&apos; para abrir el editor en un modal.</p>
+          </div>
           <div className="flex items-center gap-2">
             <button type="button" className="px-4 py-2 bg-amber-600 text-white rounded-lg no-custom-btn" onClick={openCreateModal}>Crear producto</button>
             <button type="button" className="px-3 py-2 bg-white border border-gray-200 rounded-md no-custom-btn" onClick={() => { setForm({ name: '', slug: '', price: '', image_url: '', description: '', mics: 'SSS', wood: 'Alder', model: 'Stratocaster' }); setMainFile(null); setMainPreview(null); setGalleryFiles([]); setGalleryPreviews([]); }}>Limpiar</button>
@@ -685,14 +750,57 @@ export default function AdminProducts(){
       </section>
 
       <section className="p-4 admin-card rounded-xl shadow-sm border border-gray-100">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">Productos</h2>
-          <button type="button" onClick={() => setListOpen(v => !v)} className="inline-flex items-center gap-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-md px-3 py-1 hover:bg-gray-50 no-custom-btn">
-            {listOpen ? 'Ocultar' : 'Mostrar'}
-            <svg className={`h-4 w-4 transition-transform ${listOpen ? 'rotate-180' : 'rotate-0'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">Productos</h2>
+          </div>
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={() => setListOpen(v => !v)} className="inline-flex items-center gap-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-md px-3 py-1 hover:bg-gray-50 no-custom-btn">
+              {listOpen ? 'Ocultar' : 'Mostrar'}
+              <svg className={`h-4 w-4 transition-transform ${listOpen ? 'rotate-180' : 'rotate-0'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Filter bar */}
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">Marca</label>
+            <select className="w-full border border-gray-200 rounded-md px-3 py-2 bg-white text-gray-800" value={filters.brand} onChange={(e) => setFilters(f => ({ ...f, brand: e.target.value }))}>
+              <option value="">Todas</option>
+              {BRANDS.map(b => <option key={b.key} value={b.key}>{b.label}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">Modelo</label>
+            <select className="w-full border border-gray-200 rounded-md px-3 py-2 bg-white text-gray-800" value={filters.model} onChange={(e) => setFilters(f => ({ ...f, model: e.target.value }))}>
+              <option value="">Todos</option>
+              {MODELS.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">Micrófonos</label>
+            <select className="w-full border border-gray-200 rounded-md px-3 py-2 bg-white text-gray-800" value={filters.mics} onChange={(e) => setFilters(f => ({ ...f, mics: e.target.value }))}>
+              <option value="">Todos</option>
+              {MICS.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">Puente</label>
+            <select className="w-full border border-gray-200 rounded-md px-3 py-2 bg-white text-gray-800" value={filters.bridge} onChange={(e) => setFilters(f => ({ ...f, bridge: e.target.value }))}>
+              <option value="">Todos</option>
+              {BRIDGES.map(b => <option key={b} value={b}>{b}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <div className="mt-3 flex items-center justify-between">
+          <div className="text-sm text-gray-500">Resultados: <span className="font-medium text-gray-900">{filteredItems.length}</span></div>
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={() => setFilters({ brand: '', model: '', mics: '', bridge: '' })} className="px-3 py-2 bg-white border border-gray-200 rounded-md text-sm">Limpiar filtros</button>
+          </div>
         </div>
         {loading ? <div className="py-4">Cargando…</div> : null}
         {!loading && items.length === 0 ? (
