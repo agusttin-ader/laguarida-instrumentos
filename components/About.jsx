@@ -35,9 +35,9 @@ export default function About(){
             <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Contacto rápido</h4>
 
             <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-200 mb-4">
-              <li><strong>Teléfono:</strong> <a href={`tel:${phone}`} className="text-indigo-600 hover:underline">{phone}</a></li>
+              <li><strong>Teléfono:</strong> <a href={`tel:${phone}`} className="contact-orange hover:underline">{phone}</a></li>
               <li><strong>WhatsApp:</strong> <a href={waLink} target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:underline">Iniciar chat</a></li>
-              <li><strong>Email:</strong> <a href={`mailto:${mail}`} className="text-indigo-600 hover:underline">{mail}</a></li>
+              <li><strong>Email:</strong> <a href={`mailto:${mail}`} className="contact-orange hover:underline">{mail}</a></li>
             </ul>
 
             <h5 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Nuestro espacio</h5>
