@@ -11,6 +11,7 @@
   --color-black: #000000;
   --color-white: #F7F4EE; /* vintage white for overall background */
   --color-accent: #C8102E;
+  --color-orange: #f97316; /* orange-500 */
   --color-surface: #F5F5F5;
   --shadow-soft: 0 6px 18px rgba(0,0,0,0.06);
   --shadow-hover: 0 14px 32px rgba(0,0,0,0.09);
@@ -389,18 +390,60 @@ html, body, #__next, #root {
   border-color: var(--dark-border) !important;
 }
 
-/* Admin logout / small buttons used in header */
+/* Admin action button: used for 'Cerrar sesión' and 'Ir al panel' */
+.admin-action,
 .admin-logout {
-  background-color: #ffffff;
-  color: #0b0b0b;
-  border: 1px solid rgba(15,23,42,0.06);
-  padding: 0.35rem 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  background-color: #dc2626; /* red-600 */
+  color: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, opacity 120ms ease;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
 }
+.admin-action:hover,
+.admin-logout:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+  background-color: #b91c1c; /* red-700 */
+}
+.admin-action:active,
+.admin-logout:active { transform: translateY(0); }
+.admin-action:focus,
+.admin-logout:focus { outline: none; box-shadow: 0 0 0 4px rgba(220,38,38,0.12); }
+
+.dark .admin-action,
 .dark .admin-logout {
-  background-color: var(--dark-bg-surface) !important;
-  color: var(--dark-text-primary) !important;
-  border-color: var(--dark-border) !important;
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.24) !important;
 }
+.admin-panel-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  background-color: var(--color-orange);
+  color: #ffffff;
+  border: 1px solid rgba(0,0,0,0.06);
+  transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+.admin-panel-link:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.18); background-color: #ea580c }
+.dark .admin-panel-link { background-color: var(--color-orange) !important }
+
+.contact-orange { color: var(--color-orange); font-weight: 600 }
+.dark .admin-action:hover,
+.dark .admin-logout:hover { background-color: #b91c1c !important; box-shadow: 0 12px 30px rgba(0,0,0,0.28) !important }
 
 /* Admin list item hover — not pure white, subtle lift for light and dark */
 .admin-item {

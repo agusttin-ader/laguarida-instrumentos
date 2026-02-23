@@ -35,8 +35,15 @@ export default function AdminProducts(){
   const [modalUploadingMain, setModalUploadingMain] = useState(false)
   const [modalGalleryUploading, setModalGalleryUploading] = useState(false)
   const [modalClosing, setModalClosing] = useState(false)
-  // Filters
-  const [filters, setFilters] = useState({ brand: '', model: '', mics: '', bridge: '' })
+  // Admin quick-search for the product list (filter by name)
+  const [adminQ, setAdminQ] = useState('')
+
+  const filteredItems = React.useMemo(() => {
+    if (!Array.isArray(items)) return []
+    if (!adminQ || String(adminQ).trim() === '') return items
+    const ql = String(adminQ).trim().toLowerCase()
+    return items.filter(p => (String(p.name || p.slug || '')).toLowerCase().includes(ql))
+  }, [items, adminQ])
 
   useEffect(() => {
     return () => {
@@ -53,65 +60,7 @@ export default function AdminProducts(){
     load()
   }, [])
 
-  const BRANDS = [
-    { key: 'fender', label: 'Fender' },
-    { key: 'gibson', label: 'Gibson' },
-    { key: 'ibanez', label: 'Ibanez' },
-    { key: 'squier', label: 'Squier' },
-    { key: 'prs', label: 'PRS / Paul Reed Smith' },
-    { key: 'other', label: 'Otros' }
-  ]
-
-  const MODELS = [
-    'Stratocaster',
-    'Super Strat',
-    'Les Paul',
-    'Telecaster',
-    'RG',
-    'Player',
-    'Silver Sky',
-    'LPJ',
-    'Other'
-  ]
-
-  const MICS = ['SSS','HSS','HH','SS','Other']
-  const BRIDGES = ['Tremolo','Fixed','Tune-O-Matic','Hardtail','Vibrato','Other']
-
-  function detectBrand(p){
-    const name = String(p.name || '') .toLowerCase()
-    for (const b of BRANDS) {
-      if (b.key === 'other') continue
-      if (name.includes(b.key)) return b.label
-    }
-    return ''
-  }
-
-  const filteredItems = React.useMemo(() => {
-    if (!Array.isArray(items)) return []
-    return items.filter(p => {
-      // brand
-      if (filters.brand) {
-        const brandLabel = detectBrand(p)
-        if (!brandLabel || (!brandLabel.toLowerCase().includes(filters.brand.toLowerCase()) && filters.brand !== 'other')) return false
-      }
-      // model
-      if (filters.model) {
-        const model = String(p.model || p.name || '').toLowerCase()
-        if (!model.includes(filters.model.toLowerCase())) return false
-      }
-      // mics
-      if (filters.mics) {
-        const m = String(p.mics || '').toLowerCase()
-        if (!m.includes(filters.mics.toLowerCase())) return false
-      }
-      // bridge (best-effort: check description or name)
-      if (filters.bridge) {
-        const hay = (String(p.description || '') + ' ' + String(p.name || '')).toLowerCase()
-        if (!hay.includes(filters.bridge.toLowerCase())) return false
-      }
-      return true
-    })
-  }, [items, filters])
+  // No client-side filters in admin list; show full items array
 
   async function load(){
     setLoading(true)
@@ -764,42 +713,19 @@ export default function AdminProducts(){
           </div>
         </div>
 
-        {/* Filter bar */}
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">Marca</label>
-            <select className="w-full border border-gray-200 rounded-md px-3 py-2 bg-white text-gray-800" value={filters.brand} onChange={(e) => setFilters(f => ({ ...f, brand: e.target.value }))}>
-              <option value="">Todas</option>
-              {BRANDS.map(b => <option key={b.key} value={b.key}>{b.label}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">Modelo</label>
-            <select className="w-full border border-gray-200 rounded-md px-3 py-2 bg-white text-gray-800" value={filters.model} onChange={(e) => setFilters(f => ({ ...f, model: e.target.value }))}>
-              <option value="">Todos</option>
-              {MODELS.map(m => <option key={m} value={m}>{m}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">Micrófonos</label>
-            <select className="w-full border border-gray-200 rounded-md px-3 py-2 bg-white text-gray-800" value={filters.mics} onChange={(e) => setFilters(f => ({ ...f, mics: e.target.value }))}>
-              <option value="">Todos</option>
-              {MICS.map(m => <option key={m} value={m}>{m}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">Puente</label>
-            <select className="w-full border border-gray-200 rounded-md px-3 py-2 bg-white text-gray-800" value={filters.bridge} onChange={(e) => setFilters(f => ({ ...f, bridge: e.target.value }))}>
-              <option value="">Todos</option>
-              {BRIDGES.map(b => <option key={b} value={b}>{b}</option>)}
-            </select>
-          </div>
-        </div>
-
-        <div className="mt-3 flex items-center justify-between">
-          <div className="text-sm text-gray-500">Resultados: <span className="font-medium text-gray-900">{filteredItems.length}</span></div>
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={() => setFilters({ brand: '', model: '', mics: '', bridge: '' })} className="px-3 py-2 bg-white border border-gray-200 rounded-md text-sm">Limpiar filtros</button>
+        <div className="mt-4">
+          <label className="block text-xs text-gray-500 mb-2">Buscar producto</label>
+          <div className="search-pill w-full" role="search">
+            <span className="search-icon" aria-hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/></svg>
+            </span>
+            <input
+              aria-label="Buscar producto por nombre"
+              value={adminQ}
+              onChange={(e) => setAdminQ(e.target.value)}
+              placeholder="Escribe el nombre para filtrar..."
+              className="search-input"
+            />
           </div>
         </div>
         {loading ? <div className="py-4">Cargando…</div> : null}
@@ -807,7 +733,7 @@ export default function AdminProducts(){
           <div className="py-4 text-sm text-gray-600">No hay productos.</div>
         ) : null}
         <div className={`mt-4 admin-card rounded-lg shadow-sm overflow-hidden divide-y divide-gray-100 transition-all duration-200 ${listOpen ? 'max-h-[2000px] py-0' : 'max-h-0'}`}>
-          {items.map((p) => {
+          {filteredItems.map((p) => {
             const imgSrc = imageService.resolve(p.image_url || (p.images && p.images[0]))
             return (
             <div key={p.id} className="flex items-center justify-between gap-4 px-4 py-4 admin-item">

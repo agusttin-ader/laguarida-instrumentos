@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 // MiniNav removed from header UI per request
 import Image from 'next/image'
 import ThemeToggle from './ThemeToggle'
@@ -78,7 +79,10 @@ export default function Header(){
     <header className="pt-8 pb-12">
       <div className="flex items-center justify-between container-tight relative">
         <div className="flex items-center">
-          {/* left slot (kept empty for layout symmetry) */}
+          {/* left: show admin auth indicator (aligned with switch on desktop) */}
+          <div className="flex items-center transform md:translate-y-8">
+            <AuthIndicator />
+          </div>
         </div>
 
         <a href="/" aria-label="Ir al inicio" className="logo-link block absolute left-1/2 -top-12 transform -translate-x-1/2 z-10">
@@ -90,12 +94,58 @@ export default function Header(){
         <div className="flex items-center gap-4">
           {/* Desktop-only theme toggle: only render when viewport >= md */}
           {isDesktop ? (
-            <div className="flex items-center transform md:translate-y-6">
+            <div className="flex items-center transform md:translate-y-8">
               <ThemeToggle />
             </div>
           ) : null}
         </div>
       </div>
     </header>
+  )
+}
+
+function AuthIndicator(){
+  const pathname = usePathname()
+
+  const [auth, setAuth] = useState({ loading: true, authenticated: false, email: null })
+
+  useEffect(() => {
+    let mounted = true
+
+    // If we're currently inside the admin area, skip fetching session here.
+    if (typeof pathname === 'string' && pathname.startsWith('/admin')) {
+      if (mounted) setAuth({ loading: false, authenticated: false, email: null })
+      return () => { mounted = false }
+    }
+
+    (async () => {
+      try {
+        const res = await fetch('/api/auth/me', { credentials: 'include' })
+        if (!mounted) return
+        if (!res.ok) return setAuth({ loading: false, authenticated: false, email: null })
+        const j = await res.json()
+        if (j?.authenticated) setAuth({ loading: false, authenticated: true, email: j.user?.email || null })
+        else setAuth({ loading: false, authenticated: false, email: null })
+      } catch {
+        if (!mounted) return
+        setAuth({ loading: false, authenticated: false, email: null })
+      }
+    })()
+
+    return () => { mounted = false }
+  }, [pathname])
+
+  // don't render anything when loading or unauthenticated
+  if (auth.loading) return null
+  if (!auth.authenticated) return null
+
+  // finally, hide inside admin area to avoid duplicate info there
+  if (typeof pathname === 'string' && pathname.startsWith('/admin')) return null
+
+  return (
+    <div className="flex items-center gap-3">
+      <div className="text-sm text-gray-700">Sesión: <span className="font-medium">{auth.email || 'Admin'}</span></div>
+      <a href="/admin" className="admin-panel-link no-custom-btn">Ir al panel</a>
+    </div>
   )
 }

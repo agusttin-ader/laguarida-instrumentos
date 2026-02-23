@@ -128,7 +128,7 @@ export default function ClientAuth({ children }){
           </div>
           <div>
               {user && (
-                  <button onClick={signOut} className="px-3 py-2 admin-logout rounded-lg text-sm no-custom-btn">Cerrar sesión</button>
+                  <button onClick={signOut} className="admin-logout no-custom-btn">Cerrar sesión</button>
                 )}
           </div>
         </div>
