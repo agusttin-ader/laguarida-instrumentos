@@ -1,7 +1,8 @@
 import React from 'react'
 import Hero from '../components/Hero'
-import ProductGrid from '../components/ProductGrid'
+// ProductGrid used in FeaturedSelection client component
 import About from '../components/About'
+import FeaturedSelection from '../components/FeaturedSelection'
 
 export const metadata = {
   title: 'Catálogo — La Guarida',
@@ -24,10 +25,7 @@ export default function Page() {
         </section>
 
         <section id="seleccion-destacada" className="mt-6" aria-labelledby="seleccion-heading">
-          <h2 id="seleccion-heading" className="text-2xl md:text-3xl font-semibold text-gray-900 mb-6">Selección destacada</h2>
-          <article>
-            <ProductGrid />
-          </article>
+          <FeaturedSelection />
         </section>
 
         <section>

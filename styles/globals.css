@@ -413,6 +413,43 @@ html, body, #__next, #root {
   background-color: rgba(255,255,255,0.03) !important; /* subtle light overlay on dark */
 }
 
+/* Neumorphic search pill used in Selección destacada
+   - Light: soft white pill with lifted shadows
+   - Dark: dark pill with subtle inner highlight
+   The input inside should be transparent and inherit text color. */
+.search-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 9999px;
+  /* Match the page body color so the inner surface blends with the page */
+  background: var(--color-white);
+  box-shadow: 8px 8px 18px rgba(16,24,40,0.06), -8px -8px 18px rgba(255,255,255,0.85);
+  transition: box-shadow 160ms ease, background-color 160ms ease, transform 120ms ease;
+}
+.search-pill { color: #0b0d0f }
+.search-pill:focus-within { transform: translateY(-1px); box-shadow: 10px 10px 22px rgba(16,24,40,0.08), -10px -10px 22px rgba(255,255,255,0.9); }
+.search-pill .search-icon { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; color: #9ca3af }
+.search-pill .search-input { background: transparent !important; border: 0; outline: 0; color: inherit; font-size: 0.95rem; width: 22rem; min-width: 120px }
+.search-pill .search-input::placeholder { color: #9ca3af }
+
+.dark .search-pill {
+  /* In dark mode the pill should match the page background so it blends */
+  background: var(--dark-bg-page);
+  box-shadow: inset 6px 6px 14px rgba(0,0,0,0.6), inset -6px -6px 14px rgba(255,255,255,0.02);
+}
+.dark .search-pill { color: var(--dark-text-primary) }
+.dark .search-pill .search-input { background: transparent !important; color: var(--dark-text-primary) !important }
+.dark .search-pill:focus-within { box-shadow: inset 6px 6px 16px rgba(0,0,0,0.66), inset -6px -6px 16px rgba(255,255,255,0.03); }
+.dark .search-pill .search-icon { color: rgba(255,255,255,0.65) }
+.dark .search-pill .search-input::placeholder { color: rgba(255,255,255,0.45) }
+.dark .search-pill .search-input { color: var(--dark-text-primary) }
+
+@media (max-width: 767px) {
+  .search-pill .search-input { width: 12rem }
+}
+
 /* Systematic mappings: convert common Tailwind bg/text/border utilities to dark equivalents */
 /* Backgrounds */
 .dark .bg-white,

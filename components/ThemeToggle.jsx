@@ -73,10 +73,13 @@ export default function ThemeToggle(){
           {/* green inner fill when ON (iOS color) */}
           <div
             aria-hidden
-            className="absolute left-1 top-1 bottom-1 rounded-full"
+            className="absolute rounded-full"
             style={{
+              left: 2,
+              top: 2,
+              bottom: 2,
               backgroundColor: isDark ? '#34C759' : 'transparent',
-              width: isDark ? 36 : 0,
+              width: isDark ? 40 : 0,
               transition: 'width 180ms ease, background-color 180ms ease',
               boxShadow: 'none',
               border: 0
@@ -85,8 +88,11 @@ export default function ThemeToggle(){
 
           {/* knob (no border/shadow per request) */}
           <span
-            className="absolute top-1 left-1 bg-white rounded-full"
+            aria-hidden
+            className="absolute bg-white rounded-full"
             style={{
+              top: 2,
+              left: 2,
               width: 20,
               height: 20,
               transform: isDark ? 'translateX(20px)' : 'translateX(0)',
