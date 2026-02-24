@@ -1,0 +1,50 @@
+.adminBody {
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: linear-gradient(180deg, #071020 0%, #0b1220 60%);
+  color: #e6eef8;
+  min-height: 100vh;
+}
+
+.appShell {
+  max-width: 480px;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+}
+
+.header {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+}
+
+.logo {
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.main {
+  padding: 24px;
+}
+
+.card {
+  background: rgba(255,255,255,0.03);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.5);
+}
+
+.primaryButton {
+  display: inline-block;
+  background: linear-gradient(90deg,#3b82f6,#06b6d4);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-align: center;
+}
