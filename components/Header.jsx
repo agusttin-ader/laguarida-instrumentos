@@ -9,6 +9,7 @@ import ThemeToggle from './ThemeToggle'
 export default function Header(){
   const [logoSrc, setLogoSrc] = useState('/images/logo/logo-fondo-claro.PNG')
   const [isDesktop, setIsDesktop] = useState(false)
+  const pathname = usePathname()
 
   useEffect(()=>{
 
@@ -93,7 +94,7 @@ export default function Header(){
 
         <div className="flex items-center gap-4">
           {/* Desktop-only theme toggle: only render when viewport >= md */}
-          {isDesktop ? (
+          {isDesktop && !(typeof pathname === 'string' && pathname.startsWith('/admin')) ? (
             <div className="flex items-center transform md:translate-y-8">
               <ThemeToggle />
             </div>

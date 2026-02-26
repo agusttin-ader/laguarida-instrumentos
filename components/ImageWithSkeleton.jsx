@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import Image from "next/image";
+import NextImage from "next/image";
 import { useEffect } from "react";
 
 // ImageWithSkeleton:
@@ -19,20 +19,14 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
     async function makeClientPreview() {
       if (!src) return
       try {
-        // Create offscreen image and draw to canvas to produce a tiny jpeg data URL.
+        // Create offscreen image element and draw to canvas to produce a tiny jpeg data URL.
+        if (typeof window === 'undefined') return
+        const imgEl = new window.Image()
+        imgEl.crossOrigin = 'anonymous'
         await new Promise((resolve, reject) => {
-          const img = new Image()
-          img.crossOrigin = 'anonymous'
-          img.onload = () => resolve(img)
-          img.onerror = reject
-          img.src = src
-        })
-        const imgEl = await new Promise((resolve, reject) => {
-          const img = new Image()
-          img.crossOrigin = 'anonymous'
-          img.onload = () => resolve(img)
-          img.onerror = reject
-          img.src = src
+          imgEl.onload = () => resolve(imgEl)
+          imgEl.onerror = reject
+          imgEl.src = src
         })
         const w = 16
         const h = Math.max(1, Math.round((w * imgEl.naturalHeight) / imgEl.naturalWidth))
@@ -45,7 +39,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
         const dataUrl = canvas.toDataURL('image/jpeg', 0.5)
         if (mounted) setBlurDataURL(dataUrl)
       } catch {
-        /* empty */
+        /* ignore preview generation errors (CORS etc.) */
       }
     }
     // Run on next tick so client-only APIs exist
@@ -89,7 +83,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
       {errored ? (
         <div className="image-placeholder w-full h-full" aria-hidden="true" />
       ) : (
-        <Image
+        <NextImage
           src={src}
           alt={alt}
           width={fill ? undefined : width}

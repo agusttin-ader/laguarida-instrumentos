@@ -621,8 +621,8 @@ export default function AdminProducts(){
                 <div>
                   <label className="text-sm block mb-1 text-gray-700">Imagen principal</label>
                   {modalForm.image_url ? (
-                    <div className="w-full rounded overflow-hidden border mb-2 relative">
-                      <img src={modalForm.image_url} alt="Imagen principal" className="w-full h-40 object-cover" />
+                    <div className="w-full rounded overflow-hidden border mb-2 relative" style={{height: '160px'}}>
+                      <ImageWithSkeleton src={modalForm.image_url} alt="Imagen principal" width={1200} height={160} quality={90} />
                       {modalUploadingMain ? (
                         <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
                           <svg className="animate-spin h-6 w-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
@@ -653,7 +653,7 @@ export default function AdminProducts(){
                           {modalGalleryPreviews.map((p, i) => (
                             <div key={p.id} className="w-full">
                               <div className="w-full h-16 rounded overflow-hidden border relative group">
-                                <img src={p.url} alt={p.name || ('Imagen ' + (i+1))} className="w-full h-full object-cover" />
+                                <ImageWithSkeleton src={p.url} alt={p.name || ('Imagen ' + (i+1))} width={160} height={64} quality={80} />
                                 {p.uploading ? (
                                   <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
                                     <svg className="animate-spin h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
@@ -695,7 +695,7 @@ export default function AdminProducts(){
         </div>
         {error ? <div className="mt-3 p-3 bg-rose-50 text-rose-700 rounded border border-rose-100 text-sm">{error}</div> : null}
         {success ? <div className="mt-3 p-3 bg-emerald-50 text-emerald-800 rounded border border-emerald-100 text-sm">{success}</div> : null}
-        <div className="mt-4 text-sm text-gray-600">Usa el botón &apos;Crear producto&apos; para abrir el editor en un modal.</div>
+        
       </section>
 
       <section className="p-4 admin-card rounded-xl shadow-sm border border-gray-100">

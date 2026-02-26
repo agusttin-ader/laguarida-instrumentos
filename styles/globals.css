@@ -1,8 +1,12 @@
-/* Import Inter for retina-ready modern sans */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+/* Import Inter for retina-ready modern sans (migrated to next/font/google) */
+/* Removed external @import — fonts are loaded via next/font/google in app/layout.js */
 
+/* stylelint-disable-next-line unknown-at-rules */
 @tailwind base;
+/* stylelint-disable-next-line unknown-at-rules */
 @tailwind components;
+/* stylelint-disable-next-line unknown-at-rules */
+/* stylelint-disable-next-line unknown-at-rules */
 @tailwind utilities;
 
 :root{
@@ -17,7 +21,7 @@
   --shadow-hover: 0 14px 32px rgba(0,0,0,0.09);
   --card-bg: #F5F3F2; /* warm light gray (avoid blue tones) for cards */
   --auth-bg: var(--color-white); /* login/admin small header background */
-}
+
 
 html,body,#root{
   height:100%;
@@ -161,7 +165,12 @@ body{
 }
 
 .btn-focus{
-  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300;
+  outline: none;
+}
+
+.btn-focus:focus-visible {
+  box-shadow: 0 0 0 2px #d1d5db;
+}
 }
 
 /* Short black CTA used for "Consultar" — compact, high-contrast */
@@ -379,6 +388,8 @@ html, body, #__next, #root {
 .admin-card {
   background-color: var(--card-bg);
   color: inherit;
+  position: relative;
+  overflow: hidden;
 }
 .dark .admin-root {
   background-color: var(--dark-bg-page) !important;
@@ -388,6 +399,22 @@ html, body, #__next, #root {
   background-color: var(--dark-bg-card) !important;
   color: var(--dark-text-primary) !important;
   border-color: var(--dark-border) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* When the list is collapsed (Tailwind's `max-h-0` applied), ensure
+   all child items are hidden and any padding removed so thumbnails
+   cannot peek through. This targets the specific compound class
+   produced by the component's dynamic className. */
+.admin-card.max-h-0 {
+  max-height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  overflow: hidden !important;
+}
+.admin-card.max-h-0 .admin-item {
+  display: none !important;
 }
 
 /* Admin action button: used for 'Cerrar sesión' and 'Ir al panel' */
@@ -470,6 +497,8 @@ html, body, #__next, #root {
   background: var(--color-white);
   box-shadow: 8px 8px 18px rgba(16,24,40,0.06), -8px -8px 18px rgba(255,255,255,0.85);
   transition: box-shadow 160ms ease, background-color 160ms ease, transform 120ms ease;
+  position: relative;
+  z-index: 10;
 }
 .search-pill { color: #0b0d0f }
 .search-pill:focus-within { transform: translateY(-1px); box-shadow: 10px 10px 22px rgba(16,24,40,0.08), -10px -10px 22px rgba(255,255,255,0.9); }
@@ -894,8 +923,7 @@ a.button,
 [class^="btn-"],
 [class*=" btn-"],
 [class^="btn"],
-[class*=" btn"],
-.btn-{
+[class*=" btn"] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1058,6 +1086,7 @@ input.btn-light {
   /* disable any line-clamp based ellipsis and allow manual <br/> splits */
   display: block !important;
   -webkit-line-clamp: unset !important;
+  line-clamp: unset !important;
   -webkit-box-orient: unset !important;
   overflow: visible !important;
   /* reserve three lines height */
@@ -1119,7 +1148,7 @@ input.btn-light {
 @media (min-width: 768px) { .admin-container { padding-left: 1.5rem; padding-right: 1.5rem; } }
 
 /* Card styling used by admin panels */
-.admin-card { background: #fff; border-radius: 12px; box-shadow: var(--shadow-soft); }
+.admin-card { background: #fff; border-radius: 12px; box-shadow: var(--shadow-soft); position: relative; overflow: hidden; }
 @media (min-width: 768px) { .admin-card { padding: 1.25rem; } }
 
 /* Form grid: 1 column mobile, 2 columns on md+ */
@@ -1163,7 +1192,4 @@ input.btn-light {
 
 /* Make sure children snap cleanly */
 .related-slider > * { scroll-snap-align: start; }
-
-
-
 

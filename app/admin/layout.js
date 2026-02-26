@@ -9,14 +9,14 @@ export const metadata = {
 
 export default function AdminLayout({ children }) {
   return (
-    <html lang="es">
+    <html lang="es" className="dark">
       <head>
         <link rel="manifest" href="/manifest-admin.json" />
         <meta name="theme-color" content="#0b1220" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="apple-touch-icon" href="/images/logo/og-pick.svg" />
       </head>
-      <body className={styles.adminBody}>
+      <body className={`${styles.adminBody} dark`}>
         <div className={styles.appShell}>
           <header className={styles.header}>
             <div className={styles.logo}>La Guarida</div>
