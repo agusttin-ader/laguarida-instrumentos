@@ -94,7 +94,7 @@ export default function ProductGrid({ filters = {} }) {
             return true
           })
           .map((item, idx) => (
-            <ScrollReveal key={item.id ?? idx} delay={idx * 12}>
+            <ScrollReveal key={item.id ?? idx} delay={idx * 80}>
               <ProductCard item={item} />
             </ScrollReveal>
           ))}

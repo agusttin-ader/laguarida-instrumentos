@@ -30,6 +30,8 @@ html,body,#root{
 body{
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
+  /* Slightly lighter dark gray background (not pure black) per request */
+  background-color: #1f2937;
 }
 
 .image-placeholder{
@@ -226,7 +228,7 @@ body{
   transition: transform 180ms cubic-bezier(.2,.9,.2,1), box-shadow 180ms ease, background-color 180ms ease;
 }
 .btn-info:hover{ transform: translateY(-3px); box-shadow: 0 18px 40px rgba(15,23,42,0.10); background: linear-gradient(180deg,#fff7f0,#fff0e4) }
-.dark .btn-info{ background: linear-gradient(180deg,#0f1726,#0c1420); color: #fff; border-color: rgba(255,255,255,0.06); box-shadow: 0 8px 24px rgba(0,0,0,0.28) }
+.dark .btn-info{ background: linear-gradient(180deg,#111827,#0f1720); color: #fff; border-color: rgba(255,255,255,0.06); box-shadow: 0 8px 24px rgba(0,0,0,0.28) }
 
 /* Hero-specific button overrides
    Ensure hero buttons remain light/visible on darker hero panels and
@@ -337,9 +339,10 @@ html, body, #__next, #root {
 /* Dark theme system variables (used by mappings below) */
 :root.dark,
 .dark {
-  --dark-bg-page: #171717; /* slightly lighter matte dark gray page background */
-  --dark-bg-surface: #0f1113;
-  --dark-bg-card: #1f2937; /* mid-dark gray for cards */
+  /* Adjusted dark theme tones to be slightly lighter and match requested background */
+  --dark-bg-page: #1f2937; /* page background (lighter dark gray) */
+  --dark-bg-surface: #111827;
+  --dark-bg-card: #0f1720; /* mid-dark gray for cards */
   --dark-surface-2: #0c1216;
   --dark-text-primary: #ffffff;
   --dark-text-secondary: #e6e7ea;
@@ -596,15 +599,23 @@ html, body, #__next, #root {
 .dark .border-gray-100 { border-color: rgba(255,255,255,0.04) !important }
 
 /* Footer specific: slightly lighter than page background */
-.dark footer { background-color: #0c1420 }
+.dark footer { background-color: #111827 }
 
 /* Dark gradient for image placeholders */
 .dark .image-placeholder { background: linear-gradient(180deg,#0f1216,#0b1220) !important }
-.dark article.card-compact .image-placeholder { background: linear-gradient(180deg,#11151a,#0f1726) !important }
+.dark article.card-compact .image-placeholder { background: linear-gradient(180deg,#171717,#111827) !important }
 
 /* Smooth theme transitions: background, text and opacity (logos) */
 html, body, header, main, footer, .container-tight, .card-compact, .image-placeholder {
   transition: background-color 320ms ease, color 320ms ease;
+}
+
+/* Ensure header background matches page background (avoid bluish band) */
+header {
+  background-color: var(--dark-bg-page);
+}
+.dark header {
+  background-color: var(--dark-bg-page) !important;
 }
 
 /* Modal animations: subtle fade + scale + translateY */
@@ -908,6 +919,80 @@ section {
 /* Ensure grid items stretch to equal height (in case parent grid settings differ) */
 .grid > * {
   align-self: stretch;
+}
+
+/* Reveal (scroll) animations: stronger entrance to match reference pin
+   - slightly larger translate + subtle 3D tilt, inner card scale and shadow
+   - stagger controlled by ScrollReveal `delay` prop (ms) */
+.reveal {
+  opacity: 0;
+  /* desktop: slide in from the right with slight 3D tilt */
+  transform: translateX(28px) scale(0.985) rotateY(0.6deg);
+  transition: opacity 520ms cubic-bezier(.2,.9,.2,1) var(--reveal-delay, 0ms), transform 520ms cubic-bezier(.2,.9,.2,1) var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+  transform-origin: center center;
+}
+.reveal--visible {
+  opacity: 1;
+  transform: translateX(0) scale(1) rotateY(0);
+}
+
+/* On small viewports use vertical slide to save horizontal space */
+@media (max-width: 640px) {
+  .reveal {
+    transform: translateY(18px) scale(0.985) rotateX(0.6deg);
+  }
+  .reveal--visible { transform: translateY(0) scale(1) rotateX(0); }
+}
+
+/* animate inner card element for an extra sense of depth */
+.reveal > * {
+  transform: translateY(6px) scale(0.995);
+  transition: transform 580ms cubic-bezier(.22,.9,.28,1) calc(var(--reveal-delay, 0ms) + 60ms), box-shadow 580ms cubic-bezier(.22,.9,.28,1) calc(var(--reveal-delay, 0ms) + 60ms);
+  will-change: transform, box-shadow;
+}
+.reveal--visible > * {
+  transform: none;
+  box-shadow: var(--shadow-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal--visible, .reveal > *, .reveal--visible > * {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Hero slide parallax image + caption animation (inspired by pin) */
+.hero-slide-image {
+  background-size: cover;
+  background-position: center;
+  transition: transform 760ms cubic-bezier(.2,.9,.2,1);
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translate3d(0,0,0);
+}
+
+.hero-caption {
+  opacity: 0;
+  transform: translateY(8px) scale(0.996);
+  transition: opacity 420ms cubic-bezier(.2,.9,.2,1), transform 420ms cubic-bezier(.2,.9,.2,1);
+  /* avoid heavy backdrop filter repaints on low-end GPUs */
+  background-color: rgba(0,0,0,0.36);
+}
+.hero-caption--visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide-image, .hero-caption, .hero-caption--visible {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
 }
 
 /* Global interactive pill button style (matches reference) */

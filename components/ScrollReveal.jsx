@@ -29,7 +29,7 @@ export default function ScrollReveal({ children, className = '', threshold = 0.1
     return () => obs.disconnect()
   }, [threshold, rootMargin])
 
-  const style = delay ? { transitionDelay: `${delay}ms` } : undefined
+  const style = { '--reveal-delay': `${delay || 0}ms`, transitionDelay: `${delay || 0}ms` }
 
   return (
     <div ref={ref} className={`reveal ${visible ? 'reveal--visible' : ''} ${className}`} style={style}>

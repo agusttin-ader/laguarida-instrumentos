@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import NextImage from "next/image";
+import Spinner from './Spinner'
 import { useEffect } from "react";
 
 // ImageWithSkeleton:
@@ -9,17 +10,15 @@ import { useEffect } from "react";
 // - Keeps `alt` for accessibility (screen readers) and avoids layout shift via width/height or `fill` usage.
 // - Next/Image is used for responsive, optimized delivery (AVIF/WebP) and automatic lazy-loading.
 
-export default function ImageWithSkeleton({ src, alt, width, height, sizes, quality = 95, priority = false, loading = 'lazy', className = "", style = {}, fill = false, fit }) {
+export default function ImageWithSkeleton({ src, alt, width, height, sizes, quality = 95, priority = false, loading = 'lazy', className = "", style = {}, fill = false, fit, imgClassName = '', imgStyle = {}, onImageLoad }) {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
   const [blurDataURL, setBlurDataURL] = useState(null)
-
   useEffect(() => {
     let mounted = true
     async function makeClientPreview() {
       if (!src) return
       try {
-        // Create offscreen image element and draw to canvas to produce a tiny jpeg data URL.
         if (typeof window === 'undefined') return
         const imgEl = new window.Image()
         imgEl.crossOrigin = 'anonymous'
@@ -38,22 +37,11 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
         ctx.drawImage(imgEl, 0, 0, w, h)
         const dataUrl = canvas.toDataURL('image/jpeg', 0.5)
         if (mounted) setBlurDataURL(dataUrl)
-      } catch {
-        /* ignore preview generation errors (CORS etc.) */
-      }
+      } catch { /* ignore preview generation errors (CORS etc.) */ }
     }
-    // Run on next tick so client-only APIs exist
     if (typeof window !== 'undefined') makeClientPreview()
     return () => { mounted = false }
   }, [src])
-  // Defensive: normalize src and avoid passing invalid values to Next/Image
-  if (src == null) {
-    return (
-      <div className={`relative overflow-hidden ${className}`} style={{ width: fill ? '100%' : width, height: fill ? '100%' : height, ...style }}>
-        <div className="image-placeholder w-full h-full" aria-hidden="true" />
-      </div>
-    )
-  }
   if (typeof src === 'string') src = src.trim()
   if (!src) {
     return (
@@ -65,6 +53,8 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
 
   // compute an aspect-ratio placeholder when width/height are provided
   const aspectRatio = (width && height) ? `${width} / ${height}` : undefined
+
+  const mergedImgStyle = { willChange: 'opacity, transform', ...imgStyle }
 
   return (
     <div
@@ -94,8 +84,9 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
           fetchPriority={priority ? 'high' : undefined}
           priority={priority}
           fill={fill}
-          className={`${(fit === 'contain' || (style && style.objectFit === 'contain')) ? 'object-contain' : 'object-cover'} ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
-          onLoadingComplete={() => setLoaded(true)}
+          className={`${(fit === 'contain' || (style && style.objectFit === 'contain')) ? 'object-contain' : 'object-cover'} ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300 ${imgClassName}`}
+          onLoadingComplete={(meta) => { setLoaded(true); try { if (typeof onImageLoad === 'function') onImageLoad(meta) } catch (e) { /* ignore */ } }}
+          style={mergedImgStyle}
           onError={() => setErrored(true)}
         />
       )}
