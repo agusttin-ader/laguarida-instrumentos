@@ -151,7 +151,7 @@ export default async function GuitarPage({ params }) {
         // sort by score desc, then by name to make deterministic
         candidates.sort((a, b) => b.score - a.score || ('' + (a.item.name || '')).localeCompare(b.item.name || ''))
 
-        relatedProducts = candidates.slice(0, 4).map(c => c.item)
+        relatedProducts = candidates.slice(0, 3).map(c => c.item)
       }
     }
   } catch (err) {
@@ -231,7 +231,7 @@ export default async function GuitarPage({ params }) {
       {relatedProducts && relatedProducts.length > 0 && (
         <section className="mt-12">
           <h2 className="text-xl font-semibold">También te recomendamos</h2>
-          <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-6">
             {relatedProducts.map(r => (
               <ProductCard key={r.id || r.slug} item={r} />
             ))}

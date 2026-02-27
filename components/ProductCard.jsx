@@ -39,7 +39,7 @@ function ProductCard({item}){
   return (
     <article
       aria-labelledby={headingId}
-      className="max-w-sm w-full rounded-2xl shadow-xl overflow-hidden transition-transform duration-300 hover:scale-[1.01]"
+      className="w-full rounded-2xl shadow-xl overflow-hidden transition-transform duration-300 hover:scale-[1.01]"
       style={{ border: 'none', background: 'transparent' }}
     >
       <Link
@@ -50,7 +50,7 @@ function ProductCard({item}){
         {/* Top info overlay moved on top of the image to show blur through image */}
 
         {/* Image section */}
-        <div className="relative w-full flex items-center justify-center overflow-hidden" style={{ minHeight: '460px', maxHeight: '620px' }}>
+        <div className="relative w-full flex items-center justify-center overflow-hidden h-56 md:h-80 lg:h-[420px]">
           {img && !errored ? (
             <img
               src={img}
@@ -58,7 +58,6 @@ function ProductCard({item}){
               onError={() => setErrored(true)}
               onLoad={() => setErrored(false)}
               className="w-full h-full object-cover object-center"
-              style={{ display: 'block', width: '100%', height: '100%' }}
               loading="lazy"
               decoding="async"
               fetchPriority="low"
@@ -116,15 +115,7 @@ function ProductCard({item}){
         </div>
       </Link>
 
-      {/* eslint-disable-next-line react/no-unknown-property */}
-      <style jsx>{`
-        @media (min-width: 640px) {
-          article { width: 420px }
-        }
-        @media (min-width: 1024px) {
-          article { width: 480px }
-        }
-      `}</style>
+      {/* Responsive widths handled by grid; avoid fixed widths to prevent overlap */}
     </article>
   )
 }
