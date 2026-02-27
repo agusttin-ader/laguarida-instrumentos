@@ -59,32 +59,30 @@ export default function AdminLoginPage() {
   ]
 
   useEffect(() => {
-    // pick a random starting quote and background image
+    // Pick a random quote and background when entering the page.
+    // No time-based rotation.
     const start = Math.floor(Math.random() * quotes.length)
     quoteIndexRef.current = start
     setSelectedPhrase(quotes[start].q)
     setSelectedAuthor(quotes[start].a)
-    const imgs = ['admin-1.jpeg','admin-2.jpeg','admin-3.jpeg','admin-4.jpeg']
-    setBgImage(imgs[Math.floor(Math.random() * imgs.length)])
+    setQuoteVisible(true)
 
-    let fadeTimeout = null
-    // rotate quotes every 30s with a fade-out / fade-in
-    const iv = setInterval(() => {
-      setQuoteVisible(false)
-      // after fade-out, update text then fade-in
-      fadeTimeout = setTimeout(() => {
-        const next = (quoteIndexRef.current + 1) % quotes.length
-        quoteIndexRef.current = next
-        setSelectedPhrase(quotes[next].q)
-        setSelectedAuthor(quotes[next].a)
-        setQuoteVisible(true)
-      }, 600)
-    }, 30000)
+    let cancelled = false
+    ;(async () => {
+      try {
+        const res = await fetch('/api/admin-backgrounds', { cache: 'no-store' })
+        if (!res.ok) return
+        const json = await res.json()
+        const images = Array.isArray(json?.images) ? json.images : []
+        if (!images.length || cancelled) return
+        const picked = images[Math.floor(Math.random() * images.length)]
+        if (picked) setBgImage(picked)
+      } catch {
+        // keep default fallback
+      }
+    })()
 
-    return () => {
-      clearInterval(iv)
-      if (fadeTimeout) clearTimeout(fadeTimeout)
-    }
+    return () => { cancelled = true }
   }, [])
 
   async function handleSubmit(e) {
