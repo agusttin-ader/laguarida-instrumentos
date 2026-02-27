@@ -13,10 +13,21 @@ function sanitizeFilename(name){
 
 export async function POST(req){
   try {
-    // No debug logs here — keep handler lean in production
+    const origin = req.headers.get('origin')
+    const host = req.headers.get('host')
+    if (origin && host) {
+      try {
+        const o = new URL(origin)
+        if (o.host !== host) {
+          return NextResponse.json({ error: 'Invalid origin' }, { status: 403 })
+        }
+      } catch {
+        return NextResponse.json({ error: 'Invalid origin' }, { status: 403 })
+      }
+    }
 
     // Read HttpOnly Supabase session token from cookies and pass it to server client
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     let accessToken = null
     try {
       // Try cookie store first
@@ -54,31 +65,14 @@ export async function POST(req){
           }
         }
       }
-    } catch (e) {
-      console.log('DEBUG /api/upload-image cookie extraction error', String(e))
-    }
+    } catch { /* empty */ }
 
     const supabase = await getSupabaseServerClient(accessToken)
     // require authenticated user for uploads
     const { data: authData, error: authErr } = await supabase.auth.getUser()
     const user = authData?.user ?? null
     if (authErr || !user) {
-      // Collect cookie names (no values) for debugging — avoids leaking sensitive values
-      try {
-        const cookieStore = cookies()
-        if (cookieStore && typeof cookieStore.getAll === 'function') {
-          const all = await cookieStore.getAll()
-          const cookieNames = all.map(c => c.name)
-        } else if (cookieStore && typeof cookieStore.get === 'function') {
-          const cookieNames = ['sb-access-token','sb-refresh-token','sb-session']
-        }
-      } catch { /* empty */ }
-
-      // Also include request header names for debugging (no header values)
-      const headerNames = []
-      try {
-        for (const [k] of req.headers) headerNames.push(k)
-      } catch { /* empty */ }
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
     const contentType = req.headers.get('content-type') || ''
@@ -90,6 +84,14 @@ export async function POST(req){
     const file = form.get('file')
     if (!file) {
       return NextResponse.json({ error: 'Missing file field (name="file")' }, { status: 400 })
+    }
+    const allowedMime = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/jpg'])
+    if (!allowedMime.has(file.type)) {
+      return NextResponse.json({ error: 'Unsupported file type. Use JPG, PNG, or WEBP.' }, { status: 400 })
+    }
+    const maxBytes = 10 * 1024 * 1024
+    if (file.size > maxBytes) {
+      return NextResponse.json({ error: 'File too large. Max size is 10MB.' }, { status: 400 })
     }
 
     const filenameRaw = file.name || 'upload'

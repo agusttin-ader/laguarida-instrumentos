@@ -7,6 +7,7 @@ import GuitarGallery from '../../../components/GuitarGallery'
 import normalizeProduct from '../../../lib/utils/normalizeProduct'
 import { getSupabaseServerClient } from '../../../lib/supabase/server'
 import ProductCard from '../../../components/ProductCard'
+import ProductStickyCTA from '../../../components/ProductStickyCTA'
 import imageService from '../../../lib/utils/imageService'
 
 // Generate page metadata dynamically based on the product data
@@ -78,17 +79,13 @@ export default async function GuitarPage({ params }) {
   // Query Supabase directly for the product by slug
   let product = null
   try {
-    console.log('slug:', slug)
     if (slug) {
       const supabase = getSupabaseServerClient()
       // Only filter by slug; use maybeSingle
-      const { data, error } = await supabase.from('products').select('*').eq('slug', slug).maybeSingle()
-      console.log('product:', data)
-      console.log('error:', error)
+      const { data } = await supabase.from('products').select('*').eq('slug', slug).maybeSingle()
       if (data) product = normalizeProduct(data)
     }
-  } catch (err) {
-    console.log('error:', err)
+  } catch {
     product = null
   }
 
@@ -112,8 +109,8 @@ export default async function GuitarPage({ params }) {
           description: body
         }
       }
-    } catch (err) {
-      console.log('local fallback read error:', err)
+    } catch {
+      product = null
     }
   }
 
@@ -154,8 +151,7 @@ export default async function GuitarPage({ params }) {
         relatedProducts = candidates.slice(0, 3).map(c => c.item)
       }
     }
-  } catch (err) {
-    console.log('related products error:', err)
+  } catch {
     relatedProducts = []
   }
 
@@ -173,67 +169,82 @@ export default async function GuitarPage({ params }) {
     )
   }
 
+  const consultHref = `https://wa.me/541168696491?text=${encodeURIComponent(`Hola me interesa la ${product.name}, me podrias dar mas info?`)}`
+  const categoryLabel = [product.brand, product.model].filter(Boolean).join(' · ') || 'Premium guitars'
+  const specsText = [product.model, product.wood, product.mics].filter(Boolean).map(s => Array.isArray(s) ? s.join(', ') : s).join(' · ')
+  const hasSpecs = specsText.length > 0
+  const modelValue = product.model || 'N/A'
+  const woodValue = Array.isArray(product.wood) ? product.wood.join(', ') : (product.wood || 'N/A')
+  const descriptionText = String(product.description || '').trim()
+
   return (
-    <div className="container-tight">
-      <header className="mt-8">
-        <p className="text-sm muted-text">Catálogo · Guitarras</p>
+    <div className="container-tight pt-10 sm:pt-14 pb-28 md:pb-12">
+      <header className="mt-2 sm:mt-4 mb-3">
+        <p className="text-xs uppercase tracking-[0.22em] text-gray-500">Catálogo · Guitarras</p>
       </header>
-
-      <div className="block lg:hidden mt-2">
-        <p className="text-sm muted-text">{product.brand || ''} · {product.model || ''}</p>
-        <h2 className="mt-0 display-xxl tight-tracking">{product.name}</h2>
-        <p className="mt-0 subtitle-compact muted-text">{product.subtitle || ''}</p>
-      </div>
-
-      <main className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-8 items-start">
-        {/* Left column: gallery (balanced) */}
-        <section className="w-full lg:col-span-6 flex justify-center">
-          <div className="w-full overflow-hidden" style={{ height: 'auto', maxWidth: '640px' }}>
+      <div className="max-w-6xl mx-auto rounded-[28px] overflow-hidden border border-[#dfe3ea] bg-[#f3f5f9] dark:bg-[#10131b] dark:border-[#2a3142] shadow-[0_22px_55px_rgba(12,20,39,0.16)] dark:shadow-[0_22px_55px_rgba(0,0,0,0.45)]">
+        <main className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] items-stretch">
+          <section className="bg-[#fbfbfc] dark:bg-[#0d1118] px-6 py-8 md:px-10 md:py-10 border-r border-[#e6e8ef] dark:border-[#232a3a]">
             <GuitarGallery image_url={product.image_url} images={product.images} altBase={`${product.name}${product.brand ? ' — ' + product.brand : ''}`} />
-          </div>
-        </section>
+          </section>
 
-        {/* Right column: details (balanced) */}
-        <aside className="w-full lg:col-span-6 lg:sticky lg:top-24 self-start flex items-center">
-          <div className="flex flex-col gap-2 w-full">
-            <div>
-              <p className="text-sm muted-text">{product.brand || ''} · {product.model || ''}</p>
-              <h1 className="mt-0 display-xxl product-title tight-tracking">{product.name}</h1>
-              <p className="mt-0 subtitle-compact muted-text">{product.subtitle || ''}</p>
+          <aside className="px-6 py-7 md:px-10 md:py-10">
+            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-gray-400 dark:text-gray-500 mb-2">{categoryLabel}</p>
+            <h1 className="text-[1.95rem] leading-[1.15] font-bold text-[#131722] dark:text-[#f5f7ff] mb-2">{product.name}</h1>
+
+            <div className="flex items-center gap-2 mb-5">
+              <span className="w-3 h-3 rounded-full bg-[#d4d7de] border border-[#c2c8d4] dark:bg-[#8d97ac] dark:border-[#667089]" aria-hidden />
+              <span className="w-3 h-3 rounded-full bg-[#2e3d5a] dark:bg-[#d9e2ff]" aria-hidden />
             </div>
 
-            <div>
-              <div className="mt-3">
-                <div className="price-large">{product.price}</div>
-                <p className="mt-0 subtitle-compact muted-text">Edición limitada · {product.year || ''}</p>
+            {hasSpecs && (
+              <p className="text-sm text-gray-500 dark:text-gray-300 mb-4">{specsText}</p>
+            )}
+
+            <p className="text-[14px] leading-7 text-gray-600 dark:text-gray-300 max-w-md mb-6">
+              {descriptionText || 'Instrumento seleccionado y revisado profesionalmente, ideal para estudio y escenario.'}
+            </p>
+
+            <div className="flex gap-3 mb-7">
+              <div className="min-w-[112px] px-3 py-2.5 border border-[#d6dbe6] dark:border-[#3a4358] rounded-md bg-[#f8f9fc] dark:bg-[#141a26]">
+                <p className="text-[9px] uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500 mb-1">Modelo</p>
+                <p className="text-sm font-semibold text-[#1a2030] dark:text-[#eef2ff]">{modelValue}</p>
+              </div>
+              <div className="min-w-[112px] px-3 py-2.5 border border-[#d6dbe6] dark:border-[#3a4358] rounded-md bg-[#f8f9fc] dark:bg-[#141a26]">
+                <p className="text-[9px] uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500 mb-1">Madera</p>
+                <p className="text-sm font-semibold text-[#1a2030] dark:text-[#eef2ff]">{woodValue}</p>
               </div>
             </div>
 
-            <section aria-labelledby="description-heading" className="-mt-8 body-copy">
-              <h2 id="description-heading" className="sr-only">Descripción</h2>
-              {product.description}
-            </section>
+            <p className="text-[30px] font-bold text-[#161c2c] dark:text-[#f7f9ff] mb-6">{product.price}</p>
 
-            <div className="-mt-5 self-start">
+            <div className="flex flex-wrap gap-3">
               <a
-                href={`https://wa.me/541168696491?text=${encodeURIComponent(`Hola me interesa la ${product.name}, me podrias dar mas info?`)}`}
+                href={consultHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-elegant btn-elegant--dark btn-focus"
+                className="inline-flex items-center justify-center h-12 px-9 rounded-lg bg-[#0f1628] text-white dark:bg-[#e9eefc] dark:text-[#111728] font-semibold text-xs tracking-[0.08em] uppercase hover:bg-[#1a2239] dark:hover:bg-[#dbe5ff] transition-colors btn-focus"
               >
                 Consultar
               </a>
             </div>
-          </div>
-        </aside>
-      </main>
+          </aside>
+        </main>
+      </div>
+
+      <ProductStickyCTA href={consultHref}>Consultar</ProductStickyCTA>
 
       {relatedProducts && relatedProducts.length > 0 && (
-        <section className="mt-12">
-          <h2 className="text-xl font-semibold">También te recomendamos</h2>
-          <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-6">
+        <section className="mt-10 sm:mt-12">
+          <div className="flex items-center justify-between gap-4 mb-4">
+            <h2 className="text-lg sm:text-xl font-semibold text-white">También te recomendamos</h2>
+            <span className="text-xs text-gray-500 md:hidden" aria-hidden>Deslizá →</span>
+          </div>
+          <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible md:gap-6">
             {relatedProducts.map(r => (
-              <ProductCard key={r.id || r.slug} item={r} />
+              <div key={r.id || r.slug} className="min-w-[75vw] sm:min-w-[280px] md:min-w-0 flex-shrink-0 md:flex-shrink">
+                <ProductCard item={r} />
+              </div>
             ))}
           </div>
         </section>

@@ -2,16 +2,8 @@
 import React, { useEffect, useState, useRef } from 'react'
 import ImageWithSkeleton from './ImageWithSkeleton'
 import imageService from '../lib/utils/imageService'
+import shuffleArray from '../lib/utils/shuffle'
 import Link from 'next/link'
-
-function shuffleArray(a){
-  const arr = [...a]
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[arr[i], arr[j]] = [arr[j], arr[i]]
-  }
-  return arr
-}
 
 function pickRandom(a){
   if (!a || a.length === 0) return null
@@ -41,12 +33,6 @@ function classifyImageKeyword(src){
   for (const k of detailKeys) if (s.includes(k)) return 'detalle'
 
   return null
-}
-
-function humanLabel(cat){
-  if (!cat) return ''
-  const map = { mastil: 'Mástil', trastes: 'Trastes', cuerpo: 'Cuerpo', cuerdas: 'Cuerdas', microfonos: 'Micrófonos', detalle: 'Detalle' }
-  return map[cat] || cat
 }
 
 export default function HeroCarousel({ interval = 5000 }){
@@ -84,7 +70,7 @@ export default function HeroCarousel({ interval = 5000 }){
 
         const five = shuffleArray(itemsWithDetail).slice(0,5)
         if (mounted.current) setItems(five)
-      } catch (e){
+      } catch {
         if (mounted.current) setItems([])
       } finally {
         if (mounted.current) setLoading(false)
@@ -119,7 +105,7 @@ export default function HeroCarousel({ interval = 5000 }){
 
   return (
     <section aria-roledescription="carousel" className="w-full overflow-hidden relative">
-      <div ref={containerRef} className="w-full h-[60vh] sm:h-[68vh] md:h-[72vh] lg:h-[72vh] relative">
+      <div ref={containerRef} className="w-full h-[58vh] sm:h-[66vh] md:h-[72vh] lg:h-[74vh] relative">
         {items.map((it, i) => {
           const key = it.id || it.slug || i
           const src = it._heroImage || imageService.resolve(it.image_url || (it.images && it.images[0]) || '')
@@ -133,7 +119,7 @@ export default function HeroCarousel({ interval = 5000 }){
           const offset = rel * 100
           const figStyle = {
             transform: `translate3d(${offset}%,0,0)`,
-            transition: 'transform 700ms cubic-bezier(.2,.9,.2,1)',
+            transition: 'transform 400ms ease-out',
             position: 'absolute',
             inset: 0,
             zIndex: active ? 20 : 10,
@@ -172,20 +158,24 @@ export default function HeroCarousel({ interval = 5000 }){
                           if (!isPortrait) return
                           // mark this key to render as background on next render
                           setRotatedMap(m => ({ ...(m || {}), [key]: { background: true } }))
-                        }catch(e){/* ignore */}
+                        }catch {/* ignore */}
                       }}
                     />
                   </div>
                 </div>
               )}
-              <figcaption className={`absolute left-6 sm:left-20 lg:left-24 right-6 sm:right-16 lg:right-24 bottom-8 md:bottom-16 lg:bottom-20 max-w-3xl bg-black/36 backdrop-blur-sm rounded-xl p-6 md:p-8 text-white hero-caption ${active ? 'hero-caption--visible' : ''}`}>
-                <h2 className="text-2xl md:text-4xl font-bold leading-tight">{it.name}</h2>
-                {it.description ? <p className="mt-2 text-sm md:text-base text-white/90 line-clamp-3">{it.description}</p> : null}
-                {it.price ? <div className="mt-4 text-xl font-semibold">{it.price}</div> : null}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent pointer-events-none" />
+              <figcaption className={`absolute left-4 sm:left-10 lg:left-16 right-4 sm:right-10 lg:right-auto bottom-6 md:bottom-12 lg:bottom-16 w-auto lg:max-w-[44rem] bg-black/34 border border-white/10 backdrop-blur-md rounded-2xl p-5 md:p-7 text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] hero-caption ${active ? 'hero-caption--visible' : ''}`}>
+                <p className="hero-caption-item hero-caption-item--1 text-[11px] uppercase tracking-[0.22em] text-[#d4a43b] font-medium">
+                  {it.brand ? `${it.brand} · Destacado` : 'Instrumento destacado'}
+                </p>
+                <h2 className="hero-caption-item hero-caption-item--2 mt-2 text-2xl md:text-4xl font-bold leading-[1.1] tracking-tight">{it.name}</h2>
+                {it.description ? <p className="hero-caption-item hero-caption-item--3 mt-3 text-sm md:text-base text-white/85 line-clamp-2 md:line-clamp-3 max-w-2xl">{it.description}</p> : null}
+                {it.price ? <div className="hero-caption-item hero-caption-item--4 mt-4 text-2xl md:text-3xl font-bold tracking-tight">{it.price}</div> : null}
 
                 {/* Specifications: Modelo · Madera · Micrófonos */}
                 {(it.model || it.wood || it.mics) ? (
-                  <div className="mt-3 text-sm text-white/80 truncate">
+                  <div className="hero-caption-item hero-caption-item--5 mt-3 text-sm text-white/80 truncate">
                     {[
                       it.model,
                       it.wood,
@@ -194,30 +184,32 @@ export default function HeroCarousel({ interval = 5000 }){
                   </div>
                 ) : null}
 
-                {/* image detail label removed as requested */}
-                <div className="mt-4 flex gap-3">
+                <div className="hero-caption-item hero-caption-item--6 mt-5 flex flex-wrap gap-3">
                   <Link href={`/guitars/${it.slug || ''}`} className="btn-info">Ver producto</Link>
+                  <Link href="/#seleccion-destacada" className="inline-flex items-center justify-center min-h-[46px] px-5 rounded-xl border border-white/25 bg-white/5 text-white text-sm font-medium hover:bg-white/10 transition-colors">
+                    Ver catalogo
+                  </Link>
                 </div>
               </figcaption>
             </figure>
           )
         })}
 
-        {/* controls */}
-        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30">
+        {/* controls: ocultos en mobile, visibles desde md */}
+        <div className="hidden md:flex absolute left-5 top-1/2 transform -translate-y-1/2 z-30">
           <button
             aria-label="Anterior"
             onClick={() => go(index - 1)}
-            className="w-11 h-11 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center shadow-sm border border-white/10 hover:bg-black/40 transition-colors"
+            className="w-11 h-11 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center shadow-sm border border-white/15 hover:bg-black/45 transition-colors"
           >
             <span className="text-xl font-semibold">‹</span>
           </button>
         </div>
-        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30">
+        <div className="hidden md:flex absolute right-5 top-1/2 transform -translate-y-1/2 z-30">
           <button
             aria-label="Siguiente"
             onClick={() => go(index + 1)}
-            className="w-11 h-11 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center shadow-sm border border-white/10 hover:bg-black/40 transition-colors"
+            className="w-11 h-11 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center shadow-sm border border-white/15 hover:bg-black/45 transition-colors"
           >
             <span className="text-xl font-semibold">›</span>
           </button>
@@ -231,7 +223,7 @@ export default function HeroCarousel({ interval = 5000 }){
               aria-label={`Ir a diapositiva ${i+1}`}
               aria-current={i===index}
               onClick={() => go(i)}
-              className={`h-1 rounded-full transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-white/20 ${i===index ? 'w-8 bg-white' : 'w-4 bg-white/30'}`}
+              className={`h-1.5 rounded-full transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-white/20 ${i===index ? 'w-9 bg-[#d4a43b]' : 'w-4 bg-white/35'}`}
             />
           ))}
         </div>

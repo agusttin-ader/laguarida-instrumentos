@@ -5,6 +5,19 @@ import { getSupabaseServerClient } from '../../../../lib/supabase/server'
 
 export async function POST(req) {
   try {
+    const origin = req.headers.get('origin')
+    const host = req.headers.get('host')
+    if (origin && host) {
+      try {
+        const o = new URL(origin)
+        if (o.host !== host) {
+          return NextResponse.json({ error: 'Invalid origin' }, { status: 403 })
+        }
+      } catch {
+        return NextResponse.json({ error: 'Invalid origin' }, { status: 403 })
+      }
+    }
+
     const body = await req.json()
     const { email, password } = body || {}
 
@@ -19,7 +32,6 @@ export async function POST(req) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
-      console.log('DEBUG /api/auth/sign-in supabase signIn error', error.message || String(error))
       return NextResponse.json({ error: error.message || 'Authentication failed' }, { status: error.status || 401 })
     }
 
@@ -34,27 +46,26 @@ export async function POST(req) {
     if (session) {
       const secure = process.env.NODE_ENV === 'production'
       const maxAge = session.expires_in || 60 * 60 // fallback 1h
-      const cookieDomain = process.env.SITE_COOKIE_DOMAIN || '.laguaridainstrumentos.com'
-      const sameSiteSetting = secure ? 'none' : 'lax'
-
-      // Access token cookie (used by server-side helpers)
-      res.cookies.set('sb-access-token', session.access_token, {
+      const cookieDomain = process.env.SITE_COOKIE_DOMAIN
+      const sameSiteSetting = 'lax'
+      const baseCookieOptions = {
         httpOnly: true,
         path: '/',
         sameSite: sameSiteSetting,
         secure,
-        domain: cookieDomain,
+      }
+      const cookieOptions = cookieDomain ? { ...baseCookieOptions, domain: cookieDomain } : baseCookieOptions
+
+      // Access token cookie (used by server-side helpers)
+      res.cookies.set('sb-access-token', session.access_token, {
+        ...cookieOptions,
         maxAge,
       })
 
       // Refresh token cookie (optional, helpful for later refresh flows)
       if (session.refresh_token) {
         res.cookies.set('sb-refresh-token', session.refresh_token, {
-          httpOnly: true,
-          path: '/',
-          sameSite: sameSiteSetting,
-          secure,
-          domain: cookieDomain,
+          ...cookieOptions,
           // keep refresh token longer (7 days) as a reasonable default
           maxAge: 60 * 60 * 24 * 7,
         })

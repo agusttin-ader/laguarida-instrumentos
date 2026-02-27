@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function AdminLoginPage() {
@@ -11,7 +11,7 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false)
   const [selectedPhrase, setSelectedPhrase] = useState('')
   const [selectedAuthor, setSelectedAuthor] = useState('')
-  const [quoteIndex, setQuoteIndex] = useState(0)
+  const quoteIndexRef = useRef(0)
   const [quoteVisible, setQuoteVisible] = useState(true)
   const [bgImage, setBgImage] = useState('admin-1.jpeg')
 
@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
   useEffect(() => {
     // pick a random starting quote and background image
     const start = Math.floor(Math.random() * quotes.length)
-    setQuoteIndex(start)
+    quoteIndexRef.current = start
     setSelectedPhrase(quotes[start].q)
     setSelectedAuthor(quotes[start].a)
     const imgs = ['admin-1.jpeg','admin-2.jpeg','admin-3.jpeg','admin-4.jpeg']
@@ -73,12 +73,10 @@ export default function AdminLoginPage() {
       setQuoteVisible(false)
       // after fade-out, update text then fade-in
       fadeTimeout = setTimeout(() => {
-        setQuoteIndex((idx) => {
-          const next = (idx + 1) % quotes.length
-          setSelectedPhrase(quotes[next].q)
-          setSelectedAuthor(quotes[next].a)
-          return next
-        })
+        const next = (quoteIndexRef.current + 1) % quotes.length
+        quoteIndexRef.current = next
+        setSelectedPhrase(quotes[next].q)
+        setSelectedAuthor(quotes[next].a)
         setQuoteVisible(true)
       }, 600)
     }, 30000)
@@ -119,20 +117,32 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-transparent px-4 md:px-6">
+    <div className="relative h-full min-h-0 flex items-center justify-center bg-transparent px-4 md:px-6">
+      {/* Mobile: imagen a pantalla completa con header/footer difuminados */}
       <div
-        className="w-full max-w-6xl h-[80vh] overflow-hidden grid grid-cols-1 md:grid-cols-2 relative"
+        className="absolute inset-0 z-0 md:rounded-2xl md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:inset-auto"
         style={{
           backgroundImage: `url('/images/admin-fondo/${bgImage}')`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          border: 'none',
-          boxShadow: 'none',
-          borderRadius: '1rem'
+          backgroundPosition: 'center'
         }}
-      >
-        <div className="absolute inset-0 bg-black/50 z-0 pointer-events-none" />
-        {/* Left hero */}
+        aria-hidden
+      />
+      <div className="absolute inset-0 z-0 bg-black/50 pointer-events-none md:rounded-2xl md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:inset-auto" aria-hidden />
+      {/* Sombreado difuminado header (mobile) */}
+      <div
+        className="absolute top-0 left-0 right-0 h-28 z-[1] pointer-events-none md:hidden bg-gradient-to-b from-black/75 via-black/40 to-transparent"
+        aria-hidden
+      />
+      {/* Sombreado difuminado footer (mobile) */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-32 z-[1] pointer-events-none md:hidden bg-gradient-to-t from-black/75 via-black/40 to-transparent"
+        aria-hidden
+      />
+
+      {/* Desktop: contenedor tipo card; mobile: contenido centrado sobre el fondo */}
+      <div className="relative z-10 w-full max-w-5xl md:grid md:grid-cols-2 md:h-[72vh] md:overflow-hidden md:rounded-2xl">
+        {/* Left hero (solo desktop) */}
         <div className="relative hidden md:block">
           <div className="relative z-10 h-full flex flex-col justify-center px-10 text-white">
             <h2 className={`text-3xl lg:text-4xl font-bold leading-tight mb-2 transition-all duration-700 ${quoteVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}>
@@ -144,10 +154,9 @@ export default function AdminLoginPage() {
           </div>
         </div>
 
-        {/* Right form */}
-        <div className="flex items-center justify-center p-8 md:p-12 bg-transparent relative overflow-hidden z-10">
-          {/* translucent blurred panel */}
-          <div className="w-full max-w-md rounded-2xl p-8 md:p-10 -mt-8 md:mt-0" style={{
+        {/* Form */}
+        <div className="flex items-center justify-center pt-0 pb-4 sm:pt-0 sm:p-8 md:p-12 relative z-10 min-h-0 md:min-h-0 -mt-3">
+          <div className="w-full max-w-md rounded-2xl p-6 sm:p-8 md:p-10" style={{
             background: 'rgba(255,255,255,0.06)',
             WebkitBackdropFilter: 'blur(14px) saturate(120%)',
             backdropFilter: 'blur(14px) saturate(120%)',
@@ -195,6 +204,20 @@ export default function AdminLoginPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+
+        {/* Mobile: solo texto de la frase, sin panel, transición suave */}
+        <div className="md:hidden relative z-10 w-full px-4 pt-4 pb-4">
+          <div className="text-center">
+            <p className={`text-lg font-semibold leading-snug text-white mb-1 transition-opacity duration-500 ease-out ${quoteVisible ? 'opacity-100' : 'opacity-0'}`}>
+              &quot;{selectedPhrase}&quot;
+            </p>
+            {selectedAuthor && (
+              <p className={`text-sm text-white/70 italic transition-opacity duration-500 ease-out ${quoteVisible ? 'opacity-100' : 'opacity-0'}`}>
+                — {selectedAuthor}
+              </p>
+            )}
           </div>
         </div>
       </div>

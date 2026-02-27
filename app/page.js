@@ -1,5 +1,5 @@
 import React from 'react'
-import HeroCarousel from '../components/HeroCarousel'
+import HeroMonolith from '../components/HeroMonolith'
 // ProductGrid used in FeaturedSelection client component
 import About from '../components/About'
 import FeaturedSelection from '../components/FeaturedSelection'
@@ -15,25 +15,23 @@ export const metadata = {
 export default function Page() {
   return (
     <>
-      <section aria-labelledby="home-hero" className="w-full">
-        <HeroCarousel />
+      <section id="home-top" aria-labelledby="home-hero" className="w-full !pt-0 !pb-0">
+        <HeroMonolith />
       </section>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <main className="mt-12">
-          <header className="mb-6 text-center">
-            <p className="sr-only">La Guarida es una tienda especializada en guitarras, bajos y accesorios. Ofrecemos instrumentos seleccionados, asesoramiento profesional y envíos dentro de Argentina.</p>
-          </header>
+      <main className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 pt-5 sm:pt-8 pb-10 md:pb-12 min-h-screen">
+        <header className="mb-2 sm:mb-4 text-center">
+          <p className="sr-only">La Guarida es una tienda especializada en guitarras, bajos y accesorios. Ofrecemos instrumentos seleccionados, asesoramiento profesional y envíos dentro de Argentina.</p>
+        </header>
 
-          <section id="seleccion-destacada" className="mt-6" aria-labelledby="seleccion-heading">
-            <FeaturedSelection />
-          </section>
+        <section id="seleccion-destacada" className="mt-4 sm:mt-6" aria-labelledby="seleccion-heading">
+          <FeaturedSelection />
+        </section>
 
-          <section>
-            <About />
-          </section>
-        </main>
-      </div>
+        <section>
+          <About />
+        </section>
+      </main>
     </>
   )
 }

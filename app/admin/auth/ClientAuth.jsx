@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import supabase from '../../../lib/supabase/client'
+import Header from '../../../components/Header'
 
 const AdminAuthContext = createContext(null)
 
@@ -49,6 +50,13 @@ export default function ClientAuth({ children }){
   const router = useRouter()
 
   const isLoginPath = typeof pathname === 'string' && (pathname === '/admin/login' || pathname === '/admin/login/')
+
+  // En login: quitar fondo gris para que solo se vea la imagen de fondo del body
+  useEffect(() => {
+    if (!isLoginPath) return
+    document.body.classList.add('admin-login-page')
+    return () => document.body.classList.remove('admin-login-page')
+  }, [isLoginPath])
 
   useEffect(() => {
     // only run on client after initial loading
@@ -115,25 +123,41 @@ export default function ClientAuth({ children }){
   return (
     <AdminAuthContext.Provider value={value}>
       <div>
-        <div className="flex items-center justify-end gap-4 mb-6 -mt-10 md:-mt-0 relative z-20 admin-auth-bar" style={{ backgroundColor: isLoginPath ? 'var(--auth-bg)' : 'transparent' }}>
-          <div className="text-sm text-gray-600">
-            {loading ? (
-              <span className="text-gray-500">Comprobando sesión…</span>
-            ) : user ? (
-              <span className="text-gray-800">{user.email}</span>
-            ) : (
-              // No link shown when unauthenticated to avoid blue 'Iniciar sesión' text
-              null
-            )}
+        {isLoginPath ? (
+          <div className="fixed inset-0 z-20 flex flex-col overflow-hidden">
+            <div className="flex-shrink-0">
+              <Header />
+            </div>
+            <div className="flex-1 min-h-0">
+              {children}
+            </div>
           </div>
-          <div>
-              {user && (
+        ) : (
+          <>
+            <div className="relative z-30">
+              <Header />
+            </div>
+            <div
+              className="flex items-center justify-between gap-4 -mt-10 md:-mt-0 relative z-30 admin-auth-bar px-4 py-5 mb-6"
+              style={{ backgroundColor: 'transparent' }}
+            >
+              <div />
+              <div className="flex items-center gap-3">
+                <div className="text-sm text-gray-600">
+                  {loading ? (
+                    <span className="text-gray-500">Comprobando sesión…</span>
+                  ) : user ? (
+                    <span className="text-gray-800">{user.email}</span>
+                  ) : null}
+                </div>
+                {user && (
                   <button onClick={signOut} className="admin-logout no-custom-btn">Cerrar sesión</button>
                 )}
-          </div>
-        </div>
-
-        {children}
+              </div>
+            </div>
+            {children}
+          </>
+        )}
       </div>
     </AdminAuthContext.Provider>
   )

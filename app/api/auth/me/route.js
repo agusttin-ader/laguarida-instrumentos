@@ -6,13 +6,15 @@ import { cookies, headers } from 'next/headers'
 
 export async function GET() {
   try {
+    const requestHeaders = await headers()
+
     async function getUserFromRequest() {
       // Try cookie-based token first (common when client includes credentials)
       try {
         const cookieStore = await cookies()
         // cookieStore may be a RequestCookies-like API; prefer .get when available
         const tokenCookie = typeof cookieStore.get === 'function' ? cookieStore.get('sb-access-token') : null
-        const token = tokenCookie?.value || headers().get('authorization')?.replace(/^Bearer\s+/i, '') || null
+        const token = tokenCookie?.value || requestHeaders.get('authorization')?.replace(/^Bearer\s+/i, '') || null
         if (!token) return null
 
         const supabase = getSupabaseServerClient(token)
@@ -32,9 +34,9 @@ export async function GET() {
     // If no user, return cookie names we can inspect for debugging (no values)
     let cookieNames = []
     try {
-      const cookieStore = cookies()
+      const cookieStore = await cookies()
       if (cookieStore && typeof cookieStore.getAll === 'function') {
-        const all = await cookieStore.getAll()
+        const all = cookieStore.getAll()
         cookieNames = all.map(c => c.name)
       } else if (cookieStore && typeof cookieStore.get === 'function') {
         // best-effort: list common Supabase cookie names

@@ -95,10 +95,16 @@ export default function ImageLightbox({ src, alt = "image", className = "", onPr
         <div
           className="image-lightbox-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
           data-role="overlay"
-          onClick={handleOverlayClick}
           aria-modal="true"
           role="dialog"
         >
+          <button
+            type="button"
+            aria-label="Cerrar imagen ampliada"
+            className="absolute inset-0 w-full h-full cursor-default no-custom-btn"
+            data-role="overlay"
+            onClick={handleOverlayClick}
+          />
           {/* Visible left arrow */}
           <button
             aria-label="Anterior"

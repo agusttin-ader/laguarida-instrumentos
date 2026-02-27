@@ -16,7 +16,7 @@ export default function MobileProductCard({ product }) {
   )}`;
 
   return (
-    <article className="w-full bg-white dark:bg-neutral-900 card-compact overflow-hidden">
+    <article className="card-interactive w-full bg-white dark:bg-neutral-900 card-compact overflow-hidden">
       <div className="w-full bg-neutral-50 dark:bg-neutral-800 overflow-hidden rounded-[12px]">
         <Link href={`/guitars/${product.slug || product.id}`} aria-label={`Ir a ${product.name}`} className="block w-full">
           {/* Use ImageWithSkeleton to show a skeleton while Next/Image loads for better perceived performance */}

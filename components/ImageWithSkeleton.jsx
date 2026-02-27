@@ -1,12 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import NextImage from "next/image";
-import Spinner from './Spinner'
 import { useEffect } from "react";
 
 // ImageWithSkeleton:
 // - Wraps Next/Image to provide a lightweight skeleton while the image is loading.
-// - Uses `onLoadingComplete` to detect when Next/Image finished decoding.
+// - Uses `onLoad` to detect when the image has finished loading (onLoadingComplete is deprecated).
 // - Keeps `alt` for accessibility (screen readers) and avoids layout shift via width/height or `fill` usage.
 // - Next/Image is used for responsive, optimized delivery (AVIF/WebP) and automatic lazy-loading.
 
@@ -54,7 +53,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
   // compute an aspect-ratio placeholder when width/height are provided
   const aspectRatio = (width && height) ? `${width} / ${height}` : undefined
 
-  const mergedImgStyle = { willChange: 'opacity, transform', ...imgStyle }
+  const mergedImgStyle = { ...imgStyle }
 
   return (
     <div
@@ -84,8 +83,16 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
           fetchPriority={priority ? 'high' : undefined}
           priority={priority}
           fill={fill}
-          className={`${(fit === 'contain' || (style && style.objectFit === 'contain')) ? 'object-contain' : 'object-cover'} ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300 ${imgClassName}`}
-          onLoadingComplete={(meta) => { setLoaded(true); try { if (typeof onImageLoad === 'function') onImageLoad(meta) } catch (e) { /* ignore */ } }}
+          className={`${(fit === 'contain' || (style && style.objectFit === 'contain')) ? 'object-contain' : 'object-cover'} ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${imgClassName}`}
+          onLoad={(e) => {
+            setLoaded(true);
+            try {
+              if (typeof onImageLoad === 'function') {
+                const target = e?.currentTarget ?? e?.target;
+                onImageLoad(target ? { naturalWidth: target.naturalWidth, naturalHeight: target.naturalHeight } : {});
+              }
+            } catch { /* ignore */ }
+          }}
           style={mergedImgStyle}
           onError={() => setErrored(true)}
         />

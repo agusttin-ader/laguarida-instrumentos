@@ -3,15 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import ProductCard from './ProductCard'
 import ScrollReveal from './ScrollReveal'
-
-function shuffleArray(a) {
-  const arr = [...a]
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[arr[i], arr[j]] = [arr[j], arr[i]]
-  }
-  return arr
-}
+import SkeletonProductCard from './SkeletonProductCard'
+import shuffleArray from '../lib/utils/shuffle'
 
 export default function ProductGrid({ filters = {} }) {
   const [items, setItems] = useState([])
@@ -48,13 +41,21 @@ export default function ProductGrid({ filters = {} }) {
   }, [])
 
   if (loading) {
-    return <div className="py-6">Cargando productos…</div>
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div key={i} className="reveal reveal--visible" style={{ '--reveal-delay': `${(i - 1) * 60}ms` }}>
+            <SkeletonProductCard />
+          </div>
+        ))}
+      </div>
+    )
   }
   if (!loading && items.length === 0 && !error) {
     return (
-      <div className="py-6 p-6 bg-white rounded shadow">
-        <h3 className="text-lg font-semibold">No hay productos</h3>
-        <p className="mt-2 text-sm muted-text">Aún no hay productos disponibles. Añade algunos desde el panel de administración.</p>
+      <div className="py-6 p-6 bg-white dark:bg-[#1e1e22] rounded shadow">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">No hay productos</h3>
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Aún no hay productos disponibles. Añade algunos desde el panel de administración.</p>
       </div>
     )
   }
@@ -62,10 +63,10 @@ export default function ProductGrid({ filters = {} }) {
   return (
     <div>
       {error ? (
-        <div className="mb-6 p-4 rounded bg-red-50 text-red-800">Error al cargar productos: {error}</div>
+        <div className="mb-6 p-4 rounded bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200">Error al cargar productos: {error}</div>
       ) : null}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
         {items
           .filter((item) => {
             // free-text query
@@ -94,8 +95,8 @@ export default function ProductGrid({ filters = {} }) {
             return true
           })
           .map((item, idx) => (
-            <ScrollReveal key={item.id ?? idx} delay={idx * 80}>
-              <ProductCard item={item} />
+            <ScrollReveal key={item.id ?? idx} delay={Math.min(idx * 80, 400)}>
+              <ProductCard item={item} priority={idx < 3} />
             </ScrollReveal>
           ))}
       </div>

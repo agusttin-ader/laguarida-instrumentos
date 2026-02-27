@@ -50,13 +50,13 @@ export default function MenuDrawer({ open, setOpen }) {
             </Link>
           </li>
           <li>
-            <Link href="/categories" onClick={() => setOpen(false)} className="block px-3 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800">
-              Categorías
+            <Link href="/#seleccion-destacada" onClick={() => setOpen(false)} className="block px-3 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800">
+              Catálogo
             </Link>
           </li>
           <li>
-            <Link href="/favorites" onClick={() => setOpen(false)} className="block px-3 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800">
-              Favoritos
+            <Link href="/#about-section" onClick={() => setOpen(false)} className="block px-3 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800">
+              Sobre nosotros
             </Link>
           </li>
           <li>

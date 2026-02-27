@@ -11,7 +11,15 @@ module.exports = {
         neutralbg: '#F7F7F8'
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', ' -apple-system', 'Segoe UI', 'Roboto']
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto']
+      },
+      spacing: {
+        '18': '4.5rem',
+        'nav': '5rem',   /* 80px bottom nav + safe area */
+        'safe': 'env(safe-area-inset-bottom, 0px)'
+      },
+      minHeight: {
+        'touch': '2.75rem' /* 44px min tap target */
       }
     },
   },

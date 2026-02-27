@@ -1,106 +1,83 @@
 "use client";
 
 import React, { useState } from 'react'
+import Image from 'next/image'
 import normalizeProduct from '../lib/utils/normalizeProduct'
 import imageService from '../lib/utils/imageService'
 import Link from 'next/link'
 
-function ProductCard({item}){
+const CARD_IMAGE_SIZES = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
+
+function ProductCard({ item, priority = false }) {
   const p = normalizeProduct(item)
   const rawImg = p.image_url || (p.images && p.images[0])
   const img = imageService.resolve(rawImg)
   const [errored, setErrored] = useState(false)
+  const [imgLoaded, setImgLoaded] = useState(false)
   const titleText = p.name || ''
   const headingId = `product-title-${p.slug || p.id}`
 
   // (removed unused keyFragment helper) 
 
-  function renderTitleThreeLines(text) {
-    if (!text) return <><br /><br /></>
-    const words = String(text).trim().split(/\s+/).filter(Boolean)
-    let lines = []
-    if (words.length <= 3) {
-      lines = [words[0] || '\u00A0', words[1] || '\u00A0', words[2] || '\u00A0']
-    } else {
-      const base = Math.floor(words.length / 3)
-      const rem = words.length % 3
-      const counts = [base, base, base]
-      for (let i = 0; i < rem; i++) counts[i]++
-      let idx = 0
-      for (let i = 0; i < 3; i++){
-        lines.push(words.slice(idx, idx + counts[i]).join(' ') || '\u00A0')
-        idx += counts[i]
-      }
-    }
-    return <>{lines[0]}<br />{lines[1]}<br />{lines[2]}</>
-  }
-
-  // The design: white rounded card with top info block and large image below.
   return (
     <article
       aria-labelledby={headingId}
-      className="w-full rounded-2xl shadow-xl overflow-hidden transition-transform duration-300 hover:scale-[1.01]"
-      style={{ border: 'none', background: 'transparent' }}
+      className="card-interactive w-full rounded-[20px] overflow-hidden border border-white/10 bg-[#15161a] shadow-[0_14px_34px_rgba(0,0,0,0.28)]"
     >
       <Link
         href={`/guitars/${p.slug || p.id}`}
         aria-label={`Ir a ${titleText || 'producto'}`}
         className="block"
       >
-        {/* Top info overlay moved on top of the image to show blur through image */}
-
-        {/* Image section */}
-        <div className="relative w-full flex items-center justify-center overflow-hidden h-56 md:h-80 lg:h-[420px]">
+        {/* Image: 4/3 aspect, Next/Image for AVIF/WebP + elegant fade-in */}
+        <div className="relative w-full overflow-hidden bg-[#242428]" style={{ aspectRatio: '5/4' }}>
           {img && !errored ? (
-            <img
-              src={img}
-              alt={titleText || 'Imagen del producto'}
-              onError={() => setErrored(true)}
-              onLoad={() => setErrored(false)}
-              className="w-full h-full object-cover object-center"
-              loading="lazy"
-              decoding="async"
-              fetchPriority="low"
-            />
+            <>
+              <div className={`absolute inset-0 bg-[#242428] transition-opacity duration-300 ${imgLoaded ? 'opacity-0 pointer-events-none' : 'animate-pulse'}`} aria-hidden />
+              <Image
+                src={img}
+                alt={titleText || 'Imagen del producto'}
+                fill
+                sizes={CARD_IMAGE_SIZES}
+                quality={82}
+                loading={priority ? 'eager' : 'lazy'}
+                fetchPriority={priority ? 'high' : 'low'}
+                onLoad={() => { setImgLoaded(true); setErrored(false) }}
+                onError={() => setErrored(true)}
+                className={`object-cover object-center img-reveal ${imgLoaded ? 'img-loaded' : ''}`}
+              />
+            </>
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-200 animate-pulse">
-              <span className="text-3xl">🎸</span>
+            <div className="w-full h-full flex items-center justify-center bg-[#242428] animate-pulse">
+              <span className="text-3xl opacity-50">🎸</span>
             </div>
           )}
 
-          {/* Top translucent overlay placed over the image */}
+          {/* Desktop: overlay on image (hidden on mobile for cleaner tap targets) */}
           <div
-            className="absolute top-4 left-4 right-4 flex items-center justify-between px-4 py-3 rounded-lg"
+            className="hidden md:flex absolute top-4 left-4 right-4 items-center justify-between px-4 py-3 rounded-xl border border-white/15"
             style={{
-              background: 'rgba(255,255,255,0.28)',
-              WebkitBackdropFilter: 'blur(12px) saturate(120%)',
-              backdropFilter: 'blur(12px) saturate(120%)',
+              background: 'rgba(15,18,24,0.55)',
+              WebkitBackdropFilter: 'blur(10px) saturate(120%)',
+              backdropFilter: 'blur(10px) saturate(120%)',
               zIndex: 20,
             }}
           >
-            <div className="flex-1">
-              <h3 id={headingId} className="text-lg font-semibold text-white leading-tight mb-0">
-                {renderTitleThreeLines(titleText)}
+            <div className="flex-1 min-w-0">
+              <h3 id={headingId} className="text-base lg:text-lg font-semibold text-white leading-tight line-clamp-2">
+                {titleText}
               </h3>
               {p.price && (
-                <div className="text-sm font-bold text-white mt-1">{p.price}</div>
+                <div className="text-sm font-semibold text-white/90 mt-1">{p.price}</div>
               )}
             </div>
             <div className="flex-shrink-0 ml-3">
-              <button
-                className="px-3 py-1 rounded-full bg-white/10 text-white text-sm font-thin hover:bg-white/20"
-                aria-label={`Ver detalles de ${titleText}`}
-                onClick={e => { e.preventDefault(); window.location.href = `/guitars/${p.slug || p.id}` }}
-                type="button"
-                style={{ boxShadow: 'none', border: '1px solid rgba(255,255,255,0.08)' }}
-              >
-                Ver detalles
-              </button>
+              <span className="px-3 py-1.5 rounded-full bg-white/10 text-white text-xs font-medium border border-white/20">Ver detalles</span>
             </div>
           </div>
 
-          {/* Lower-left: show specs (mics · madera · model) as small pills */}
-            <div className="absolute left-4 bottom-4 flex items-center gap-2">
+          {/* Lower-left: specs pills (all breakpoints) */}
+            <div className="absolute left-3 sm:left-4 bottom-3 sm:bottom-4 flex items-center gap-1.5 sm:gap-2 flex-wrap">
               {(() => {
                 const specs = []
                 if (p.mics) specs.push(String(p.mics).trim())
@@ -108,14 +85,21 @@ function ProductCard({item}){
                 if (p.model) specs.push(String(p.model).trim())
                 if (!specs.length) return null
                 return specs.map((s, i) => (
-                  <div key={i} className="bg-black/70 text-white text-xs px-3 py-1 rounded-full">{s}</div>
+                  <div key={i} className="bg-black/65 text-white/95 text-[11px] px-3 py-1 rounded-full border border-white/10">{s}</div>
                 ))
               })()}
             </div>
         </div>
-      </Link>
 
-      {/* Responsive widths handled by grid; avoid fixed widths to prevent overlap */}
+        {/* Mobile: card body below image (TripGlide-style full-width CTA) */}
+        <div className="md:hidden px-4 py-4 bg-[#1a1b20] border-t border-white/10">
+          <h3 className="text-base font-semibold text-white leading-snug line-clamp-2" aria-hidden>{titleText}</h3>
+          {p.price && <p className="text-[15px] font-semibold text-white/85 mt-1.5">{p.price}</p>}
+          <span className="mt-3.5 flex items-center justify-center min-h-[46px] w-full rounded-xl bg-white text-[#111319] text-sm font-semibold py-3">
+            Ver más
+          </span>
+        </div>
+      </Link>
     </article>
   )
 }

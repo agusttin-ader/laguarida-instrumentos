@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 function IconHome() {
   return (
@@ -38,26 +39,32 @@ function IconChat() {
 }
 
 export default function BottomNav() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const itemClass = "flex flex-col items-center justify-center min-h-touch py-2 text-sm transition-colors";
+  const activeClass = "text-[#f7efe0]";
+  const mutedClass = "text-gray-400 hover:text-white";
+
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-black/95 border-t border-gray-200 dark:border-neutral-800 h-16 flex items-center justify-around px-2">
-      <Link href="/" aria-label="Inicio" className="flex flex-col items-center text-sm text-neutral-900 dark:text-neutral-100">
-        <IconHome />
-        <span className="text-[11px] mt-1">Inicio</span>
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-[#121316]/92 backdrop-blur-xl h-[68px] flex items-center justify-around px-3 pb-[env(safe-area-inset-bottom)]" aria-label="Navegación principal">
+      <Link href="/" aria-label="Inicio" className={`${itemClass} ${isHome ? activeClass : mutedClass}`}>
+        <IconHome className="flex-shrink-0" />
+        <span className="text-[11px] mt-1 font-medium">Inicio</span>
       </Link>
 
-      <Link href="/categories" aria-label="Categorías" className="flex flex-col items-center text-sm text-neutral-900 dark:text-neutral-100">
-        <IconGrid />
-        <span className="text-[11px] mt-1">Categorías</span>
+      <Link href="/#seleccion-destacada" aria-label="Catálogo" className={`${itemClass} ${isHome ? activeClass : mutedClass}`}>
+        <IconGrid className="flex-shrink-0" />
+        <span className="text-[11px] mt-1 font-medium">Catálogo</span>
       </Link>
 
-      <Link href="/favorites" aria-label="Favoritos" className="flex flex-col items-center text-sm text-neutral-900 dark:text-neutral-100">
-        <IconHeart />
-        <span className="text-[11px] mt-1">Favoritos</span>
+      <Link href="/#about-section" aria-label="Sobre nosotros" className={`${itemClass} ${isHome ? activeClass : mutedClass}`}>
+        <IconHeart className="flex-shrink-0" />
+        <span className="text-[11px] mt-1 font-medium">Sobre</span>
       </Link>
 
-      <a href="https://wa.me/541168696491" aria-label="Chat" className="flex flex-col items-center text-sm text-neutral-900 dark:text-neutral-100">
-        <IconChat />
-        <span className="text-[11px] mt-1">Chat</span>
+      <a href="https://wa.me/541168696491" aria-label="Chat por WhatsApp" className={`${itemClass} ${mutedClass}`}>
+        <IconChat className="flex-shrink-0" />
+        <span className="text-[11px] mt-1 font-medium">Chat</span>
       </a>
     </nav>
   );

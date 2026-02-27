@@ -69,7 +69,7 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
   
   if (!modalList || modalList.length === 0) {
     return (
-      <div className="rounded-2xl overflow-hidden bg-gray-100 dark:bg-[#0b0d0f] h-56 md:h-80 lg:h-[99vh]"></div>
+      <div className="rounded-2xl overflow-hidden bg-gray-100 dark:bg-[#1e1e22] h-56 md:h-80 lg:h-[99vh]"></div>
     )
   }
 
@@ -117,10 +117,9 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
   // overlay click handler removed (not used) to silence lint warning
 
   return (
-      <div className="flex flex-col justify-center items-center px-2 md:px-6" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
-        {/* Main image area */}
+      <div className="w-full max-w-[430px] mx-auto flex flex-col items-center" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
         <div
-          className="overflow-hidden flex items-center justify-center cursor-pointer w-full p-0 transition-none"
+          className="overflow-hidden flex items-center justify-center cursor-pointer w-full"
           ref={mainRef}
           role="button"
           tabIndex={0}
@@ -133,18 +132,16 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
             }
           }}
           aria-live="polite"
-          style={{ width: '100%', position: 'relative' }}
         >
-          {/* layers for cross-dissolve: prev (fades out) + display (fades in) */}
-          <div className="flex items-center justify-center">
+          <div className="relative w-full flex items-center justify-center" style={{ aspectRatio: '4/5', minHeight: 300 }}>
             {prevSrc && (
               <div
-            className="absolute right-4 items-center justify-center h-12 w-12 rounded-full bg-black/50 text-white border border-white/10 shadow-lg backdrop-blur-sm transition-transform duration-150 transform hover:scale-105 z-40 focus:outline-none focus:ring-2 focus:ring-white/20 no-custom-btn"
+                className="absolute inset-0 flex items-center justify-center"
                 style={{
                   transition: `opacity ${crossfadeDuration}ms cubic-bezier(.22,1,.36,1)`,
                   opacity: prevVisible ? 1 : 0
                 }}
-                  aria-hidden={true}
+                aria-hidden
               >
                 <ImageWithSkeleton
                   src={prevSrc}
@@ -153,19 +150,13 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
                   height={980}
                   fit="contain"
                   style={{ objectPosition: 'center' }}
-                  className="max-w-full h-auto object-contain"
+                  className="max-w-full max-h-full object-contain"
                   quality={85}
                 />
               </div>
             )}
             {displaySrc && (
-              <div
-                className="flex items-center justify-center"
-                style={{
-                  transition: `opacity ${crossfadeDuration}ms cubic-bezier(.22,1,.36,1)`,
-                  opacity: 1
-                }}
-              >
+              <div className="absolute inset-0 flex items-center justify-center">
                 <ImageWithSkeleton
                   key={displaySrc}
                   src={displaySrc}
@@ -174,18 +165,22 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
                   height={980}
                   fit="contain"
                   style={{ objectPosition: 'center' }}
-                  className="max-w-full h-auto object-contain"
+                  className="max-w-full max-h-full object-contain"
                   quality={85}
-                  priority={true}
+                  priority
                   sizes="(min-width:1024px) 50vw, 100vw"
                 />
               </div>
             )}
           </div>
         </div>
-      {/* Thumbnails below main image, horizontal scroll */}
-      <div className="w-full mt-4 overflow-x-auto thumb-strip">
-          <div className="flex flex-row gap-2" style={{ minWidth: '100%', width: '100%' }}>
+        <div className="mt-4 mb-4 flex flex-col items-center">
+          <div className="w-28 h-px bg-[#cfd4de] dark:bg-[#3a4358]" />
+          <div className="w-3 h-3 rounded-full border-2 border-[#7f92b5] dark:border-[#a9b8d5] bg-white dark:bg-[#0f1420] mt-1.5" />
+          <p className="text-[10px] font-semibold tracking-[0.08em] text-[#5f6778] dark:text-[#a5b0c6] mt-1">Rotate</p>
+        </div>
+        <div className="w-full overflow-x-auto thumb-strip">
+          <div className="flex flex-row gap-3 justify-center">
             {thumbs.map((src,i) => (
               <button
                 key={i}
@@ -193,13 +188,13 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
                 onKeyDown={(e) => handleThumbKey(e, src)}
                 aria-label={`Ver imagen ${i+1}`}
                 aria-pressed={src===main}
-                className={`w-20 h-20 flex-shrink-0 overflow-hidden border rounded-none focus:outline-none transition-transform duration-200 ease-out flex items-center justify-center thumb-reset ${src===main ? 'ring-2 ring-rose-300 scale-105 border-rose-300 shadow-sm' : 'border-gray-200 hover:scale-105 hover:shadow'}`}
+                className={`w-16 h-16 sm:w-[72px] sm:h-[72px] flex-shrink-0 overflow-hidden rounded-xl border focus:outline-none transition-all duration-200 flex items-center justify-center bg-[#edf0f6] ${src===main ? 'border-[#1b2235] ring-1 ring-[#1b2235]' : 'border-[#d7dce6] hover:border-[#bcc5d5]'}`}
               >
-                <ImageWithSkeleton src={src} alt={altBase ? `${altBase} — miniatura ${i+1}` : `Miniatura ${i+1}`} width={80} height={80} className="object-cover w-full h-full rounded-none thumb-reset" sizes="80px" quality={60} loading="lazy" />
+                <ImageWithSkeleton src={src} alt={altBase ? `${altBase} — miniatura ${i+1}` : `Miniatura ${i+1}`} width={80} height={80} className="object-cover w-full h-full thumb-reset" sizes="80px" quality={60} loading="lazy" />
               </button>
             ))}
           </div>
-      </div>
+        </div>
       {modalOpen && (
         <GalleryLightbox
           src={modalList[modalIndex]}

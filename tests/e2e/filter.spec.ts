@@ -13,7 +13,6 @@ test.describe('FilterBar', () => {
     await filterBtn.click();
 
     // Wait for modal and pick first category button inside modal
-    const modal = page.locator('div[role="dialog"]').first();
     // If modal role isn't present, fall back to visible modal container
     const categoryBtn = page.locator('button').filter({ hasText: /./ }).nth(0);
     await categoryBtn.click();
