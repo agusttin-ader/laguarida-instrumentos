@@ -28,7 +28,7 @@ export default function Page() {
           <FeaturedSelection />
         </section>
 
-        <section>
+        <section className="!pt-2 !pb-2 md:!pt-4 md:!pb-6">
           <About />
         </section>
       </main>

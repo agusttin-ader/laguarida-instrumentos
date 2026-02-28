@@ -174,11 +174,7 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
             )}
           </div>
         </div>
-        <div className="mt-4 mb-4 flex flex-col items-center">
-          <div className="w-28 h-px bg-[#cfd4de] dark:bg-[#3a4358]" />
-          <div className="w-3 h-3 rounded-full border-2 border-[#7f92b5] dark:border-[#a9b8d5] bg-white dark:bg-[#0f1420] mt-1.5" />
-          <p className="text-[10px] font-semibold tracking-[0.08em] text-[#5f6778] dark:text-[#a5b0c6] mt-1">Rotate</p>
-        </div>
+        <div className="mt-4 mb-3 w-20 h-px bg-[#cfd4de] dark:bg-[#3a4358]" aria-hidden />
         <div className="w-full overflow-x-auto thumb-strip">
           <div className="flex flex-row gap-3 justify-center">
             {thumbs.map((src,i) => (
@@ -199,6 +195,8 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
         <GalleryLightbox
           src={modalList[modalIndex]}
           alt={altBase ? `${altBase} — imagen ${modalIndex+1}` : `Imagen ${modalIndex+1}`}
+          currentIndex={modalIndex}
+          total={modalList.length}
           onClose={() => { setMainSrc(modalList[modalIndex] || main); closeModal() }}
           onPrev={() => setModalIndex(i => {
             const ni = (i - 1 + modalList.length) % modalList.length

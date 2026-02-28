@@ -27,7 +27,7 @@ function ProductCard({ item, priority = false }) {
       <Link
         href={`/guitars/${p.slug || p.id}`}
         aria-label={`Ir a ${titleText || 'producto'}`}
-        className="block"
+        className="block no-custom-btn card-product-link"
       >
         {/* Image: 4/3 aspect, Next/Image for AVIF/WebP + elegant fade-in */}
         <div className="relative w-full overflow-hidden bg-[#242428]" style={{ aspectRatio: '5/4' }}>
@@ -95,7 +95,7 @@ function ProductCard({ item, priority = false }) {
         <div className="md:hidden px-4 py-4 bg-[#1a1b20] border-t border-white/10">
           <h3 className="text-base font-semibold text-white leading-snug line-clamp-2" aria-hidden>{titleText}</h3>
           {p.price && <p className="text-[15px] font-semibold text-white/85 mt-1.5">{p.price}</p>}
-          <span className="mt-3.5 flex items-center justify-center min-h-[46px] w-full rounded-xl bg-white text-[#111319] text-sm font-semibold py-3">
+          <span className="card-mobile-cta no-custom-btn mt-3.5 flex items-center justify-center min-h-[46px] w-full rounded-xl !bg-[#f5f1e6] !text-[#111319] text-sm font-semibold py-3 border border-black/10 shadow-none">
             Ver más
           </span>
         </div>

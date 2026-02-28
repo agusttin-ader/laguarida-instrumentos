@@ -162,6 +162,7 @@ export default function AdminLoginPage() {
           }}>
             <div className="flex flex-col items-start">
               <h1 className="text-2xl md:text-3xl font-extrabold text-white mb-1">Bienvenido Leo !</h1>
+              <p className="text-sm text-white/95">Gracias por la confianza</p>
               <p className="text-sm text-white/90 mb-6">Ingresá con tus credenciales para acceder al panel de administración</p>
             </div>
 

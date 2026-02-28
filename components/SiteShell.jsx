@@ -19,6 +19,25 @@ export default function SiteShell({ children }) {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   }, [])
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (pathname !== '/') return
+    let targetId = null
+    try {
+      targetId = sessionStorage.getItem('pending-scroll-target')
+      if (targetId) sessionStorage.removeItem('pending-scroll-target')
+    } catch { /* empty */ }
+    if (!targetId) return
+    requestAnimationFrame(() => {
+      if (targetId === 'home-top') {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return
+      }
+      const el = document.getElementById(targetId)
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }, [pathname])
+
   return (
     <>
       {!isAdmin && <Header />}
