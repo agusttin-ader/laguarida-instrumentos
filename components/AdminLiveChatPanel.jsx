@@ -106,6 +106,34 @@ export default function AdminLiveChatPanel() {
   }, [messages]);
 
   useEffect(() => {
+    if (!selectedSessionId) return;
+    let cancelled = false;
+    const POLL_MS = 4000;
+    function poll() {
+      if (cancelled) return;
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
+      fetch(`/api/chat/messages?sessionId=${encodeURIComponent(selectedSessionId)}`, {
+        credentials: "include",
+      })
+        .then((res) => res.json().catch(() => ({})))
+        .then((data) => {
+          if (cancelled) return;
+          const list = Array.isArray(data?.messages) ? data.messages : [];
+          setMessages((prev) => {
+            if (prev.length === list.length && list.every((m, i) => m.id === prev[i]?.id)) return prev;
+            return list;
+          });
+        })
+        .catch(() => {});
+    }
+    const id = setInterval(poll, POLL_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, [selectedSessionId]);
+
+  useEffect(() => {
     if (channelRef.current) {
       supabase.removeChannel(channelRef.current);
       channelRef.current = null;

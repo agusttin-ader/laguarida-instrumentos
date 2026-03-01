@@ -12,7 +12,7 @@ function toSafeText(value, maxLen = 1000) {
 async function ensureSessionForVisitor(admin, sessionId, visitorId) {
   const { data, error } = await admin
     .from('chat_sessions')
-    .select('id, visitor_id')
+    .select('id, visitor_id, status')
     .eq('id', sessionId)
     .maybeSingle()
   if (error) return { error: error.message, status: error.status || 500 }
@@ -34,12 +34,14 @@ export async function GET(req) {
 
     const admin = getSupabaseAdminClient()
 
+    let sessionStatus = null
     if (!adminUser) {
       if (!visitorId) {
         return NextResponse.json({ error: 'Missing visitorId' }, { status: 400 })
       }
       const check = await ensureSessionForVisitor(admin, sessionId, visitorId)
       if (check.error) return NextResponse.json({ error: check.error }, { status: check.status })
+      sessionStatus = check.session?.status
     }
 
     const { data, error } = await admin
@@ -52,7 +54,9 @@ export async function GET(req) {
       return NextResponse.json({ error: error.message }, { status: error.status || 500 })
     }
 
-    return NextResponse.json({ messages: data || [] }, { status: 200 })
+    const body = { messages: data || [] }
+    if (sessionStatus === 'closed') body.sessionClosed = true
+    return NextResponse.json(body, { status: 200 })
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 })
   }
@@ -86,6 +90,12 @@ export async function POST(req) {
       if (!visitorId) return NextResponse.json({ error: 'Missing visitorId' }, { status: 400 })
       const check = await ensureSessionForVisitor(admin, sessionId, visitorId)
       if (check.error) return NextResponse.json({ error: check.error }, { status: check.status })
+      if (check.session?.status === 'closed') {
+        return NextResponse.json(
+          { error: 'Conversación cerrada. Escribí abajo para abrir una nueva.', code: 'SESSION_CLOSED' },
+          { status: 410 }
+        )
+      }
     }
 
     const { data, error } = await admin

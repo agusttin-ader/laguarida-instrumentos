@@ -35,6 +35,7 @@ export default function HybridSupportChat() {
   const [loadingLive, setLoadingLive] = useState(false);
   const [sending, setSending] = useState(false);
   const [liveError, setLiveError] = useState("");
+  const [sessionClosed, setSessionClosed] = useState(false);
   const [liveContextProduct, setLiveContextProduct] = useState("");
   const channelRef = useRef(null);
   const liveEndRef = useRef(null);
@@ -117,6 +118,7 @@ export default function HybridSupportChat() {
     async function startLiveSession() {
       setLoadingLive(true);
       setLiveError("");
+      setSessionClosed(false);
       try {
         const productHint =
           liveContextProduct ||
@@ -201,6 +203,42 @@ export default function HybridSupportChat() {
     };
   }, [open, mode, sessionId]);
 
+  useEffect(() => {
+    if (!open || mode !== "live" || !sessionId || !visitorId) return;
+    let cancelled = false;
+    const POLL_MS = 4000;
+    function poll() {
+      if (cancelled) return;
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") {
+        return;
+      }
+      fetch(`/api/chat/messages?sessionId=${encodeURIComponent(sessionId)}&visitorId=${encodeURIComponent(visitorId)}`, {
+        credentials: "include",
+      })
+        .then((res) => res.json().catch(() => ({})))
+        .then((data) => {
+          if (cancelled) return;
+          if (data?.sessionClosed) {
+            setSessionId("");
+            setSessionClosed(true);
+            setLiveError("");
+            setLiveMessages([]);
+          }
+          const list = Array.isArray(data?.messages) ? data.messages : [];
+          setLiveMessages((prev) => {
+            if (prev.length === list.length && list.every((m, i) => m.id === prev[i]?.id)) return prev;
+            return list;
+          });
+        })
+        .catch(() => {});
+    }
+    const id = setInterval(poll, POLL_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, [open, mode, sessionId, visitorId]);
+
   const waHref = useMemo(
     () => buildWaHref(GENERAL_WHATSAPP_MESSAGE),
     []
@@ -226,17 +264,54 @@ export default function HybridSupportChat() {
 
   async function sendLiveMessage() {
     const text = String(draft || "").trim();
-    if (!text || !sessionId || !visitorId || sending) return;
+    if (!text || !visitorId || sending) return;
     setSending(true);
     setLiveError("");
+    setSessionClosed(false);
+    let currentSessionId = sessionId;
+    if (!currentSessionId) {
+      try {
+        const productHint =
+          liveContextProduct ||
+          (pathname && pathname.startsWith("/guitars/")
+            ? pathname.split("/").filter(Boolean).pop()
+            : "");
+        const sessionRes = await fetch("/api/chat/session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ visitorId, productName: productHint || "" }),
+        });
+        const sessionData = await sessionRes.json().catch(() => ({}));
+        if (!sessionRes.ok) throw new Error(sessionData?.error || "No se pudo iniciar la conversación");
+        currentSessionId = sessionData?.session?.id || "";
+        setSessionId(currentSessionId);
+      } catch (err) {
+        setLiveError(err instanceof Error ? err.message : String(err));
+        setSending(false);
+        return;
+      }
+    }
     try {
       const res = await fetch("/api/chat/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ sessionId, sender: "user", body: text, visitorId }),
+        body: JSON.stringify({
+          sessionId: currentSessionId,
+          sender: "user",
+          body: text,
+          visitorId,
+        }),
       });
       const data = await res.json().catch(() => ({}));
+      if (res.status === 410 && data?.code === "SESSION_CLOSED") {
+        setSessionId("");
+        setSessionClosed(true);
+        setLiveError(data?.error || "Conversación cerrada. Escribí abajo para iniciar una nueva.");
+        setSending(false);
+        return;
+      }
       if (!res.ok) throw new Error(data?.error || "No se pudo enviar el mensaje");
       setDraft("");
       const created = data?.message;
@@ -361,7 +436,12 @@ export default function HybridSupportChat() {
                     Conectando chat en vivo...
                   </div>
                 ) : null}
-                {!loadingLive && liveMessages.length === 0 ? (
+                {sessionClosed ? (
+                  <div className="rounded-xl px-3 py-2 text-sm text-amber-200/95 border border-amber-400/30 bg-amber-500/10">
+                    Conversación cerrada. Escribí abajo para iniciar una nueva.
+                  </div>
+                ) : null}
+                {!loadingLive && !sessionClosed && liveMessages.length === 0 ? (
                   <div className="rounded-xl px-3 py-2 text-sm text-white/80 border border-white/10 bg-white/[0.06]">
                     Escribinos y te respondemos por este chat en tiempo real.
                   </div>
@@ -402,7 +482,7 @@ export default function HybridSupportChat() {
                   <button
                     type="button"
                     onClick={sendLiveMessage}
-                    disabled={sending || !draft.trim() || !sessionId}
+                    disabled={sending || !draft.trim()}
                     className="min-h-[42px] px-3 rounded-xl bg-[#d4a43b]/18 border border-[#d4a43b]/45 text-[#f3d399] text-sm font-semibold hover:bg-[#d4a43b]/26 transition-colors disabled:opacity-50"
                   >
                     Enviar
