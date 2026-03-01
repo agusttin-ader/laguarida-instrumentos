@@ -8,19 +8,19 @@ export const metadata = {
   description: 'Tienda de guitarras e instrumentos musicales en Argentina. Catálogo curado, asesoramiento profesional y atención personalizada.',
   metadataBase: new URL('https://laguarida.com'),
   openGraph: {
-    images: ['https://laguarida.com/images/logo/og-pick.PNG'],
+    images: ['https://laguarida.com/images/logo/og-pick-icon.PNG'],
     type: 'website',
     siteName: 'La Guarida'
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['https://laguarida.com/images/logo/og-pick.PNG']
+    images: ['https://laguarida.com/images/logo/og-pick-icon.PNG']
   }
   ,
   icons: {
-    icon: '/images/logo/og-pick.PNG',
-    shortcut: '/images/logo/og-pick.PNG',
-    apple: '/images/logo/og-pick.PNG'
+    icon: '/images/logo/og-pick-icon.PNG',
+    shortcut: '/images/logo/og-pick-icon.PNG',
+    apple: '/images/logo/og-pick-icon.PNG'
   }
 }
 
@@ -33,7 +33,7 @@ export default function RootLayout({ children }) {
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <link rel="apple-touch-icon" href="/images/logo/og-pick.PNG" />
+        <link rel="apple-touch-icon" href="/images/logo/og-pick-icon.PNG" />
       </head>
       <body className="min-h-screen">
         <SiteShell>{children}</SiteShell>
