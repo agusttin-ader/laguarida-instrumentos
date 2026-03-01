@@ -91,7 +91,7 @@ export default function BottomNav() {
         <span className="text-[11px] mt-1 font-medium">Sobre</span>
       </Link>
 
-      <a href="https://wa.me/541168696491" aria-label="Chat por WhatsApp" className={`${itemClass} ${mutedClass}`}>
+      <a href="https://wa.me/5491154661749" target="_blank" rel="noopener noreferrer" aria-label="Chat por WhatsApp" className={`${itemClass} ${mutedClass}`}>
         <IconChat className="flex-shrink-0" />
         <span className="text-[11px] mt-1 font-medium">Chat</span>
       </a>
