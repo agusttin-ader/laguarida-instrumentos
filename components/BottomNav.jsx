@@ -43,7 +43,6 @@ export default function BottomNav() {
   const router = useRouter();
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const waHref = `https://wa.me/5491154661749?text=${encodeURIComponent('Hola, me interesa La Guarida, me podrias dar informacion?')}`;
   const itemClass = "flex flex-col items-center justify-center min-h-touch py-2 text-sm transition-colors";
   const activeClass = "text-[#f7efe0]";
   const mutedClass = "text-gray-400 hover:text-white";
@@ -75,6 +74,11 @@ export default function BottomNav() {
     router.push("/");
   }
 
+  function handleChatOpen() {
+    if (typeof window === "undefined") return;
+    window.dispatchEvent(new CustomEvent("hybrid-chat:toggle"));
+  }
+
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-[#121316]/92 backdrop-blur-xl h-[68px] flex items-center justify-around px-3 pb-[env(safe-area-inset-bottom)]" aria-label="Navegación principal">
       <Link href="/" onClick={handleHomeNav} aria-label="Inicio" className={`${itemClass} ${isHome ? activeClass : mutedClass}`}>
@@ -92,10 +96,10 @@ export default function BottomNav() {
         <span className="text-[11px] mt-1 font-medium">Sobre</span>
       </Link>
 
-      <a href={waHref} target="_blank" rel="noopener noreferrer" aria-label="Chat por WhatsApp" className={`${itemClass} ${mutedClass}`}>
+      <button type="button" onClick={handleChatOpen} aria-label="Abrir asistente de chat" className={`${itemClass} ${mutedClass}`}>
         <IconChat className="flex-shrink-0" />
         <span className="text-[11px] mt-1 font-medium">Chat</span>
-      </a>
+      </button>
     </nav>
   );
 }

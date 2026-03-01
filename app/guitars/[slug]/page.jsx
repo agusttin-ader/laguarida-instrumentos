@@ -9,6 +9,7 @@ import { getSupabaseServerClient } from '../../../lib/supabase/server'
 import ProductCard from '../../../components/ProductCard'
 import ProductStickyCTA from '../../../components/ProductStickyCTA'
 import imageService from '../../../lib/utils/imageService'
+import ProductLiveChatButton from '../../../components/ProductLiveChatButton'
 
 // Generate page metadata dynamically based on the product data
 export async function generateMetadata({ params }) {
@@ -218,15 +219,26 @@ export default async function GuitarPage({ params }) {
 
             <p className="text-[30px] font-bold text-[#161c2c] dark:text-[#f7f9ff] mb-6">{product.price}</p>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 items-center">
+              <ProductLiveChatButton
+                productName={product.name}
+                className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-lg bg-[#0f1628] text-white dark:bg-[#e9eefc] dark:text-[#111728] font-semibold text-xs tracking-[0.08em] uppercase hover:bg-[#1a2239] dark:hover:bg-[#dbe5ff] transition-colors btn-focus"
+                ariaLabel={`Abrir chat en vivo sobre ${product.name}`}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M6.5 7.4A4.4 4.4 0 0 1 10.9 3h4.2a4.4 4.4 0 0 1 4.4 4.4v5.2a4.4 4.4 0 0 1-4.4 4.4h-2.1l-3.6 3v-3H8.9a4.4 4.4 0 0 1-4.4-4.4V7.4Z" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M9 9.5h7M9 12.3h5.5" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
+                </svg>
+                <span>Consultar en vivo</span>
+              </ProductLiveChatButton>
               <a
                 href={consultHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`Contactar por WhatsApp sobre ${product.name}`}
-                className="inline-flex items-center justify-center h-12 w-12 rounded-lg bg-[#0f1628] text-white dark:bg-[#e9eefc] dark:text-[#111728] hover:bg-[#1a2239] dark:hover:bg-[#dbe5ff] transition-colors btn-focus"
+                aria-label={`Continuar por WhatsApp sobre ${product.name}`}
+                className="no-custom-btn inline-flex items-center justify-center w-12 h-12 rounded-lg border border-[#d4a43b]/45 bg-[#d4a43b]/18 text-[#f3d399] hover:bg-[#d4a43b]/26 transition-colors btn-focus"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
                   <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M9.36 8.9c.1-.22.18-.23.34-.24h.28c.1 0 .24.04.3.17.12.26.4 1 .44 1.08.04.08.06.18 0 .28-.06.1-.1.16-.2.24-.1.08-.2.18-.28.24-.1.1-.2.2-.08.4.12.2.54.9 1.16 1.44.8.7 1.46.9 1.66 1 .2.1.32.08.44-.04.12-.12.5-.58.64-.78.14-.2.28-.16.46-.1.2.08 1.2.56 1.4.66.2.1.34.14.38.22.04.08.04.5-.12.98-.16.48-.92.92-1.26.98-.34.06-.76.1-1.24-.06-.3-.1-.68-.22-1.18-.44-2.08-.9-3.44-3.02-3.54-3.16-.1-.14-.84-1.12-.84-2.14 0-1.02.54-1.52.74-1.72Z" fill="currentColor" />
                 </svg>
@@ -236,7 +248,12 @@ export default async function GuitarPage({ params }) {
         </main>
       </div>
 
-      <ProductStickyCTA href={consultHref} ariaLabel={`Contactar por WhatsApp sobre ${product.name}`} />
+      <ProductStickyCTA
+        href={consultHref}
+        useLiveChat
+        productName={product.name}
+        ariaLabel={`Abrir chat en vivo sobre ${product.name}`}
+      />
 
       {relatedProducts && relatedProducts.length > 0 && (
         <section className="mt-10 sm:mt-12">

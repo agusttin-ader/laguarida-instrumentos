@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import Header from './Header'
 import Footer from './Footer'
 import BottomNav from './BottomNav'
+import HybridSupportChat from './HybridSupportChat'
 
 /** Renderiza Header y Footer solo fuera de /admin para evitar doble header en login */
 export default function SiteShell({ children }) {
@@ -46,6 +47,7 @@ export default function SiteShell({ children }) {
       </main>
       {!isAdmin && <BottomNav />}
       {!isAdmin && <Footer />}
+      {!isAdmin && <HybridSupportChat />}
     </>
   )
 }

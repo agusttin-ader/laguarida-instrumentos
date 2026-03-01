@@ -1,5 +1,6 @@
 import React from 'react'
 import AdminProducts from '../../components/AdminProducts'
+import AdminLiveChatPanel from '../../components/AdminLiveChatPanel'
 
 export default function AdminIndex(){
   return (
@@ -12,6 +13,7 @@ export default function AdminIndex(){
         <p className="mt-1 text-[13px] md:text-sm text-white/70">Gestioná productos, imágenes y catálogo con una vista centralizada.</p>
       </div>
       <AdminProducts />
+      <AdminLiveChatPanel />
     </div>
   )
 }
