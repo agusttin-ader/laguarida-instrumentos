@@ -176,7 +176,7 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
         </div>
         <div className="mt-4 mb-3 w-20 h-px bg-[#cfd4de] dark:bg-[#3a4358]" aria-hidden />
         <div className="w-full overflow-x-auto thumb-strip">
-          <div className="flex flex-row gap-3 justify-center">
+          <div className="flex flex-row gap-3 justify-center px-1 py-1">
             {thumbs.map((src,i) => (
               <button
                 key={i}
@@ -184,9 +184,9 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
                 onKeyDown={(e) => handleThumbKey(e, src)}
                 aria-label={`Ver imagen ${i+1}`}
                 aria-pressed={src===main}
-                className={`w-16 h-16 sm:w-[72px] sm:h-[72px] flex-shrink-0 overflow-hidden rounded-xl border focus:outline-none transition-all duration-200 flex items-center justify-center bg-[#edf0f6] ${src===main ? 'border-[#1b2235] ring-1 ring-[#1b2235]' : 'border-[#d7dce6] hover:border-[#bcc5d5]'}`}
+                className={`no-custom-btn relative w-[62px] h-[80px] sm:w-[70px] sm:h-[90px] flex-shrink-0 overflow-hidden rounded-md border focus:outline-none transition-colors duration-150 flex items-center justify-center bg-[#f5f6f8] dark:bg-[#171a22] ${src===main ? 'border-[#111827] dark:border-white/80 opacity-100' : 'border-black/10 dark:border-white/15 hover:border-black/25 dark:hover:border-white/35 opacity-80 hover:opacity-100'}`}
               >
-                <ImageWithSkeleton src={src} alt={altBase ? `${altBase} — miniatura ${i+1}` : `Miniatura ${i+1}`} width={80} height={80} className="object-cover w-full h-full thumb-reset" sizes="80px" quality={100} loading="lazy" />
+                <ImageWithSkeleton src={src} alt={altBase ? `${altBase} — miniatura ${i+1}` : `Miniatura ${i+1}`} width={86} height={112} className="object-cover w-full h-full thumb-reset" sizes="96px" quality={100} loading="lazy" />
               </button>
             ))}
           </div>
