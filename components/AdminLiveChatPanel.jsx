@@ -3,6 +3,36 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import supabase from "../lib/supabase/client";
 
+const NOTIFICATION_TITLE = "La Guarida - Nuevo mensaje";
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = atob(base64);
+  const output = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) output[i] = rawData.charCodeAt(i);
+  return output;
+}
+
+function tryShowNewMessageNotification(payload, selectedSessionId) {
+  if (typeof window === "undefined" || !window.Notification) return;
+  if (Notification.permission !== "granted") return;
+  const isFromUser = payload?.sender === "user";
+  if (!isFromUser) return;
+  const tabHidden = document.visibilityState === "hidden";
+  const isOtherSession = payload?.session_id && payload.session_id !== selectedSessionId;
+  if (!tabHidden && !isOtherSession) return;
+  const body = (payload?.body || "").trim().slice(0, 80);
+  try {
+    new Notification(NOTIFICATION_TITLE, {
+      body: body ? body : "Un visitante escribió en el chat.",
+      tag: "laguarida-chat-" + (payload?.session_id || ""),
+    });
+  } catch {
+    // ignore
+  }
+}
+
 export default function AdminLiveChatPanel() {
   const [sessions, setSessions] = useState([]);
   const [loadingSessions, setLoadingSessions] = useState(true);
@@ -16,6 +46,8 @@ export default function AdminLiveChatPanel() {
   const [mobileTab, setMobileTab] = useState("sessions");
   const endRef = useRef(null);
   const channelRef = useRef(null);
+  const selectedSessionIdRef = useRef(selectedSessionId);
+  selectedSessionIdRef.current = selectedSessionId;
 
   const selectedSession = useMemo(
     () => sessions.find((s) => s.id === selectedSessionId) || null,
@@ -91,6 +123,38 @@ export default function AdminLiveChatPanel() {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined" || !window.Notification || !navigator.serviceWorker) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        let permission = Notification.permission;
+        if (permission === "default") permission = await Notification.requestPermission();
+        if (permission !== "granted" || cancelled) return;
+        const res = await fetch("/api/push-vapid-public", { credentials: "include" });
+        const data = await res.json().catch(() => ({}));
+        const publicKey = data?.publicKey;
+        if (!res.ok || !publicKey || cancelled) return;
+        const reg = await navigator.serviceWorker.ready;
+        if (cancelled) return;
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(publicKey),
+        });
+        if (cancelled) return;
+        await fetch("/api/push-subscribe", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ subscription: sub.toJSON() }),
+        });
+      } catch {
+        // ignore
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
     loadMessages(selectedSessionId);
   }, [selectedSessionId]);
 
@@ -120,8 +184,17 @@ export default function AdminLiveChatPanel() {
           if (cancelled) return;
           const list = Array.isArray(data?.messages) ? data.messages : [];
           setMessages((prev) => {
-            if (prev.length === list.length && list.every((m, i) => m.id === prev[i]?.id)) return prev;
-            return list;
+            const next = list;
+            const isUnchanged =
+              prev.length === next.length && next.every((m, i) => m.id === prev[i]?.id);
+            if (isUnchanged) return prev;
+            if (document.visibilityState === "hidden") {
+              const newUserMsg = next.find(
+                (m) => m.sender === "user" && !prev.some((p) => p.id === m.id)
+              );
+              if (newUserMsg) tryShowNewMessageNotification(newUserMsg, selectedSessionIdRef.current);
+            }
+            return next;
           });
         })
         .catch(() => {});
@@ -153,6 +226,7 @@ export default function AdminLiveChatPanel() {
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages" }, (payload) => {
         const incoming = payload?.new;
         if (!incoming) return;
+        tryShowNewMessageNotification(incoming, selectedSessionIdRef.current);
         if (incoming.session_id === selectedSessionId) {
           setMessages((prev) => (prev.some((m) => m.id === incoming.id) ? prev : [...prev, incoming]));
         }

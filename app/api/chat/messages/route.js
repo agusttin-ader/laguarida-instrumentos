@@ -2,6 +2,7 @@ export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
 import { getSupabaseAdminClient } from '../../../../lib/supabase/server'
+import { sendAdminPushNotifications } from '../../../../lib/push'
 import { assertSameOrigin, getAdminUserFromRequest } from '../_server'
 
 function toSafeText(value, maxLen = 1000) {
@@ -116,6 +117,14 @@ export async function POST(req) {
         status: 'open',
       })
       .eq('id', sessionId)
+
+    if (sender === 'user') {
+      const bodyPreview = text.slice(0, 80)
+      sendAdminPushNotifications(admin, {
+        title: 'La Guarida - Nuevo mensaje',
+        body: bodyPreview || 'Un visitante escribió en el chat.',
+      }).catch(() => {})
+    }
 
     return NextResponse.json({ message: data }, { status: 201 })
   } catch (err) {

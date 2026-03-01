@@ -46,6 +46,16 @@ export default function ClientAuth({ children }){
     }
   }, [])
 
+  // Mantener sesión viva: refrescar token cada 50 min (solo se cierra con "Cerrar sesión")
+  useEffect(() => {
+    if (!user || isLoginPath) return
+    const REFRESH_MS = 50 * 60 * 1000
+    const id = setInterval(() => {
+      fetch('/api/auth/refresh', { method: 'POST', credentials: 'include' }).catch(() => {})
+    }, REFRESH_MS)
+    return () => clearInterval(id)
+  }, [user, isLoginPath])
+
   // Client-side route guard: redirect to /admin/login when unauthenticated
   const pathname = usePathname()
   const router = useRouter()

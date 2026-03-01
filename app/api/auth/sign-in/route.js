@@ -62,12 +62,11 @@ export async function POST(req) {
         maxAge,
       })
 
-      // Refresh token cookie (optional, helpful for later refresh flows)
+      // Refresh token cookie: 1 year so session only ends when admin clicks "Cerrar sesión"
       if (session.refresh_token) {
         res.cookies.set('sb-refresh-token', session.refresh_token, {
           ...cookieOptions,
-          // keep refresh token longer (7 days) as a reasonable default
-          maxAge: 60 * 60 * 24 * 7,
+          maxAge: 60 * 60 * 24 * 365,
         })
       }
     }

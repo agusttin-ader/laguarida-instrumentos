@@ -4,29 +4,67 @@ import { NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '../../../../lib/supabase/server'
 import { cookies, headers } from 'next/headers'
 
+const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 365
+const ACCESS_TOKEN_MAX_AGE = 60 * 60
+
 export async function GET() {
   try {
     const requestHeaders = await headers()
+    const cookieStore = await cookies()
+    const tokenCookie = typeof cookieStore.get === 'function' ? cookieStore.get('sb-access-token') : null
+    const accessToken = tokenCookie?.value || requestHeaders.get('authorization')?.replace(/^Bearer\s+/i, '') || null
+    const refreshCookie = typeof cookieStore.get === 'function' ? cookieStore.get('sb-refresh-token') : null
+    const refreshToken = refreshCookie?.value || null
 
-    async function getUserFromRequest() {
-      // Try cookie-based token first (common when client includes credentials)
+    let user = null
+    if (accessToken) {
       try {
-        const cookieStore = await cookies()
-        // cookieStore may be a RequestCookies-like API; prefer .get when available
-        const tokenCookie = typeof cookieStore.get === 'function' ? cookieStore.get('sb-access-token') : null
-        const token = tokenCookie?.value || requestHeaders.get('authorization')?.replace(/^Bearer\s+/i, '') || null
-        if (!token) return null
-
-        const supabase = getSupabaseServerClient(token)
+        const supabase = getSupabaseServerClient(accessToken)
         const { data, error } = await supabase.auth.getUser()
-        if (error) return null
-        return data?.user || null
+        if (!error && data?.user) user = data.user
       } catch {
-        return null
+        // ignore
       }
     }
 
-    const user = await getUserFromRequest()
+    if (!user && refreshToken) {
+      try {
+        const supabase = getSupabaseServerClient()
+        const { data, error } = await supabase.auth.refreshSession({ refresh_token: refreshToken })
+        if (!error && data?.session?.user) {
+          user = data.session.user
+          const session = data.session
+          const secure = process.env.NODE_ENV === 'production'
+          const cookieDomain = process.env.SITE_COOKIE_DOMAIN
+          const sameSiteSetting = 'lax'
+          const baseCookieOptions = {
+            httpOnly: true,
+            path: '/',
+            sameSite: sameSiteSetting,
+            secure,
+          }
+          const cookieOptions = cookieDomain ? { ...baseCookieOptions, domain: cookieDomain } : baseCookieOptions
+          const res = NextResponse.json({
+            authenticated: true,
+            user: { id: user.id, email: user.email || null },
+          })
+          res.cookies.set('sb-access-token', session.access_token, {
+            ...cookieOptions,
+            maxAge: session.expires_in || ACCESS_TOKEN_MAX_AGE,
+          })
+          if (session.refresh_token) {
+            res.cookies.set('sb-refresh-token', session.refresh_token, {
+              ...cookieOptions,
+              maxAge: REFRESH_TOKEN_MAX_AGE,
+            })
+          }
+          return res
+        }
+      } catch {
+        // ignore
+      }
+    }
+
     if (user) {
       return NextResponse.json({ authenticated: true, user: { id: user.id, email: user.email || null } })
     }
