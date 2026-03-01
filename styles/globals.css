@@ -1566,3 +1566,13 @@ button:not(.no-custom-btn):active {
   box-shadow: 0 20px 44px rgba(0, 0, 0, 0.3);
 }
 
+@keyframes splash-breathe {
+  0% { opacity: 0.22; transform: scale(0.98); }
+  100% { opacity: 0.46; transform: scale(1.02); }
+}
+
+.splash-soft-glow {
+  background: radial-gradient(circle, rgba(212,164,59,0.24) 0%, rgba(212,164,59,0.08) 38%, rgba(212,164,59,0.0) 70%);
+  animation: splash-breathe 2.2s ease-in-out infinite alternate;
+}
+

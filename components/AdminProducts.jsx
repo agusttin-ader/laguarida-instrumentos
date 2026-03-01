@@ -6,10 +6,13 @@ import normalizeProduct from '../lib/utils/normalizeProduct'
 import imageService from '../lib/utils/imageService'
 import ImageWithSkeleton from './ImageWithSkeleton'
 
+const CREATE_DRAFT_KEY = 'admin:create:draft:v1'
+
 export default function AdminProducts(){
   const modalFileInputRef = React.useRef(null)
   const mainFileInputRef = React.useRef(null)
   const modalGalleryInputRef = React.useRef(null)
+  const quickInputRef = React.useRef(null)
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -35,6 +38,13 @@ export default function AdminProducts(){
   const [modalUploadingMain, setModalUploadingMain] = useState(false)
   const [modalGalleryUploading, setModalGalleryUploading] = useState(false)
   const [modalClosing, setModalClosing] = useState(false)
+  const [modalGalleryDragIndex, setModalGalleryDragIndex] = useState(null)
+  const [modalGalleryDragOverIndex, setModalGalleryDragOverIndex] = useState(null)
+  const [createDraftSavedAt, setCreateDraftSavedAt] = useState(null)
+  const [createDraftRecovered, setCreateDraftRecovered] = useState(false)
+  const [quickOpen, setQuickOpen] = useState(false)
+  const [quickQ, setQuickQ] = useState('')
+  const [recentActivity, setRecentActivity] = useState([])
   // Admin quick-search for the product list (filter by name)
   const [adminQ, setAdminQ] = useState('')
 
@@ -59,6 +69,31 @@ export default function AdminProducts(){
   useEffect(() => {
     load()
   }, [])
+
+  useEffect(() => {
+    function onKeyDown(e){
+      const key = String(e.key || '').toLowerCase()
+      if ((e.metaKey || e.ctrlKey) && key === 'k') {
+        e.preventDefault()
+        if (modalOpen) return
+        setQuickOpen(v => !v)
+        if (!quickOpen) setQuickQ('')
+        return
+      }
+      if (key === 'escape' && quickOpen) {
+        e.preventDefault()
+        setQuickOpen(false)
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [quickOpen, modalOpen])
+
+  useEffect(() => {
+    if (!quickOpen) return
+    const t = setTimeout(() => quickInputRef.current?.focus(), 10)
+    return () => clearTimeout(t)
+  }, [quickOpen])
 
   // No client-side filters in admin list; show full items array
 
@@ -175,8 +210,16 @@ export default function AdminProducts(){
         throw new Error(`${res.status} ${res.statusText} ${txt}`)
       }
       await load()
+      if (modalMode === 'create' && typeof window !== 'undefined') {
+        try { localStorage.removeItem(CREATE_DRAFT_KEY) } catch { /* empty */ }
+        setCreateDraftSavedAt(null)
+      }
       // close modal and clear previews
       closeModal()
+      addRecentActivity(
+        modalMode === 'edit' ? 'update' : 'create',
+        modalForm.name || 'Producto'
+      )
       setSuccess(modalMode === 'edit' ? 'Producto actualizado correctamente' : 'Producto creado correctamente')
       setTimeout(() => setSuccess(null), 3000)
     } catch (err){
@@ -193,17 +236,70 @@ export default function AdminProducts(){
       setModalOpen(false)
       setEditingId(null)
       setModalGalleryPreviews([])
+      setModalGalleryDragIndex(null)
+      setModalGalleryDragOverIndex(null)
+      setCreateDraftRecovered(false)
       setModalClosing(false)
     }, 240) // matches CSS exit duration
   }
 
+  function hasMeaningfulCreateDraft(f){
+    if (!f || typeof f !== 'object') return false
+    const keys = ['name', 'price', 'description', 'image_url', 'model', 'wood', 'mics']
+    const hasText = keys.some(k => String(f[k] || '').trim() !== '')
+    const hasImages = Array.isArray(f.images) && f.images.length > 0
+    return hasText || hasImages
+  }
+
   function openCreateModal(){
     setModalMode('create')
-    setModalForm({ name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '', images: [] })
+    let nextForm = { name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '', images: [] }
+    let recovered = false
+
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = localStorage.getItem(CREATE_DRAFT_KEY)
+        if (raw) {
+          const parsed = JSON.parse(raw)
+          if (parsed?.form && hasMeaningfulCreateDraft(parsed.form)) {
+            nextForm = {
+              ...nextForm,
+              ...parsed.form,
+              images: Array.isArray(parsed.form.images) ? parsed.form.images : []
+            }
+            recovered = true
+            if (parsed?.savedAt) setCreateDraftSavedAt(parsed.savedAt)
+          }
+        }
+      } catch { /* empty */ }
+    }
+
+    setCreateDraftRecovered(recovered)
+    setModalForm(nextForm)
     setEditingId(null)
     setModalGalleryPreviews([])
     setModalOpen(true)
   }
+
+  useEffect(() => {
+    if (!modalOpen || modalMode !== 'create') return
+    if (typeof window === 'undefined') return
+
+    const timer = setTimeout(() => {
+      try {
+        if (!hasMeaningfulCreateDraft(modalForm)) {
+          localStorage.removeItem(CREATE_DRAFT_KEY)
+          setCreateDraftSavedAt(null)
+          return
+        }
+        const payload = { savedAt: Date.now(), form: modalForm }
+        localStorage.setItem(CREATE_DRAFT_KEY, JSON.stringify(payload))
+        setCreateDraftSavedAt(payload.savedAt)
+      } catch { /* empty */ }
+    }, 700)
+
+    return () => clearTimeout(timer)
+  }, [modalOpen, modalMode, modalForm])
 
   function handleFileChange(e){
     // Gallery files (multiple)
@@ -434,6 +530,50 @@ export default function AdminProducts(){
     })
   }
 
+  function reorderArray(arr, from, to){
+    if (!Array.isArray(arr)) return arr
+    if (from === to || from < 0 || to < 0 || from >= arr.length || to >= arr.length) return arr
+    const next = arr.slice()
+    const [moved] = next.splice(from, 1)
+    next.splice(to, 0, moved)
+    return next
+  }
+
+  const canReorderModalGallery = modalMode === 'create'
+    && Array.isArray(modalGalleryPreviews)
+    && modalGalleryPreviews.length > 1
+    && modalGalleryPreviews.every(p => !p.uploading)
+    && Array.isArray(modalForm.images)
+    && modalForm.images.length === modalGalleryPreviews.length
+
+  function handleGalleryDragStart(index){
+    if (!canReorderModalGallery) return
+    setModalGalleryDragIndex(index)
+    setModalGalleryDragOverIndex(index)
+  }
+
+  function handleGalleryDragOver(e, index){
+    if (!canReorderModalGallery) return
+    e.preventDefault()
+    if (modalGalleryDragOverIndex !== index) setModalGalleryDragOverIndex(index)
+  }
+
+  function handleGalleryDrop(e, dropIndex){
+    if (!canReorderModalGallery) return
+    e.preventDefault()
+    const from = modalGalleryDragIndex
+    if (from === null || from === undefined) return
+    if (from === dropIndex) return
+
+    setModalGalleryPreviews(prev => reorderArray(prev, from, dropIndex))
+    setModalForm(prev => ({ ...prev, images: reorderArray(prev.images || [], from, dropIndex) }))
+  }
+
+  function handleGalleryDragEnd(){
+    setModalGalleryDragIndex(null)
+    setModalGalleryDragOverIndex(null)
+  }
+
   async function handleCreate(e){
     e.preventDefault()
     setSubmitting(true)
@@ -553,6 +693,7 @@ export default function AdminProducts(){
       setGalleryFiles([])
       galleryPreviews.forEach(p => { try { URL.revokeObjectURL(p.url) } catch (e) {} })
       setGalleryPreviews([])
+      addRecentActivity('create', form.name || 'Producto')
       setSuccess('Producto creado correctamente')
       setTimeout(() => setSuccess(null), 3000)
     } catch (err){
@@ -577,6 +718,7 @@ export default function AdminProducts(){
         throw new Error(`${res.status} ${res.statusText} ${txt}`)
       }
       await load()
+      addRecentActivity('delete', label)
       setSuccess('Producto eliminado')
       setTimeout(() => setSuccess(null), 3000)
     } catch (err){
@@ -586,97 +728,233 @@ export default function AdminProducts(){
     }
   }
 
+  function addRecentActivity(type, label){
+    const stamp = Date.now()
+    const time = new Date(stamp).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })
+    const entry = {
+      id: `${stamp}-${Math.random().toString(36).slice(2, 8)}`,
+      type,
+      label,
+      stamp,
+      time
+    }
+    setRecentActivity(prev => [entry, ...prev].slice(0, 8))
+  }
+
+  const quickActions = React.useMemo(() => ([
+    {
+      id: 'create',
+      label: 'Crear producto',
+      hint: 'Abrir el modal de creación',
+      run: () => openCreateModal()
+    },
+    {
+      id: 'toggle-list',
+      label: listOpen ? 'Ocultar productos' : 'Mostrar productos',
+      hint: 'Alternar visibilidad de la lista',
+      run: () => setListOpen(v => !v)
+    },
+    {
+      id: 'focus-search',
+      label: 'Buscar productos',
+      hint: 'Enfocar campo de búsqueda',
+      run: () => {
+        setListOpen(true)
+        setTimeout(() => {
+          const el = document.getElementById('admin-search-input')
+          if (el) el.focus()
+        }, 30)
+      }
+    },
+    {
+      id: 'reload',
+      label: 'Recargar productos',
+      hint: 'Volver a consultar API',
+      run: () => load()
+    },
+    {
+      id: 'clear-search',
+      label: 'Limpiar búsqueda',
+      hint: 'Vaciar filtro actual',
+      run: () => setAdminQ('')
+    }
+  ]), [listOpen])
+
+  const quickFiltered = React.useMemo(() => {
+    const q = String(quickQ || '').trim().toLowerCase()
+    if (!q) return quickActions
+    return quickActions.filter(a =>
+      String(a.label || '').toLowerCase().includes(q)
+      || String(a.hint || '').toLowerCase().includes(q)
+    )
+  }, [quickQ, quickActions])
+
+  function runQuickAction(action){
+    if (!action || typeof action.run !== 'function') return
+    setQuickOpen(false)
+    setQuickQ('')
+    action.run()
+  }
+
   return (
     <div className="space-y-6">
+      {quickOpen ? (
+        <div className="fixed inset-0 z-[95] flex items-start justify-center px-4 pt-20 md:pt-28">
+          <button
+            type="button"
+            aria-label="Cerrar acciones rápidas"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm no-custom-btn"
+            onClick={() => setQuickOpen(false)}
+          />
+          <div className="relative w-full max-w-xl rounded-2xl border border-white/12 bg-[#0e131d]/95 shadow-[0_24px_56px_rgba(0,0,0,0.42)]">
+            <div className="px-4 py-3 border-b border-white/10">
+              <div className="flex items-center gap-2 text-xs text-white/55 mb-2">
+                <span>Acciones rápidas</span>
+                <span className="ml-auto">⌘/Ctrl + K</span>
+              </div>
+              <input
+                ref={quickInputRef}
+                value={quickQ}
+                onChange={(e) => setQuickQ(e.target.value)}
+                placeholder="Buscar acción..."
+                className="admin-premium-input"
+              />
+            </div>
+            <div className="max-h-[44vh] overflow-y-auto p-2">
+              {quickFiltered.length === 0 ? (
+                <div className="px-3 py-3 text-sm text-white/55">No hay acciones para ese filtro.</div>
+              ) : (
+                quickFiltered.map((a) => (
+                  <button
+                    key={a.id}
+                    type="button"
+                    onClick={() => runQuickAction(a)}
+                    className="w-full text-left px-3 py-2 rounded-xl border border-transparent hover:border-white/10 hover:bg-white/[0.04] transition-colors no-custom-btn"
+                  >
+                    <div className="text-sm text-white font-medium">{a.label}</div>
+                    <div className="text-xs text-white/55 mt-0.5">{a.hint}</div>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
       {modalOpen ? (
         <div className="fixed inset-0 z-40 flex items-start justify-center px-4 py-8">
           <div className={`fixed inset-0 bg-black/60 backdrop-blur-md ${modalClosing ? 'modal-backdrop-exit' : 'modal-backdrop-enter'}`} onClick={closeModal} />
           <div className={`relative admin-premium-card w-full max-w-3xl z-50 p-6 max-h-[85vh] overflow-y-auto ${modalClosing ? 'modal-panel-exit' : 'modal-panel-enter'}`}>
-            <h3 className="text-lg font-semibold mb-4 text-white">{modalMode === 'edit' ? 'Editar producto' : 'Crear producto'}</h3>
-            {error ? <div className="mb-3 p-3 bg-rose-500/15 text-rose-200 rounded border border-rose-400/20 text-sm">{error}</div> : null}
-            <form onSubmit={handleSaveEdit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-3">
-                <div>
-                  <label className="text-sm block mb-1 text-white/75">Nombre</label>
-                  <input name="name" value={modalForm.name} onChange={handleModalChange} className="admin-premium-input" />
-                </div>
-                <div>
-                  <label className="text-sm block mb-1 text-white/75">Precio</label>
-                  <input name="price" value={modalForm.price} onChange={handleModalChange} className="admin-premium-input" />
-                </div>
-                <div>
-                  <label className="text-sm block mb-1 text-white/75">Modelo (model)</label>
-                  <input name="model" value={modalForm.model} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: Stratocaster" />
-                </div>
-                <div>
-                  <label className="text-sm block mb-1 text-white/75">Madera del cuerpo (wood)</label>
-                  <input name="wood" value={modalForm.wood} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: Alder" />
-                </div>
-                <div>
-                  <label className="text-sm block mb-1 text-white/75">Micrófonos (mics)</label>
-                  <input name="mics" value={modalForm.mics} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: SSS" />
-                </div>
+            <h3 className="text-lg font-semibold mb-1 text-white">{modalMode === 'edit' ? 'Editar producto' : 'Crear producto'}</h3>
+            {modalMode === 'create' ? (
+              <div className="mb-3 text-xs text-white/60">
+                {createDraftRecovered ? 'Borrador recuperado automaticamente.' : null}
+                {!createDraftRecovered && createDraftSavedAt ? 'Borrador guardado automaticamente.' : null}
               </div>
-              <div className="space-y-3">
-                <div>
-                  <label className="text-sm block mb-1 text-white/75">Imagen principal</label>
-                  {modalForm.image_url ? (
-                    <div className="w-full rounded-xl overflow-hidden border border-white/15 mb-2 relative" style={{height: '160px'}}>
-                      <ImageWithSkeleton src={modalForm.image_url} alt="Imagen principal" width={1200} height={160} quality={100} />
-                      {modalUploadingMain ? (
-                        <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
-                          <svg className="animate-spin h-6 w-6 text-white/90" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
-                        </div>
-                      ) : null}
-                    </div>
-                  ) : null}
-                  <input ref={modalFileInputRef} type="file" accept="image/*" onChange={handleModalFileChange} className="hidden" />
-                  <div className="flex gap-2">
-                    <button type="button" className="px-3 py-2 admin-premium-btn-primary no-custom-btn" onClick={() => modalFileInputRef.current && modalFileInputRef.current.click()}>Subir nueva imagen</button>
-                    <button type="button" className="px-3 py-2 admin-premium-btn-ghost no-custom-btn" onClick={() => setModalForm(prev => ({ ...prev, image_url: '' }))}>Quitar imagen</button>
+            ) : null}
+            {error ? <div className="mb-3 p-3 bg-rose-500/15 text-rose-200 rounded border border-rose-400/20 text-sm">{error}</div> : null}
+            <form onSubmit={handleSaveEdit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm block mb-1 text-white/75">Nombre</label>
+                    <input name="name" value={modalForm.name} onChange={handleModalChange} className="admin-premium-input" />
+                  </div>
+                  <div>
+                    <label className="text-sm block mb-1 text-white/75">Precio</label>
+                    <input name="price" value={modalForm.price} onChange={handleModalChange} className="admin-premium-input" />
+                  </div>
+                  <div>
+                    <label className="text-sm block mb-1 text-white/75">Modelo (model)</label>
+                    <input name="model" value={modalForm.model} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: Stratocaster" />
+                  </div>
+                  <div>
+                    <label className="text-sm block mb-1 text-white/75">Madera del cuerpo (wood)</label>
+                    <input name="wood" value={modalForm.wood} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: Alder" />
+                  </div>
+                  <div>
+                    <label className="text-sm block mb-1 text-white/75">Micrófonos (mics)</label>
+                    <input name="mics" value={modalForm.mics} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: SSS" />
                   </div>
                 </div>
-                    <div className="sm:col-span-2">
-                      <label className="text-sm block mb-1 text-white/75">Descripción</label>
-                      <textarea name="description" value={modalForm.description} onChange={handleModalChange} className="admin-premium-input" rows="4" />
-                    </div>
-                    {modalMode === 'create' ? (
-                    <div className="sm:col-span-2">
-                      <label className="text-sm block mb-1 text-white/75">Galería (opcional)</label>
-                      <input ref={modalGalleryInputRef} type="file" accept="image/*" multiple onChange={handleModalGalleryChange} className="hidden" />
-                      <div className="flex gap-2">
-                        <button type="button" className="px-3 py-2 admin-premium-btn-primary no-custom-btn" onClick={() => modalGalleryInputRef.current && modalGalleryInputRef.current.click()}>Subir imágenes</button>
-                        <button type="button" className="px-3 py-2 admin-premium-btn-ghost no-custom-btn" onClick={() => { setModalForm(prev => ({ ...prev, images: [] })); setModalGalleryPreviews([]) }}>Limpiar galería</button>
+
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm block mb-1 text-white/75">Imagen principal</label>
+                    {modalForm.image_url ? (
+                      <div className="w-full rounded-xl overflow-hidden border border-white/15 mb-2 relative h-40">
+                        <ImageWithSkeleton src={modalForm.image_url} alt="Imagen principal" fill quality={100} className="w-full h-full" disableClientPreview />
+                        {modalUploadingMain ? (
+                          <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
+                            <svg className="animate-spin h-6 w-6 text-white/90" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+                          </div>
+                        ) : null}
                       </div>
-                      {modalGalleryPreviews.length > 0 ? (
-                        <div className="mt-3 grid grid-cols-4 gap-2">
-                          {modalGalleryPreviews.map((p, i) => (
-                            <div key={p.id} className="w-full">
-                              <div className="w-full h-16 rounded overflow-hidden border border-white/15 relative group">
-                                <ImageWithSkeleton src={p.url} alt={p.name || ('Imagen ' + (i+1))} width={160} height={64} quality={100} />
-                                {p.uploading ? (
-                                  <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
-                                    <svg className="animate-spin h-5 w-5 text-white/90" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
-                                  </div>
-                                ) : null}
-                                {/* centered red X on hover */}
-                                {!p.uploading ? (
-                                  <button type="button" onClick={() => handleModalRemoveGallery(i)} aria-label="Eliminar imagen" className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <span className="bg-rose-600 hover:bg-rose-700 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-sm">×</span>
-                                  </button>
-                                ) : null}
-                              </div>
-                              <div className="text-xs mt-1 truncate text-white/75">{p.name}</div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : null}
-                    </div>
                     ) : null}
-                <div className="sm:col-span-2 flex flex-col sm:flex-row gap-2 mt-2">
-                  <button type="submit" className="px-4 py-2 admin-premium-btn-primary no-custom-btn w-full sm:w-auto" disabled={submitting}>{submitting ? (modalMode === 'edit' ? 'Guardando…' : 'Creando…') : (modalMode === 'edit' ? 'Guardar cambios' : 'Crear producto')}</button>
-                  <button type="button" className="px-4 py-2 admin-premium-btn-ghost no-custom-btn w-full sm:w-auto" onClick={closeModal}>Cancelar</button>
+                    <input ref={modalFileInputRef} type="file" accept="image/*" onChange={handleModalFileChange} className="hidden" />
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <button type="button" className="px-3 py-2 admin-premium-btn-primary no-custom-btn" onClick={() => modalFileInputRef.current && modalFileInputRef.current.click()}>Subir nueva imagen</button>
+                      <button type="button" className="px-3 py-2 admin-premium-btn-ghost no-custom-btn" onClick={() => setModalForm(prev => ({ ...prev, image_url: '' }))}>Quitar imagen</button>
+                    </div>
+                  </div>
                 </div>
+              </div>
+
+              <div>
+                <label className="text-sm block mb-1 text-white/75">Descripción</label>
+                <textarea name="description" value={modalForm.description} onChange={handleModalChange} className="admin-premium-input" rows="4" />
+              </div>
+
+              {modalMode === 'create' ? (
+                <div>
+                  <label className="text-sm block mb-1 text-white/75">Galería (opcional)</label>
+                  <input ref={modalGalleryInputRef} type="file" accept="image/*" multiple onChange={handleModalGalleryChange} className="hidden" />
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <button type="button" className="px-3 py-2 admin-premium-btn-primary no-custom-btn" onClick={() => modalGalleryInputRef.current && modalGalleryInputRef.current.click()}>Subir imágenes</button>
+                    <button type="button" className="px-3 py-2 admin-premium-btn-ghost no-custom-btn" onClick={() => { setModalForm(prev => ({ ...prev, images: [] })); setModalGalleryPreviews([]); setModalGalleryDragIndex(null); setModalGalleryDragOverIndex(null) }}>Limpiar galería</button>
+                  </div>
+                  {canReorderModalGallery ? (
+                    <p className="mt-2 text-[11px] text-white/55">Arrastrá las miniaturas para reordenar la galería.</p>
+                  ) : null}
+                  {modalGalleryPreviews.length > 0 ? (
+                    <div className="mt-3 grid grid-cols-3 sm:grid-cols-4 gap-2">
+                      {modalGalleryPreviews.map((p, i) => (
+                        <div key={p.id} className="w-full">
+                          <div
+                            className={`w-full h-16 rounded overflow-hidden border relative group ${modalGalleryDragOverIndex === i && modalGalleryDragIndex !== i ? 'border-[#d4a43b]/80 ring-1 ring-[#d4a43b]/35' : 'border-white/15'} ${canReorderModalGallery ? 'cursor-grab active:cursor-grabbing' : ''}`}
+                            draggable={canReorderModalGallery}
+                            onDragStart={() => handleGalleryDragStart(i)}
+                            onDragOver={(e) => handleGalleryDragOver(e, i)}
+                            onDrop={(e) => handleGalleryDrop(e, i)}
+                            onDragEnd={handleGalleryDragEnd}
+                          >
+                            <ImageWithSkeleton src={p.url} alt={p.name || ('Imagen ' + (i+1))} fill quality={100} className="w-full h-full" disableClientPreview />
+                            {p.uploading ? (
+                              <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
+                                <svg className="animate-spin h-5 w-5 text-white/90" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+                              </div>
+                            ) : null}
+                            {canReorderModalGallery ? (
+                              <div className="absolute left-1 top-1 z-10 rounded bg-black/45 px-1.5 py-0.5 text-[10px] text-white/80 border border-white/10">
+                                {i + 1}
+                              </div>
+                            ) : null}
+                            {!p.uploading ? (
+                              <button type="button" onClick={() => handleModalRemoveGallery(i)} aria-label="Eliminar imagen" className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span className="bg-rose-600 hover:bg-rose-700 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-sm">×</span>
+                              </button>
+                            ) : null}
+                          </div>
+                          <div className="text-xs mt-1 truncate text-white/75">{p.name}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+
+              <div className="flex flex-col sm:flex-row gap-2 mt-2">
+                <button type="submit" className="px-4 py-2 admin-premium-btn-primary no-custom-btn w-full sm:w-auto" disabled={submitting}>{submitting ? (modalMode === 'edit' ? 'Guardando…' : 'Creando…') : (modalMode === 'edit' ? 'Guardar cambios' : 'Crear producto')}</button>
+                <button type="button" className="px-4 py-2 admin-premium-btn-ghost no-custom-btn w-full sm:w-auto" onClick={closeModal}>Cancelar</button>
               </div>
             </form>
           </div>
@@ -701,6 +979,29 @@ export default function AdminProducts(){
       </section>
 
       <section className="p-4 md:p-5 admin-premium-card">
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <h2 className="text-base md:text-lg font-semibold text-white">Actividad reciente</h2>
+          <span className="text-[11px] text-white/50">Últimos cambios</span>
+        </div>
+        {recentActivity.length === 0 ? (
+          <div className="text-sm text-white/55 border border-white/10 rounded-xl px-3 py-3 bg-black/20">
+            Aún no hay cambios en esta sesión.
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {recentActivity.map((a) => (
+              <div key={a.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/20 px-3 py-2.5">
+                <p className="text-sm text-white/92 truncate">
+                  {a.type === 'create' ? 'Creaste' : a.type === 'update' ? 'Actualizaste' : 'Eliminaste'} <span className="text-white font-medium">{a.label}</span>
+                </p>
+                <span className="text-[11px] text-white/55 whitespace-nowrap">{a.time}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="p-4 md:p-5 admin-premium-card">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h2 className="text-lg font-semibold text-white">Productos</h2>
@@ -722,11 +1023,13 @@ export default function AdminProducts(){
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="17" height="17"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/></svg>
             </span>
             <input
+              id="admin-search-input"
               aria-label="Buscar producto por nombre"
               value={adminQ}
               onChange={(e) => setAdminQ(e.target.value)}
               placeholder="Escribe el nombre para filtrar..."
-              className="admin-premium-input pl-10 pr-3 py-2.5 text-sm"
+              className="admin-premium-input pr-3 py-2.5 text-sm"
+              style={{ paddingLeft: '2.4rem' }}
             />
           </div>
         </div>
@@ -742,7 +1045,7 @@ export default function AdminProducts(){
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-md overflow-hidden border border-white/15 bg-black/20 flex items-center justify-center">
                   {imgSrc ? (
-                    <ImageWithSkeleton src={imgSrc} alt={p.name || p.slug || 'Imagen'} width={56} height={56} quality={100} />
+                    <ImageWithSkeleton src={imgSrc} alt={p.name || p.slug || 'Imagen'} width={56} height={56} quality={100} disableClientPreview />
                   ) : (
                     <div className="image-placeholder w-full h-full" />
                   )}
