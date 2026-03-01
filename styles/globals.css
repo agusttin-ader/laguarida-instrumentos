@@ -1448,3 +1448,121 @@ button:not(.no-custom-btn):active {
   transform: none !important;
 }
 
+/* ===================== Admin premium redesign ===================== */
+.admin-premium-card {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(8px);
+}
+
+.admin-premium-input {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(9, 13, 24, 0.78);
+  color: rgba(255, 255, 255, 0.96);
+  padding: 0.58rem 0.82rem;
+}
+
+.admin-premium-input::placeholder {
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.admin-premium-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.09);
+}
+
+.admin-premium-btn-primary,
+.admin-premium-btn-secondary,
+.admin-premium-btn-danger,
+.admin-premium-btn-ghost {
+  border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 160ms ease, border-color 160ms ease, background-color 160ms ease, opacity 120ms ease;
+}
+
+.admin-premium-btn-primary {
+  background: linear-gradient(180deg, #f8b13f, #e08d00);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 24px rgba(224, 141, 0, 0.28);
+}
+
+.admin-premium-btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.admin-premium-btn-danger {
+  background: linear-gradient(180deg, #e53935, #c62828);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 24px rgba(198, 40, 40, 0.26);
+}
+
+.admin-premium-btn-ghost {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-premium-btn-primary:hover,
+.admin-premium-btn-secondary:hover,
+.admin-premium-btn-danger:hover,
+.admin-premium-btn-ghost:hover {
+  transform: translateY(-1px);
+}
+
+.admin-premium-btn-primary:hover {
+  box-shadow: 0 14px 30px rgba(224, 141, 0, 0.34);
+}
+
+.admin-premium-btn-secondary:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.24);
+}
+
+.admin-premium-btn-danger:hover {
+  box-shadow: 0 14px 30px rgba(198, 40, 40, 0.34);
+}
+
+.admin-premium-btn-ghost:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.admin-premium-btn-primary:active,
+.admin-premium-btn-secondary:active,
+.admin-premium-btn-danger:active,
+.admin-premium-btn-ghost:active {
+  transform: translateY(0);
+}
+
+.admin-premium-btn-primary:focus-visible,
+.admin-premium-btn-secondary:focus-visible,
+.admin-premium-btn-danger:focus-visible,
+.admin-premium-btn-ghost:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.14);
+}
+
+.admin-premium-muted {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.admin-premium-card {
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.admin-premium-card:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.3);
+}
+

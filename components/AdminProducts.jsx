@@ -14,7 +14,7 @@ export default function AdminProducts(){
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [listOpen, setListOpen] = useState(false)
-  const [form, setForm] = useState({ name: '', slug: '', price: '', image_url: '', description: '', mics: 'SSS', wood: 'Alder', model: 'Stratocaster' })
+  const [form, setForm] = useState({ name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '' })
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(null)
   const [lastGeneratedSlug, setLastGeneratedSlug] = useState('')
@@ -29,7 +29,7 @@ export default function AdminProducts(){
   const [deletingId, setDeletingId] = useState(null)
   const [editingId, setEditingId] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
-  const [modalForm, setModalForm] = useState({ name: '', slug: '', price: '', image_url: '', description: '', mics: 'SSS', wood: 'Alder', model: 'Stratocaster', images: [] })
+  const [modalForm, setModalForm] = useState({ name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '', images: [] })
   const [modalMode, setModalMode] = useState('edit') // 'edit' | 'create'
   const [modalGalleryPreviews, setModalGalleryPreviews] = useState([]) // {id,url,name}
   const [modalUploadingMain, setModalUploadingMain] = useState(false)
@@ -104,9 +104,9 @@ export default function AdminProducts(){
       price: p.price || '',
       image_url: p.image_url || '',
       description: p.description || '',
-      mics: p.mics || 'SSS',
-      wood: p.wood || 'Alder',
-      model: p.model || 'Stratocaster',
+      mics: p.mics || '',
+      wood: p.wood || '',
+      model: p.model || '',
       images: Array.isArray(p.images) ? p.images.slice() : []
     })
     // do not populate or show gallery in edit mode (gallery only available when creating)
@@ -199,7 +199,7 @@ export default function AdminProducts(){
 
   function openCreateModal(){
     setModalMode('create')
-    setModalForm({ name: '', slug: '', price: '', image_url: '', description: '', mics: 'SSS', wood: 'Alder', model: 'Stratocaster', images: [] })
+    setModalForm({ name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '', images: [] })
     setEditingId(null)
     setModalGalleryPreviews([])
     setModalOpen(true)
@@ -544,7 +544,7 @@ export default function AdminProducts(){
         throw new Error(`${res.status} ${res.statusText} ${txt}`)
       }
       await load()
-      setForm({ name: '', slug: '', price: '', image_url: '', description: '', mics: 'SSS', wood: 'Alder', model: 'Stratocaster' })
+      setForm({ name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '' })
       setEditingId(null)
       // clear selected files and previews
       setMainFile(null)
@@ -590,73 +590,73 @@ export default function AdminProducts(){
     <div className="space-y-6">
       {modalOpen ? (
         <div className="fixed inset-0 z-40 flex items-start justify-center px-4 py-8">
-          <div className={`fixed inset-0 bg-black/40 backdrop-blur-sm ${modalClosing ? 'modal-backdrop-exit' : 'modal-backdrop-enter'}`} onClick={closeModal} />
-          <div className={`relative bg-white rounded-lg shadow-lg w-full max-w-3xl z-50 p-6 max-h-[85vh] overflow-y-auto ${modalClosing ? 'modal-panel-exit' : 'modal-panel-enter'}`}>
-            <h3 className="text-lg font-semibold mb-4">{modalMode === 'edit' ? 'Editar producto' : 'Crear producto'}</h3>
-            {error ? <div className="mb-3 p-3 bg-rose-50 text-rose-700 rounded border border-rose-100 text-sm">{error}</div> : null}
+          <div className={`fixed inset-0 bg-black/60 backdrop-blur-md ${modalClosing ? 'modal-backdrop-exit' : 'modal-backdrop-enter'}`} onClick={closeModal} />
+          <div className={`relative admin-premium-card w-full max-w-3xl z-50 p-6 max-h-[85vh] overflow-y-auto ${modalClosing ? 'modal-panel-exit' : 'modal-panel-enter'}`}>
+            <h3 className="text-lg font-semibold mb-4 text-white">{modalMode === 'edit' ? 'Editar producto' : 'Crear producto'}</h3>
+            {error ? <div className="mb-3 p-3 bg-rose-500/15 text-rose-200 rounded border border-rose-400/20 text-sm">{error}</div> : null}
             <form onSubmit={handleSaveEdit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-3">
                 <div>
-                  <label className="text-sm block mb-1 text-gray-700">Nombre</label>
-                  <input name="name" value={modalForm.name} onChange={handleModalChange} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-gray-800" />
+                  <label className="text-sm block mb-1 text-white/75">Nombre</label>
+                  <input name="name" value={modalForm.name} onChange={handleModalChange} className="admin-premium-input" />
                 </div>
                 <div>
-                  <label className="text-sm block mb-1 text-gray-700">Precio</label>
-                  <input name="price" value={modalForm.price} onChange={handleModalChange} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-gray-800" />
+                  <label className="text-sm block mb-1 text-white/75">Precio</label>
+                  <input name="price" value={modalForm.price} onChange={handleModalChange} className="admin-premium-input" />
                 </div>
                 <div>
-                  <label className="text-sm block mb-1 text-gray-700">Modelo (model)</label>
-                  <input name="model" value={modalForm.model} onChange={handleModalChange} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-gray-800" />
+                  <label className="text-sm block mb-1 text-white/75">Modelo (model)</label>
+                  <input name="model" value={modalForm.model} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: Stratocaster" />
                 </div>
                 <div>
-                  <label className="text-sm block mb-1 text-gray-700">Madera del cuerpo (wood)</label>
-                  <input name="wood" value={modalForm.wood} onChange={handleModalChange} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-gray-800" />
+                  <label className="text-sm block mb-1 text-white/75">Madera del cuerpo (wood)</label>
+                  <input name="wood" value={modalForm.wood} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: Alder" />
                 </div>
                 <div>
-                  <label className="text-sm block mb-1 text-gray-700">Micrófonos (mics)</label>
-                  <input name="mics" value={modalForm.mics} onChange={handleModalChange} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-gray-800" />
+                  <label className="text-sm block mb-1 text-white/75">Micrófonos (mics)</label>
+                  <input name="mics" value={modalForm.mics} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: SSS" />
                 </div>
               </div>
               <div className="space-y-3">
                 <div>
-                  <label className="text-sm block mb-1 text-gray-700">Imagen principal</label>
+                  <label className="text-sm block mb-1 text-white/75">Imagen principal</label>
                   {modalForm.image_url ? (
-                    <div className="w-full rounded overflow-hidden border mb-2 relative" style={{height: '160px'}}>
+                    <div className="w-full rounded-xl overflow-hidden border border-white/15 mb-2 relative" style={{height: '160px'}}>
                       <ImageWithSkeleton src={modalForm.image_url} alt="Imagen principal" width={1200} height={160} quality={100} />
                       {modalUploadingMain ? (
-                        <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
-                          <svg className="animate-spin h-6 w-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+                        <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
+                          <svg className="animate-spin h-6 w-6 text-white/90" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
                         </div>
                       ) : null}
                     </div>
                   ) : null}
                   <input ref={modalFileInputRef} type="file" accept="image/*" onChange={handleModalFileChange} className="hidden" />
                   <div className="flex gap-2">
-                    <button type="button" className="px-3 py-2 bg-amber-600 text-white rounded-md no-custom-btn" onClick={() => modalFileInputRef.current && modalFileInputRef.current.click()}>Subir nueva imagen</button>
-                    <button type="button" className="px-3 py-2 bg-white border border-gray-200 rounded-md no-custom-btn" onClick={() => setModalForm(prev => ({ ...prev, image_url: '' }))}>Quitar imagen</button>
+                    <button type="button" className="px-3 py-2 admin-premium-btn-primary no-custom-btn" onClick={() => modalFileInputRef.current && modalFileInputRef.current.click()}>Subir nueva imagen</button>
+                    <button type="button" className="px-3 py-2 admin-premium-btn-ghost no-custom-btn" onClick={() => setModalForm(prev => ({ ...prev, image_url: '' }))}>Quitar imagen</button>
                   </div>
                 </div>
                     <div className="sm:col-span-2">
-                      <label className="text-sm block mb-1 text-gray-700">Descripción</label>
-                      <textarea name="description" value={modalForm.description} onChange={handleModalChange} className="w-full border border-gray-200 rounded-lg px-4 py-2 text-gray-800" rows="4" />
+                      <label className="text-sm block mb-1 text-white/75">Descripción</label>
+                      <textarea name="description" value={modalForm.description} onChange={handleModalChange} className="admin-premium-input" rows="4" />
                     </div>
                     {modalMode === 'create' ? (
                     <div className="sm:col-span-2">
-                      <label className="text-sm block mb-1 text-gray-700">Galería (opcional)</label>
+                      <label className="text-sm block mb-1 text-white/75">Galería (opcional)</label>
                       <input ref={modalGalleryInputRef} type="file" accept="image/*" multiple onChange={handleModalGalleryChange} className="hidden" />
                       <div className="flex gap-2">
-                        <button type="button" className="px-3 py-2 bg-amber-600 text-white rounded-md no-custom-btn" onClick={() => modalGalleryInputRef.current && modalGalleryInputRef.current.click()}>Subir imágenes</button>
-                        <button type="button" className="px-3 py-2 bg-white border border-gray-200 rounded-md no-custom-btn" onClick={() => { setModalForm(prev => ({ ...prev, images: [] })); setModalGalleryPreviews([]) }}>Limpiar galería</button>
+                        <button type="button" className="px-3 py-2 admin-premium-btn-primary no-custom-btn" onClick={() => modalGalleryInputRef.current && modalGalleryInputRef.current.click()}>Subir imágenes</button>
+                        <button type="button" className="px-3 py-2 admin-premium-btn-ghost no-custom-btn" onClick={() => { setModalForm(prev => ({ ...prev, images: [] })); setModalGalleryPreviews([]) }}>Limpiar galería</button>
                       </div>
                       {modalGalleryPreviews.length > 0 ? (
                         <div className="mt-3 grid grid-cols-4 gap-2">
                           {modalGalleryPreviews.map((p, i) => (
                             <div key={p.id} className="w-full">
-                              <div className="w-full h-16 rounded overflow-hidden border relative group">
+                              <div className="w-full h-16 rounded overflow-hidden border border-white/15 relative group">
                                 <ImageWithSkeleton src={p.url} alt={p.name || ('Imagen ' + (i+1))} width={160} height={64} quality={100} />
                                 {p.uploading ? (
-                                  <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
-                                    <svg className="animate-spin h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+                                  <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
+                                    <svg className="animate-spin h-5 w-5 text-white/90" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
                                   </div>
                                 ) : null}
                                 {/* centered red X on hover */}
@@ -666,45 +666,47 @@ export default function AdminProducts(){
                                   </button>
                                 ) : null}
                               </div>
-                              <div className="text-xs mt-1 truncate">{p.name}</div>
+                              <div className="text-xs mt-1 truncate text-white/75">{p.name}</div>
                             </div>
                           ))}
                         </div>
                       ) : null}
                     </div>
                     ) : null}
-                <div className="sm:col-span-2 flex gap-2 mt-2">
-                  <button type="submit" className="px-4 py-2 bg-black text-white rounded-lg no-custom-btn" disabled={submitting}>{submitting ? (modalMode === 'edit' ? 'Guardando…' : 'Creando…') : (modalMode === 'edit' ? 'Guardar cambios' : 'Crear producto')}</button>
-                  <button type="button" className="px-4 py-2 bg-white border border-gray-200 rounded-lg no-custom-btn" onClick={closeModal}>Cancelar</button>
+                <div className="sm:col-span-2 flex flex-col sm:flex-row gap-2 mt-2">
+                  <button type="submit" className="px-4 py-2 admin-premium-btn-primary no-custom-btn w-full sm:w-auto" disabled={submitting}>{submitting ? (modalMode === 'edit' ? 'Guardando…' : 'Creando…') : (modalMode === 'edit' ? 'Guardar cambios' : 'Crear producto')}</button>
+                  <button type="button" className="px-4 py-2 admin-premium-btn-ghost no-custom-btn w-full sm:w-auto" onClick={closeModal}>Cancelar</button>
                 </div>
               </div>
             </form>
           </div>
         </div>
       ) : null}
-      <section className="p-6 admin-card rounded-xl shadow-sm border border-gray-100">
+      <section className="p-4 md:p-6 admin-premium-card">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Crear producto</h2>
-            <p className="text-sm text-gray-600">Usa el botón &apos;Crear producto&apos; para abrir el editor en un modal.</p>
+            <h2 className="text-lg font-semibold text-white">Crear producto</h2>
+            <p className="text-sm admin-premium-muted">Usa el botón &apos;Crear producto&apos; para abrir el editor en un modal.</p>
           </div>
-          <div className="flex items-center gap-2">
-            <button type="button" className="px-4 py-2 bg-amber-600 text-white rounded-lg no-custom-btn" onClick={openCreateModal}>Crear producto</button>
-            <button type="button" className="px-3 py-2 bg-white border border-gray-200 rounded-md no-custom-btn" onClick={() => { setForm({ name: '', slug: '', price: '', image_url: '', description: '', mics: 'SSS', wood: 'Alder', model: 'Stratocaster' }); setMainFile(null); setMainPreview(null); setGalleryFiles([]); setGalleryPreviews([]); }}>Limpiar</button>
+          <div className="flex w-full md:w-auto items-center gap-2">
+            <button type="button" className="px-4 py-2 admin-premium-btn-primary no-custom-btn inline-flex items-center justify-center gap-2 w-full md:w-auto" onClick={openCreateModal}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v14m-7-7h14" /></svg>
+              Crear producto
+            </button>
           </div>
         </div>
-        {error ? <div className="mt-3 p-3 bg-rose-50 text-rose-700 rounded border border-rose-100 text-sm">{error}</div> : null}
-        {success ? <div className="mt-3 p-3 bg-emerald-50 text-emerald-800 rounded border border-emerald-100 text-sm">{success}</div> : null}
+        {error ? <div className="mt-3 p-3 bg-rose-500/15 text-rose-200 rounded border border-rose-400/20 text-sm">{error}</div> : null}
+        {success ? <div className="mt-3 p-3 bg-emerald-500/15 text-emerald-200 rounded border border-emerald-400/20 text-sm">{success}</div> : null}
         
       </section>
 
-      <section className="p-4 admin-card rounded-xl shadow-sm border border-gray-100">
+      <section className="p-4 md:p-5 admin-premium-card">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Productos</h2>
+            <h2 className="text-lg font-semibold text-white">Productos</h2>
           </div>
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={() => setListOpen(v => !v)} className="inline-flex items-center gap-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-md px-3 py-1 hover:bg-gray-50 no-custom-btn">
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <button type="button" onClick={() => setListOpen(v => !v)} className="inline-flex items-center justify-center gap-2 text-sm admin-premium-btn-secondary px-3 py-2 w-full md:w-auto no-custom-btn">
               {listOpen ? 'Ocultar' : 'Mostrar'}
               <svg className={`h-4 w-4 transition-transform ${listOpen ? 'rotate-180' : 'rotate-0'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -714,48 +716,51 @@ export default function AdminProducts(){
         </div>
 
         <div className="mt-4">
-          <label className="block text-xs text-gray-500 mb-2">Buscar producto</label>
-          <div className="search-pill w-full" role="search">
-            <span className="search-icon" aria-hidden>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/></svg>
+          <label className="block text-xs text-white/60 mb-2">Buscar producto</label>
+          <div className="relative" role="search">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/45" aria-hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="17" height="17"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/></svg>
             </span>
             <input
               aria-label="Buscar producto por nombre"
               value={adminQ}
               onChange={(e) => setAdminQ(e.target.value)}
               placeholder="Escribe el nombre para filtrar..."
-              className="search-input"
+              className="admin-premium-input pl-10 pr-3 py-2.5 text-sm"
             />
           </div>
         </div>
-        {loading ? <div className="py-4">Cargando…</div> : null}
+        {loading ? <div className="py-4 text-white/70">Cargando…</div> : null}
         {!loading && items.length === 0 ? (
-          <div className="py-4 text-sm text-gray-600">No hay productos.</div>
+          <div className="py-4 text-sm text-white/65">No hay productos.</div>
         ) : null}
-        <div className={`mt-4 admin-card rounded-lg shadow-sm overflow-hidden divide-y divide-gray-100 transition-all duration-200 ${listOpen ? 'max-h-[2000px] py-0' : 'max-h-0'}`}>
+        <div className={`mt-4 rounded-xl border border-white/10 bg-black/20 overflow-hidden divide-y divide-white/10 transition-all duration-200 ${listOpen ? 'max-h-[2000px] py-0' : 'max-h-0'}`}>
           {filteredItems.map((p) => {
             const imgSrc = imageService.resolve(p.image_url || (p.images && p.images[0]))
             return (
-            <div key={p.id} className="flex items-center justify-between gap-4 px-4 py-4 admin-item">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-md overflow-hidden border border-gray-100 bg-neutral-50 flex items-center justify-center">
+            <div key={p.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-3 sm:px-4 py-3.5 admin-item hover:bg-white/[0.03]">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-12 h-12 md:w-14 md:h-14 rounded-md overflow-hidden border border-white/15 bg-black/20 flex items-center justify-center">
                   {imgSrc ? (
                     <ImageWithSkeleton src={imgSrc} alt={p.name || p.slug || 'Imagen'} width={56} height={56} quality={100} />
                   ) : (
                     <div className="image-placeholder w-full h-full" />
                   )}
                 </div>
-                <div>
-                  <div className="font-medium text-gray-900">{p.name || p.slug || p.id}</div>
-                  <div className="text-sm text-gray-600">{p.price || '-'}</div>
+                <div className="min-w-0">
+                  <div className="font-medium text-white leading-tight break-words">{p.name || p.slug || p.id}</div>
+                  <div className="text-sm text-white/65">{p.price || '-'}</div>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                <button type="button" onClick={() => startEdit(p)} className="inline-flex items-center gap-2 text-sm px-3 py-1 bg-gray-100 border border-gray-200 rounded-md text-gray-800 hover:bg-gray-200 no-custom-btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12"/></svg>
+              <div className="grid grid-cols-2 sm:flex items-center gap-2 w-full sm:w-auto">
+                <button type="button" onClick={() => startEdit(p)} className="inline-flex items-center justify-center gap-1.5 text-[13px] sm:text-sm px-2.5 sm:px-3 py-2 sm:py-1.5 admin-premium-btn-secondary no-custom-btn whitespace-nowrap">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20h9" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z" /></svg>
                   Editar
                 </button>
-                <button className="text-sm inline-flex items-center gap-2 bg-rose-700 hover:bg-rose-600 text-white px-3 py-1 rounded-full disabled:opacity-60 disabled:cursor-not-allowed no-custom-btn" onClick={() => handleDelete(p.id, p.name)} disabled={deletingId === p.id}>{deletingId === p.id ? 'Eliminando…' : 'Eliminar'}</button>
+                <button className="text-[13px] sm:text-sm inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 sm:py-1.5 admin-premium-btn-danger disabled:opacity-60 disabled:cursor-not-allowed no-custom-btn whitespace-nowrap" onClick={() => handleDelete(p.id, p.name)} disabled={deletingId === p.id}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 7h12M9 7V5h6v2m-7 3v7m4-7v7m4-7v7M5 7l1 13h12l1-13" /></svg>
+                  {deletingId === p.id ? 'Eliminando' : 'Eliminar'}
+                </button>
               </div>
             </div>
             )

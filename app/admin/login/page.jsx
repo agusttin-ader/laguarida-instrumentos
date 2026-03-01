@@ -135,8 +135,10 @@ export default function AdminLoginPage() {
     }
   }
 
+  const isShortQuote = selectedPhrase && selectedPhrase.length <= 34
+
   return (
-    <div className="relative h-full min-h-0 flex items-center justify-center bg-transparent px-4 md:px-6">
+    <div className="relative h-full min-h-0 flex items-start md:items-center justify-center bg-transparent px-4 md:px-6 pt-4 md:pt-0">
       {/* Mobile: imagen a pantalla completa con header/footer difuminados */}
       <div
         className="absolute inset-0 z-0 md:rounded-2xl md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:inset-auto"
@@ -147,20 +149,26 @@ export default function AdminLoginPage() {
         }}
         aria-hidden
       />
-      <div className="absolute inset-0 z-0 bg-black/50 pointer-events-none md:rounded-2xl md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:inset-auto" aria-hidden />
+      <div className="absolute inset-0 z-0 bg-black/35 pointer-events-none md:rounded-2xl md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:inset-auto" aria-hidden />
       {/* Sombreado difuminado header (mobile) */}
       <div
-        className="absolute top-0 left-0 right-0 h-28 z-[1] pointer-events-none md:hidden bg-gradient-to-b from-black/75 via-black/40 to-transparent"
+        className="absolute top-0 left-0 right-0 h-24 z-[1] pointer-events-none md:hidden bg-gradient-to-b from-black/70 via-black/30 to-transparent"
         aria-hidden
       />
       {/* Sombreado difuminado footer (mobile) */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-32 z-[1] pointer-events-none md:hidden bg-gradient-to-t from-black/75 via-black/40 to-transparent"
+        className="absolute bottom-0 left-0 right-0 h-44 z-[1] pointer-events-none md:hidden bg-gradient-to-t from-black/80 via-black/45 to-transparent"
+        aria-hidden
+      />
+      {/* Vignette lateral suave para dar foco al centro (mobile) */}
+      <div
+        className="absolute inset-0 z-[1] pointer-events-none md:hidden"
+        style={{ background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.06) 18%, rgba(0,0,0,0.32) 100%)' }}
         aria-hidden
       />
 
       {/* Desktop: contenedor tipo card; mobile: contenido centrado sobre el fondo */}
-      <div className="relative z-10 w-full max-w-5xl md:grid md:grid-cols-2 md:h-[72vh] md:overflow-hidden md:rounded-2xl">
+      <div className="relative z-10 w-full max-w-5xl min-h-[calc(100dvh-1.5rem)] md:min-h-0 md:grid md:grid-cols-2 md:h-[72vh] md:overflow-hidden md:rounded-2xl">
         {/* Left hero (solo desktop) */}
         <div className="relative hidden md:block">
           <div className="relative z-10 h-full flex flex-col justify-center px-10 text-white">
@@ -174,50 +182,50 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Form */}
-        <div className="flex items-center justify-center pt-0 pb-4 sm:pt-0 sm:p-8 md:p-12 relative z-10 min-h-0 md:min-h-0">
-          <div className="w-full max-w-md rounded-2xl p-6 sm:p-8 md:p-10" style={{
-            background: 'rgba(255,255,255,0.06)',
-            WebkitBackdropFilter: 'blur(14px) saturate(120%)',
-            backdropFilter: 'blur(14px) saturate(120%)',
-            border: '1px solid rgba(255,255,255,0.06)'
+        <div className="flex items-start md:items-center justify-center pt-0 pb-32 sm:pt-0 sm:p-8 md:p-12 relative z-10 min-h-0 md:min-h-0">
+          <div className="w-full max-w-md rounded-2xl p-5 sm:p-8 md:p-10" style={{
+            background: 'rgba(15,18,28,0.48)',
+            WebkitBackdropFilter: 'blur(10px) saturate(120%)',
+            backdropFilter: 'blur(10px) saturate(120%)',
+            border: '1px solid rgba(255,255,255,0.12)'
           }}>
             <div className="flex flex-col items-start">
-              <h1 className="text-2xl md:text-3xl font-extrabold text-white mb-1">Bienvenido Leo !</h1>
+              <h1 className="text-[1.8rem] md:text-3xl leading-[1.05] font-extrabold text-white mb-1">Bienvenido Leo !</h1>
               <p className="text-sm text-white/95">Gracias por la confianza</p>
-              <p className="text-sm text-white/90 mb-6">Ingresá con tus credenciales para acceder al panel de administración</p>
+              <p className="text-sm text-white/90 mb-5">Ingresá con tus credenciales para acceder al panel de administración</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3.5">
               <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">Email</label>
+                <label className="block text-sm font-medium mb-1 text-white/88">Email</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="tu@correo.com"
-                  className="w-full border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-200 focus:ring-offset-2 bg-white"
+                  className="w-full border border-white/18 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-300/35 bg-black/35"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1 text-gray-700">Contraseña</label>
+                <label className="block text-sm font-medium mb-1 text-white/88">Contraseña</label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="********"
-                  className="w-full border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-200 focus:ring-offset-2 bg-white"
+                  className="w-full border border-white/18 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-300/35 bg-black/35"
                 />
               </div>
 
-              {error && <div className="text-sm text-rose-700 bg-rose-50 border border-rose-100 p-3 rounded">{error}</div>}
+              {error && <div className="text-sm text-rose-200 bg-rose-500/15 border border-rose-300/20 p-3 rounded-xl">{error}</div>}
 
               <div>
                 <button
                   type="submit"
-                  className="w-full bg-white text-black px-4 py-3 rounded-xl hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                  className="w-full bg-white text-black px-4 py-3 rounded-xl hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition font-semibold"
                   disabled={loading}
                 >
                   {loading ? 'Ingresando…' : 'Ingresar'}
@@ -228,13 +236,13 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Mobile: solo texto de la frase, sin panel, transición suave */}
-        <div className="md:hidden relative z-10 w-full px-4 pt-4 pb-4">
+        <div className="md:hidden absolute bottom-4 left-0 right-0 z-10 w-full px-4">
           <div className="text-center">
-            <p className={`text-lg font-semibold leading-snug text-white mb-1 transition-opacity duration-500 ease-out ${quoteVisible ? 'opacity-100' : 'opacity-0'}`}>
+            <p className={`${isShortQuote ? 'text-[22px]' : 'text-[20px]'} font-semibold leading-tight text-white mb-1 transition-opacity duration-500 ease-out drop-shadow-[0_4px_14px_rgba(0,0,0,0.7)] ${quoteVisible ? 'opacity-100' : 'opacity-0'}`}>
               &quot;{selectedPhrase}&quot;
             </p>
             {selectedAuthor && (
-              <p className={`text-sm text-white/70 italic transition-opacity duration-500 ease-out ${quoteVisible ? 'opacity-100' : 'opacity-0'}`}>
+              <p className={`text-sm text-white/80 italic transition-opacity duration-500 ease-out drop-shadow-[0_3px_10px_rgba(0,0,0,0.7)] ${quoteVisible ? 'opacity-100' : 'opacity-0'}`}>
                 — {selectedAuthor}
               </p>
             )}

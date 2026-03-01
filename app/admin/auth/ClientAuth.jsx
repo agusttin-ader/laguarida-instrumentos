@@ -142,22 +142,19 @@ export default function ClientAuth({ children }){
               <Header />
             </div>
             <div
-              className="flex items-center justify-between gap-4 -mt-10 md:-mt-0 relative z-30 admin-auth-bar px-4 py-5 mb-6"
+              className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-end gap-3 mt-2 md:mt-0 relative z-30 admin-auth-bar px-4 py-4 mb-5 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.02] shadow-[0_16px_36px_rgba(0,0,0,0.22)]"
               style={{ backgroundColor: 'transparent' }}
             >
-              <div />
-              <div className="flex items-center gap-3">
-                <div className="text-sm text-gray-600">
+              <div className="text-sm text-white/75 w-full sm:w-auto">
                   {loading ? (
-                    <span className="text-gray-500">Comprobando sesión…</span>
+                    <span className="text-white/55">Comprobando sesión…</span>
                   ) : user ? (
-                    <span className="text-gray-800">{user.email}</span>
+                    <span className="text-white/90 break-all">{user.email}</span>
                   ) : null}
-                </div>
-                {user && (
-                  <button onClick={signOut} className="admin-logout no-custom-btn">Cerrar sesión</button>
-                )}
               </div>
+              {user && (
+                <button onClick={signOut} className="admin-premium-btn-danger px-3 py-2 w-full sm:w-auto no-custom-btn">Cerrar sesión</button>
+              )}
             </div>
             {children}
           </>
