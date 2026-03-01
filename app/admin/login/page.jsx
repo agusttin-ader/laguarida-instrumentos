@@ -141,7 +141,7 @@ export default function AdminLoginPage() {
     <div className="relative h-full min-h-0 flex items-start md:items-center justify-center bg-transparent px-4 md:px-6 pt-4 md:pt-0">
       {/* Mobile: imagen a pantalla completa con header/footer difuminados */}
       <div
-        className="absolute inset-0 z-0 md:rounded-2xl md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:inset-auto"
+        className="absolute inset-0 z-0 md:rounded-2xl md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:inset-auto md:shadow-[0_36px_90px_rgba(0,0,0,0.55),0_12px_32px_rgba(0,0,0,0.38)]"
         style={{
           backgroundImage: `url('${bgUrl(bgImage)}')`,
           backgroundSize: 'cover',
@@ -149,15 +149,23 @@ export default function AdminLoginPage() {
         }}
         aria-hidden
       />
-      <div className="absolute inset-0 z-0 bg-black/35 pointer-events-none md:rounded-2xl md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:inset-auto" aria-hidden />
+      <div className="absolute inset-0 z-0 bg-black/46 md:bg-black/[0.60] pointer-events-none md:rounded-2xl md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:inset-auto" aria-hidden />
+      {/* Desktop: refuerzo lateral para legibilidad de la frase */}
+      <div className="hidden md:block absolute z-[1] pointer-events-none md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:rounded-2xl bg-gradient-to-r from-black/42 via-black/20 to-transparent" aria-hidden />
+      {/* Desktop: viñeta fuerte en costados para look cinematográfico */}
+      <div
+        className="hidden md:block absolute z-[1] pointer-events-none md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:rounded-2xl"
+        style={{ background: 'linear-gradient(90deg, rgba(0,0,0,0.64) 0%, rgba(0,0,0,0.24) 14%, rgba(0,0,0,0.00) 50%, rgba(0,0,0,0.24) 86%, rgba(0,0,0,0.64) 100%)' }}
+        aria-hidden
+      />
       {/* Sombreado difuminado header (mobile) */}
       <div
-        className="absolute top-0 left-0 right-0 h-24 z-[1] pointer-events-none md:hidden bg-gradient-to-b from-black/70 via-black/30 to-transparent"
+        className="absolute top-0 left-0 right-0 h-24 z-[1] pointer-events-none md:hidden bg-gradient-to-b from-black/78 via-black/42 to-transparent"
         aria-hidden
       />
       {/* Sombreado difuminado footer (mobile) */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-44 z-[1] pointer-events-none md:hidden bg-gradient-to-t from-black/80 via-black/45 to-transparent"
+        className="absolute bottom-0 left-0 right-0 h-44 z-[1] pointer-events-none md:hidden bg-gradient-to-t from-black/86 via-black/56 to-transparent"
         aria-hidden
       />
       {/* Vignette lateral suave para dar foco al centro (mobile) */}
