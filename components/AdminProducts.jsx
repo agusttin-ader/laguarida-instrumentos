@@ -844,7 +844,7 @@ export default function AdminProducts(){
         <div className="fixed inset-0 z-40 flex items-start justify-center px-4 py-8">
           <div className={`fixed inset-0 bg-black/60 backdrop-blur-md ${modalClosing ? 'modal-backdrop-exit' : 'modal-backdrop-enter'}`} onClick={closeModal} />
           <div className={`relative admin-premium-card w-full max-w-3xl z-50 p-6 max-h-[85vh] overflow-y-auto ${modalClosing ? 'modal-panel-exit' : 'modal-panel-enter'}`}>
-            <h3 className="text-lg font-semibold mb-1 text-white">{modalMode === 'edit' ? 'Editar producto' : 'Crear producto'}</h3>
+            <h3 className="section-title-minimal text-[1.08rem] mb-1 text-white">{modalMode === 'edit' ? 'Editar producto' : 'Crear producto'}</h3>
             {modalMode === 'create' ? (
               <div className="mb-3 text-xs text-white/60">
                 {createDraftRecovered ? 'Borrador recuperado automaticamente.' : null}
@@ -963,7 +963,7 @@ export default function AdminProducts(){
       <section className="p-4 md:p-6 admin-premium-card">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-semibold text-white">Crear producto</h2>
+            <h2 className="section-title-minimal text-[1.08rem] text-white">Crear producto</h2>
             <p className="text-sm admin-premium-muted">Usa el botón &apos;Crear producto&apos; para abrir el editor en un modal.</p>
           </div>
           <div className="flex w-full md:w-auto items-center gap-2">
@@ -980,8 +980,8 @@ export default function AdminProducts(){
 
       <section className="p-4 md:p-5 admin-premium-card">
         <div className="flex items-center justify-between gap-3 mb-3">
-          <h2 className="text-base md:text-lg font-semibold text-white">Actividad reciente</h2>
-          <span className="text-[11px] text-white/50">Últimos cambios</span>
+          <h2 className="section-title-minimal text-[1rem] md:text-[1.08rem] text-white">Actividad reciente</h2>
+          <span className="section-subtitle-minimal text-white/50">Últimos cambios</span>
         </div>
         {recentActivity.length === 0 ? (
           <div className="text-sm text-white/55 border border-white/10 rounded-xl px-3 py-3 bg-black/20">
@@ -1004,7 +1004,7 @@ export default function AdminProducts(){
       <section className="p-4 md:p-5 admin-premium-card">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-semibold text-white">Productos</h2>
+            <h2 className="section-title-minimal text-[1.08rem] text-white">Productos</h2>
           </div>
           <div className="flex items-center gap-2 w-full md:w-auto">
             <button type="button" onClick={() => setListOpen(v => !v)} className="inline-flex items-center justify-center gap-2 text-sm admin-premium-btn-secondary px-3 py-2 w-full md:w-auto no-custom-btn">

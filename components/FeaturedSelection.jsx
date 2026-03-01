@@ -9,7 +9,7 @@ export default function FeaturedSelection(){
   return (
     <>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 mb-5 sm:mb-6">
-        <h2 id="seleccion-heading" className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white order-2 sm:order-1">Catalogo</h2>
+        <h2 id="seleccion-heading" className="section-title-premium section-underline-ocre text-gray-900 dark:text-white order-2 sm:order-1">Catalogo</h2>
         <div className="w-full sm:w-auto order-1 sm:order-2 min-w-0">
           <div className="search-pill w-full sm:max-w-sm" role="search">
             <span className="search-icon flex-shrink-0" aria-hidden>

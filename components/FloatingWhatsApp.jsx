@@ -27,8 +27,10 @@ export default function FloatingWhatsApp({ product = null }) {
     return () => obs.disconnect();
   }, []);
 
-  const message = product ? `Hola, quiero info de ${product.name}` : "Hola, quiero info de un producto";
-  const href = `https://wa.me/541168696491?text=${encodeURIComponent(message)}`;
+  const message = product
+    ? `Hola, me interesa ${product.name}, me podrias dar mas informacion ?`
+    : "Hola, me interesa La Guarida, me podrias dar informacion?";
+  const href = `https://wa.me/5491154661749?text=${encodeURIComponent(message)}`;
 
   return (
     <div

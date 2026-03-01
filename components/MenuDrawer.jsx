@@ -3,6 +3,8 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 
 export default function MenuDrawer({ open, setOpen }) {
+  const waHref = `https://wa.me/5491154661749?text=${encodeURIComponent('Hola, me interesa La Guarida, me podrias dar informacion?')}`
+
   useEffect(() => {
     try {
       if (open) {
@@ -60,7 +62,7 @@ export default function MenuDrawer({ open, setOpen }) {
             </Link>
           </li>
           <li>
-            <a href="https://wa.me/541168696491" onClick={() => setOpen(false)} className="block px-3 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800">
+            <a href={waHref} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)} className="block px-3 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800">
               Chat / Contacto
             </a>
           </li>

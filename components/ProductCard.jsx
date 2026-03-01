@@ -16,6 +16,12 @@ function ProductCard({ item, priority = false }) {
   const [imgLoaded, setImgLoaded] = useState(false)
   const titleText = p.name || ''
   const headingId = `product-title-${p.slug || p.id}`
+  const specs = []
+  if (p.mics) specs.push(String(p.mics).trim())
+  if (p.wood) specs.push(String(p.wood).trim())
+  if (p.model) specs.push(String(p.model).trim())
+  const visibleSpecs = specs.slice(0, 2)
+  const hiddenSpecsCount = Math.max(0, specs.length - visibleSpecs.length)
 
   // (removed unused keyFragment helper) 
 
@@ -76,19 +82,21 @@ function ProductCard({ item, priority = false }) {
             </div>
           </div>
 
-          {/* Lower-left: specs pills (all breakpoints) */}
+          {/* Lower-left: specs pills (trimmed to reduce visual noise) */}
+          {specs.length ? (
             <div className="absolute left-3 sm:left-4 bottom-3 sm:bottom-4 flex items-center gap-1.5 sm:gap-2 flex-wrap">
-              {(() => {
-                const specs = []
-                if (p.mics) specs.push(String(p.mics).trim())
-                if (p.wood) specs.push(String(p.wood).trim())
-                if (p.model) specs.push(String(p.model).trim())
-                if (!specs.length) return null
-                return specs.map((s, i) => (
-                  <div key={i} className="bg-black/65 text-white/95 text-[11px] px-3 py-1 rounded-full border border-white/10">{s}</div>
-                ))
-              })()}
+              {visibleSpecs.map((s, i) => (
+                <div key={i} className="bg-black/65 text-white/95 text-[11px] px-3 py-1 rounded-full border border-white/10">
+                  {s}
+                </div>
+              ))}
+              {hiddenSpecsCount > 0 ? (
+                <div className="bg-black/55 text-white/80 text-[11px] px-2.5 py-1 rounded-full border border-white/10">
+                  +{hiddenSpecsCount}
+                </div>
+              ) : null}
             </div>
+          ) : null}
         </div>
 
         {/* Mobile: card body below image (TripGlide-style full-width CTA) */}

@@ -42,8 +42,8 @@ export default function RelatedProducts(){
   return (
     <section className="mt-20 container-tight">
       <div className="mb-10">
-        <p className="text-sm muted-text uppercase">Relacionado</p>
-        <h3 className="mt-2 display-xl">Productos relacionados</h3>
+        <p className="section-kicker-minimal text-white/60">Relacionado</p>
+        <h3 className="mt-2 section-title-minimal section-underline-ocre text-white">Productos relacionados</h3>
       </div>
 
       {loading ? (

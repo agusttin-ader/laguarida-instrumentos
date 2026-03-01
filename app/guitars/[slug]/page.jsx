@@ -169,7 +169,7 @@ export default async function GuitarPage({ params }) {
     )
   }
 
-  const consultHref = `https://wa.me/541168696491?text=${encodeURIComponent(`Hola me interesa la ${product.name}, me podrias dar mas info?`)}`
+  const consultHref = `https://wa.me/5491154661749?text=${encodeURIComponent(`Hola, me interesa ${product.name}, me podrias dar mas informacion ?`)}`
   const categoryLabel = [product.brand, product.model].filter(Boolean).join(' · ') || 'Premium guitars'
   const specsText = [product.model, product.wood, product.mics].filter(Boolean).map(s => Array.isArray(s) ? s.join(', ') : s).join(' · ')
   const hasSpecs = specsText.length > 0
@@ -223,21 +223,25 @@ export default async function GuitarPage({ params }) {
                 href={consultHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center h-12 px-9 rounded-lg bg-[#0f1628] text-white dark:bg-[#e9eefc] dark:text-[#111728] font-semibold text-xs tracking-[0.08em] uppercase hover:bg-[#1a2239] dark:hover:bg-[#dbe5ff] transition-colors btn-focus"
+                aria-label={`Contactar por WhatsApp sobre ${product.name}`}
+                className="inline-flex items-center justify-center h-12 w-12 rounded-lg bg-[#0f1628] text-white dark:bg-[#e9eefc] dark:text-[#111728] hover:bg-[#1a2239] dark:hover:bg-[#dbe5ff] transition-colors btn-focus"
               >
-                Consultar
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                  <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M9.36 8.9c.1-.22.18-.23.34-.24h.28c.1 0 .24.04.3.17.12.26.4 1 .44 1.08.04.08.06.18 0 .28-.06.1-.1.16-.2.24-.1.08-.2.18-.28.24-.1.1-.2.2-.08.4.12.2.54.9 1.16 1.44.8.7 1.46.9 1.66 1 .2.1.32.08.44-.04.12-.12.5-.58.64-.78.14-.2.28-.16.46-.1.2.08 1.2.56 1.4.66.2.1.34.14.38.22.04.08.04.5-.12.98-.16.48-.92.92-1.26.98-.34.06-.76.1-1.24-.06-.3-.1-.68-.22-1.18-.44-2.08-.9-3.44-3.02-3.54-3.16-.1-.14-.84-1.12-.84-2.14 0-1.02.54-1.52.74-1.72Z" fill="currentColor" />
+                </svg>
               </a>
             </div>
           </aside>
         </main>
       </div>
 
-      <ProductStickyCTA href={consultHref}>Consultar</ProductStickyCTA>
+      <ProductStickyCTA href={consultHref} ariaLabel={`Contactar por WhatsApp sobre ${product.name}`} />
 
       {relatedProducts && relatedProducts.length > 0 && (
         <section className="mt-10 sm:mt-12">
           <div className="flex items-center justify-between gap-4 mb-4">
-            <h2 className="text-lg sm:text-xl font-semibold text-white">También te recomendamos</h2>
+            <h2 className="section-title-minimal section-underline-ocre text-white">También te recomendamos</h2>
             <span className="text-xs text-gray-500 md:hidden" aria-hidden>Deslizá →</span>
           </div>
           <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible md:gap-6">

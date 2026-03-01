@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { InstagramLogo, EnvelopeSimple, WhatsappLogo } from 'phosphor-react'
 
 export default function Footer({ compact = false }){
+  const waHref = `https://wa.me/5491154661749?text=${encodeURIComponent('Hola, me interesa La Guarida, me podrias dar informacion?')}`
+
   return (
     <footer className={`${compact ? 'mt-0' : 'mt-8 md:mt-20'} bg-transparent dark:bg-transparent border-0 overflow-x-hidden`}>
       <div className={`max-w-7xl mx-auto px-6 lg:px-8 ${compact ? 'py-3' : 'py-8'}`}>
@@ -20,7 +22,7 @@ export default function Footer({ compact = false }){
               <EnvelopeSimple size={20} weight="duotone" />
             </a>
 
-            <a href="https://wa.me/5491154661749" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="!text-gray-400 hover:!text-[#d4a43b] transition-colors duration-300">
+            <a href={waHref} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="!text-gray-400 hover:!text-[#d4a43b] transition-colors duration-300">
               <WhatsappLogo size={20} weight="duotone" />
             </a>
           </nav>

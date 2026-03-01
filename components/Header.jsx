@@ -9,7 +9,7 @@ const LOGO_DARK = '/images/logo/logo-fondo-oscuro.PNG'
 export default function Header() {
   const pathname = usePathname()
   const isHome = pathname === '/' || pathname === ''
-  const navLinkClass = "relative inline-block text-base font-semibold text-[#f5f1e6] hover:text-[#fffaf0] transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:-bottom-1.5 after:h-[2px] after:w-0 after:bg-[#d4a43b] after:transition-all after:duration-700 after:ease-out hover:after:w-full"
+  const navLinkClass = "relative inline-flex items-center py-1 text-[12px] font-semibold uppercase tracking-[0.16em] text-[#dde2eb]/86 hover:text-[#fffaf0] transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:-bottom-1.5 after:h-[2px] after:w-0 after:bg-[#d4a43b] after:transition-all after:duration-700 after:ease-out hover:after:w-full"
 
   function handleSectionNav(e, sectionId) {
     if (!isHome) return
@@ -33,10 +33,14 @@ export default function Header() {
           </div>
         </a>
 
-        <nav className="hidden md:flex items-center justify-end gap-9 ml-auto" aria-label="Navegación principal">
-          <a href="/" className={navLinkClass}>Home</a>
-          <a href="/#about-section" onClick={(e) => handleSectionNav(e, 'about-section')} className={navLinkClass}>Sobre nosotros</a>
-          <a href="/#seleccion-destacada" onClick={(e) => handleSectionNav(e, 'seleccion-destacada')} className={navLinkClass}>Catalogo</a>
+        <nav className="hidden md:flex items-center justify-end ml-auto" aria-label="Navegación principal">
+          <div className="flex items-center gap-5">
+            <a href="/" className={navLinkClass}>Home</a>
+            <span className="h-[14px] w-px bg-white/14" aria-hidden />
+            <a href="/#about-section" onClick={(e) => handleSectionNav(e, 'about-section')} className={navLinkClass}>Sobre nosotros</a>
+            <span className="h-[14px] w-px bg-white/14" aria-hidden />
+            <a href="/#seleccion-destacada" onClick={(e) => handleSectionNav(e, 'seleccion-destacada')} className={navLinkClass}>Catalogo</a>
+          </div>
         </nav>
       </div>
     </header>

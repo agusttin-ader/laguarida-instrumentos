@@ -43,6 +43,7 @@ export default function BottomNav() {
   const router = useRouter();
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const waHref = `https://wa.me/5491154661749?text=${encodeURIComponent('Hola, me interesa La Guarida, me podrias dar informacion?')}`;
   const itemClass = "flex flex-col items-center justify-center min-h-touch py-2 text-sm transition-colors";
   const activeClass = "text-[#f7efe0]";
   const mutedClass = "text-gray-400 hover:text-white";
@@ -91,7 +92,7 @@ export default function BottomNav() {
         <span className="text-[11px] mt-1 font-medium">Sobre</span>
       </Link>
 
-      <a href="https://wa.me/5491154661749" target="_blank" rel="noopener noreferrer" aria-label="Chat por WhatsApp" className={`${itemClass} ${mutedClass}`}>
+      <a href={waHref} target="_blank" rel="noopener noreferrer" aria-label="Chat por WhatsApp" className={`${itemClass} ${mutedClass}`}>
         <IconChat className="flex-shrink-0" />
         <span className="text-[11px] mt-1 font-medium">Chat</span>
       </a>
