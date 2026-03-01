@@ -151,7 +151,7 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
                   fit="contain"
                   style={{ objectPosition: 'center' }}
                   className="max-w-full max-h-full object-contain"
-                  quality={85}
+                  quality={100}
                 />
               </div>
             )}
@@ -166,7 +166,7 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
                   fit="contain"
                   style={{ objectPosition: 'center' }}
                   className="max-w-full max-h-full object-contain"
-                  quality={85}
+                  quality={100}
                   priority
                   sizes="(min-width:1024px) 50vw, 100vw"
                 />
@@ -186,7 +186,7 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
                 aria-pressed={src===main}
                 className={`w-16 h-16 sm:w-[72px] sm:h-[72px] flex-shrink-0 overflow-hidden rounded-xl border focus:outline-none transition-all duration-200 flex items-center justify-center bg-[#edf0f6] ${src===main ? 'border-[#1b2235] ring-1 ring-[#1b2235]' : 'border-[#d7dce6] hover:border-[#bcc5d5]'}`}
               >
-                <ImageWithSkeleton src={src} alt={altBase ? `${altBase} — miniatura ${i+1}` : `Miniatura ${i+1}`} width={80} height={80} className="object-cover w-full h-full thumb-reset" sizes="80px" quality={60} loading="lazy" />
+                <ImageWithSkeleton src={src} alt={altBase ? `${altBase} — miniatura ${i+1}` : `Miniatura ${i+1}`} width={80} height={80} className="object-cover w-full h-full thumb-reset" sizes="80px" quality={100} loading="lazy" />
               </button>
             ))}
           </div>

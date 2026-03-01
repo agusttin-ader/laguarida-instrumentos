@@ -4,30 +4,30 @@ import React from 'react'
 import Image from 'next/image'
 import { InstagramLogo, EnvelopeSimple, WhatsappLogo } from 'phosphor-react'
 
-export default function Footer(){
+export default function Footer({ compact = false }){
   return (
-    <footer className="mt-8 md:mt-20 bg-transparent dark:bg-transparent border-0">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-400">© {new Date().getFullYear()} La Guarida</p>
+    <footer className={`${compact ? 'mt-0' : 'mt-8 md:mt-20'} bg-transparent dark:bg-transparent border-0 overflow-x-hidden`}>
+      <div className={`max-w-7xl mx-auto px-6 lg:px-8 ${compact ? 'py-3' : 'py-8'}`}>
+        <div className={`grid grid-cols-1 md:grid-cols-3 items-center ${compact ? 'gap-2' : 'gap-4'}`}>
+          <p className={`${compact ? 'text-xs' : 'text-sm'} text-gray-400 text-center md:text-left md:justify-self-start`}>© {new Date().getFullYear()} La Guarida</p>
 
-          <nav className="flex items-center gap-4 text-sm">
-            <a href="https://www.instagram.com/laguaridainstrumentos/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-gray-400 hover:text-pink-400 transition-colors">
+          <nav className={`flex items-center ${compact ? 'gap-3' : 'gap-4'} text-sm justify-center md:justify-self-center`}>
+            <a href="https://www.instagram.com/laguaridainstrumentos/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="!text-gray-400 hover:!text-[#d4a43b] transition-colors duration-300">
               <InstagramLogo size={20} weight="duotone" />
             </a>
 
-            <a href="mailto:leonardo_ruberti@hotmail.com" aria-label="Correo" className="text-gray-400 hover:text-indigo-400 transition-colors">
+            <a href="mailto:leonardo_ruberti@hotmail.com" aria-label="Correo" className="!text-gray-400 hover:!text-[#d4a43b] transition-colors duration-300">
               <EnvelopeSimple size={20} weight="duotone" />
             </a>
 
-            <a href="https://wa.me/5491154661749" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-gray-400 hover:text-emerald-400 transition-colors">
+            <a href="https://wa.me/5491154661749" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="!text-gray-400 hover:!text-[#d4a43b] transition-colors duration-300">
               <WhatsappLogo size={20} weight="duotone" />
             </a>
           </nav>
 
-          <div className="flex items-center justify-center">
-            <div className="footer-logo-wrapper relative w-[140px] h-6 md:w-[200px] md:h-8">
-              <Image src="/images/logo/logo-fondo-oscuro.PNG" alt="La Guarida" fill style={{ objectFit: 'contain' }} quality={100} sizes="(min-width:768px) 200px, 140px" loading="lazy" />
+          <div className="flex items-center justify-center md:justify-self-center">
+            <div className={`footer-logo-wrapper relative ${compact ? 'w-[110px] h-5 md:w-[130px] md:h-6' : 'w-[140px] h-6 md:w-[200px] md:h-8'}`}>
+              <Image src="/images/logo/logo-fondo-oscuro.PNG" alt="La Guarida" fill className={compact ? 'scale-[1.28] md:scale-[1.34]' : 'scale-[1.5] md:scale-[1.6]'} style={{ objectFit: 'contain' }} quality={100} sizes="(min-width:768px) 200px, 140px" loading="lazy" />
             </div>
           </div>
         </div>

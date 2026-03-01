@@ -39,7 +39,7 @@ function ProductCard({ item, priority = false }) {
                 alt={titleText || 'Imagen del producto'}
                 fill
                 sizes={CARD_IMAGE_SIZES}
-                quality={82}
+                quality={100}
                 loading={priority ? 'eager' : 'lazy'}
                 fetchPriority={priority ? 'high' : 'low'}
                 onLoad={() => { setImgLoaded(true); setErrored(false) }}

@@ -29,7 +29,7 @@ export default function Header() {
 
         <a href="/" aria-label="Ir al inicio" className={`logo-link block absolute left-1/2 -translate-x-1/2 z-10 top-1/2 -translate-y-1/2 md:static md:translate-x-0 md:translate-y-0 md:ml-10 ${isHome ? 'sm:translate-y-0 md:translate-y-0' : ''}`}>
           <div className="relative header-logo-wrapper">
-            <Image src={LOGO_DARK} alt="La Guarida logo" width={320} height={96} priority style={{ objectFit: 'contain', display: 'block', height: 'auto' }} className="w-[168px] sm:w-[220px] md:w-[230px] h-auto block transform-gpu scale-[1.32] sm:scale-[1.28] md:scale-[1.42] origin-center" quality={100} sizes="(min-width:768px) 230px, (min-width:640px) 220px, 168px" />
+            <Image src={LOGO_DARK} alt="La Guarida logo" width={1536} height={1024} priority style={{ objectFit: 'contain', display: 'block', height: 'auto' }} className="w-[222px] sm:w-[282px] md:w-[327px] h-auto block" quality={100} sizes="(min-width:768px) 327px, (min-width:640px) 282px, 222px" />
           </div>
         </a>
 

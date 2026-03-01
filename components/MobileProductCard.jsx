@@ -25,7 +25,7 @@ export default function MobileProductCard({ product }) {
             alt={product.name}
             width={1200}
             height={900}
-            quality={95}
+            quality={100}
             sizes="(min-width:1024px) 600px, 100vw"
             className="w-full h-auto"
           />

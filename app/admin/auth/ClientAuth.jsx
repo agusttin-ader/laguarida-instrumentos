@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import supabase from '../../../lib/supabase/client'
 import Header from '../../../components/Header'
+import Footer from '../../../components/Footer'
 
 const AdminAuthContext = createContext(null)
 
@@ -124,12 +125,15 @@ export default function ClientAuth({ children }){
     <AdminAuthContext.Provider value={value}>
       <div>
         {isLoginPath ? (
-          <div className="fixed inset-0 z-20 flex flex-col overflow-hidden">
+          <div className="fixed inset-0 z-20 flex flex-col overflow-y-auto">
             <div className="flex-shrink-0">
               <Header />
             </div>
-            <div className="flex-1 min-h-0">
+            <div className="flex-1">
               {children}
+            </div>
+            <div className="flex-shrink-0">
+              <Footer />
             </div>
           </div>
         ) : (

@@ -692,7 +692,7 @@ header {
 .footer-logo-wrapper {
   transform-origin: center center;
   transform: none !important;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Scale logo visually without affecting header layout (uses transform only) */
@@ -1249,7 +1249,7 @@ input.btn-light {
    - Desktop: recuperar fondo gris oscuro exterior como antes */
 body.admin-login-page {
   background-color: #22324b !important;
-  overflow: hidden !important;
+  overflow-y: auto !important;
 }
 @media (max-width: 767px) {
   body.admin-login-page,

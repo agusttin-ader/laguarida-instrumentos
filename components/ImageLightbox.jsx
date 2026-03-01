@@ -126,7 +126,7 @@ export default function ImageLightbox({ src, alt = "image", className = "", onPr
               height={modalRect ? Math.min(modalRect.height, Math.floor(window.innerHeight * 0.9)) : 600}
               style={{ objectFit: 'contain' }}
               className="max-w-[100vw] max-h-[100vh] object-contain"
-              quality={90}
+              quality={100}
             />
           </div>
 

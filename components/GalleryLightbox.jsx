@@ -97,7 +97,7 @@ export default function GalleryLightbox({
               alt={alt}
               width={dims.w}
               height={dims.h}
-              quality={90}
+              quality={100}
               priority={true}
               className="object-contain rounded-xl"
               style={{ objectFit: 'contain' }}

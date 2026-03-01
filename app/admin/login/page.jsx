@@ -15,6 +15,27 @@ export default function AdminLoginPage() {
   const [quoteVisible, setQuoteVisible] = useState(true)
   const [bgImage, setBgImage] = useState('admin-1.jpeg')
 
+  function bgUrl(fileName) {
+    return `/images/admin-fondo/${encodeURIComponent(String(fileName || '').trim())}`
+  }
+
+  async function pickFirstRenderableBackground(images = []) {
+    if (!Array.isArray(images) || images.length === 0) return null
+    const shuffled = [...images].sort(() => Math.random() - 0.5)
+    for (const name of shuffled) {
+      const url = bgUrl(name)
+      const ok = await new Promise((resolve) => {
+        if (typeof window === 'undefined') return resolve(false)
+        const img = new window.Image()
+        img.onload = () => resolve(true)
+        img.onerror = () => resolve(false)
+        img.src = url
+      })
+      if (ok) return name
+    }
+    return shuffled[0] || null
+  }
+
   const quotes = [
     { q: 'Music is my religion.', a: 'Jimi Hendrix' },
     { q: 'Play with feeling, not with speed.', a: 'Eric Clapton' },
@@ -75,7 +96,7 @@ export default function AdminLoginPage() {
         const json = await res.json()
         const images = Array.isArray(json?.images) ? json.images : []
         if (!images.length || cancelled) return
-        const picked = images[Math.floor(Math.random() * images.length)]
+        const picked = await pickFirstRenderableBackground(images)
         if (picked) setBgImage(picked)
       } catch {
         // keep default fallback
@@ -120,7 +141,7 @@ export default function AdminLoginPage() {
       <div
         className="absolute inset-0 z-0 md:rounded-2xl md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:inset-auto"
         style={{
-          backgroundImage: `url('/images/admin-fondo/${bgImage}')`,
+          backgroundImage: `url('${bgUrl(bgImage)}')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
@@ -153,7 +174,7 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Form */}
-        <div className="flex items-center justify-center pt-0 pb-4 sm:pt-0 sm:p-8 md:p-12 relative z-10 min-h-0 md:min-h-0 -mt-3">
+        <div className="flex items-center justify-center pt-0 pb-4 sm:pt-0 sm:p-8 md:p-12 relative z-10 min-h-0 md:min-h-0">
           <div className="w-full max-w-md rounded-2xl p-6 sm:p-8 md:p-10" style={{
             background: 'rgba(255,255,255,0.06)',
             WebkitBackdropFilter: 'blur(14px) saturate(120%)',
