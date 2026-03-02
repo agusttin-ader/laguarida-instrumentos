@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 
-export default function ScrollReveal({ children, className = '', threshold = 0.12, rootMargin = '0px 0px -8% 0px', delay = 0 }){
+const ScrollReveal = React.memo(function ScrollReveal({ children, className = '', threshold = 0.12, rootMargin = '0px 0px -8% 0px', delay = 0 }) {
   const ref = useRef(null)
   const [visible, setVisible] = useState(false)
 
@@ -36,4 +36,6 @@ export default function ScrollReveal({ children, className = '', threshold = 0.1
       {children}
     </div>
   )
-}
+})
+
+export default ScrollReveal

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -86,10 +86,10 @@ export default function BottomNav() {
     router.push("/");
   }
 
-  function handleChatOpen() {
+  const handleChatOpen = useCallback(() => {
     if (typeof window === "undefined") return;
     window.dispatchEvent(new CustomEvent("hybrid-chat:toggle"));
-  }
+  }, []);
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-white/20 bg-[#121316]/96 backdrop-blur-xl h-[68px] flex items-center justify-around px-3 pb-[env(safe-area-inset-bottom)]" aria-label="Navegación principal">

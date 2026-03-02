@@ -139,7 +139,10 @@ export async function GET(req) {
       return NextResponse.json({ error: error.message }, { status: error.status || 500 })
     }
 
-    return NextResponse.json(data, { status: 200 })
+    const headers = {
+      'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120, max-age=60',
+    }
+    return NextResponse.json(data, { status: 200, headers })
   } catch (err) {
     return NextResponse.json({ error: err.message || String(err) }, { status: 500 })
   }

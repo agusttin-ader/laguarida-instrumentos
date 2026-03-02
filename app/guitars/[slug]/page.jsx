@@ -198,9 +198,9 @@ export default async function GuitarPage({ params }) {
   }
 
   return (
-    <div className="container-tight pt-10 sm:pt-14 pb-28 md:pb-12">
+    <div className="container-tight pt-1 sm:pt-2 pb-28 md:pb-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <header className="mt-2 sm:mt-4 mb-3">
+      <header className="mt-0 mb-1">
         <p className="text-xs uppercase tracking-[0.22em] text-gray-500">Catálogo · Guitarras</p>
       </header>
       <div className="max-w-6xl mx-auto rounded-[28px] overflow-hidden border border-[#dfe3ea] bg-[#f3f5f9] dark:bg-[#10131b] dark:border-[#2a3142] shadow-[0_22px_55px_rgba(12,20,39,0.16)] dark:shadow-[0_22px_55px_rgba(0,0,0,0.45)]">

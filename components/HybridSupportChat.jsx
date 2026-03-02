@@ -7,6 +7,10 @@ import {
   WHATSAPP_NUMBER,
 } from "../lib/chat/hybridSupportConfig";
 
+const WELCOME_MESSAGE =
+  "Hola! Soy el asistente de La Guarida. Elegi una consulta frecuente o escribinos por WhatsApp.";
+const MAX_MESSAGES = 40;
+
 function buildWaHref(message) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
@@ -58,7 +62,7 @@ export default function HybridSupportChat() {
       {
         id: "welcome",
         role: "bot",
-        text: "Hola! Soy el asistente de La Guarida. Elegi una consulta frecuente o escribinos por WhatsApp.",
+        text: WELCOME_MESSAGE,
       },
     ]);
   }, [open, messages.length]);
@@ -69,11 +73,15 @@ export default function HybridSupportChat() {
   );
 
   function handleOptionClick(option) {
-    setMessages((prev) => [
-      ...prev,
-      { id: `u-${option.id}-${prev.length}`, role: "user", text: option.label },
-      { id: `b-${option.id}-${prev.length}`, role: "bot", text: option.answer },
-    ]);
+    setMessages((prev) => {
+      const next = [
+        ...prev,
+        { id: `u-${option.id}-${prev.length}`, role: "user", text: option.label },
+        { id: `b-${option.id}-${prev.length}`, role: "bot", text: option.answer },
+      ];
+      // Keep the chat lightweight across long sessions.
+      return next.length > MAX_MESSAGES ? next.slice(next.length - MAX_MESSAGES) : next;
+    });
   }
 
   function handleReset() {
@@ -81,7 +89,7 @@ export default function HybridSupportChat() {
       {
         id: "welcome",
         role: "bot",
-        text: "Hola! Soy el asistente de La Guarida. Elegi una consulta frecuente o escribinos por WhatsApp.",
+        text: WELCOME_MESSAGE,
       },
     ]);
   }
@@ -168,14 +176,16 @@ export default function HybridSupportChat() {
             type="button"
             onClick={() => setOpen(true)}
             aria-label="Abrir asistente de ayuda"
-            className="no-custom-btn group relative isolate overflow-hidden inline-flex items-center gap-2 min-h-[42px] px-3.5 !rounded-full border border-white/14 !bg-[linear-gradient(145deg,rgba(20,25,37,0.96),rgba(12,15,23,0.95))] !text-[#e9edf7] backdrop-blur-md !shadow-[0_16px_34px_rgba(0,0,0,0.38)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#d4a43b]/48 hover:!shadow-[0_20px_36px_rgba(0,0,0,0.44)]"
+            className="no-custom-btn group relative isolate inline-flex items-center justify-center w-12 h-12 rounded-2xl border border-white/16 bg-[#141926]/92 text-[#e9edf7] backdrop-blur-xl shadow-[0_12px_28px_rgba(0,0,0,0.38)] transition-all duration-300 motion-reduce:transition-none hover:-translate-y-0.5 hover:border-[#d4a43b]/50 hover:bg-[#1a2132] hover:shadow-[0_16px_30px_rgba(0,0,0,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a43b]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f131d]"
           >
-            <span className="pointer-events-none absolute inset-x-3 top-0 h-px bg-gradient-to-r from-transparent via-white/28 to-transparent" aria-hidden />
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden className="text-[#f1d49a]">
+            <span className="pointer-events-none absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(110,231,183,0.8)]" aria-hidden />
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden className="text-[#f1d49a]">
               <path d="M6.5 7.4A4.4 4.4 0 0 1 10.9 3h4.2a4.4 4.4 0 0 1 4.4 4.4v5.2a4.4 4.4 0 0 1-4.4 4.4h-2.1l-3.6 3v-3H8.9a4.4 4.4 0 0 1-4.4-4.4V7.4Z" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round" />
               <path d="M9 9.5h7M9 12.3h5.5" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
             </svg>
-            <span className="text-[10px] uppercase tracking-[0.17em] font-semibold">Ayuda</span>
+            <span className="pointer-events-none absolute right-[calc(100%+10px)] top-1/2 -translate-y-1/2 rounded-lg border border-white/12 bg-[#141926]/95 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-white/85 opacity-0 translate-x-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0">
+              Ayuda
+            </span>
           </button>
         </div>
       )}

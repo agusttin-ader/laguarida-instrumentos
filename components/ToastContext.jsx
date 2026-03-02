@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useCallback, useContext, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useRef, useMemo, useState } from 'react'
 
 const ToastContext = createContext(null)
 
@@ -10,31 +10,66 @@ export function useToast() {
   return ctx
 }
 
+const CHAT_INTRO_KEY = 'laguarida-chat-intro-v3'
+const CHAT_INTRO_DELAY_MS = 1200
+
+/** Muestra una sola vez por sesión el aviso del botón de ayuda. Montado dentro de ToastProvider para garantizar contexto. */
+export function ChatIntroToastTrigger() {
+  const { toast } = useToast()
+  const fired = useRef(false)
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (typeof window === 'undefined') return
+      if (window.location.pathname.startsWith('/admin')) return
+      if (fired.current) return
+      try {
+        if (sessionStorage.getItem(CHAT_INTRO_KEY)) return
+        fired.current = true
+        toast('¿Duda rápida? Envíos, permutas, formas de pago o disponibilidad → botón Ayuda.', 'success')
+        sessionStorage.setItem(CHAT_INTRO_KEY, '1')
+      } catch { /* ignore */ }
+    }, CHAT_INTRO_DELAY_MS)
+    return () => clearTimeout(t)
+  }, [toast])
+
+  return null
+}
+
 const TOAST_DURATION = 3200
+const TOAST_EXIT_MS = 350
 
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([])
 
   const toast = useCallback((message, type = 'default') => {
     const id = Date.now().toString(36) + Math.random().toString(36).slice(2)
-    setToasts((prev) => [...prev, { id, message, type }])
+    setToasts((prev) => [...prev, { id, message, type, exiting: false }])
     const t = setTimeout(() => {
-      setToasts((prev) => prev.filter((x) => x.id !== id))
+      setToasts((prev) =>
+        prev.map((x) => (x.id === id ? { ...x, exiting: true } : x))
+      )
+      const t2 = setTimeout(() => {
+        setToasts((prev) => prev.filter((x) => x.id !== id))
+      }, TOAST_EXIT_MS)
+      return () => clearTimeout(t2)
     }, TOAST_DURATION)
     return () => clearTimeout(t)
   }, [])
 
+  const value = useMemo(() => ({ toast, toasts }), [toast, toasts])
+
   return (
-    <ToastContext.Provider value={{ toast, toasts }}>
+    <ToastContext.Provider value={value}>
       {children}
       <div
-        className="fixed top-1/2 left-1/2 z-[100] -translate-x-1/2 -translate-y-1/2 w-full max-w-[min(90vw,22rem)] flex flex-col items-center gap-2 pointer-events-none px-4"
+        className="fixed top-1/2 left-1/2 z-[9999] -translate-x-1/2 -translate-y-1/2 w-full max-w-[min(90vw,22rem)] flex flex-col items-center gap-2 pointer-events-none px-4"
         aria-live="polite"
       >
-        {toasts.map(({ id, message, type }) => (
+        {toasts.map(({ id, message, type, exiting }) => (
           <div
             key={id}
-            className={`pointer-events-auto w-full rounded-2xl px-5 py-4 shadow-xl border backdrop-blur-md ${
+            className={`toast-item pointer-events-auto w-full rounded-2xl px-5 py-4 shadow-xl border backdrop-blur-md ${exiting ? 'toast-exit' : ''} ${
               type === 'success'
                 ? 'bg-[#0f1628]/95 dark:bg-[#0d1117]/95 text-white border-[#d4a43b]/40 shadow-[#d4a43b]/15 flex flex-col items-center justify-center text-center'
                 : type === 'error'

@@ -1,10 +1,10 @@
 "use client"
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import Link from 'next/link'
 import ImageWithSkeleton from './ImageWithSkeleton'
-import normalizeProduct from '../lib/utils/normalizeProduct'
 import imageService from '../lib/utils/imageService'
+import { useProducts } from '../hooks/useProducts'
 
 function hashString(str = '') {
   let h = 0
@@ -16,7 +16,6 @@ function hashString(str = '') {
 
 function pickFeatured(items = [], dayKey = '') {
   if (!items.length) return null
-  // Favor products with complete content, then pick deterministic by day.
   const ranked = items
     .filter((p) => (p.slug || p.id) && (p.image_url || (p.images && p.images[0])) && p.name)
     .sort((a, b) => {
@@ -31,30 +30,15 @@ function pickFeatured(items = [], dayKey = '') {
 }
 
 export default function HeroMonolith() {
-  const [item, setItem] = useState(null)
-  const [ready, setReady] = useState(false)
+  const { products, loading } = useProducts({ shuffleCatalog: false })
 
-  useEffect(() => {
-    let mounted = true
-    async function load() {
-      try {
-        const res = await fetch('/api/products', { cache: 'no-store' })
-        if (!res.ok) throw new Error('Failed to load products')
-        const data = await res.json()
-        const normalized = Array.isArray(data) ? data.map((d) => normalizeProduct(d)) : []
-        const now = new Date()
-        const dayKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`
-        const featured = pickFeatured(normalized, dayKey)
-        if (mounted) setItem(featured)
-      } catch {
-        if (mounted) setItem(null)
-      } finally {
-        if (mounted) setReady(true)
-      }
-    }
-    load()
-    return () => { mounted = false }
-  }, [])
+  const item = useMemo(() => {
+    if (!products.length) return null
+    const dayKey = typeof window !== 'undefined'
+      ? `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
+      : ''
+    return pickFeatured(products, dayKey)
+  }, [products])
 
   const imageSrc = useMemo(() => imageService.resolve(item?.image_url || (item?.images && item.images[0]) || ''), [item])
   const specs = useMemo(() => [item?.model, item?.wood, item?.mics].filter(Boolean).slice(0, 3), [item])
@@ -63,7 +47,7 @@ export default function HeroMonolith() {
     [specs]
   )
 
-  if (!ready || !item || !imageSrc) return null
+  if (loading || !item || !imageSrc) return null
 
   return (
     <section aria-labelledby="home-hero" className="w-full">

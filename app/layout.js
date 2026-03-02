@@ -3,7 +3,7 @@ import React from 'react'
 import SiteShell from '../components/SiteShell'
 import ServiceWorkerRegister from '../components/ServiceWorkerRegister'
 import DisableZoomInApp from '../components/DisableZoomInApp'
-import { ToastProvider } from '../components/ToastContext'
+import { ToastProvider, ChatIntroToastTrigger } from '../components/ToastContext'
 
 export const metadata = {
   title: 'La Guarida — Catálogo de Instrumentos',
@@ -41,6 +41,7 @@ export default function RootLayout({ children }) {
         <DisableZoomInApp />
         <ToastProvider>
           <SiteShell>{children}</SiteShell>
+          <ChatIntroToastTrigger />
           <ServiceWorkerRegister />
         </ToastProvider>
       </body>

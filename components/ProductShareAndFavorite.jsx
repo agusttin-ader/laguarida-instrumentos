@@ -52,7 +52,7 @@ export default function ProductShareAndFavorite({ slug, name, url }) {
   const { isFavorite, toggle } = useFavorites()
   const fav = isFavorite(slug)
 
-  async function handleShare() {
+  const handleShare = useCallback(async () => {
     if (!url) return
     const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
     const canUseNativeShare = typeof navigator !== 'undefined' && navigator.share
@@ -78,19 +78,18 @@ export default function ProductShareAndFavorite({ slug, name, url }) {
       return
     }
 
-    // Desktop: copiar link y notificación
     try {
       await navigator.clipboard.writeText(url)
       toast('¡Link copiado!', 'success')
     } catch {
       toast('No se pudo copiar', 'error')
     }
-  }
+  }, [url, name, toast])
 
-  function handleFavorite() {
+  const handleFavorite = useCallback(() => {
     toggle(slug)
     toast(fav ? 'Quitar de tu selección' : 'Agregado a tu selección', 'default')
-  }
+  }, [slug, fav, toggle, toast])
 
   return (
     <div className="flex items-center gap-2">

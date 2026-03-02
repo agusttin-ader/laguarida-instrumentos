@@ -1,44 +1,42 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { useMemo } from 'react'
 import ProductCard from './ProductCard'
 import ScrollReveal from './ScrollReveal'
 import SkeletonProductCard from './SkeletonProductCard'
-import shuffleArray from '../lib/utils/shuffle'
+import { useProducts } from '../hooks/useProducts'
 
 export default function ProductGrid({ filters = {} }) {
-  const [items, setItems] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { products: items, loading, error } = useProducts({ shuffleCatalog: true })
 
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      setLoading(true)
-      setError(null)
-      try {
-        const res = await fetch('/api/products', { cache: 'no-store' })
-        if (!res.ok) {
-          const text = await res.text().catch(() => '')
-          throw new Error(`Failed to fetch products: ${res.status} ${res.statusText} ${text}`)
-        }
-        const data = await res.json()
-        if (!cancelled) {
-          const { default: normalizeProduct } = await import('../lib/utils/normalizeProduct')
-          const normalized = Array.isArray(data) ? data.map(d => normalizeProduct(d)) : []
-          setItems(shuffleArray(normalized))
-        }
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : String(err))
-      } finally {
-        if (!cancelled) setLoading(false)
+  const filteredItems = useMemo(() => {
+    if (!items.length) return []
+    const q = filters.q && String(filters.q).trim()
+    const brand = filters.brand && String(filters.brand).trim()
+    const model = filters.model && String(filters.model).trim()
+    const mics = filters.mics && String(filters.mics).trim()
+    const bridge = filters.bridge && String(filters.bridge).trim()
+    if (!q && !brand && !model && !mics && !bridge) return items
+    const qLower = q ? q.toLowerCase() : ''
+    const brandLower = brand ? brand.toLowerCase() : ''
+    const modelLower = model ? model.toLowerCase() : ''
+    const micsLower = mics ? mics.toLowerCase() : ''
+    const bridgeLower = bridge ? bridge.toLowerCase() : ''
+    return items.filter((item) => {
+      if (qLower) {
+        const hay = (String(item.name || '') + ' ' + String(item.model || '') + ' ' + String(item.description || '')).toLowerCase()
+        if (!hay.includes(qLower)) return false
       }
-    }
-
-    load()
-    return () => { cancelled = true }
-  }, [])
+      if (brandLower && !String(item.name || '').toLowerCase().includes(brandLower)) return false
+      if (modelLower && !String(item.model || item.name || '').toLowerCase().includes(modelLower)) return false
+      if (micsLower && !String(item.mics || '').toLowerCase().includes(micsLower)) return false
+      if (bridgeLower) {
+        const hay = (String(item.description || '') + ' ' + String(item.name || '')).toLowerCase()
+        if (!hay.includes(bridgeLower)) return false
+      }
+      return true
+    })
+  }, [items, filters.q, filters.brand, filters.model, filters.mics, filters.bridge])
 
   if (loading) {
     return (
@@ -67,38 +65,11 @@ export default function ProductGrid({ filters = {} }) {
       ) : null}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
-        {items
-          .filter((item) => {
-            // free-text query
-            if (filters.q && String(filters.q).trim() !== '') {
-              const q = String(filters.q).trim().toLowerCase()
-              const hay = (String(item.name || '') + ' ' + String(item.model || '') + ' ' + String(item.description || '')).toLowerCase()
-              if (!hay.includes(q)) return false
-            }
-            // apply simple filters if provided
-            if (filters.brand) {
-              const name = String(item.name || '').toLowerCase()
-              if (!name.includes(filters.brand.toLowerCase())) return false
-            }
-            if (filters.model) {
-              const model = String(item.model || item.name || '').toLowerCase()
-              if (!model.includes(filters.model.toLowerCase())) return false
-            }
-            if (filters.mics) {
-              const m = String(item.mics || '').toLowerCase()
-              if (!m.includes(filters.mics.toLowerCase())) return false
-            }
-            if (filters.bridge) {
-              const hay = (String(item.description || '') + ' ' + String(item.name || '')).toLowerCase()
-              if (!hay.includes(filters.bridge.toLowerCase())) return false
-            }
-            return true
-          })
-          .map((item, idx) => (
-            <ScrollReveal key={item.id ?? idx} delay={Math.min(idx * 80, 400)}>
-              <ProductCard item={item} priority={idx < 3} />
-            </ScrollReveal>
-          ))}
+        {filteredItems.map((item, idx) => (
+          <ScrollReveal key={item.id ?? item.slug ?? idx} delay={Math.min(idx * 80, 400)}>
+            <ProductCard item={item} priority={idx < 3} />
+          </ScrollReveal>
+        ))}
       </div>
     </div>
   )

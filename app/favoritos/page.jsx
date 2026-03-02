@@ -1,35 +1,20 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { useMemo } from 'react'
 import Link from 'next/link'
 import ProductCard from '../../components/ProductCard'
 import { useFavorites } from '../../components/ProductShareAndFavorite'
-import normalizeProduct from '../../lib/utils/normalizeProduct'
+import { useProducts } from '../../hooks/useProducts'
 
 export default function FavoritosPage() {
   const { slugs } = useFavorites()
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
+  const { products: allProducts, loading } = useProducts({ shuffleCatalog: false })
 
-  useEffect(() => {
-    if (slugs.length === 0) {
-      setProducts([])
-      setLoading(false)
-      return
-    }
-    let cancelled = false
-    fetch('/api/products', { cache: 'no-store' })
-      .then((res) => (res.ok ? res.json() : []))
-      .then((data) => {
-        if (cancelled) return
-        const list = Array.isArray(data) ? data.map(normalizeProduct) : []
-        const slugSet = new Set(slugs)
-        setProducts(list.filter((p) => slugSet.has(p.slug || p.id)))
-      })
-      .catch(() => { if (!cancelled) setProducts([]) })
-      .finally(() => { if (!cancelled) setLoading(false) })
-    return () => { cancelled = true }
-  }, [slugs.length, slugs.join(',')])
+  const slugSet = useMemo(() => new Set(slugs), [slugs.join(',')])
+  const products = useMemo(
+    () => (slugs.length === 0 ? [] : allProducts.filter((p) => slugSet.has(p.slug || p.id))),
+    [allProducts, slugs.length, slugSet]
+  )
 
   return (
     <div className="container-tight pt-10 sm:pt-14 pb-28 md:pb-12">
@@ -45,7 +30,7 @@ export default function FavoritosPage() {
         </p>
       </header>
 
-      {loading ? (
+      {loading && slugs.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {[1, 2, 3].map((i) => (
             <div key={i} className="rounded-[20px] overflow-hidden border border-white/10 bg-[#15161a] animate-pulse">

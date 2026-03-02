@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 const CARD_IMAGE_SIZES = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
 
-function ProductCard({ item, priority = false, imageFit = 'cover' }) {
+const ProductCard = React.memo(function ProductCard({ item, priority = false, imageFit = 'cover' }) {
   const p = normalizeProduct(item)
   const rawImg = p.image_url || (p.images && p.images[0])
   const img = imageService.resolve(rawImg)
@@ -112,7 +112,7 @@ function ProductCard({ item, priority = false, imageFit = 'cover' }) {
       </Link>
     </article>
   )
-}
+})
 
-export default ProductCard;
+export default ProductCard
  

@@ -19,8 +19,11 @@ export default function Header() {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const isProductPage = pathname?.startsWith('/guitars/')
+  const compactBottom = isProductPage ? 'pb-1 sm:pb-2 md:pb-1' : ''
+  const homeCompact = isHome ? 'pt-1 pb-2 sm:pt-3 sm:pb-4 md:pt-2 md:pb-3' : ''
   return (
-    <header className={`${isHome ? 'pt-1 pb-4 sm:pt-4 sm:pb-8 md:pt-2 md:pb-4' : 'pt-2 pb-4 sm:pt-4 sm:pb-8 md:pt-2 md:pb-4'} sticky top-0 z-40 md:static md:z-auto bg-[#1a1a1c]/88 backdrop-blur-md border-b border-white/5 md:bg-transparent md:backdrop-blur-0 md:border-0`}>
+    <header className={`${isHome ? homeCompact : `pt-2 pb-4 sm:pt-4 sm:pb-8 md:pt-2 md:pb-4 ${compactBottom}`} sticky top-0 z-40 md:static md:z-auto bg-[#1a1a1c]/88 backdrop-blur-md border-b border-white/5 md:bg-transparent md:backdrop-blur-0 md:border-0`}>
       <div className="flex items-center justify-between container-tight max-w-4xl relative min-h-[58px] md:min-h-[56px]">
         <div className="flex items-center min-w-0 md:justify-start" />
 

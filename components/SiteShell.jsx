@@ -1,12 +1,14 @@
 "use client"
 
 import { useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { usePathname } from 'next/navigation'
 import Header from './Header'
 import Footer from './Footer'
 import BottomNav from './BottomNav'
-import HybridSupportChat from './HybridSupportChat'
 import PageTransition from './PageTransition'
+
+const HybridSupportChat = dynamic(() => import('./HybridSupportChat'), { ssr: false })
 
 /** Renderiza Header y Footer solo fuera de /admin para evitar doble header en login */
 export default function SiteShell({ children }) {

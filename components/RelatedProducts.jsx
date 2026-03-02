@@ -1,43 +1,12 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { useMemo } from 'react'
 import ProductCard from './ProductCard'
+import { useProducts } from '../hooks/useProducts'
 
-export default function RelatedProducts(){
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
-    let cancelled = false
-
-    async function load(){
-      setLoading(true)
-      setError(null)
-      try {
-        const res = await fetch('/api/products')
-        if (!res.ok) {
-          const text = await res.text().catch(() => '')
-          throw new Error(`Failed to fetch products: ${res.status} ${res.statusText} ${text}`)
-        }
-        const data = await res.json()
-        if (!cancelled) {
-          const { default: normalizeProduct } = await import('../lib/utils/normalizeProduct')
-          setProducts(Array.isArray(data) ? data.map(d => normalizeProduct(d)) : [])
-        }
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : String(err))
-        if (!cancelled) setProducts([])
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    }
-
-    load()
-    return () => { cancelled = true }
-  }, [])
-
-  const related = products.slice(0, 4)
+export default function RelatedProducts() {
+  const { products, loading, error } = useProducts({ shuffleCatalog: false })
+  const related = useMemo(() => products.slice(0, 4), [products])
 
   return (
     <section className="mt-20 container-tight">
