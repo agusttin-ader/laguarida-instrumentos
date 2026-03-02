@@ -380,9 +380,11 @@ html, body, #__next, #root, main {
 .dark .text-gray-700 { color: var(--dark-text-primary) !important }
 .dark .text-gray-800 { color: var(--dark-text-primary) !important }
 
-/* Admin/Auth small header: ensure the area uses --auth-bg variable so login shows dark background */
+/* Admin/Auth bar: premium solid surface (no gradient to avoid iOS glitches) */
 .admin-auth-bar {
   background-color: var(--auth-bg);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.04);
 }
 
 /* Admin wrapper and card helpers
@@ -1437,101 +1439,103 @@ button:not(.no-custom-btn):active {
   transform: none !important;
 }
 
-/* ===================== Admin premium redesign ===================== */
+/* ===================== Admin premium redesign (iOS-safe, no backdrop-filter) ===================== */
 .admin-premium-card {
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.24);
-  backdrop-filter: blur(8px);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(28, 30, 36, 0.98);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.32), 0 1px 0 0 rgba(255, 255, 255, 0.04) inset;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.admin-premium-card:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 1px 0 0 rgba(255, 255, 255, 0.05) inset;
 }
 
 .admin-premium-input {
   width: 100%;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(9, 13, 24, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(18, 20, 26, 0.9);
   color: rgba(255, 255, 255, 0.96);
-  padding: 0.58rem 0.82rem;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.9375rem;
 }
 
 .admin-premium-input::placeholder {
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(255, 255, 255, 0.42);
 }
 
 .admin-premium-input:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
 }
 
 .admin-premium-btn-primary,
 .admin-premium-btn-secondary,
 .admin-premium-btn-danger,
 .admin-premium-btn-ghost {
-  border-radius: 10px;
+  border-radius: 12px;
   font-weight: 600;
-  letter-spacing: 0.01em;
-  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 160ms ease, border-color 160ms ease, background-color 160ms ease, opacity 120ms ease;
+  letter-spacing: 0.02em;
+  transition: opacity 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background-color 180ms ease;
 }
 
 .admin-premium-btn-primary {
-  background: linear-gradient(180deg, #f8b13f, #e08d00);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 24px rgba(224, 141, 0, 0.28);
+  background: #e08d00;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 16px rgba(224, 141, 0, 0.35);
+}
+
+.admin-premium-btn-primary:hover {
+  background: #e8990a;
+  box-shadow: 0 6px 20px rgba(224, 141, 0, 0.4);
 }
 
 .admin-premium-btn-secondary {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.94);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.admin-premium-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .admin-premium-btn-danger {
-  background: linear-gradient(180deg, #e53935, #c62828);
-  color: #ffffff;
+  background: #c62828;
+  color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 24px rgba(198, 40, 40, 0.26);
+  box-shadow: 0 4px 16px rgba(198, 40, 40, 0.3);
+}
+
+.admin-premium-btn-danger:hover {
+  background: #d32f2f;
+  box-shadow: 0 6px 20px rgba(198, 40, 40, 0.35);
 }
 
 .admin-premium-btn-ghost {
   background: transparent;
-  color: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.admin-premium-btn-primary:hover,
-.admin-premium-btn-secondary:hover,
-.admin-premium-btn-danger:hover,
-.admin-premium-btn-ghost:hover {
-  transform: translateY(-1px);
-}
-
-.admin-premium-btn-primary:hover {
-  box-shadow: 0 14px 30px rgba(224, 141, 0, 0.34);
-}
-
-.admin-premium-btn-secondary:hover {
-  border-color: rgba(255, 255, 255, 0.24);
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.24);
-}
-
-.admin-premium-btn-danger:hover {
-  box-shadow: 0 14px 30px rgba(198, 40, 40, 0.34);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .admin-premium-btn-ghost:hover {
-  border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
 .admin-premium-btn-primary:active,
 .admin-premium-btn-secondary:active,
 .admin-premium-btn-danger:active,
 .admin-premium-btn-ghost:active {
-  transform: translateY(0);
+  opacity: 0.92;
 }
 
 .admin-premium-btn-primary:focus-visible,
@@ -1539,20 +1543,11 @@ button:not(.no-custom-btn):active {
 .admin-premium-btn-danger:focus-visible,
 .admin-premium-btn-ghost:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
 }
 
 .admin-premium-muted {
-  color: rgba(255, 255, 255, 0.68);
-}
-
-.admin-premium-card {
-  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms ease, border-color 220ms ease;
-}
-
-.admin-premium-card:hover {
-  border-color: rgba(255, 255, 255, 0.14);
-  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 @keyframes splash-breathe {

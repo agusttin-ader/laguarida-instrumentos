@@ -960,14 +960,14 @@ export default function AdminProducts(){
           </div>
         </div>
       ) : null}
-      <section className="p-4 md:p-6 admin-premium-card">
+      <section className="p-5 md:p-6 admin-premium-card">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <h2 className="section-title-minimal text-[1.08rem] text-white">Crear producto</h2>
-            <p className="text-sm admin-premium-muted">Usa el botón &apos;Crear producto&apos; para abrir el editor en un modal.</p>
+            <h2 className="text-base font-semibold tracking-tight text-white md:text-[1.05rem]">Crear producto</h2>
+            <p className="mt-1 text-sm admin-premium-muted">Usa el botón &apos;Crear producto&apos; para abrir el editor en un modal.</p>
           </div>
           <div className="flex w-full md:w-auto items-center gap-2">
-            <button type="button" className="px-4 py-2 admin-premium-btn-primary no-custom-btn inline-flex items-center justify-center gap-2 w-full md:w-auto" onClick={openCreateModal}>
+            <button type="button" className="px-4 py-3 admin-premium-btn-primary no-custom-btn inline-flex items-center justify-center gap-2 w-full md:w-auto rounded-xl text-sm font-semibold" onClick={openCreateModal}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v14m-7-7h14" /></svg>
               Crear producto
             </button>
@@ -978,19 +978,19 @@ export default function AdminProducts(){
         
       </section>
 
-      <section className="p-4 md:p-5 admin-premium-card">
-        <div className="flex items-center justify-between gap-3 mb-3">
-          <h2 className="section-title-minimal text-[1rem] md:text-[1.08rem] text-white">Actividad reciente</h2>
-          <span className="section-subtitle-minimal text-white/50">Últimos cambios</span>
+      <section className="p-5 md:p-6 admin-premium-card">
+        <div className="flex items-center justify-between gap-3 mb-4">
+          <h2 className="text-base font-semibold tracking-tight text-white md:text-[1.05rem]">Actividad reciente</h2>
+          <span className="text-[11px] uppercase tracking-wider text-white/50">Últimos cambios</span>
         </div>
         {recentActivity.length === 0 ? (
-          <div className="text-sm text-white/55 border border-white/10 rounded-xl px-3 py-3 bg-black/20">
+          <div className="text-sm text-white/55 border border-white/08 rounded-xl px-4 py-3.5 bg-white/[0.03]">
             Aún no hay cambios en esta sesión.
           </div>
         ) : (
           <div className="space-y-2">
             {recentActivity.map((a) => (
-              <div key={a.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/20 px-3 py-2.5">
+              <div key={a.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/08 bg-white/[0.03] px-4 py-2.5">
                 <p className="text-sm text-white/92 truncate">
                   {a.type === 'create' ? 'Creaste' : a.type === 'update' ? 'Actualizaste' : 'Eliminaste'} <span className="text-white font-medium">{a.label}</span>
                 </p>
@@ -1001,13 +1001,13 @@ export default function AdminProducts(){
         )}
       </section>
 
-      <section className="p-4 md:p-5 admin-premium-card">
+      <section className="p-5 md:p-6 admin-premium-card">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <h2 className="section-title-minimal text-[1.08rem] text-white">Productos</h2>
+            <h2 className="text-base font-semibold tracking-tight text-white md:text-[1.05rem]">Productos</h2>
           </div>
           <div className="flex items-center gap-2 w-full md:w-auto">
-            <button type="button" onClick={() => setListOpen(v => !v)} className="inline-flex items-center justify-center gap-2 text-sm admin-premium-btn-secondary px-3 py-2 w-full md:w-auto no-custom-btn">
+            <button type="button" onClick={() => setListOpen(v => !v)} className="inline-flex items-center justify-center gap-2 text-sm admin-premium-btn-secondary px-3 py-2.5 w-full md:w-auto no-custom-btn rounded-xl">
               {listOpen ? 'Ocultar' : 'Mostrar'}
               <svg className={`h-4 w-4 transition-transform ${listOpen ? 'rotate-180' : 'rotate-0'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -1017,7 +1017,7 @@ export default function AdminProducts(){
         </div>
 
         <div className="mt-4">
-          <label className="block text-xs text-white/60 mb-2">Buscar producto</label>
+          <label className="block text-xs font-medium text-white/55 mb-2">Buscar producto</label>
           <div className="relative" role="search">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/45" aria-hidden>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="17" height="17"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/></svg>
@@ -1037,13 +1037,13 @@ export default function AdminProducts(){
         {!loading && items.length === 0 ? (
           <div className="py-4 text-sm text-white/65">No hay productos.</div>
         ) : null}
-        <div className={`mt-4 rounded-xl border border-white/10 bg-black/20 overflow-hidden divide-y divide-white/10 transition-all duration-200 ${listOpen ? 'max-h-[2000px] py-0' : 'max-h-0'}`}>
+        <div className={`mt-4 rounded-xl border border-white/08 bg-white/[0.03] overflow-hidden divide-y divide-white/08 transition-all duration-200 ${listOpen ? 'max-h-[2000px] py-0' : 'max-h-0'}`}>
           {filteredItems.map((p) => {
             const imgSrc = imageService.resolve(p.image_url || (p.images && p.images[0]))
             return (
             <div key={p.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-3 sm:px-4 py-3.5 admin-item hover:bg-white/[0.03]">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-md overflow-hidden border border-white/15 bg-black/20 flex items-center justify-center">
+                <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg overflow-hidden border border-white/10 bg-white/[0.04] flex items-center justify-center">
                   {imgSrc ? (
                     <ImageWithSkeleton src={imgSrc} alt={p.name || p.slug || 'Imagen'} width={56} height={56} quality={100} disableClientPreview />
                   ) : (

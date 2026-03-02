@@ -4,7 +4,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import supabase from '../../../lib/supabase/client'
 import Header from '../../../components/Header'
 import Footer from '../../../components/Footer'
-import AdminPanelAppBackground from './AdminPanelAppBackground'
 
 const AdminAuthContext = createContext(null)
 
@@ -146,14 +145,10 @@ export default function ClientAuth({ children }){
           </div>
         ) : (
           <>
-            <AdminPanelAppBackground />
             <div className="relative z-30">
               <Header />
             </div>
-            <div
-              className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-end gap-3 mt-2 md:mt-0 relative z-30 admin-auth-bar px-4 py-4 mb-5 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.02] shadow-[0_16px_36px_rgba(0,0,0,0.22)]"
-              style={{ backgroundColor: 'transparent' }}
-            >
+            <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-end gap-3 mt-2 md:mt-0 relative z-30 admin-auth-bar px-4 py-4 mb-6 rounded-2xl">
               <div className="text-sm text-white/75 w-full sm:w-auto">
                   {loading ? (
                     <span className="text-white/55">Comprobando sesión…</span>
