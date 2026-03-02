@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 const CARD_IMAGE_SIZES = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
 
-function ProductCard({ item, priority = false }) {
+function ProductCard({ item, priority = false, imageFit = 'cover' }) {
   const p = normalizeProduct(item)
   const rawImg = p.image_url || (p.images && p.images[0])
   const img = imageService.resolve(rawImg)
@@ -22,6 +22,7 @@ function ProductCard({ item, priority = false }) {
   if (p.model) specs.push(String(p.model).trim())
   const visibleSpecs = specs.slice(0, 2)
   const hiddenSpecsCount = Math.max(0, specs.length - visibleSpecs.length)
+  const objectFit = imageFit === 'contain' ? 'contain' : 'cover'
 
   // (removed unused keyFragment helper) 
 
@@ -50,7 +51,8 @@ function ProductCard({ item, priority = false }) {
                 fetchPriority={priority ? 'high' : 'low'}
                 onLoad={() => { setImgLoaded(true); setErrored(false) }}
                 onError={() => setErrored(true)}
-                className={`object-cover object-center img-reveal ${imgLoaded ? 'img-loaded' : ''}`}
+                className={`img-reveal ${imgLoaded ? 'img-loaded' : ''}`}
+                style={{ objectFit: objectFit, objectPosition: 'center' }}
               />
             </>
           ) : (

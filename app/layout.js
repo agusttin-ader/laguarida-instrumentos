@@ -2,6 +2,8 @@ import '../styles/globals.css'
 import React from 'react'
 import SiteShell from '../components/SiteShell'
 import ServiceWorkerRegister from '../components/ServiceWorkerRegister'
+import DisableZoomInApp from '../components/DisableZoomInApp'
+import { ToastProvider } from '../components/ToastContext'
 
 export const metadata = {
   title: 'La Guarida — Catálogo de Instrumentos',
@@ -36,8 +38,11 @@ export default function RootLayout({ children }) {
         <link rel="apple-touch-icon" href="/images/logo/og-pick-icon.PNG" />
       </head>
       <body className="min-h-screen">
-        <SiteShell>{children}</SiteShell>
-        <ServiceWorkerRegister />
+        <DisableZoomInApp />
+        <ToastProvider>
+          <SiteShell>{children}</SiteShell>
+          <ServiceWorkerRegister />
+        </ToastProvider>
       </body>
     </html>
   )

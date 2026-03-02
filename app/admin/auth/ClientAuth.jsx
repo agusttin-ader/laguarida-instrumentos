@@ -4,6 +4,8 @@ import { usePathname, useRouter } from 'next/navigation'
 import supabase from '../../../lib/supabase/client'
 import Header from '../../../components/Header'
 import Footer from '../../../components/Footer'
+import { useToast } from '../../../components/ToastContext'
+import { hapticLight } from '../../../lib/haptics'
 
 const AdminAuthContext = createContext(null)
 
@@ -15,8 +17,11 @@ export default function ClientAuth({ children }){
   const [session, setSession] = useState(null)
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [online, setOnline] = useState(null)
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
+  const { toast } = useToast()
   const isLoginPath = typeof pathname === 'string' && (pathname === '/admin/login' || pathname === '/admin/login/')
 
   useEffect(() => {
@@ -67,6 +72,27 @@ export default function ClientAuth({ children }){
   }, [isLoginPath])
 
   useEffect(() => {
+    if (!showLogoutConfirm) return
+    function onKeyDown(e) {
+      if (e.key === 'Escape') setShowLogoutConfirm(false)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [showLogoutConfirm])
+
+  useEffect(() => {
+    setOnline(typeof navigator !== 'undefined' ? navigator.onLine : true)
+    const onOnline = () => setOnline(true)
+    const onOffline = () => setOnline(false)
+    window.addEventListener('online', onOnline)
+    window.addEventListener('offline', onOffline)
+    return () => {
+      window.removeEventListener('online', onOnline)
+      window.removeEventListener('offline', onOffline)
+    }
+  }, [])
+
+  useEffect(() => {
     // only run on client after initial loading
     if (loading) return
 
@@ -112,21 +138,27 @@ export default function ClientAuth({ children }){
     }
   }, [loading, user, pathname, router])
 
-  async function signOut() {
+  function openLogoutConfirm() {
+    setShowLogoutConfirm(true)
+  }
+
+  async function doSignOut() {
+    setShowLogoutConfirm(false)
+    hapticLight()
     try {
-      // call server endpoint to clear HttpOnly cookies and sign out server-side
       await fetch('/api/auth/sign-out', { method: 'POST', credentials: 'include' })
-      // also call client SDK signOut to clear any client state
       try { await supabase.auth.signOut() } catch { /* empty */ }
       setSession(null)
       setUser(null)
+      toast('Sesión cerrada', 'success')
       router.push('/admin/login')
     } catch (err) {
       console.warn('Sign out error', err)
+      toast('Error al cerrar sesión', 'error')
     }
   }
 
-  const value = { user, session, loading, signOut }
+  const value = { user, session, loading, signOut: openLogoutConfirm }
 
   return (
     <AdminAuthContext.Provider value={value}>
@@ -149,17 +181,69 @@ export default function ClientAuth({ children }){
               <Header />
             </div>
             <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-end gap-3 mt-2 md:mt-0 relative z-30 admin-auth-bar px-4 py-4 mb-6 rounded-2xl">
-              <div className="text-sm text-white/75 w-full sm:w-auto">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                {online === true || online === false ? (
+                  <span className="flex items-center gap-1.5 text-xs text-white/60" title={online ? 'Conectado' : 'Sin conexión'}>
+                    <span className={`w-2 h-2 rounded-full ${online ? 'bg-emerald-500' : 'bg-amber-500'}`} aria-hidden />
+                    {online ? 'En línea' : 'Sin conexión'}
+                  </span>
+                ) : null}
+                <span className="text-sm text-white/75 truncate flex-1 min-w-0">
                   {loading ? (
                     <span className="text-white/55">Comprobando sesión…</span>
                   ) : user ? (
                     <span className="text-white/90 break-all">{user.email}</span>
                   ) : null}
+                </span>
               </div>
               {user && (
-                <button onClick={signOut} className="admin-premium-btn-danger px-3 py-2 w-full sm:w-auto no-custom-btn">Cerrar sesión</button>
+                <button onClick={openLogoutConfirm} className="admin-premium-btn-danger px-3 py-2 w-full sm:w-auto no-custom-btn">Cerrar sesión</button>
               )}
             </div>
+
+            {showLogoutConfirm && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+                <div
+                  className="absolute inset-0 modal-backdrop-enter backdrop-blur-sm cursor-default"
+                  style={{ backgroundColor: 'rgba(0,0,0,0.65)' }}
+                  onClick={() => setShowLogoutConfirm(false)}
+                  onKeyDown={(e) => e.key === 'Escape' && setShowLogoutConfirm(false)}
+                  role="button"
+                  tabIndex={-1}
+                  aria-label="Cerrar"
+                />
+                <div
+                  className="relative admin-premium-card w-full max-w-sm p-6 modal-panel-enter shadow-2xl"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="logout-dialog-title"
+                >
+                  <h2 id="logout-dialog-title" className="text-lg font-semibold text-white mb-1">
+                    ¿Cerrar sesión?
+                  </h2>
+                  <p className="text-sm text-white/70 mb-6">
+                    Vas a salir del panel de administración.
+                  </p>
+                  <div className="flex gap-3 justify-end">
+                    <button
+                      type="button"
+                      onClick={() => setShowLogoutConfirm(false)}
+                      className="admin-premium-btn-ghost px-4 py-2.5 no-custom-btn rounded-xl"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={doSignOut}
+                      className="admin-premium-btn-danger px-4 py-2.5 no-custom-btn rounded-xl"
+                    >
+                      Aceptar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {children}
           </>
         )}

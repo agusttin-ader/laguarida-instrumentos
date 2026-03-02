@@ -5,6 +5,9 @@ import React, { useEffect, useState } from 'react'
 import normalizeProduct from '../lib/utils/normalizeProduct'
 import imageService from '../lib/utils/imageService'
 import ImageWithSkeleton from './ImageWithSkeleton'
+import PullToRefresh from './PullToRefresh'
+import { useToast } from './ToastContext'
+import { hapticLight } from '../lib/haptics'
 
 const CREATE_DRAFT_KEY = 'admin:create:draft:v1'
 
@@ -45,8 +48,8 @@ export default function AdminProducts(){
   const [quickOpen, setQuickOpen] = useState(false)
   const [quickQ, setQuickQ] = useState('')
   const [recentActivity, setRecentActivity] = useState([])
-  // Admin quick-search for the product list (filter by name)
   const [adminQ, setAdminQ] = useState('')
+  const { toast } = useToast()
 
   const filteredItems = React.useMemo(() => {
     if (!Array.isArray(items)) return []
@@ -686,19 +689,26 @@ export default function AdminProducts(){
       await load()
       setForm({ name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '' })
       setEditingId(null)
-      // clear selected files and previews
       setMainFile(null)
       if (mainPreview) { try { URL.revokeObjectURL(mainPreview.url) } catch (e) {} }
       setMainPreview(null)
       setGalleryFiles([])
       galleryPreviews.forEach(p => { try { URL.revokeObjectURL(p.url) } catch (e) {} })
       setGalleryPreviews([])
-      addRecentActivity('create', form.name || 'Producto')
-      setSuccess('Producto creado correctamente')
+      if (editingId) {
+        addRecentActivity('update', form.name || 'Producto')
+        toast('Producto actualizado', 'success')
+      } else {
+        addRecentActivity('create', form.name || 'Producto')
+        toast('Producto creado', 'success')
+      }
+      hapticLight()
+      setSuccess(editingId ? 'Producto actualizado' : 'Producto creado correctamente')
       setTimeout(() => setSuccess(null), 3000)
     } catch (err){
       const msg = err instanceof Error ? err.message : String(err)
       setError(msg)
+      toast(msg, 'error')
       if (/subir la imagen/i.test(msg) || /upload/i.test(msg)) setUploadError(msg)
     } finally {
       setSubmitting(false)
@@ -719,10 +729,14 @@ export default function AdminProducts(){
       }
       await load()
       addRecentActivity('delete', label)
+      toast('Producto eliminado', 'success')
+      hapticLight()
       setSuccess('Producto eliminado')
       setTimeout(() => setSuccess(null), 3000)
     } catch (err){
-      setError(err instanceof Error ? err.message : String(err))
+      const msg = err instanceof Error ? err.message : String(err)
+      setError(msg)
+      toast(msg, 'error')
     } finally {
       setDeletingId(null)
     }
@@ -797,6 +811,7 @@ export default function AdminProducts(){
   }
 
   return (
+    <PullToRefresh onRefresh={load}>
     <div className="space-y-6">
       {quickOpen ? (
         <div className="fixed inset-0 z-[95] flex items-start justify-center px-4 pt-20 md:pt-28">
@@ -984,8 +999,10 @@ export default function AdminProducts(){
           <span className="text-[11px] uppercase tracking-wider text-white/50">Últimos cambios</span>
         </div>
         {recentActivity.length === 0 ? (
-          <div className="text-sm text-white/55 border border-white/08 rounded-xl px-4 py-3.5 bg-white/[0.03]">
-            Aún no hay cambios en esta sesión.
+          <div className="flex flex-col items-center justify-center text-center rounded-xl border border-white/08 px-4 py-8 bg-white/[0.03]">
+            <span className="text-3xl opacity-50 mb-2" aria-hidden>📋</span>
+            <p className="text-sm text-white/60">Aún no hay cambios en esta sesión.</p>
+            <p className="text-xs text-white/45 mt-1">Creá o editá un producto para ver la actividad.</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -1033,9 +1050,25 @@ export default function AdminProducts(){
             />
           </div>
         </div>
-        {loading ? <div className="py-4 text-white/70">Cargando…</div> : null}
+        {loading ? (
+          <div className="mt-4 space-y-2">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex items-center gap-3 px-3 py-3.5 rounded-xl bg-white/[0.03] border border-white/08">
+                <div className="w-12 h-12 rounded-lg bg-white/10 animate-pulse" />
+                <div className="flex-1 min-w-0">
+                  <div className="h-4 bg-white/10 rounded w-3/4 animate-pulse" />
+                  <div className="h-3 bg-white/10 rounded w-1/3 mt-2 animate-pulse" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
         {!loading && items.length === 0 ? (
-          <div className="py-4 text-sm text-white/65">No hay productos.</div>
+          <div className="mt-4 flex flex-col items-center justify-center text-center rounded-xl border border-white/08 px-4 py-10 bg-white/[0.03]">
+            <span className="text-4xl opacity-50 mb-3" aria-hidden>🎸</span>
+            <p className="text-sm font-medium text-white/80">No hay productos</p>
+            <p className="text-xs text-white/55 mt-1">Usá &quot;Crear producto&quot; para cargar el primer ítem del catálogo.</p>
+          </div>
         ) : null}
         <div className={`mt-4 rounded-xl border border-white/08 bg-white/[0.03] overflow-hidden divide-y divide-white/08 transition-all duration-200 ${listOpen ? 'max-h-[2000px] py-0' : 'max-h-0'}`}>
           {filteredItems.map((p) => {
@@ -1071,5 +1104,6 @@ export default function AdminProducts(){
         </div>
       </section>
     </div>
+    </PullToRefresh>
   )
 }

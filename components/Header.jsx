@@ -9,7 +9,8 @@ const LOGO_DARK = '/images/logo/logo-fondo-oscuro.PNG'
 export default function Header() {
   const pathname = usePathname()
   const isHome = pathname === '/' || pathname === ''
-  const navLinkClass = "relative inline-flex items-center py-1 text-[12px] font-semibold uppercase tracking-[0.16em] text-[#dde2eb]/86 hover:text-[#fffaf0] transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:-bottom-1.5 after:h-[2px] after:w-0 after:bg-[#d4a43b] after:transition-all after:duration-700 after:ease-out hover:after:w-full"
+  const navLinkClass =
+    "relative inline-flex items-center py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-[#e4e7f0]/80 hover:text-[#fffaf0] transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:-bottom-1.5 after:h-[1px] after:w-0 after:bg-[#d4a43b] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
 
   function handleSectionNav(e, sectionId) {
     if (!isHome) return
@@ -21,11 +22,7 @@ export default function Header() {
   return (
     <header className={`${isHome ? 'pt-1 pb-4 sm:pt-4 sm:pb-8 md:pt-2 md:pb-4' : 'pt-2 pb-4 sm:pt-4 sm:pb-8 md:pt-2 md:pb-4'} sticky top-0 z-40 md:static md:z-auto bg-[#1a1a1c]/88 backdrop-blur-md border-b border-white/5 md:bg-transparent md:backdrop-blur-0 md:border-0`}>
       <div className="flex items-center justify-between container-tight max-w-4xl relative min-h-[58px] md:min-h-[56px]">
-        <div className="flex items-center min-w-0 md:justify-start">
-          <div className="flex items-center">
-            <AuthIndicator />
-          </div>
-        </div>
+        <div className="flex items-center min-w-0 md:justify-start" />
 
         <a href="/" aria-label="Ir al inicio" className={`logo-link block absolute left-1/2 -translate-x-1/2 z-10 top-1/2 -translate-y-1/2 pointer-events-none md:pointer-events-auto md:static md:translate-x-0 md:translate-y-0 md:ml-10 ${isHome ? 'sm:translate-y-0 md:translate-y-0' : ''}`}>
           <div className="relative header-logo-wrapper">
@@ -40,8 +37,24 @@ export default function Header() {
             <a href="/#about-section" onClick={(e) => handleSectionNav(e, 'about-section')} className={navLinkClass}>Sobre nosotros</a>
             <span className="h-[14px] w-px bg-white/14" aria-hidden />
             <a href="/#seleccion-destacada" onClick={(e) => handleSectionNav(e, 'seleccion-destacada')} className={navLinkClass}>Catalogo</a>
+            <span className="h-[14px] w-px bg-white/18" aria-hidden />
+            <a
+              href="/favoritos"
+              className="relative inline-flex items-center gap-1.5 text-[11px] font-medium tracking-[0.18em] uppercase text-[#e4e7f0]/70 hover:text-[#fffaf0] transition-colors after:content-[''] after:absolute after:left-0 after:-bottom-1.5 after:h-[1px] after:w-0 after:bg-[#d4a43b] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
+            >
+              <span
+                className="inline-flex h-[13px] w-[13px] items-center justify-center rounded-full border border-white/50"
+                aria-hidden
+              >
+                <span className="block h-[7px] w-[7px] rounded-full bg-white/85" />
+              </span>
+              <span>Favoritos</span>
+            </a>
           </div>
         </nav>
+      </div>
+      <div className="container-tight max-w-4xl mt-1 hidden md:block">
+        <AuthIndicator />
       </div>
     </header>
   )
@@ -50,6 +63,7 @@ export default function Header() {
 function AuthIndicator() {
   const pathname = usePathname()
   const [auth, setAuth] = useState({ loading: true, authenticated: false, email: null })
+  const [online, setOnline] = useState(null)
 
   useEffect(() => {
     let mounted = true
@@ -73,14 +87,69 @@ function AuthIndicator() {
     return () => { mounted = false }
   }, [pathname])
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    setOnline(navigator.onLine)
+    const handleOnline = () => setOnline(true)
+    const handleOffline = () => setOnline(false)
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
+
   if (auth.loading) return null
   if (!auth.authenticated) return null
   if (typeof pathname === 'string' && pathname.startsWith('/admin')) return null
 
   return (
-    <div className="hidden md:flex items-center gap-3">
-      <div className="text-sm text-gray-300">Sesión: <span className="font-medium">{auth.email || 'Admin'}</span></div>
-      <a href="/admin" className="admin-panel-link no-custom-btn">Ir al panel</a>
+    <div className="hidden md:flex items-center gap-4 text-xs text-gray-300">
+      {(online === true || online === false) && (
+        <div className="flex items-center gap-1.5">
+          <span
+            className={`w-2 h-2 rounded-full ${online ? 'bg-emerald-500' : 'bg-rose-500'}`}
+            aria-hidden
+          />
+          <span className="text-[11px] text-white/80">
+            {online ? 'En línea' : 'Sin conexión'}
+          </span>
+        </div>
+      )}
+      <div className="flex items-center gap-1.5">
+        <span className="font-medium text-gray-100 truncate max-w-[220px]">{auth.email || 'Admin'}</span>
+      </div>
+      <a
+        href="/admin"
+        className="no-custom-btn inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 bg-white/[0.03] text-[11px] font-medium text-white/90 hover:bg-white/[0.08] transition-colors"
+        aria-label="Ir al panel de administración"
+      >
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden
+        >
+          <path
+            d="M5 6.5h14a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 16V8A1.5 1.5 0 0 1 5 6.5Z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M4 18.5h16"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <span>Admin</span>
+      </a>
     </div>
   )
 }

@@ -1,12 +1,19 @@
 "use client"
 
 import React from 'react'
+import { useToast } from './ToastContext'
 
 /** Sticky CTA bar above bottom nav on mobile — WhatsApp only. */
 export default function ProductStickyCTA({
   href,
   ariaLabel = 'Contactar por WhatsApp',
 }) {
+  const { toast } = useToast()
+
+  function handleClick() {
+    toast('Abriendo WhatsApp…', 'default')
+  }
+
   return (
     <div className="md:hidden fixed bottom-[68px] left-0 right-0 z-40 px-4 pb-[max(8px,env(safe-area-inset-bottom))] pt-3 bg-gradient-to-t from-[#1a1a1c] to-transparent pointer-events-none">
       <div className="pointer-events-auto">
@@ -15,6 +22,7 @@ export default function ProductStickyCTA({
           target="_blank"
           rel="noopener noreferrer"
           aria-label={ariaLabel}
+          onClick={handleClick}
           className="flex items-center justify-center gap-2 w-full min-h-[3rem] rounded-xl bg-white text-[#141416] font-semibold text-base shadow-lg border border-white/10 btn-focus"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>

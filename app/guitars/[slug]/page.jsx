@@ -7,9 +7,8 @@ import GuitarGallery from '../../../components/GuitarGallery'
 import normalizeProduct from '../../../lib/utils/normalizeProduct'
 import { getSupabaseServerClient } from '../../../lib/supabase/server'
 import ProductCard from '../../../components/ProductCard'
-import ProductStickyCTA from '../../../components/ProductStickyCTA'
 import imageService from '../../../lib/utils/imageService'
-import ProductLiveChatButton from '../../../components/ProductLiveChatButton'
+import ProductShareAndFavorite from '../../../components/ProductShareAndFavorite'
 
 // Generate page metadata dynamically based on the product data
 export async function generateMetadata({ params }) {
@@ -177,9 +176,30 @@ export default async function GuitarPage({ params }) {
   const modelValue = product.model || 'N/A'
   const woodValue = Array.isArray(product.wood) ? product.wood.join(', ') : (product.wood || 'N/A')
   const descriptionText = String(product.description || '').trim()
+  const productUrl = `${SITE_URL}/guitars/${slug}`
+  const productImageUrl = imageService.resolve(product.image_url || (product.images && product.images[0]))
+  const absoluteImage = productImageUrl && (productImageUrl.startsWith('http') ? productImageUrl : `${SITE_URL}${productImageUrl.startsWith('/') ? '' : '/'}${productImageUrl}`)
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: descriptionText || `${product.name} — La Guarida Instrumentos`,
+    url: productUrl,
+    ...(absoluteImage && { image: absoluteImage }),
+    ...(product.price && {
+      offers: {
+        '@type': 'Offer',
+        price: product.price,
+        priceCurrency: 'ARS',
+        availability: 'https://schema.org/InStock'
+      }
+    })
+  }
 
   return (
     <div className="container-tight pt-10 sm:pt-14 pb-28 md:pb-12">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <header className="mt-2 sm:mt-4 mb-3">
         <p className="text-xs uppercase tracking-[0.22em] text-gray-500">Catálogo · Guitarras</p>
       </header>
@@ -220,50 +240,31 @@ export default async function GuitarPage({ params }) {
             <p className="text-[30px] font-bold text-[#161c2c] dark:text-[#f7f9ff] mb-6">{product.price}</p>
 
             <div className="flex flex-wrap gap-3 items-center">
-              <ProductLiveChatButton
-                productName={product.name}
-                className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-lg bg-[#0f1628] text-white dark:bg-[#e9eefc] dark:text-[#111728] font-semibold text-xs tracking-[0.08em] uppercase hover:bg-[#1a2239] dark:hover:bg-[#dbe5ff] transition-colors btn-focus"
-                ariaLabel={`Consultar por WhatsApp sobre ${product.name}`}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <path d="M6.5 7.4A4.4 4.4 0 0 1 10.9 3h4.2a4.4 4.4 0 0 1 4.4 4.4v5.2a4.4 4.4 0 0 1-4.4 4.4h-2.1l-3.6 3v-3H8.9a4.4 4.4 0 0 1-4.4-4.4V7.4Z" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M9 9.5h7M9 12.3h5.5" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
-                </svg>
-                <span>Consultar por WhatsApp</span>
-              </ProductLiveChatButton>
               <a
                 href={consultHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`Continuar por WhatsApp sobre ${product.name}`}
-                className="no-custom-btn inline-flex items-center justify-center w-12 h-12 rounded-lg border border-[#d4a43b]/45 bg-[#d4a43b]/18 text-[#f3d399] hover:bg-[#d4a43b]/26 transition-colors btn-focus"
+                aria-label={`Consultar por WhatsApp sobre ${product.name}`}
+                className="no-custom-btn inline-flex items-center justify-center gap-2 h-12 px-6 rounded-lg bg-[#0f1628] text-white dark:bg-[#e9eefc] dark:text-[#111728] font-semibold text-sm hover:bg-[#1a2239] dark:hover:bg-[#dbe5ff] transition-colors"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <span>Consultar</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
                   <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M9.36 8.9c.1-.22.18-.23.34-.24h.28c.1 0 .24.04.3.17.12.26.4 1 .44 1.08.04.08.06.18 0 .28-.06.1-.1.16-.2.24-.1.08-.2.18-.28.24-.1.1-.2.2-.08.4.12.2.54.9 1.16 1.44.8.7 1.46.9 1.66 1 .2.1.32.08.44-.04.12-.12.5-.58.64-.78.14-.2.28-.16.46-.1.2.08 1.2.56 1.4.66.2.1.34.14.38.22.04.08.04.5-.12.98-.16.48-.92.92-1.26.98-.34.06-.76.1-1.24-.06-.3-.1-.68-.22-1.18-.44-2.08-.9-3.44-3.02-3.54-3.16-.1-.14-.84-1.12-.84-2.14 0-1.02.54-1.52.74-1.72Z" fill="currentColor" />
                 </svg>
               </a>
+              <ProductShareAndFavorite slug={slug} name={product.name} url={productUrl} />
             </div>
           </aside>
         </main>
       </div>
 
-      <ProductStickyCTA
-        href={consultHref}
-        ariaLabel={`Consultar por WhatsApp sobre ${product.name}`}
-      />
-
       {relatedProducts && relatedProducts.length > 0 && (
         <section className="mt-10 sm:mt-12">
-          <div className="flex items-center justify-between gap-4 mb-4">
-            <h2 className="section-title-minimal section-underline-ocre text-white">También te recomendamos</h2>
-            <span className="text-xs text-gray-500 md:hidden" aria-hidden>Deslizá →</span>
-          </div>
-          <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-3 md:overflow-visible md:gap-6">
+          <h2 className="section-title-premium section-underline-ocre text-gray-900 dark:text-white mb-4">También te recomendamos</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
             {relatedProducts.map(r => (
-              <div key={r.id || r.slug} className="min-w-[75vw] sm:min-w-[280px] md:min-w-0 flex-shrink-0 md:flex-shrink">
-                <ProductCard item={r} />
-              </div>
+              <ProductCard key={r.id || r.slug} item={r} />
             ))}
           </div>
         </section>

@@ -1,7 +1,7 @@
 {
   "name": "La Guarida Admin",
   "short_name": "LaGuarida",
-  "start_url": "/admin/loguin",
+  "start_url": "/admin/login",
   "display": "standalone",
   "background_color": "#1a1a1c",
   "theme_color": "#1a1a1c",

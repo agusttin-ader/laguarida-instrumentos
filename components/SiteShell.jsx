@@ -6,6 +6,7 @@ import Header from './Header'
 import Footer from './Footer'
 import BottomNav from './BottomNav'
 import HybridSupportChat from './HybridSupportChat'
+import PageTransition from './PageTransition'
 
 /** Renderiza Header y Footer solo fuera de /admin para evitar doble header en login */
 export default function SiteShell({ children }) {
@@ -43,7 +44,7 @@ export default function SiteShell({ children }) {
     <>
       {!isAdmin && <Header />}
       <main className={!isAdmin ? 'pb-[84px] md:pb-0' : ''}>
-        {children}
+        {!isAdmin ? <PageTransition key={pathname}>{children}</PageTransition> : children}
       </main>
       {!isAdmin && <BottomNav />}
       {!isAdmin && <Footer />}
