@@ -4,6 +4,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import supabase from '../../../lib/supabase/client'
 import Header from '../../../components/Header'
 import Footer from '../../../components/Footer'
+import AdminPanelAppBackground from './AdminPanelAppBackground'
 
 const AdminAuthContext = createContext(null)
 
@@ -145,6 +146,7 @@ export default function ClientAuth({ children }){
           </div>
         ) : (
           <>
+            <AdminPanelAppBackground />
             <div className="relative z-30">
               <Header />
             </div>
