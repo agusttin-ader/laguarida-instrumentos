@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -154,14 +155,16 @@ export default function AdminLoginPage() {
       {/* Contenido centrado en viewport: logo + card de login */}
       <div className="fixed inset-0 z-10 flex flex-col items-center justify-center px-4 py-6">
         <div className="flex justify-center mb-6">
-          <Image
-            src="/images/logo/logo-fondo-oscuro.PNG"
-            alt="La Guarida"
-            width={240}
-            height={160}
-            className="w-40 sm:w-48 h-auto object-contain"
-            priority
-          />
+          <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-lg" aria-label="Ir al inicio - La Guarida">
+            <Image
+              src="/images/logo/logo-fondo-oscuro.PNG"
+              alt="La Guarida"
+              width={240}
+              height={160}
+              className="w-40 sm:w-48 h-auto object-contain"
+              priority
+            />
+          </Link>
         </div>
         <div className="w-full max-w-md rounded-2xl p-6 sm:p-8 md:p-10 shadow-2xl" style={{
           background: 'rgba(15,18,28,0.52)',
