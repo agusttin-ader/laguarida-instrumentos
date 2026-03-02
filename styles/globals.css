@@ -1244,31 +1244,20 @@ input.btn-light {
 .admin-container { max-width: 1100px; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
 @media (min-width: 768px) { .admin-container { padding-left: 1.5rem; padding-right: 1.5rem; } }
 
-/* Login admin:
-   - Mobile: mantener fondo de imagen full-screen
-   - Desktop: recuperar fondo gris oscuro exterior como antes */
+/* Login admin: imagen full-screen + degradado; body oscuro como fallback */
 body.admin-login-page {
-  background-color: #22324b !important;
+  background-color: #0a0c10 !important;
   overflow-y: auto !important;
 }
-@media (max-width: 767px) {
-  body.admin-login-page,
-  body.admin-login-page .admin-root,
-  body.admin-login-page .admin-container,
-  body.admin-login-page .admin-auth-bar {
-    background: transparent !important;
-    background-color: transparent !important;
-  }
+body.admin-login-page .admin-root,
+body.admin-login-page .admin-container,
+body.admin-login-page .admin-auth-bar {
+  background: transparent !important;
+  background-color: transparent !important;
 }
-@media (min-width: 768px) {
-  body.admin-login-page .admin-root,
-  body.admin-login-page .admin-container {
-    background: transparent !important;
-  }
-  body.admin-login-page .admin-container {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-  }
+body.admin-login-page .admin-container {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 /* Card styling used by admin panels */

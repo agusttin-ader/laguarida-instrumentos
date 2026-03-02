@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function AdminLoginPage() {
@@ -11,8 +11,6 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false)
   const [selectedPhrase, setSelectedPhrase] = useState('')
   const [selectedAuthor, setSelectedAuthor] = useState('')
-  const quoteIndexRef = useRef(0)
-  const [quoteVisible, setQuoteVisible] = useState(true)
   const [bgImage, setBgImage] = useState('admin-1.jpeg')
 
   function bgUrl(fileName) {
@@ -80,13 +78,9 @@ export default function AdminLoginPage() {
   ]
 
   useEffect(() => {
-    // Pick a random quote and background when entering the page.
-    // No time-based rotation.
     const start = Math.floor(Math.random() * quotes.length)
-    quoteIndexRef.current = start
     setSelectedPhrase(quotes[start].q)
     setSelectedAuthor(quotes[start].a)
-    setQuoteVisible(true)
 
     let cancelled = false
     ;(async () => {
@@ -135,13 +129,11 @@ export default function AdminLoginPage() {
     }
   }
 
-  const isShortQuote = selectedPhrase && selectedPhrase.length <= 34
-
   return (
-    <div className="relative h-full min-h-0 flex items-start md:items-center justify-center bg-transparent px-4 md:px-6 pt-4 md:pt-0">
-      {/* Mobile: imagen a pantalla completa con header/footer difuminados */}
+    <div className="relative min-h-full flex flex-col">
+      {/* Imagen de fondo a pantalla completa (fixed = ocupa todo el viewport, detrás de header/footer) */}
       <div
-        className="absolute inset-0 z-0 md:rounded-2xl md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:inset-auto md:shadow-[0_36px_90px_rgba(0,0,0,0.55),0_12px_32px_rgba(0,0,0,0.38)]"
+        className="fixed inset-0 z-0"
         style={{
           backgroundImage: `url('${bgUrl(bgImage)}')`,
           backgroundSize: 'cover',
@@ -149,112 +141,72 @@ export default function AdminLoginPage() {
         }}
         aria-hidden
       />
-      <div className="absolute inset-0 z-0 bg-black/46 md:bg-black/[0.60] pointer-events-none md:rounded-2xl md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:inset-auto" aria-hidden />
-      {/* Desktop: refuerzo lateral para legibilidad de la frase */}
-      <div className="hidden md:block absolute z-[1] pointer-events-none md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:rounded-2xl bg-gradient-to-r from-black/42 via-black/20 to-transparent" aria-hidden />
-      {/* Desktop: viñeta fuerte en costados para look cinematográfico */}
+      {/* Degradado: negro arriba y abajo, más luz en el centro */}
       <div
-        className="hidden md:block absolute z-[1] pointer-events-none md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-5xl md:h-[72vh] md:rounded-2xl"
-        style={{ background: 'linear-gradient(90deg, rgba(0,0,0,0.64) 0%, rgba(0,0,0,0.24) 14%, rgba(0,0,0,0.00) 50%, rgba(0,0,0,0.24) 86%, rgba(0,0,0,0.64) 100%)' }}
-        aria-hidden
-      />
-      {/* Sombreado difuminado header (mobile) */}
-      <div
-        className="absolute top-0 left-0 right-0 h-24 z-[1] pointer-events-none md:hidden bg-gradient-to-b from-black/78 via-black/42 to-transparent"
-        aria-hidden
-      />
-      {/* Sombreado difuminado footer (mobile) */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-44 z-[1] pointer-events-none md:hidden bg-gradient-to-t from-black/86 via-black/56 to-transparent"
-        aria-hidden
-      />
-      {/* Vignette lateral suave para dar foco al centro (mobile) */}
-      <div
-        className="absolute inset-0 z-[1] pointer-events-none md:hidden"
-        style={{ background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.06) 18%, rgba(0,0,0,0.32) 100%)' }}
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 28%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0.35) 72%, rgba(0,0,0,0.82) 100%)'
+        }}
         aria-hidden
       />
 
-      {/* Desktop: contenedor tipo card; mobile: contenido centrado sobre el fondo */}
-      <div className="relative z-10 w-full max-w-5xl min-h-[calc(100dvh-1.5rem)] md:min-h-0 md:grid md:grid-cols-2 md:h-[72vh] md:overflow-hidden md:rounded-2xl">
-        {/* Left hero (solo desktop) */}
-        <div className="relative hidden md:block">
-          <div className="relative z-10 h-full flex flex-col justify-center px-10 text-white">
-            <h2 className={`text-3xl lg:text-4xl font-bold leading-tight mb-2 transition-all duration-700 ${quoteVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}>
-              {selectedPhrase}
-            </h2>
-            {selectedAuthor && (
-              <div className={`text-sm text-white/80 mt-2 italic transition-opacity duration-700 ${quoteVisible ? 'opacity-100' : 'opacity-0'}`}>— {selectedAuthor}</div>
-            )}
+      {/* Contenido centrado en viewport: card de login */}
+      <div className="fixed inset-0 z-10 flex items-center justify-center px-4 py-6">
+        <div className="w-full max-w-md rounded-2xl p-6 sm:p-8 md:p-10 shadow-2xl" style={{
+          background: 'rgba(15,18,28,0.52)',
+          WebkitBackdropFilter: 'blur(12px) saturate(120%)',
+          backdropFilter: 'blur(12px) saturate(120%)',
+          border: '1px solid rgba(255,255,255,0.14)'
+        }}>
+          <div className="flex flex-col items-start mb-5">
+            <h1 className="text-[1.8rem] md:text-3xl leading-[1.05] font-extrabold text-white mb-1">Bienvenido Leo !</h1>
+            <p className="text-sm text-white/95">Gracias por la confianza</p>
+            <p className="text-sm text-white/90">Ingresá con tus credenciales para acceder al panel de administración</p>
           </div>
-        </div>
 
-        {/* Form */}
-        <div className="flex items-start md:items-center justify-center pt-0 pb-32 sm:pt-0 sm:p-8 md:p-12 relative z-10 min-h-0 md:min-h-0">
-          <div className="w-full max-w-md rounded-2xl p-5 sm:p-8 md:p-10" style={{
-            background: 'rgba(15,18,28,0.48)',
-            WebkitBackdropFilter: 'blur(10px) saturate(120%)',
-            backdropFilter: 'blur(10px) saturate(120%)',
-            border: '1px solid rgba(255,255,255,0.12)'
-          }}>
-            <div className="flex flex-col items-start">
-              <h1 className="text-[1.8rem] md:text-3xl leading-[1.05] font-extrabold text-white mb-1">Bienvenido Leo !</h1>
-              <p className="text-sm text-white/95">Gracias por la confianza</p>
-              <p className="text-sm text-white/90 mb-5">Ingresá con tus credenciales para acceder al panel de administración</p>
+          <form onSubmit={handleSubmit} className="space-y-3.5">
+            <div>
+              <label className="block text-sm font-medium mb-1 text-white/88">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="tu@correo.com"
+                className="w-full border border-white/18 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-300/35 bg-black/35"
+              />
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-3.5">
-              <div>
-                <label className="block text-sm font-medium mb-1 text-white/88">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  placeholder="tu@correo.com"
-                  className="w-full border border-white/18 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-300/35 bg-black/35"
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-white/88">Contraseña</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="********"
+                className="w-full border border-white/18 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-300/35 bg-black/35"
+              />
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1 text-white/88">Contraseña</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  placeholder="********"
-                  className="w-full border border-white/18 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-300/35 bg-black/35"
-                />
-              </div>
+            {error && <div className="text-sm text-rose-200 bg-rose-500/15 border border-rose-300/20 p-3 rounded-xl">{error}</div>}
 
-              {error && <div className="text-sm text-rose-200 bg-rose-500/15 border border-rose-300/20 p-3 rounded-xl">{error}</div>}
+            <div>
+              <button
+                type="submit"
+                className="w-full bg-white text-black px-4 py-3 rounded-xl hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition font-semibold"
+                disabled={loading}
+              >
+                {loading ? 'Ingresando…' : 'Ingresar'}
+              </button>
+            </div>
+          </form>
 
-              <div>
-                <button
-                  type="submit"
-                  className="w-full bg-white text-black px-4 py-3 rounded-xl hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition font-semibold"
-                  disabled={loading}
-                >
-                  {loading ? 'Ingresando…' : 'Ingresar'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        {/* Mobile: solo texto de la frase, sin panel, transición suave */}
-        <div className="md:hidden absolute bottom-4 left-0 right-0 z-10 w-full px-4">
-          <div className="text-center">
-            <p className={`${isShortQuote ? 'text-[22px]' : 'text-[20px]'} font-semibold leading-tight text-white mb-1 transition-opacity duration-500 ease-out drop-shadow-[0_4px_14px_rgba(0,0,0,0.7)] ${quoteVisible ? 'opacity-100' : 'opacity-0'}`}>
-              &quot;{selectedPhrase}&quot;
+          {selectedPhrase && (
+            <p className="mt-6 text-center text-sm text-white/70 italic">
+              &quot;{selectedPhrase}&quot; — {selectedAuthor}
             </p>
-            {selectedAuthor && (
-              <p className={`text-sm text-white/80 italic transition-opacity duration-500 ease-out drop-shadow-[0_3px_10px_rgba(0,0,0,0.7)] ${quoteVisible ? 'opacity-100' : 'opacity-0'}`}>
-                — {selectedAuthor}
-              </p>
-            )}
-          </div>
+          )}
         </div>
       </div>
     </div>
