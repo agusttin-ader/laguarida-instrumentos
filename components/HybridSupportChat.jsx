@@ -99,9 +99,6 @@ export default function HybridSupportChat() {
           <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold text-white">Asistente La Guarida</p>
-              <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-white/60">
-                FAQ + WhatsApp
-              </p>
             </div>
             <button
               type="button"
