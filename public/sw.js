@@ -34,3 +34,36 @@ self.addEventListener('fetch', event => {
       .catch(() => caches.match(request).then(r => r))
   )
 })
+
+self.addEventListener('push', event => {
+  let payload = { title: 'La Guarida - Nuevo mensaje', body: '' }
+  try {
+    if (event.data) payload = event.data.json()
+  } catch (e) {
+    payload.body = event.data ? event.data.text() : ''
+  }
+  event.waitUntil(
+    self.registration.showNotification(payload.title || 'La Guarida', {
+      body: payload.body || 'Un visitante escribió en el chat.',
+      tag: 'laguarida-chat',
+      icon: '/images/logo/og-pick-icon.PNG',
+      data: { url: '/admin' }
+    })
+  )
+})
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close()
+  const url = event.notification.data?.url || '/admin'
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(winList => {
+      for (const w of winList) {
+        if (w.url.includes('/admin') && 'focus' in w) {
+          w.focus()
+          return
+        }
+      }
+      if (self.clients.openWindow) self.clients.openWindow(url)
+    })
+  )
+})

@@ -44,10 +44,14 @@ export default function AdminLiveChatPanel() {
   const [error, setError] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileTab, setMobileTab] = useState("sessions");
+  const [readSessionIds, setReadSessionIds] = useState(() => []);
   const endRef = useRef(null);
   const channelRef = useRef(null);
   const selectedSessionIdRef = useRef(selectedSessionId);
+  const sessionsRef = useRef(sessions);
+  const loadingSessionsRef = useRef(false);
   selectedSessionIdRef.current = selectedSessionId;
+  sessionsRef.current = sessions;
 
   const selectedSession = useMemo(
     () => sessions.find((s) => s.id === selectedSessionId) || null,
@@ -57,10 +61,22 @@ export default function AdminLiveChatPanel() {
     () => sessions.filter((s) => s.status !== "closed").length,
     [sessions]
   );
+  const unreadCount = useMemo(
+    () =>
+      sessions.filter(
+        (s) => s.status !== "closed" && !readSessionIds.includes(s.id)
+      ).length,
+    [sessions, readSessionIds]
+  );
 
-  async function loadSessions() {
-    setLoadingSessions(true);
-    setError("");
+  async function loadSessions(options = {}) {
+    const silent = options?.silent === true;
+    if (silent && loadingSessionsRef.current) return;
+    loadingSessionsRef.current = true;
+    if (!silent) {
+      setLoadingSessions(true);
+      setError("");
+    }
     try {
       const res = await fetch("/api/chat/sessions", { credentials: "include" });
       const data = await res.json().catch(() => ({}));
@@ -73,9 +89,10 @@ export default function AdminLiveChatPanel() {
         setSelectedSessionId(items[0]?.id || "");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+      if (!silent) setError(err instanceof Error ? err.message : String(err));
     } finally {
-      setLoadingSessions(false);
+      loadingSessionsRef.current = false;
+      if (!silent) setLoadingSessions(false);
     }
   }
 
@@ -120,6 +137,20 @@ export default function AdminLiveChatPanel() {
 
   useEffect(() => {
     loadSessions();
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const POLL_MS = 5000;
+    const id = setInterval(() => {
+      if (cancelled) return;
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
+      loadSessions({ silent: true });
+    }, POLL_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
   }, []);
 
   useEffect(() => {
@@ -227,6 +258,9 @@ export default function AdminLiveChatPanel() {
         const incoming = payload?.new;
         if (!incoming) return;
         tryShowNewMessageNotification(incoming, selectedSessionIdRef.current);
+        if (!sessionsRef.current.some((s) => s.id === incoming.session_id)) {
+          loadSessions({ silent: true });
+        }
         if (incoming.session_id === selectedSessionId) {
           setMessages((prev) => (prev.some((m) => m.id === incoming.id) ? prev : [...prev, incoming]));
         }
@@ -321,7 +355,19 @@ export default function AdminLiveChatPanel() {
   function handleSelectSession(id) {
     setSelectedSessionId(id);
     setMobileTab("chat");
+    setReadSessionIds((prev) =>
+      prev.includes(id) ? prev : [...prev, id]
+    );
   }
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    setReadSessionIds((prev) => {
+      const next = new Set(prev);
+      sessions.forEach((s) => next.add(s.id));
+      return [...next];
+    });
+  }, [mobileOpen, sessions]);
 
   return (
     <section className="p-4 md:p-5 admin-premium-card">
@@ -352,9 +398,9 @@ export default function AdminLiveChatPanel() {
           className="no-custom-btn inline-flex items-center justify-center gap-2 min-h-[42px] px-4 rounded-xl border border-[#d4a43b]/40 bg-[#d4a43b]/15 text-[#f3d399] text-sm font-semibold"
         >
           Abrir chat mobile
-          {openSessionsCount > 0 ? (
+          {unreadCount > 0 ? (
             <span className="inline-flex items-center justify-center min-w-[22px] h-[22px] rounded-full bg-[#d4a43b] text-[#151821] text-[11px] font-bold px-1.5">
-              {openSessionsCount}
+              {unreadCount}
             </span>
           ) : null}
         </button>
