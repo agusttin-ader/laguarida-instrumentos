@@ -10,8 +10,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@supabase/auth-helpers-nextjs": "^0.15.0",
-    "@supabase/supabase-js": "^2.95.3",
+    "@supabase/supabase-js": "^2.98.0",
     "next": "latest",
     "phosphor-react": "^1.4.1",
     "react": "18.2.0",
@@ -21,8 +20,8 @@
   "devDependencies": {
     "@playwright/test": "^1.40.0",
     "@types/react": "19.2.14",
-    "@typescript-eslint/eslint-plugin": "^8.56.0",
-    "@typescript-eslint/parser": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
     "autoprefixer": "10.4.14",
     "eslint": "^8.57.1",
     "eslint-plugin-jsx-a11y": "^6.10.2",

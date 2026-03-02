@@ -1,44 +1,20 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
-import supabase from "../lib/supabase/client";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   GENERAL_WHATSAPP_MESSAGE,
   HYBRID_CHAT_OPTIONS,
   WHATSAPP_NUMBER,
 } from "../lib/chat/hybridSupportConfig";
 
-const VISITOR_KEY = "lg-chat-visitor-id";
-
 function buildWaHref(message) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
-function createVisitorId() {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-  return `visitor-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-}
-
 export default function HybridSupportChat() {
-  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const [mode, setMode] = useState("faq");
   const [messages, setMessages] = useState([]);
-  const [visitorId, setVisitorId] = useState("");
-  const [sessionId, setSessionId] = useState("");
-  const [liveMessages, setLiveMessages] = useState([]);
-  const [draft, setDraft] = useState("");
-  const [loadingLive, setLoadingLive] = useState(false);
-  const [sending, setSending] = useState(false);
-  const [liveError, setLiveError] = useState("");
-  const [sessionClosed, setSessionClosed] = useState(false);
-  const [liveContextProduct, setLiveContextProduct] = useState("");
-  const channelRef = useRef(null);
-  const liveEndRef = useRef(null);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -56,29 +32,11 @@ export default function HybridSupportChat() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    try {
-      const existing = localStorage.getItem(VISITOR_KEY);
-      if (existing) {
-        setVisitorId(existing);
-        return;
-      }
-      const generated = createVisitorId();
-      localStorage.setItem(VISITOR_KEY, generated);
-      setVisitorId(generated);
-    } catch {
-      setVisitorId(createVisitorId());
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
     function handleToggle() {
       setOpen((prev) => !prev);
     }
-    function handleOpenLive(e) {
-      const productName = String(e?.detail?.productName || "").trim();
-      setLiveContextProduct(productName);
-      setMode("live");
+    function handleOpenLive() {
+      // Live chat is intentionally disabled for now; open FAQ assistant instead.
       setOpen(true);
     }
     function handleClose() {
@@ -105,140 +63,6 @@ export default function HybridSupportChat() {
     ]);
   }, [open, messages.length]);
 
-  useEffect(() => {
-    if (!open || mode !== "live") return;
-    if (!liveEndRef.current) return;
-    liveEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [open, mode, liveMessages]);
-
-  useEffect(() => {
-    if (!open || mode !== "live" || !visitorId) return;
-    let cancelled = false;
-
-    async function startLiveSession() {
-      setLoadingLive(true);
-      setLiveError("");
-      setSessionClosed(false);
-      try {
-        const productHint =
-          liveContextProduct ||
-          (pathname && pathname.startsWith("/guitars/")
-            ? pathname.split("/").filter(Boolean).pop()
-            : "");
-        const res = await fetch("/api/chat/session", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ visitorId, productName: productHint || "" }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data?.error || "No se pudo iniciar el chat");
-        if (cancelled) return;
-        setSessionId(data?.session?.id || "");
-      } catch (err) {
-        if (!cancelled) setLiveError(err instanceof Error ? err.message : String(err));
-      } finally {
-        if (!cancelled) setLoadingLive(false);
-      }
-    }
-
-    startLiveSession();
-    return () => {
-      cancelled = true;
-    };
-  }, [open, mode, visitorId, pathname, liveContextProduct]);
-
-  useEffect(() => {
-    if (!open || mode !== "live" || !sessionId || !visitorId) return;
-    let cancelled = false;
-
-    async function loadMessages() {
-      try {
-        const params = new URLSearchParams({ sessionId, visitorId });
-        const res = await fetch(`/api/chat/messages?${params.toString()}`, { credentials: "include" });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data?.error || "No se pudieron cargar mensajes");
-        if (cancelled) return;
-        setLiveMessages(Array.isArray(data?.messages) ? data.messages : []);
-      } catch (err) {
-        if (!cancelled) setLiveError(err instanceof Error ? err.message : String(err));
-      }
-    }
-
-    loadMessages();
-    return () => {
-      cancelled = true;
-    };
-  }, [open, mode, sessionId, visitorId]);
-
-  useEffect(() => {
-    if (!open || mode !== "live" || !sessionId) return;
-    if (channelRef.current) {
-      supabase.removeChannel(channelRef.current);
-      channelRef.current = null;
-    }
-
-    const channel = supabase
-      .channel(`chat-live-${sessionId}`)
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "chat_messages", filter: `session_id=eq.${sessionId}` },
-        (payload) => {
-          const incoming = payload?.new;
-          if (!incoming) return;
-          setLiveMessages((prev) => {
-            if (prev.some((m) => m.id === incoming.id)) return prev;
-            return [...prev, incoming];
-          });
-        }
-      )
-      .subscribe();
-
-    channelRef.current = channel;
-    return () => {
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-        channelRef.current = null;
-      }
-    };
-  }, [open, mode, sessionId]);
-
-  useEffect(() => {
-    if (!open || mode !== "live" || !sessionId || !visitorId) return;
-    let cancelled = false;
-    const POLL_MS = 4000;
-    function poll() {
-      if (cancelled) return;
-      if (typeof document !== "undefined" && document.visibilityState === "hidden") {
-        return;
-      }
-      fetch(`/api/chat/messages?sessionId=${encodeURIComponent(sessionId)}&visitorId=${encodeURIComponent(visitorId)}`, {
-        credentials: "include",
-      })
-        .then((res) => res.json().catch(() => ({})))
-        .then((data) => {
-          if (cancelled) return;
-          if (data?.sessionClosed) {
-            setSessionId("");
-            setSessionClosed(true);
-            setLiveError("");
-            setLiveMessages([]);
-          }
-          const list = Array.isArray(data?.messages) ? data.messages : [];
-          setLiveMessages((prev) => {
-            if (prev.length === list.length && list.every((m, i) => m.id === prev[i]?.id)) return prev;
-            return list;
-          });
-        })
-        .catch(() => {});
-    }
-    const id = setInterval(poll, POLL_MS);
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-    };
-  }, [open, mode, sessionId, visitorId]);
-
   const waHref = useMemo(
     () => buildWaHref(GENERAL_WHATSAPP_MESSAGE),
     []
@@ -262,72 +86,6 @@ export default function HybridSupportChat() {
     ]);
   }
 
-  async function sendLiveMessage() {
-    const text = String(draft || "").trim();
-    if (!text || !visitorId || sending) return;
-    setSending(true);
-    setLiveError("");
-    setSessionClosed(false);
-    let currentSessionId = sessionId;
-    if (!currentSessionId) {
-      try {
-        const productHint =
-          liveContextProduct ||
-          (pathname && pathname.startsWith("/guitars/")
-            ? pathname.split("/").filter(Boolean).pop()
-            : "");
-        const sessionRes = await fetch("/api/chat/session", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ visitorId, productName: productHint || "" }),
-        });
-        const sessionData = await sessionRes.json().catch(() => ({}));
-        if (!sessionRes.ok) throw new Error(sessionData?.error || "No se pudo iniciar la conversación");
-        currentSessionId = sessionData?.session?.id || "";
-        setSessionId(currentSessionId);
-      } catch (err) {
-        setLiveError(err instanceof Error ? err.message : String(err));
-        setSending(false);
-        return;
-      }
-    }
-    try {
-      const res = await fetch("/api/chat/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          sessionId: currentSessionId,
-          sender: "user",
-          body: text,
-          visitorId,
-        }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (res.status === 410 && data?.code === "SESSION_CLOSED") {
-        setSessionId("");
-        setSessionClosed(true);
-        setLiveError(data?.error || "Conversación cerrada. Escribí abajo para iniciar una nueva.");
-        setSending(false);
-        return;
-      }
-      if (!res.ok) throw new Error(data?.error || "No se pudo enviar el mensaje");
-      setDraft("");
-      const created = data?.message;
-      if (created?.id) {
-        setLiveMessages((prev) => {
-          if (prev.some((m) => m.id === created.id)) return prev;
-          return [...prev, created];
-        });
-      }
-    } catch (err) {
-      setLiveError(err instanceof Error ? err.message : String(err));
-    } finally {
-      setSending(false);
-    }
-  }
-
   if (hidden) return null;
 
   return (
@@ -341,30 +99,9 @@ export default function HybridSupportChat() {
           <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold text-white">Asistente La Guarida</p>
-              <div className="mt-1 flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setMode("faq")}
-                  className={`text-[10px] uppercase tracking-[0.12em] px-2 py-1 rounded-md border transition-colors ${
-                    mode === "faq"
-                      ? "border-[#d4a43b]/45 text-[#f0d39d] bg-[#d4a43b]/12"
-                      : "border-white/15 text-white/60 hover:text-white/85"
-                  }`}
-                >
-                  FAQ
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMode("live")}
-                  className={`text-[10px] uppercase tracking-[0.12em] px-2 py-1 rounded-md border transition-colors ${
-                    mode === "live"
-                      ? "border-[#d4a43b]/45 text-[#f0d39d] bg-[#d4a43b]/12"
-                      : "border-white/15 text-white/60 hover:text-white/85"
-                  }`}
-                >
-                  En vivo
-                </button>
-              </div>
+              <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-white/60">
+                FAQ + WhatsApp
+              </p>
             </div>
             <button
               type="button"
@@ -376,139 +113,57 @@ export default function HybridSupportChat() {
             </button>
           </div>
 
-          {mode === "faq" ? (
-            <>
-              <div className="max-h-[280px] overflow-y-auto px-3 py-3 space-y-2 bg-black/15">
-                {messages.map((m) => (
-                  <div
-                    key={m.id}
-                    className={`rounded-xl px-3 py-2 text-sm leading-relaxed ${
-                      m.role === "bot"
-                        ? "bg-white/10 text-white/90 border border-white/10"
-                        : "bg-[#d4a43b]/16 text-[#f3d399] border border-[#d4a43b]/35 ml-5"
-                    }`}
-                  >
-                    {m.text}
-                  </div>
-                ))}
+          <div className="max-h-[280px] overflow-y-auto px-3 py-3 space-y-2 bg-black/15">
+            {messages.map((m) => (
+              <div
+                key={m.id}
+                className={`rounded-xl px-3 py-2 text-sm leading-relaxed ${
+                  m.role === "bot"
+                    ? "bg-white/10 text-white/90 border border-white/10"
+                    : "bg-[#d4a43b]/16 text-[#f3d399] border border-[#d4a43b]/35 ml-5"
+                }`}
+              >
+                {m.text}
               </div>
+            ))}
+          </div>
 
-              <div className="px-3 py-3 border-t border-white/10">
-                <p className="text-[11px] uppercase tracking-[0.14em] text-white/55 mb-2">
-                  Consultas frecuentes
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  {HYBRID_CHAT_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.id}
-                      type="button"
-                      onClick={() => handleOptionClick(opt)}
-                      className="text-[13px] px-3 py-2 rounded-xl border border-white/20 text-white/88 bg-white/[0.06] hover:bg-white/[0.11] transition-colors text-left leading-tight min-h-[42px]"
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
+          <div className="px-3 py-3 border-t border-white/10">
+            <p className="text-[11px] uppercase tracking-[0.14em] text-white/55 mb-2">
+              Consultas frecuentes
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {HYBRID_CHAT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => handleOptionClick(opt)}
+                  className="text-[13px] px-3 py-2 rounded-xl border border-white/20 text-white/88 bg-white/[0.06] hover:bg-white/[0.11] transition-colors text-left leading-tight min-h-[42px]"
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
-              <div className="px-3 pb-3 grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="min-h-[42px] rounded-xl border border-white/15 text-white/80 text-sm hover:bg-white/5 transition-colors"
-                >
-                  Reiniciar
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMode("live")}
-                  className="col-span-2 min-h-[42px] rounded-xl bg-[#5c78c4]/22 border border-[#5c78c4]/45 text-[#c8d6ff] text-sm font-semibold hover:bg-[#5c78c4]/30 transition-colors"
-                >
-                  Hablar con asesor en vivo
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="max-h-[320px] overflow-y-auto px-3 py-3 space-y-2 bg-black/15">
-                {loadingLive ? (
-                  <div className="rounded-xl px-3 py-2 text-sm text-white/80 border border-white/10 bg-white/[0.06]">
-                    Conectando chat en vivo...
-                  </div>
-                ) : null}
-                {sessionClosed ? (
-                  <div className="rounded-xl px-3 py-2 text-sm text-amber-200/95 border border-amber-400/30 bg-amber-500/10">
-                    Conversación cerrada. Escribí abajo para iniciar una nueva.
-                  </div>
-                ) : null}
-                {!loadingLive && !sessionClosed && liveMessages.length === 0 ? (
-                  <div className="rounded-xl px-3 py-2 text-sm text-white/80 border border-white/10 bg-white/[0.06]">
-                    Escribinos y te respondemos por este chat en tiempo real.
-                  </div>
-                ) : null}
-                {liveMessages.map((m) => (
-                  <div
-                    key={m.id}
-                    className={`rounded-xl px-3 py-2 text-sm leading-relaxed ${
-                      m.sender === "admin"
-                        ? "bg-white/10 text-white/92 border border-white/10"
-                        : "bg-[#d4a43b]/16 text-[#f3d399] border border-[#d4a43b]/35 ml-5"
-                    }`}
-                  >
-                    {m.body}
-                  </div>
-                ))}
-                {liveError ? (
-                  <div className="rounded-xl px-3 py-2 text-sm text-rose-200 border border-rose-300/25 bg-rose-500/12">
-                    {liveError}
-                  </div>
-                ) : null}
-                <div ref={liveEndRef} />
-              </div>
-              <div className="px-3 py-3 border-t border-white/10 space-y-2">
-                <div className="flex items-center gap-2">
-                  <input
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        sendLiveMessage();
-                      }
-                    }}
-                    placeholder="Escribí tu consulta..."
-                    className="flex-1 min-h-[42px] rounded-xl border border-white/15 bg-black/25 px-3 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-[#d4a43b]/45"
-                  />
-                  <button
-                    type="button"
-                    onClick={sendLiveMessage}
-                    disabled={sending || !draft.trim()}
-                    className="min-h-[42px] px-3 rounded-xl bg-[#d4a43b]/18 border border-[#d4a43b]/45 text-[#f3d399] text-sm font-semibold hover:bg-[#d4a43b]/26 transition-colors disabled:opacity-50"
-                  >
-                    Enviar
-                  </button>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setMode("faq")}
-                    className="min-h-[38px] rounded-xl border border-white/15 text-white/78 text-xs hover:bg-white/5 transition-colors"
-                  >
-                    Volver a FAQ
-                  </button>
-                  <a
-                    href={waHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Continuar por WhatsApp"
-                    className="min-h-[38px] rounded-xl bg-[#d4a43b]/18 border border-[#d4a43b]/45 text-[#f3d399] text-xs font-semibold inline-flex items-center justify-center hover:bg-[#d4a43b]/26 transition-colors"
-                  >
-                    WhatsApp
-                  </a>
-                </div>
-              </div>
-            </>
-          )}
+          <div className="px-3 pb-3 grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              onClick={handleReset}
+              className="min-h-[42px] rounded-xl border border-white/15 text-white/80 text-sm hover:bg-white/5 transition-colors"
+            >
+              Reiniciar
+            </button>
+            <a
+              href={waHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Continuar por WhatsApp"
+              className="col-span-2 min-h-[42px] rounded-xl bg-[#d4a43b]/18 border border-[#d4a43b]/45 text-[#f3d399] text-sm font-semibold inline-flex items-center justify-center hover:bg-[#d4a43b]/26 transition-colors"
+            >
+              Otra consulta por WhatsApp
+            </a>
+          </div>
         </div>
       ) : (
         <div className="hidden md:block fixed z-50 right-5 bottom-5" style={{ left: "auto" }}>

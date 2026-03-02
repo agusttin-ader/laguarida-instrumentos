@@ -15,6 +15,9 @@ export default function ClientAuth({ children }){
   const [session, setSession] = useState(null)
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const pathname = usePathname()
+  const router = useRouter()
+  const isLoginPath = typeof pathname === 'string' && (pathname === '/admin/login' || pathname === '/admin/login/')
 
   useEffect(() => {
     let mounted = true
@@ -55,12 +58,6 @@ export default function ClientAuth({ children }){
     }, REFRESH_MS)
     return () => clearInterval(id)
   }, [user, isLoginPath])
-
-  // Client-side route guard: redirect to /admin/login when unauthenticated
-  const pathname = usePathname()
-  const router = useRouter()
-
-  const isLoginPath = typeof pathname === 'string' && (pathname === '/admin/login' || pathname === '/admin/login/')
 
   // En login: quitar fondo gris para que solo se vea la imagen de fondo del body
   useEffect(() => {

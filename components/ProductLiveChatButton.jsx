@@ -1,30 +1,30 @@
 "use client";
 
 import React from "react";
+import {
+  WHATSAPP_NUMBER,
+  productWhatsAppMessage,
+} from "../lib/chat/hybridSupportConfig";
 
 export default function ProductLiveChatButton({
   productName = "",
   className = "",
-  children = "Consultar en vivo",
+  children = "Consultar por WhatsApp",
   ariaLabel = "",
 }) {
-  function openLiveChat() {
-    if (typeof window === "undefined") return;
-    window.dispatchEvent(
-      new CustomEvent("hybrid-chat:open-live", {
-        detail: { productName },
-      })
-    );
-  }
+  const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+    productWhatsAppMessage(productName)
+  )}`;
 
   return (
-    <button
-      type="button"
-      onClick={openLiveChat}
-      aria-label={ariaLabel || `Abrir chat en vivo sobre ${productName || "este producto"}`}
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={ariaLabel || `Consultar por WhatsApp sobre ${productName || "este producto"}`}
       className={`no-custom-btn ${className}`}
     >
       {children}
-    </button>
+    </a>
   );
 }

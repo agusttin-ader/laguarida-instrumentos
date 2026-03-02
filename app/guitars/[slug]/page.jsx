@@ -223,13 +223,13 @@ export default async function GuitarPage({ params }) {
               <ProductLiveChatButton
                 productName={product.name}
                 className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-lg bg-[#0f1628] text-white dark:bg-[#e9eefc] dark:text-[#111728] font-semibold text-xs tracking-[0.08em] uppercase hover:bg-[#1a2239] dark:hover:bg-[#dbe5ff] transition-colors btn-focus"
-                ariaLabel={`Abrir chat en vivo sobre ${product.name}`}
+                ariaLabel={`Consultar por WhatsApp sobre ${product.name}`}
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
                   <path d="M6.5 7.4A4.4 4.4 0 0 1 10.9 3h4.2a4.4 4.4 0 0 1 4.4 4.4v5.2a4.4 4.4 0 0 1-4.4 4.4h-2.1l-3.6 3v-3H8.9a4.4 4.4 0 0 1-4.4-4.4V7.4Z" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M9 9.5h7M9 12.3h5.5" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
                 </svg>
-                <span>Consultar en vivo</span>
+                <span>Consultar por WhatsApp</span>
               </ProductLiveChatButton>
               <a
                 href={consultHref}
@@ -250,9 +250,7 @@ export default async function GuitarPage({ params }) {
 
       <ProductStickyCTA
         href={consultHref}
-        useLiveChat
-        productName={product.name}
-        ariaLabel={`Abrir chat en vivo sobre ${product.name}`}
+        ariaLabel={`Consultar por WhatsApp sobre ${product.name}`}
       />
 
       {relatedProducts && relatedProducts.length > 0 && (

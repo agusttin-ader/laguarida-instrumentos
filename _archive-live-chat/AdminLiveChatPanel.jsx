@@ -57,10 +57,6 @@ export default function AdminLiveChatPanel() {
     () => sessions.find((s) => s.id === selectedSessionId) || null,
     [sessions, selectedSessionId]
   );
-  const openSessionsCount = useMemo(
-    () => sessions.filter((s) => s.status !== "closed").length,
-    [sessions]
-  );
   const unreadCount = useMemo(
     () =>
       sessions.filter(
