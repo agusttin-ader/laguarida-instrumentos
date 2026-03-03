@@ -1,5 +1,6 @@
 import React from 'react'
-const SITE_URL = 'https://laguarida.com'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.laguaridainstrumentos.com'
 import fs from 'fs/promises'
 import path from 'path'
 export const dynamic = 'force-dynamic'

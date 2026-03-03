@@ -13,18 +13,21 @@ export function useToast() {
 const CHAT_INTRO_KEY = 'laguarida-chat-intro-v3'
 const CHAT_INTRO_DELAY_MS = 1200
 
-/** Muestra una sola vez por sesión el aviso del botón de ayuda. Montado dentro de ToastProvider para garantizar contexto. */
+/** Muestra una sola vez por sesión el aviso del botón de ayuda solo a usuarios no autenticados (visitantes). */
 export function ChatIntroToastTrigger() {
   const { toast } = useToast()
   const fired = useRef(false)
 
   useEffect(() => {
-    const t = setTimeout(() => {
+    const t = setTimeout(async () => {
       if (typeof window === 'undefined') return
       if (window.location.pathname.startsWith('/admin')) return
       if (fired.current) return
       try {
         if (sessionStorage.getItem(CHAT_INTRO_KEY)) return
+        const res = await fetch('/api/auth/me', { credentials: 'include' })
+        const data = res.ok ? await res.json() : {}
+        if (data.authenticated) return
         fired.current = true
         toast('¿Duda rápida? Envíos, permutas, formas de pago o disponibilidad → botón Ayuda.', 'success')
         sessionStorage.setItem(CHAT_INTRO_KEY, '1')

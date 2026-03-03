@@ -1,5 +1,6 @@
 import React from 'react'
 import AdminServiceWorkerRegister from '../../components/AdminServiceWorkerRegister'
+import AdminAppShell from '../../components/AdminAppShell'
 import styles from '../../components/admin.module.css'
 
 export const metadata = {
@@ -17,12 +18,7 @@ export default function AdminLayout({ children }) {
         <link rel="apple-touch-icon" href="/images/logo/og-pick-icon.PNG" />
       </head>
       <body className={`${styles.adminBody} dark`}>
-        <div className={styles.appShell}>
-          <header className={styles.header}>
-            <div className={styles.logo}>La Guarida</div>
-          </header>
-          <main className={styles.main}>{children}</main>
-        </div>
+        <AdminAppShell>{children}</AdminAppShell>
         <AdminServiceWorkerRegister />
       </body>
     </html>
