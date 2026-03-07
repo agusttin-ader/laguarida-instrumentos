@@ -1,8 +1,10 @@
 "use client"
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
+import Image from 'next/image'
+import Link from 'next/link'
+import { CaretLeft } from 'phosphor-react'
 import supabase from '../../../lib/supabase/client'
-import Header from '../../../components/Header'
 import Footer from '../../../components/Footer'
 import { useToast } from '../../../components/ToastContext'
 import { hapticLight } from '../../../lib/haptics'
@@ -172,28 +174,54 @@ export default function ClientAuth({ children }){
           </div>
         ) : (
           <>
-            <div className="relative z-30">
-              <Header />
-            </div>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-end gap-3 mt-2 md:mt-0 relative z-30 admin-auth-bar px-4 py-4 mb-6 rounded-2xl">
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                {online === true || online === false ? (
-                  <span className="flex items-center gap-1.5 text-xs text-white/60" title={online ? 'Conectado' : 'Sin conexión'}>
-                    <span className={`w-2 h-2 rounded-full ${online ? 'bg-emerald-500' : 'bg-amber-500'}`} aria-hidden />
-                    {online ? 'En línea' : 'Sin conexión'}
-                  </span>
-                ) : null}
-                <span className="text-sm text-white/75 truncate flex-1 min-w-0">
-                  {loading ? (
-                    <span className="text-white/55">Comprobando sesión…</span>
-                  ) : user ? (
-                    <span className="text-white/90 break-all">{user.email}</span>
-                  ) : null}
-                </span>
+            {/* Bloque superior: logo centrado + barra de sesión, alineado y compacto */}
+            <div className="relative z-30 border-b border-white/8 admin-animate-in opacity-0">
+              <header className="flex justify-center pt-2 pb-1 px-4">
+                <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-lg" aria-label="Ir al inicio - La Guarida">
+                  <Image
+                    src="/images/logo/logo-fondo-oscuro.PNG"
+                    alt="La Guarida"
+                    width={1536}
+                    height={1024}
+                    className="w-[180px] sm:w-[222px] md:w-[282px] h-auto block object-contain"
+                    quality={100}
+                    sizes="(min-width:768px) 327px, (min-width:640px) 282px, 222px"
+                    priority
+                  />
+                </Link>
+              </header>
+              <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2 px-4 pb-3 pt-1 admin-auth-bar rounded-b-xl">
+                <div className="flex items-center gap-3 w-full sm:w-auto order-1 sm:order-1 min-w-0">
+                  {(pathname !== '/admin' && pathname !== '/admin/') && (
+                    <Link
+                      href="/admin"
+                      className="inline-flex items-center gap-1.5 text-sm text-white/70 hover:text-white transition-colors shrink-0 no-custom-btn rounded-lg py-1 pr-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                      aria-label="Volver al panel"
+                    >
+                      <CaretLeft size={18} weight="bold" aria-hidden />
+                      Panel
+                    </Link>
+                  )}
+                  <div className="flex items-center gap-2 min-w-0 flex-1 sm:flex-initial">
+                    {online === true || online === false ? (
+                      <span className="flex items-center gap-1.5 shrink-0 text-xs text-white/60" title={online ? 'Conectado' : 'Sin conexión'}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${online ? 'bg-emerald-500' : 'bg-amber-500'}`} aria-hidden />
+                        {online ? 'En línea' : 'Sin conexión'}
+                      </span>
+                    ) : null}
+                    <span className="text-sm text-white/75 truncate min-w-0">
+                      {loading ? (
+                        <span className="text-white/55">Comprobando sesión…</span>
+                      ) : user ? (
+                        <span className="text-white/90 break-all">{user.email}</span>
+                      ) : null}
+                    </span>
+                  </div>
+                </div>
+                {user && (
+                  <button onClick={openLogoutConfirm} className="admin-premium-btn-danger px-3 py-1.5 text-sm w-full sm:w-auto shrink-0 no-custom-btn rounded-lg order-2 sm:order-2">Cerrar sesión</button>
+                )}
               </div>
-              {user && (
-                <button onClick={openLogoutConfirm} className="admin-premium-btn-danger px-3 py-2 w-full sm:w-auto no-custom-btn">Cerrar sesión</button>
-              )}
             </div>
 
             {showLogoutConfirm && (
@@ -239,7 +267,14 @@ export default function ClientAuth({ children }){
               </div>
             )}
 
-            {children}
+            <div className="flex flex-col flex-1 min-h-0">
+              <div className="flex-1 py-4">
+                {children}
+              </div>
+              <div className="mt-auto pt-4 border-t border-white/8">
+                <Footer compact />
+              </div>
+            </div>
           </>
         )}
       </div>

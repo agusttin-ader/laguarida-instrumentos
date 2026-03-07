@@ -1489,6 +1489,63 @@ button:not(.no-custom-btn):active {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 1px 0 0 rgba(255, 255, 255, 0.05) inset;
 }
 
+/* Admin: animaciones elegantes (entrada y hover) */
+@keyframes admin-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes admin-slide-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.admin-animate-in {
+  animation: admin-fade-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.admin-animate-slide-up {
+  animation: admin-slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.admin-stagger-0 { animation-delay: 0ms; }
+.admin-stagger-1 { animation-delay: 60ms; }
+.admin-stagger-2 { animation-delay: 120ms; }
+.admin-stagger-3 { animation-delay: 180ms; }
+.admin-stagger-4 { animation-delay: 240ms; }
+.admin-stagger-5 { animation-delay: 300ms; }
+.admin-card-hover {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 200ms ease, box-shadow 200ms ease;
+}
+.admin-card-hover:hover {
+  transform: translateY(-2px);
+}
+.admin-btn-interact {
+  transition: transform 0.2s ease, box-shadow 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+.admin-btn-interact:hover {
+  transform: translateY(-1px);
+}
+.admin-btn-interact:active {
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-animate-in,
+  .admin-animate-slide-up { animation: none !important; opacity: 1; transform: none !important; }
+  .admin-card-hover:hover,
+  .admin-btn-interact:hover,
+  .admin-btn-interact:active { transform: none !important; }
+}
+
+/* App (PWA): animaciones más ligeras para no saturar */
+.admin-app-shell .admin-animate-in,
+.admin-app-shell .admin-animate-slide-up {
+  animation-duration: 0.28s;
+}
+.admin-app-shell .admin-stagger-1 { animation-delay: 40ms; }
+.admin-app-shell .admin-stagger-2 { animation-delay: 80ms; }
+.admin-app-shell .admin-stagger-3 { animation-delay: 120ms; }
+.admin-app-shell .admin-stagger-4 { animation-delay: 160ms; }
+.admin-app-shell .admin-stagger-5 { animation-delay: 200ms; }
+.admin-app-shell .admin-card-hover:hover { transform: translateY(-1px); }
+.admin-app-shell .admin-btn-interact:hover { transform: translateY(-0.5px); }
+
 .admin-premium-input {
   width: 100%;
   border-radius: 12px;
@@ -1497,6 +1554,7 @@ button:not(.no-custom-btn):active {
   color: rgba(255, 255, 255, 0.96);
   padding: 0.65rem 0.9rem;
   font-size: 0.9375rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .admin-premium-input::placeholder {
