@@ -164,15 +164,10 @@ export default function ClientAuth({ children }){
     <AdminAuthContext.Provider value={value}>
       <div>
         {isLoginPath ? (
+          /* Sin header ni footer en login: imagen de fondo a pantalla completa y un solo logo (el del contenido) */
           <div className="fixed inset-0 z-20 flex flex-col overflow-y-auto">
-            <div className="flex-shrink-0">
-              <Header />
-            </div>
-            <div className="flex-1">
+            <div className="flex-1 min-h-0">
               {children}
-            </div>
-            <div className="flex-shrink-0">
-              <Footer />
             </div>
           </div>
         ) : (
