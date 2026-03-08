@@ -49,6 +49,9 @@ export default function AdminProducts(){
   const [quickQ, setQuickQ] = useState('')
   const [recentActivity, setRecentActivity] = useState([])
   const [adminQ, setAdminQ] = useState('')
+  const [actionProduct, setActionProduct] = useState(null) // long-press / context menu: product for Editar/Eliminar
+  const longPressTimerRef = React.useRef(null)
+  const longPressSuppressRef = React.useRef(false)
   const { toast } = useToast()
 
   const filteredItems = React.useMemo(() => {
@@ -810,9 +813,97 @@ export default function AdminProducts(){
     action.run()
   }
 
+  function openRowActionMenu(p) {
+    hapticLight()
+    setActionProduct(p)
+  }
+
+  function closeRowActionMenu() {
+    setActionProduct(null)
+  }
+
+  function handleRowEdit(e, p) {
+    if (longPressSuppressRef.current) {
+      longPressSuppressRef.current = false
+      e.preventDefault()
+      e.stopPropagation()
+      return
+    }
+    startEdit(p)
+  }
+
+  function handleRowDelete(e, id, name) {
+    if (longPressSuppressRef.current) {
+      longPressSuppressRef.current = false
+      e.preventDefault()
+      e.stopPropagation()
+      return
+    }
+    handleDelete(id, name)
+  }
+
+  const LONG_PRESS_MS = 500
+  function handleRowTouchStart(p) {
+    longPressTimerRef.current = setTimeout(() => {
+      longPressTimerRef.current = null
+      longPressSuppressRef.current = true
+      openRowActionMenu(p)
+    }, LONG_PRESS_MS)
+  }
+  function handleRowTouchEnd() {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current)
+      longPressTimerRef.current = null
+    }
+  }
+
   return (
     <PullToRefresh onRefresh={load}>
     <div className="space-y-6 md:space-y-8 xl:space-y-10">
+      {/* Action sheet: long-press o clic derecho en fila → Editar / Eliminar */}
+      {actionProduct ? (
+        <div className="fixed inset-0 z-[96] flex items-end sm:items-center justify-center px-0 sm:px-4">
+          <button
+            type="button"
+            aria-label="Cerrar menú"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm no-custom-btn"
+            onClick={closeRowActionMenu}
+          />
+          <div className="relative w-full sm:max-w-xs rounded-t-2xl sm:rounded-2xl border-t sm:border border-white/12 bg-[#0e131d] shadow-2xl border-b-0 sm:border-b pb-4 sm:pb-4" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom, 0px))' }}>
+            <div className="px-4 pt-4 pb-2 border-b border-white/10">
+              <p className="text-sm font-medium text-white truncate">{actionProduct.name || actionProduct.slug || actionProduct.id}</p>
+              <p className="text-xs text-white/55 mt-0.5">Elegí una acción</p>
+            </div>
+            <div className="p-3 space-y-1.5">
+              <button
+                type="button"
+                className="admin-btn-interact w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl admin-premium-btn-secondary no-custom-btn text-sm"
+                onClick={() => { hapticLight(); startEdit(actionProduct); closeRowActionMenu() }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                Editar
+              </button>
+              <button
+                type="button"
+                className="admin-btn-interact w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl admin-premium-btn-danger no-custom-btn text-sm disabled:opacity-60"
+                disabled={deletingId === actionProduct.id}
+                onClick={() => { hapticLight(); handleDelete(actionProduct.id, actionProduct.name); closeRowActionMenu() }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4m1 4h.01M12 4h.01" /></svg>
+                {deletingId === actionProduct.id ? 'Eliminando…' : 'Eliminar'}
+              </button>
+              <button
+                type="button"
+                className="admin-btn-interact w-full flex items-center justify-center py-3 px-4 rounded-xl admin-premium-btn-ghost no-custom-btn text-sm text-white/80"
+                onClick={closeRowActionMenu}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       {quickOpen ? (
         <div className="fixed inset-0 z-[95] flex items-start justify-center px-4 pt-20 md:pt-28">
           <button
@@ -1022,6 +1113,7 @@ export default function AdminProducts(){
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold tracking-tight text-white md:text-[1.05rem]">Productos</h2>
+            <p className="text-[11px] text-white/45 mt-0.5">Mantener presionado o clic derecho en una fila para Editar / Eliminar</p>
           </div>
           <div className="flex items-center gap-2 w-full md:w-auto">
             <button type="button" onClick={() => setListOpen(v => !v)} className="admin-btn-interact inline-flex items-center justify-center gap-2 text-sm admin-premium-btn-secondary px-3 py-2.5 w-full md:w-auto no-custom-btn rounded-xl">
@@ -1074,7 +1166,15 @@ export default function AdminProducts(){
           {filteredItems.map((p) => {
             const imgSrc = imageService.resolve(p.image_url || (p.images && p.images[0]))
             return (
-            <div key={p.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-3 sm:px-4 py-3.5 admin-item hover:bg-white/[0.03] transition-colors duration-200">
+            <div
+              key={p.id}
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-3 sm:px-4 py-3.5 admin-item hover:bg-white/[0.03] transition-colors duration-200 touch-manipulation"
+              onContextMenu={(e) => { e.preventDefault(); openRowActionMenu(p) }}
+              onTouchStart={() => handleRowTouchStart(p)}
+              onTouchEnd={handleRowTouchEnd}
+              onTouchMove={handleRowTouchEnd}
+              onTouchCancel={handleRowTouchEnd}
+            >
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg overflow-hidden border border-white/10 bg-white/[0.04] flex items-center justify-center">
                   {imgSrc ? (
@@ -1089,11 +1189,11 @@ export default function AdminProducts(){
                 </div>
               </div>
               <div className="grid grid-cols-2 sm:flex items-center gap-2 w-full sm:w-auto">
-                <button type="button" onClick={() => startEdit(p)} className="admin-btn-interact inline-flex items-center justify-center gap-1.5 text-[13px] sm:text-sm px-2.5 sm:px-3 py-2 sm:py-1.5 admin-premium-btn-secondary no-custom-btn whitespace-nowrap">
+                <button type="button" onClick={(e) => handleRowEdit(e, p)} className="admin-btn-interact inline-flex items-center justify-center gap-1.5 text-[13px] sm:text-sm px-2.5 sm:px-3 py-2 sm:py-1.5 admin-premium-btn-secondary no-custom-btn whitespace-nowrap">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20h9" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z" /></svg>
                   Editar
                 </button>
-                <button className="admin-btn-interact text-[13px] sm:text-sm inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 sm:py-1.5 admin-premium-btn-danger disabled:opacity-60 disabled:cursor-not-allowed no-custom-btn whitespace-nowrap" onClick={() => handleDelete(p.id, p.name)} disabled={deletingId === p.id}>
+                <button type="button" className="admin-btn-interact text-[13px] sm:text-sm inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 sm:py-1.5 admin-premium-btn-danger disabled:opacity-60 disabled:cursor-not-allowed no-custom-btn whitespace-nowrap" onClick={(e) => handleRowDelete(e, p.id, p.name)} disabled={deletingId === p.id}>
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 7h12M9 7V5h6v2m-7 3v7m4-7v7m4-7v7M5 7l1 13h12l1-13" /></svg>
                   {deletingId === p.id ? 'Eliminando' : 'Eliminar'}
                 </button>
