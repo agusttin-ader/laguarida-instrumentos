@@ -1,5 +1,5 @@
 "use client"
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -15,6 +15,8 @@ export function useAdminAuth() {
   return useContext(AdminAuthContext)
 }
 
+const ADMIN_SPLASH_MIN_MS = 1200
+
 export default function ClientAuth({ children }){
   const [session, setSession] = useState(null)
   const [user, setUser] = useState(null)
@@ -25,6 +27,25 @@ export default function ClientAuth({ children }){
   const router = useRouter()
   const { toast } = useToast()
   const isLoginPath = typeof pathname === 'string' && (pathname === '/admin/login' || pathname === '/admin/login/')
+  const mountTimeRef = useRef(null)
+  const splashHiddenRef = useRef(false)
+
+  useEffect(() => {
+    mountTimeRef.current = Date.now()
+  }, [])
+
+  useEffect(() => {
+    if (loading || splashHiddenRef.current || typeof window === 'undefined') return
+    const hide = window.__adminHideSplash
+    if (typeof hide !== 'function') return
+    const elapsed = Date.now() - (mountTimeRef.current || Date.now())
+    const delay = Math.max(0, ADMIN_SPLASH_MIN_MS - elapsed)
+    const t = setTimeout(() => {
+      splashHiddenRef.current = true
+      hide()
+    }, delay)
+    return () => clearTimeout(t)
+  }, [loading])
 
   useEffect(() => {
     let mounted = true

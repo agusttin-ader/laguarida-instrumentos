@@ -23,6 +23,8 @@ export default function AdminIOSBootSplash({ children }) {
 
   const shouldRun = useMemo(() => {
     if (typeof window === "undefined") return false
+    // Si ya hay splash estático (layout app), no mostrar el de React para no duplicar.
+    if (typeof window.__adminHideSplash === "function") return false
     // iOS only; prefer installed/PWA mode to avoid desktop web flash.
     return isIOSDevice() && isStandaloneDisplay()
   }, [])
