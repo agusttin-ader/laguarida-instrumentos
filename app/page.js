@@ -1,8 +1,9 @@
 import React from 'react'
+import dynamic from 'next/dynamic'
 import HeroMonolith from '../components/HeroMonolith'
-// ProductGrid used in FeaturedSelection client component
-import About from '../components/About'
 import FeaturedSelection from '../components/FeaturedSelection'
+
+const About = dynamic(() => import('../components/About'), { ssr: true, loading: () => <section className="min-h-[120px] flex items-center justify-center" aria-hidden><div className="animate-pulse h-8 w-48 rounded bg-white/10" /></section> })
 
 export const metadata = {
   title: 'Catálogo — La Guarida',

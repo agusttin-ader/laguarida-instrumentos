@@ -1,8 +1,10 @@
 const CACHE_NAME = 'laguarida-admin-pwa-v1'
+const OFFLINE_URL = '/offline.html'
 const URLS_TO_CACHE = [
   '/admin',
-  '/admin/loguin',
-  '/manifest-admin.json'
+  '/admin/login',
+  '/manifest-admin.json',
+  OFFLINE_URL
 ]
 
 self.addEventListener('install', event => {
@@ -29,7 +31,12 @@ self.addEventListener('fetch', event => {
         caches.open(CACHE_NAME).then(cache => cache.put(request, resClone))
         return response
       })
-      .catch(() => caches.match(request).then(r => r))
+      .catch(() => {
+        if (request.mode === 'navigate') {
+          return caches.match(OFFLINE_URL).then(r => r || caches.match(request))
+        }
+        return caches.match(request)
+      })
   )
 })
 

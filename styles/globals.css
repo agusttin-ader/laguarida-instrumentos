@@ -1371,14 +1371,17 @@ main > section:nth-of-type(4) { animation-delay: 180ms; }
     box-shadow var(--motion-base) var(--motion-ease),
     border-color var(--motion-base) var(--motion-ease);
 }
-.card-interactive:hover,
+.card-interactive:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.32);
+}
+.card-interactive:active {
+  transform: scale(0.98);
+}
 .admin-card:hover,
 .list-panel:hover {
   transform: translateY(-2px);
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.32);
-}
-.card-interactive:active {
-  transform: scale(0.99);
 }
 
 /* Buttons/links micro-interaction */

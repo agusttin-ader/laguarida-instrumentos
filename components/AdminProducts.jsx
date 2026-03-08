@@ -812,7 +812,7 @@ export default function AdminProducts(){
 
   return (
     <PullToRefresh onRefresh={load}>
-    <div className="space-y-6">
+    <div className="space-y-6 md:space-y-8 xl:space-y-10">
       {quickOpen ? (
         <div className="fixed inset-0 z-[95] flex items-start justify-center px-4 pt-20 md:pt-28">
           <button
@@ -975,7 +975,7 @@ export default function AdminProducts(){
           </div>
         </div>
       ) : null}
-      <section className="p-5 md:p-6 admin-premium-card admin-animate-in admin-stagger-0 opacity-0">
+      <section className="p-5 md:p-6 lg:p-8 xl:p-10 admin-premium-card admin-animate-in admin-stagger-0 opacity-0">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold tracking-tight text-white md:text-[1.05rem]">Crear producto</h2>
@@ -993,7 +993,7 @@ export default function AdminProducts(){
         
       </section>
 
-      <section className="p-5 md:p-6 admin-premium-card admin-animate-in admin-stagger-1 opacity-0">
+      <section className="p-5 md:p-6 lg:p-8 xl:p-10 admin-premium-card admin-animate-in admin-stagger-1 opacity-0">
         <div className="flex items-center justify-between gap-3 mb-4">
           <h2 className="text-base font-semibold tracking-tight text-white md:text-[1.05rem]">Actividad reciente</h2>
           <span className="text-[11px] uppercase tracking-wider text-white/50">Últimos cambios</span>
@@ -1018,7 +1018,7 @@ export default function AdminProducts(){
         )}
       </section>
 
-      <section className="p-5 md:p-6 admin-premium-card admin-animate-in admin-stagger-2 opacity-0">
+      <section className="p-5 md:p-6 lg:p-8 xl:p-10 admin-premium-card admin-animate-in admin-stagger-2 opacity-0">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold tracking-tight text-white md:text-[1.05rem]">Productos</h2>

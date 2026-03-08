@@ -7,15 +7,8 @@
   "theme_color": "#1a1a1c",
   "description": "Panel de administración de La Guarida",
   "icons": [
-    {
-      "src": "/images/logo/og-pick-icon.PNG",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/images/logo/og-pick-icon.PNG",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
+    { "src": "/images/logo/og-pick-icon.PNG", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/images/logo/og-pick-icon.PNG", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/images/logo/og-pick-icon.PNG", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

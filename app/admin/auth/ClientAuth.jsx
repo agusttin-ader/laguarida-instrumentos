@@ -162,6 +162,7 @@ export default function ClientAuth({ children }){
   }, [loading, user, pathname, router])
 
   function openLogoutConfirm() {
+    hapticLight()
     setShowLogoutConfirm(true)
   }
 
@@ -197,7 +198,7 @@ export default function ClientAuth({ children }){
           <>
             {/* Bloque superior: logo centrado + barra de sesión, alineado y compacto */}
             <div className="relative z-30 border-b border-white/8 admin-animate-in opacity-0">
-              <header className="flex justify-center pt-2 pb-1 px-4">
+              <header className="flex justify-center pt-2 pb-1 px-4 md:px-6 md:pt-6 md:pb-3 xl:pt-8 xl:pb-4">
                 <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-lg" aria-label="Ir al inicio - La Guarida">
                   <Image
                     src="/images/logo/logo-fondo-oscuro.PNG"
@@ -211,7 +212,7 @@ export default function ClientAuth({ children }){
                   />
                 </Link>
               </header>
-              <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2 px-4 pb-3 pt-1 admin-auth-bar rounded-b-xl">
+              <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2 px-4 md:px-6 xl:px-8 pb-3 pt-1 md:pb-5 md:pt-3 xl:pb-6 xl:pt-4 admin-auth-bar rounded-b-xl">
                 <div className="flex items-center gap-3 w-full sm:w-auto order-1 sm:order-1 min-w-0">
                   {(pathname !== '/admin' && pathname !== '/admin/') && (
                     <Link
@@ -289,10 +290,31 @@ export default function ClientAuth({ children }){
             )}
 
             <div className="flex flex-col flex-1 min-h-0">
-              <div className="flex-1 py-4">
-                {children}
+              <div className="flex-1 py-4 md:py-10 lg:py-12 xl:py-14">
+                {loading ? (
+                  <div className="w-full max-w-2xl md:max-w-4xl xl:max-w-5xl mx-auto space-y-6 md:space-y-12 animate-pulse">
+                    <div className="rounded-xl border border-white/8 bg-white/[0.03] px-4 py-8 md:px-10 md:py-10">
+                      <div className="h-4 w-24 rounded bg-white/10" />
+                      <div className="h-6 w-3/4 mt-4 rounded bg-white/10" />
+                      <div className="h-4 w-full mt-2 rounded bg-white/10" />
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {[1, 2].map((i) => (
+                        <div key={i} className="rounded-xl border border-white/8 bg-white/[0.03] p-6 flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-white/10" />
+                          <div className="flex-1">
+                            <div className="h-4 w-20 rounded bg-white/10" />
+                            <div className="h-3 w-16 mt-2 rounded bg-white/10" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  children
+                )}
               </div>
-              <div className="mt-auto pt-4 border-t border-white/8">
+              <div className="mt-auto pt-6 md:pt-10 xl:pt-12 border-t border-white/8">
                 <Footer compact />
               </div>
             </div>

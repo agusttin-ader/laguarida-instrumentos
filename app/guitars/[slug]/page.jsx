@@ -172,10 +172,10 @@ export default async function GuitarPage({ params }) {
 
   const consultHref = `https://wa.me/5491154661749?text=${encodeURIComponent(`Hola, me interesa ${product.name}, me podrias dar mas informacion ?`)}`
   const categoryLabel = [product.brand, product.model].filter(Boolean).join(' · ') || 'Premium guitars'
-  const specsText = [product.model, product.wood, product.mics].filter(Boolean).map(s => Array.isArray(s) ? s.join(', ') : s).join(' · ')
-  const hasSpecs = specsText.length > 0
   const modelValue = product.model || 'N/A'
   const woodValue = Array.isArray(product.wood) ? product.wood.join(', ') : (product.wood || 'N/A')
+  const micsValue = Array.isArray(product.mics) ? product.mics.join(', ') : (product.mics || 'N/A')
+  const hasFicha = product.model || product.wood || product.mics
   const descriptionText = String(product.description || '').trim()
   const productUrl = `${SITE_URL}/guitars/${slug}`
   const productImageUrl = imageService.resolve(product.image_url || (product.images && product.images[0]))
@@ -202,7 +202,16 @@ export default async function GuitarPage({ params }) {
     <div className="container-tight pt-1 sm:pt-2 pb-28 md:pb-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <header className="mt-0 mb-1">
-        <p className="text-xs uppercase tracking-[0.22em] text-gray-500">Catálogo · Guitarras</p>
+        <p className="text-xs uppercase tracking-[0.22em] text-gray-500 md:hidden">Catálogo · Guitarras</p>
+        <nav aria-label="Breadcrumb" className="hidden md:block">
+          <ol className="flex flex-wrap items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
+            <li><a href="/" className="hover:text-gray-700 dark:hover:text-gray-200 transition-colors">Inicio</a></li>
+            <li aria-hidden>/</li>
+            <li><a href="/#seleccion-destacada" className="hover:text-gray-700 dark:hover:text-gray-200 transition-colors">Catálogo</a></li>
+            <li aria-hidden>/</li>
+            <li className="text-gray-700 dark:text-gray-200 font-medium truncate max-w-[200px]" aria-current="page">{product.name}</li>
+          </ol>
+        </nav>
       </header>
       <div className="max-w-6xl mx-auto rounded-[28px] overflow-hidden border border-[#dfe3ea] bg-[#f3f5f9] dark:bg-[#10131b] dark:border-[#2a3142] shadow-[0_22px_55px_rgba(12,20,39,0.16)] dark:shadow-[0_22px_55px_rgba(0,0,0,0.45)]">
         <main className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] items-stretch">
@@ -214,29 +223,29 @@ export default async function GuitarPage({ params }) {
             <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-gray-400 dark:text-gray-500 mb-2">{categoryLabel}</p>
             <h1 className="text-[1.95rem] leading-[1.15] font-bold text-[#131722] dark:text-[#f5f7ff] mb-2">{product.name}</h1>
 
-            <div className="flex items-center gap-2 mb-5">
-              <span className="w-3 h-3 rounded-full bg-[#d4d7de] border border-[#c2c8d4] dark:bg-[#8d97ac] dark:border-[#667089]" aria-hidden />
-              <span className="w-3 h-3 rounded-full bg-[#2e3d5a] dark:bg-[#d9e2ff]" aria-hidden />
-            </div>
-
-            {hasSpecs && (
-              <p className="text-sm text-gray-500 dark:text-gray-300 mb-4">{specsText}</p>
-            )}
-
             <p className="text-[14px] leading-7 text-gray-600 dark:text-gray-300 max-w-md mb-6">
               {descriptionText || 'Instrumento seleccionado y revisado profesionalmente, ideal para estudio y escenario.'}
             </p>
 
-            <div className="flex gap-3 mb-7">
-              <div className="min-w-[112px] px-3 py-2.5 border border-[#d6dbe6] dark:border-[#3a4358] rounded-md bg-[#f8f9fc] dark:bg-[#141a26]">
-                <p className="text-[9px] uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500 mb-1">Modelo</p>
-                <p className="text-sm font-semibold text-[#1a2030] dark:text-[#eef2ff]">{modelValue}</p>
+            {hasFicha && (
+              <div className="mb-6 rounded-xl border border-[#d6dbe6] dark:border-[#3a4358] bg-[#f8f9fc] dark:bg-[#141a26] overflow-hidden">
+                <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500 px-4 py-2.5 border-b border-[#e6e8ef] dark:border-[#232a3a]">Ficha técnica</p>
+                <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#e6e8ef] dark:divide-[#232a3a]">
+                  <div className="px-4 py-3">
+                    <dt className="text-[9px] uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500 mb-0.5">Modelo</dt>
+                    <dd className="text-sm font-semibold text-[#1a2030] dark:text-[#eef2ff]">{modelValue}</dd>
+                  </div>
+                  <div className="px-4 py-3">
+                    <dt className="text-[9px] uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500 mb-0.5">Madera</dt>
+                    <dd className="text-sm font-semibold text-[#1a2030] dark:text-[#eef2ff]">{woodValue}</dd>
+                  </div>
+                  <div className="px-4 py-3">
+                    <dt className="text-[9px] uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500 mb-0.5">Micrófonos</dt>
+                    <dd className="text-sm font-semibold text-[#1a2030] dark:text-[#eef2ff]">{micsValue}</dd>
+                  </div>
+                </dl>
               </div>
-              <div className="min-w-[112px] px-3 py-2.5 border border-[#d6dbe6] dark:border-[#3a4358] rounded-md bg-[#f8f9fc] dark:bg-[#141a26]">
-                <p className="text-[9px] uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500 mb-1">Madera</p>
-                <p className="text-sm font-semibold text-[#1a2030] dark:text-[#eef2ff]">{woodValue}</p>
-              </div>
-            </div>
+            )}
 
             <p className="text-[30px] font-bold text-[#161c2c] dark:text-[#f7f9ff] mb-6">{product.price}</p>
 
@@ -248,7 +257,7 @@ export default async function GuitarPage({ params }) {
                 aria-label={`Consultar por WhatsApp sobre ${product.name}`}
                 className="no-custom-btn inline-flex items-center justify-center gap-2 h-12 px-6 rounded-lg bg-[#0f1628] text-white dark:bg-[#e9eefc] dark:text-[#111728] font-semibold text-sm hover:bg-[#1a2239] dark:hover:bg-[#dbe5ff] transition-colors"
               >
-                <span>Consultar</span>
+                <span>Consultar por WhatsApp</span>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
                   <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M9.36 8.9c.1-.22.18-.23.34-.24h.28c.1 0 .24.04.3.17.12.26.4 1 .44 1.08.04.08.06.18 0 .28-.06.1-.1.16-.2.24-.1.08-.2.18-.28.24-.1.1-.2.2-.08.4.12.2.54.9 1.16 1.44.8.7 1.46.9 1.66 1 .2.1.32.08.44-.04.12-.12.5-.58.64-.78.14-.2.28-.16.46-.1.2.08 1.2.56 1.4.66.2.1.34.14.38.22.04.08.04.5-.12.98-.16.48-.92.92-1.26.98-.34.06-.76.1-1.24-.06-.3-.1-.68-.22-1.18-.44-2.08-.9-3.44-3.02-3.54-3.16-.1-.14-.84-1.12-.84-2.14 0-1.02.54-1.52.74-1.72Z" fill="currentColor" />
@@ -263,9 +272,11 @@ export default async function GuitarPage({ params }) {
       {relatedProducts && relatedProducts.length > 0 && (
         <section className="mt-10 sm:mt-12">
           <h2 className="section-title-premium section-underline-ocre text-gray-900 dark:text-white mb-4">También te recomendamos</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+          <div className="flex overflow-x-auto gap-4 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 lg:gap-8 snap-x snap-mandatory scroll-smooth">
             {relatedProducts.map(r => (
-              <ProductCard key={r.id || r.slug} item={r} />
+              <div key={r.id || r.slug} className="flex-shrink-0 w-[min(280px,82vw)] sm:w-auto sm:flex-shrink snap-center">
+                <ProductCard item={r} />
+              </div>
             ))}
           </div>
         </section>

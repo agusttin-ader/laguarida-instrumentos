@@ -28,20 +28,20 @@ const dashboardCards = [
 
 export default function AdminDashboard() {
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-4">
-      <div className="admin-premium-card admin-animate-in admin-stagger-0 px-4 py-3 md:px-5 md:py-4 rounded-xl opacity-0">
+    <div className="w-full max-w-2xl md:max-w-4xl xl:max-w-5xl mx-auto space-y-6 md:space-y-12 xl:space-y-16">
+      <div className="admin-premium-card admin-animate-in admin-stagger-0 px-4 py-3 md:px-10 md:py-8 xl:px-12 xl:py-10 rounded-xl opacity-0">
         <div className="inline-flex items-center rounded-full border border-white/12 bg-white/[0.06] px-2.5 py-1 text-[10px] uppercase tracking-widest text-white/70">
           Consola de administración
         </div>
-        <h1 className="mt-2 text-lg font-semibold tracking-tight text-white md:text-xl">
+        <h1 className="mt-3 md:mt-5 xl:mt-6 text-lg font-semibold tracking-tight text-white md:text-xl">
           Panel de Administración
         </h1>
-        <p className="mt-0.5 text-sm text-white/60">
+        <p className="mt-1.5 md:mt-2 xl:mt-2.5 text-sm text-white/60">
           Elegí una opción para gestionar el catálogo o ver el sitio.
         </p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 md:gap-8 lg:gap-10 xl:gap-14">
         {dashboardCards.map((card, index) => {
           const Icon = card.icon
           const content = (
@@ -58,7 +58,7 @@ export default function AdminDashboard() {
               </div>
             </>
           )
-          const className = `admin-premium-card admin-animate-slide-up admin-card-hover admin-stagger-${index + 1} group flex items-center gap-3 p-3.5 rounded-xl opacity-0 hover:border-white/20 ${card.accent}`
+          const className = `admin-premium-card admin-animate-slide-up admin-card-hover admin-stagger-${index + 1} group flex items-center gap-3 p-3.5 md:p-6 lg:p-7 xl:p-8 rounded-xl opacity-0 hover:border-white/20 ${card.accent}`
           if (card.external) {
             return (
               <a
