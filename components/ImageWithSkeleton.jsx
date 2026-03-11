@@ -70,7 +70,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
       }}
     >
       {!loaded && !errored && (
-        <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 animate-pulse" aria-hidden="true" style={blurDataURL ? { backgroundImage: `url(${blurDataURL})`, backgroundSize: 'cover', filter: 'blur(6px) saturate(1.1)' } : {}} />
+        <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 animate-pulse image-skeleton-blur" aria-hidden="true" style={blurDataURL ? { backgroundImage: `url(${blurDataURL})`, backgroundSize: 'cover', filter: 'blur(24px) saturate(0.95)' } : {}} />
       )}
 
       {errored ? (

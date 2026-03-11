@@ -166,7 +166,7 @@ export default function HeroCarousel({ interval = 5000 }){
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent pointer-events-none" />
               <figcaption className={`absolute left-4 sm:left-10 lg:left-16 right-4 sm:right-10 lg:right-auto bottom-6 md:bottom-12 lg:bottom-16 w-auto lg:max-w-[44rem] bg-black/34 border border-white/10 backdrop-blur-md rounded-2xl p-5 md:p-7 text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)] hero-caption ${active ? 'hero-caption--visible' : ''}`}>
-                <p className="hero-caption-item hero-caption-item--1 text-[11px] uppercase tracking-[0.22em] text-[#d4a43b] font-medium">
+                <p className="hero-caption-item hero-caption-item--1 text-[11px] uppercase tracking-[0.22em] text-[var(--vintage-gold)] font-medium">
                   {it.brand ? `${it.brand} · Destacado` : 'Instrumento destacado'}
                 </p>
                 <h2 className="hero-caption-item hero-caption-item--2 mt-2 text-2xl md:text-4xl font-bold leading-[1.1] tracking-tight">{it.name}</h2>
@@ -223,7 +223,7 @@ export default function HeroCarousel({ interval = 5000 }){
               aria-label={`Ir a diapositiva ${i+1}`}
               aria-current={i===index}
               onClick={() => go(i)}
-              className={`h-1.5 rounded-full transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-white/20 ${i===index ? 'w-9 bg-[#d4a43b]' : 'w-4 bg-white/35'}`}
+              className={`h-1.5 rounded-full transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-white/20 ${i===index ? 'w-9 bg-[var(--vintage-gold)]' : 'w-4 bg-white/35'}`}
             />
           ))}
         </div>

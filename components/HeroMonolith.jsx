@@ -5,6 +5,33 @@ import Link from 'next/link'
 import ImageWithSkeleton from './ImageWithSkeleton'
 import imageService from '../lib/utils/imageService'
 import { useProducts } from '../hooks/useProducts'
+import { useToast } from './ToastContext'
+
+const WA_HREF = 'https://wa.me/5491154661749?text=' + encodeURIComponent('Hola, me interesa La Guarida, me podrias dar informacion?')
+
+function WhatsAppHeroButton() {
+  const { toast } = useToast()
+  function handleClick(e) {
+    e.preventDefault()
+    toast('Abriendo WhatsApp…', 'default')
+    window.open(WA_HREF, '_blank', 'noopener,noreferrer')
+  }
+  return (
+    <a
+      href={WA_HREF}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Contactar por WhatsApp"
+      onClick={handleClick}
+      className="no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] w-10 sm:w-12 px-0 rounded-xl border border-[var(--vintage-gold)]/50 bg-[var(--vintage-gold-soft)] text-[#f3d399] text-sm font-semibold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[var(--vintage-gold-soft-hover)] hover:-translate-y-0.5 hover:shadow-[0_14px_28px_rgba(201,162,39,0.28)] active:translate-y-0 shrink-0"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+        <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M9.36 8.9c.1-.22.18-.23.34-.24h.28c.1 0 .24.04.3.17.12.26.4 1 .44 1.08.04.08.06.18 0 .28-.06.1-.1.16-.2.24-.1.08-.2.18-.28.24-.1.1-.2.2-.08.4.12.2.54.9 1.16 1.44.8.7 1.46.9 1.66 1 .2.1.32.08.44-.04.12-.12.5-.58.64-.78.14-.2.28-.16.46-.1.2.08 1.2.56 1.4.66.2.1.34.14.38.22.04.08.04.5-.12.98-.16.48-.92.92-1.26.98-.34.06-.76.1-1.24-.06-.3-.1-.68-.22-1.18-.44-2.08-.9-3.44-3.02-3.54-3.16-.1-.14-.84-1.12-.84-2.14 0-1.02.54-1.52.74-1.72Z" fill="currentColor" />
+      </svg>
+    </a>
+  )
+}
 
 function hashString(str = '') {
   let h = 0
@@ -50,73 +77,105 @@ export default function HeroMonolith() {
   if (loading || !item || !imageSrc) return null
 
   return (
-    <section aria-labelledby="home-hero" className="w-full">
-      <div className="container-tight">
-        <article className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#0d1119] shadow-[0_24px_56px_rgba(0,0,0,0.42)]">
-          <div className="pointer-events-none absolute -left-16 top-1/4 h-48 w-48 rounded-full bg-[#d4a43b]/10 blur-3xl" />
-          <div className="pointer-events-none absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-[#5c78c4]/12 blur-3xl" />
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/45 to-transparent" />
-
-          <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] min-h-[60vh] md:min-h-[68vh]">
-            <div className="order-1 relative min-h-[44vh] lg:min-h-full">
-              <ImageWithSkeleton
-                src={imageSrc}
-                alt={item.name || 'Producto destacado'}
-                fill
-                quality={100}
-                sizes="(min-width:1024px) 65vw, 100vw"
-                className="object-cover"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none lg:bg-gradient-to-r lg:from-black/55 lg:via-transparent lg:to-transparent" />
+    <section aria-labelledby="home-hero" className="w-full overflow-hidden">
+      {/* ——— Mobile: full-width strip, image + overlay ——— */}
+      <article className="md:hidden relative w-full">
+        <div className="relative w-full max-h-[50vh] min-h-[240px]" style={{ aspectRatio: '16/10' }}>
+          <ImageWithSkeleton
+            src={imageSrc}
+            alt={item.name || 'Producto destacado'}
+            fill
+            quality={100}
+            sizes="100vw"
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 from-25% via-black/50 to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 px-4 pb-4 pt-10 sm:pb-5 sm:pt-12">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--vintage-gold)] font-semibold">Destacado</p>
+            <h1 id="home-hero" className="mt-0.5 text-[1.25rem] sm:text-[1.35rem] font-bold leading-tight text-white line-clamp-2">
+              {item.name}
+            </h1>
+            {item.price && (
+              <p className="mt-1 sm:mt-1.5 text-[15px] sm:text-base font-bold text-white">{item.price}</p>
+            )}
+            <div className="mt-2.5 sm:mt-3 flex gap-2 sm:gap-3">
+              <Link
+                href={`/guitars/${item.slug || item.id || ''}`}
+                className="no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] flex-1 min-w-0 rounded-xl !bg-[#ffffff] text-[#0f172a] font-semibold text-[12px] sm:text-[13px] py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-white shadow-[0_4px_14px_rgba(0,0,0,0.35)] transition-transform active:scale-[0.98]"
+              >
+                Ver producto
+              </Link>
+              <Link
+                href="/#seleccion-destacada"
+                className="no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] shrink-0 rounded-xl border border-white/50 text-white text-[12px] sm:text-[13px] font-medium py-2.5 sm:py-3 px-3 sm:px-5"
+              >
+                Catálogo
+              </Link>
             </div>
+          </div>
+        </div>
+      </article>
 
-            <div className="order-2 relative z-10 p-5 sm:p-8 lg:p-10 bg-gradient-to-b from-[#131823]/95 to-[#0e131d]/95 border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col justify-center">
-              <p className="text-[11px] uppercase tracking-[0.24em] text-[#d4a43b] font-medium">Producto destacado</p>
-              <h1 id="home-hero" className="mt-2 text-[1.95rem] sm:text-4xl lg:text-[3.1rem] font-bold leading-[1.03] tracking-tight text-white">
+      {/* ——— Desktop: 100% width split ——— */}
+      <article className="hidden md:block relative w-full min-h-[60vh] lg:min-h-[65vh] bg-[#323232]">
+        {/* Ambient orbs: flotación suave */}
+        <div className="hero-orb-float pointer-events-none absolute left-0 top-1/3 h-80 w-80 rounded-full bg-[var(--vintage-gold)]/10 blur-[100px]" aria-hidden />
+        <div className="hero-orb-float pointer-events-none absolute right-0 bottom-0 h-96 w-96 rounded-full bg-[var(--vintage-gold)]/5 blur-[110px]" aria-hidden />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+
+        <div className="relative grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] min-h-[60vh] lg:min-h-[65vh]">
+          {/* Image: full width of left column, diagonal right edge */}
+          <div className="relative min-h-[45vh] lg:min-h-full hero-image-entrance hero-desktop-image-cut">
+            <ImageWithSkeleton
+              src={imageSrc}
+              alt={item.name || 'Producto destacado'}
+              fill
+              quality={100}
+              sizes="(min-width:1024px) 60vw, 100vw"
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent pointer-events-none" />
+          </div>
+
+          {/* Content panel: right, diagonal left edge to match image cut */}
+          <div className="hero-panel-entrance relative z-10 flex flex-col justify-center px-8 lg:px-12 xl:px-16 py-12 lg:py-16 hero-desktop-panel-cut bg-gradient-to-b from-[#3d3d3d]/98 to-[#323232]/98">
+            <div className="hero-entrance flex flex-col max-w-lg">
+              <p className="text-[11px] uppercase tracking-[0.24em] text-[var(--vintage-gold)]/90 font-medium mb-3" aria-hidden>La Guarida</p>
+              <div className="rounded-full border border-[var(--vintage-gold)]/40 bg-black/20 backdrop-blur-sm w-fit px-3 py-1.5 mb-5">
+                <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--vintage-gold)] font-semibold">Producto destacado</span>
+              </div>
+              <h1 id="home-hero" className="text-2xl lg:text-[2.5rem] xl:text-[2.85rem] font-bold leading-[1.06] tracking-tight text-white">
                 {item.name}
               </h1>
               {item.description ? (
-                <p className="mt-4 text-sm sm:text-base text-white/82 leading-relaxed line-clamp-4 max-w-xl">
+                <p className="mt-4 text-sm lg:text-base text-white/78 leading-relaxed line-clamp-3">
                   {item.description}
                 </p>
-              ) : null}
+              ) : <div aria-hidden />}
               {item.price ? (
-                <p className="mt-5 text-2xl sm:text-3xl font-bold tracking-tight text-white">{item.price}</p>
-              ) : null}
-
-              {specs.length > 0 && (
-                <div className="mt-4 rounded-xl border border-white/15 bg-white/[0.04] px-3 py-2.5">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-white/55">Specs</p>
-                  <p className="mt-1 text-sm text-white/90 leading-relaxed">{specLine}</p>
+                <p className="mt-5 text-xl lg:text-2xl font-bold tracking-tight text-white">{item.price}</p>
+              ) : <div aria-hidden />}
+              {specs.length > 0 ? (
+                <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2">
+                  <p className="text-[10px] uppercase tracking-[0.16em] text-white/50">Specs</p>
+                  <p className="mt-0.5 text-sm text-white/88 leading-snug">{specLine}</p>
                 </div>
-              )}
-
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                <Link href={`/guitars/${item.slug || item.id || ''}`} className="no-custom-btn inline-flex items-center justify-center min-h-[46px] px-4 rounded-xl border border-white/70 bg-[rgba(255,255,255,0.92)] text-black text-[13px] font-semibold whitespace-nowrap transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-white hover:-translate-y-0.5 hover:shadow-[0_12px_26px_rgba(0,0,0,0.24)] active:translate-y-0">
+              ) : <div aria-hidden />}
+              <div className="mt-6 lg:mt-7 flex flex-wrap gap-2 sm:gap-2.5">
+                <Link href={`/guitars/${item.slug || item.id || ''}`} className="hero-cta-primary no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl border-2 border-[var(--vintage-gold)] bg-[var(--vintage-gold-soft)] text-[var(--vintage-gold)] text-[12px] sm:text-[13px] font-bold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[var(--vintage-gold-soft-hover)] hover:border-[var(--vintage-gold)] hover:-translate-y-0.5 hover:shadow-[0_12px_26px_rgba(201,162,39,0.25)] active:translate-y-0 min-w-[120px] sm:min-w-0">
                   Ver detalles
                 </Link>
-                <Link href="/#seleccion-destacada" className="no-custom-btn inline-flex items-center justify-center min-h-[46px] px-4 rounded-xl border border-white/28 bg-white/8 text-white text-[13px] font-semibold whitespace-nowrap transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-white/14 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(0,0,0,0.28)] active:translate-y-0">
-                  Ver catalogo
+                <Link href="/#seleccion-destacada" className="no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl border border-white/25 bg-white/5 text-white/90 text-[12px] sm:text-[13px] font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-white/12 hover:border-white/35 hover:-translate-y-0.5 active:translate-y-0 min-w-[100px] sm:min-w-0">
+                  Ver catálogo
                 </Link>
-                <a
-                  href={`https://wa.me/5491154661749?text=${encodeURIComponent('Hola, me interesa La Guarida, me podrias dar informacion?')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Contactar por WhatsApp"
-                  className="no-custom-btn inline-flex items-center justify-center min-h-[46px] w-12 px-0 rounded-xl border border-[#d4a43b]/50 bg-[#d4a43b]/16 text-[#f3d399] text-sm font-semibold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[#d4a43b]/24 hover:-translate-y-0.5 hover:shadow-[0_14px_28px_rgba(212,164,59,0.28)] active:translate-y-0"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                    <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M9.36 8.9c.1-.22.18-.23.34-.24h.28c.1 0 .24.04.3.17.12.26.4 1 .44 1.08.04.08.06.18 0 .28-.06.1-.1.16-.2.24-.1.08-.2.18-.28.24-.1.1-.2.2-.08.4.12.2.54.9 1.16 1.44.8.7 1.46.9 1.66 1 .2.1.32.08.44-.04.12-.12.5-.58.64-.78.14-.2.28-.16.46-.1.2.08 1.2.56 1.4.66.2.1.34.14.38.22.04.08.04.5-.12.98-.16.48-.92.92-1.26.98-.34.06-.76.1-1.24-.06-.3-.1-.68-.22-1.18-.44-2.08-.9-3.44-3.02-3.54-3.16-.1-.14-.84-1.12-.84-2.14 0-1.02.54-1.52.74-1.72Z" fill="currentColor" />
-                  </svg>
-                </a>
+                <WhatsAppHeroButton />
               </div>
             </div>
           </div>
-        </article>
-      </div>
+        </div>
+      </article>
     </section>
   )
 }
-

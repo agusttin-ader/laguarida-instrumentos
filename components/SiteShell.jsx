@@ -45,7 +45,7 @@ export default function SiteShell({ children }) {
   return (
     <>
       {!isAdmin && <Header />}
-      <main className={!isAdmin ? 'pb-[84px] md:pb-0' : ''}>
+      <main className={!isAdmin ? 'pb-[calc(68px+env(safe-area-inset-bottom,0px))] md:pb-0' : ''}>
         {!isAdmin ? <PageTransition key={pathname}>{children}</PageTransition> : children}
       </main>
       {!isAdmin && <BottomNav />}

@@ -17,8 +17,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     images: ['https://laguarida.com/images/logo/og-pick-icon.PNG']
-  }
-  ,
+  },
   icons: {
     icon: '/images/logo/og-pick-icon.PNG',
     shortcut: '/images/logo/og-pick-icon.PNG',
@@ -26,12 +25,19 @@ export const metadata = {
   }
 }
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: '#323232'
+}
+
 export default function RootLayout({ children }) {
   return (
     <html lang="es" className="dark">
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#1a1a1c" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />

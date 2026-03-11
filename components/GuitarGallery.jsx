@@ -69,7 +69,7 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
   
   if (!modalList || modalList.length === 0) {
     return (
-      <div className="rounded-2xl overflow-hidden bg-gray-100 dark:bg-[#1e1e22] h-56 md:h-80 lg:h-[99vh]"></div>
+      <div className="rounded-2xl overflow-hidden bg-gray-100 dark:bg-[#262626] h-56 md:h-80 lg:h-[99vh]"></div>
     )
   }
 

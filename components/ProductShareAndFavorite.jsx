@@ -111,7 +111,7 @@ export default function ProductShareAndFavorite({ slug, name, url }) {
         aria-label={fav ? 'Quitar de tu selección' : 'Agregar a tu selección'}
         className={`no-custom-btn inline-flex items-center justify-center w-12 h-12 rounded-lg border transition-colors btn-focus ${
           fav
-            ? 'border-[#d4a43b]/45 bg-[#d4a43b]/18 text-[#d4a43b]'
+            ? 'border-[var(--vintage-gold)]/45 bg-[var(--vintage-gold-soft)] text-[var(--vintage-gold)]'
             : 'border-[#d6dbe6] dark:border-[#3a4358] bg-[#f8f9fc] dark:bg-[#141a26] text-[#1a2030] dark:text-[#eef2ff] hover:bg-[#eef0f5] dark:hover:bg-[#1a2230]'
         }`}
       >

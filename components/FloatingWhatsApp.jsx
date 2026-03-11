@@ -1,14 +1,27 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useToast } from "./ToastContext";
 
 // FloatingWhatsApp: floating WhatsApp CTA bottom-right with subtle pulse.
 // Behavior:
 // - Opens wa.me with a prefilled message. If `product` prop is provided, message includes product name.
+// - Shows toast "Abriendo WhatsApp…" on click for feedback.
 // - Observes body class changes and hides itself when `menu-open` or `modal-open` is present.
-// - Uses Tailwind for layout and simple transitions; for more advanced motion consider Framer Motion.
 
 export default function FloatingWhatsApp({ product = null }) {
   const [hidden, setHidden] = useState(false);
+  const { toast } = useToast();
+
+  const message = product
+    ? `Hola, me interesa ${product.name}, me podrias dar mas informacion ?`
+    : "Hola, me interesa La Guarida, me podrias dar informacion?";
+  const href = `https://wa.me/5491154661749?text=${encodeURIComponent(message)}`;
+
+  function handleClick(e) {
+    e.preventDefault();
+    toast("Abriendo WhatsApp…", "default");
+    window.open(href, "_blank", "noopener,noreferrer");
+  }
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -27,11 +40,6 @@ export default function FloatingWhatsApp({ product = null }) {
     return () => obs.disconnect();
   }, []);
 
-  const message = product
-    ? `Hola, me interesa ${product.name}, me podrias dar mas informacion ?`
-    : "Hola, me interesa La Guarida, me podrias dar informacion?";
-  const href = `https://wa.me/5491154661749?text=${encodeURIComponent(message)}`;
-
   return (
     <div
       aria-hidden={hidden}
@@ -43,6 +51,7 @@ export default function FloatingWhatsApp({ product = null }) {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Contactar por WhatsApp"
+        onClick={handleClick}
         className="relative w-14 h-14 flex items-center justify-center rounded-full btn-gradient text-white focus:outline-none"
         style={{ boxShadow: 'var(--shadow-soft)' }}
       >

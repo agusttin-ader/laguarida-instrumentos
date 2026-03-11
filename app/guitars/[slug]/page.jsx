@@ -10,6 +10,7 @@ import { getSupabaseServerClient } from '../../../lib/supabase/server'
 import ProductCard from '../../../components/ProductCard'
 import imageService from '../../../lib/utils/imageService'
 import ProductShareAndFavorite from '../../../components/ProductShareAndFavorite'
+import ProductPageCTA from '../../../components/ProductPageCTA'
 
 // Generate page metadata dynamically based on the product data
 export async function generateMetadata({ params }) {
@@ -199,7 +200,7 @@ export default async function GuitarPage({ params }) {
   }
 
   return (
-    <div className="container-tight pt-1 sm:pt-2 pb-28 md:pb-12">
+    <div className="container-tight pt-3 sm:pt-4 pb-8 md:pb-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <header className="mt-0 mb-1">
         <p className="text-xs uppercase tracking-[0.22em] text-gray-500 md:hidden">Catálogo · Guitarras</p>
@@ -215,11 +216,11 @@ export default async function GuitarPage({ params }) {
       </header>
       <div className="max-w-6xl mx-auto rounded-[28px] overflow-hidden border border-[#dfe3ea] bg-[#f3f5f9] dark:bg-[#10131b] dark:border-[#2a3142] shadow-[0_22px_55px_rgba(12,20,39,0.16)] dark:shadow-[0_22px_55px_rgba(0,0,0,0.45)]">
         <main className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] items-stretch">
-          <section className="bg-[#fbfbfc] dark:bg-[#0d1118] px-6 py-8 md:px-10 md:py-10 border-r border-[#e6e8ef] dark:border-[#232a3a]">
+          <section className="bg-[#fbfbfc] dark:bg-[#0d1118] px-4 sm:px-6 py-6 sm:py-8 md:px-10 md:py-10 border-r border-[#e6e8ef] dark:border-[#232a3a]">
             <GuitarGallery image_url={product.image_url} images={product.images} altBase={`${product.name}${product.brand ? ' — ' + product.brand : ''}`} />
           </section>
 
-          <aside className="px-6 py-7 md:px-10 md:py-10">
+          <aside className="px-4 sm:px-6 py-5 sm:py-7 md:px-10 md:py-10">
             <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-gray-400 dark:text-gray-500 mb-2">{categoryLabel}</p>
             <h1 className="text-[1.95rem] leading-[1.15] font-bold text-[#131722] dark:text-[#f5f7ff] mb-2">{product.name}</h1>
 
@@ -228,9 +229,9 @@ export default async function GuitarPage({ params }) {
             </p>
 
             {hasFicha && (
-              <div className="mb-6 rounded-xl border border-[#d6dbe6] dark:border-[#3a4358] bg-[#f8f9fc] dark:bg-[#141a26] overflow-hidden">
-                <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500 px-4 py-2.5 border-b border-[#e6e8ef] dark:border-[#232a3a]">Ficha técnica</p>
-                <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#e6e8ef] dark:divide-[#232a3a]">
+              <div className="mb-6 rounded-xl border border-[#d6dbe6] dark:border-white/10 bg-[#f8f9fc] dark:bg-[#0c0c0c] overflow-hidden">
+                <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500 px-4 py-2.5 border-b border-[#e6e8ef] dark:border-white/10">Ficha técnica</p>
+                <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#e6e8ef] dark:divide-white/10">
                   <div className="px-4 py-3">
                     <dt className="text-[9px] uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500 mb-0.5">Modelo</dt>
                     <dd className="text-sm font-semibold text-[#1a2030] dark:text-[#eef2ff]">{modelValue}</dd>
@@ -247,32 +248,21 @@ export default async function GuitarPage({ params }) {
               </div>
             )}
 
-            <p className="text-[30px] font-bold text-[#161c2c] dark:text-[#f7f9ff] mb-6">{product.price}</p>
-
-            <div className="flex flex-wrap gap-3 items-center">
-              <a
-                href={consultHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Consultar por WhatsApp sobre ${product.name}`}
-                className="no-custom-btn inline-flex items-center justify-center gap-2 h-12 px-6 rounded-lg bg-[#0f1628] text-white dark:bg-[#e9eefc] dark:text-[#111728] font-semibold text-sm hover:bg-[#1a2239] dark:hover:bg-[#dbe5ff] transition-colors"
-              >
-                <span>Consultar por WhatsApp</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M9.36 8.9c.1-.22.18-.23.34-.24h.28c.1 0 .24.04.3.17.12.26.4 1 .44 1.08.04.08.06.18 0 .28-.06.1-.1.16-.2.24-.1.08-.2.18-.28.24-.1.1-.2.2-.08.4.12.2.54.9 1.16 1.44.8.7 1.46.9 1.66 1 .2.1.32.08.44-.04.12-.12.5-.58.64-.78.14-.2.28-.16.46-.1.2.08 1.2.56 1.4.66.2.1.34.14.38.22.04.08.04.5-.12.98-.16.48-.92.92-1.26.98-.34.06-.76.1-1.24-.06-.3-.1-.68-.22-1.18-.44-2.08-.9-3.44-3.02-3.54-3.16-.1-.14-.84-1.12-.84-2.14 0-1.02.54-1.52.74-1.72Z" fill="currentColor" />
-                </svg>
-              </a>
+            <ProductPageCTA
+              price={product.price}
+              consultHref={consultHref}
+              productName={product.name}
+            >
               <ProductShareAndFavorite slug={slug} name={product.name} url={productUrl} />
-            </div>
+            </ProductPageCTA>
           </aside>
         </main>
       </div>
 
       {relatedProducts && relatedProducts.length > 0 && (
-        <section className="mt-10 sm:mt-12">
-          <h2 className="section-title-premium section-underline-ocre text-gray-900 dark:text-white mb-4">También te recomendamos</h2>
-          <div className="flex overflow-x-auto gap-4 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 lg:gap-8 snap-x snap-mandatory scroll-smooth">
+        <section className="mt-8 sm:mt-10 md:mt-12">
+          <h2 className="section-title-premium section-underline-ocre text-gray-900 dark:text-white mb-3 sm:mb-4">También te recomendamos</h2>
+          <div className="flex overflow-x-auto gap-3 sm:gap-4 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-5 md:gap-6 lg:gap-8 snap-x snap-mandatory scroll-smooth">
             {relatedProducts.map(r => (
               <div key={r.id || r.slug} className="flex-shrink-0 w-[min(280px,82vw)] sm:w-auto sm:flex-shrink snap-center">
                 <ProductCard item={r} />

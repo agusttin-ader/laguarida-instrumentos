@@ -9,20 +9,20 @@ export default function Footer({ compact = false }){
 
   return (
     <footer className={`${compact ? 'mt-0' : 'mt-8 md:mt-20'} bg-transparent dark:bg-transparent border-0 overflow-x-hidden`}>
-      <div className={`max-w-7xl mx-auto px-6 lg:px-8 ${compact ? 'py-3' : 'py-8'}`}>
-        <div className={`grid grid-cols-1 md:grid-cols-3 items-center ${compact ? 'gap-2' : 'gap-4'}`}>
+      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${compact ? 'py-3' : 'py-6 sm:py-8'}`}>
+        <div className={`grid grid-cols-1 md:grid-cols-3 items-center ${compact ? 'gap-2' : 'gap-4 sm:gap-6'}`}>
           <p className={`${compact ? 'text-xs' : 'text-sm'} text-gray-400 text-center md:text-left md:justify-self-start`}>© {new Date().getFullYear()} La Guarida</p>
 
           <nav className={`flex items-center ${compact ? 'gap-3' : 'gap-4'} text-sm justify-center md:justify-self-center`}>
-            <a href="https://www.instagram.com/laguaridainstrumentos/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="!text-gray-400 hover:!text-[#d4a43b] transition-colors duration-300">
+            <a href="https://www.instagram.com/laguaridainstrumentos/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="!text-gray-400 hover:!text-[var(--vintage-gold)] transition-colors duration-300">
               <InstagramLogo size={20} weight="duotone" />
             </a>
 
-            <a href="mailto:leonardo_ruberti@hotmail.com" aria-label="Correo" className="!text-gray-400 hover:!text-[#d4a43b] transition-colors duration-300">
+            <a href="mailto:leonardo_ruberti@hotmail.com" aria-label="Correo" className="!text-gray-400 hover:!text-[var(--vintage-gold)] transition-colors duration-300">
               <EnvelopeSimple size={20} weight="duotone" />
             </a>
 
-            <a href={waHref} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="!text-gray-400 hover:!text-[#d4a43b] transition-colors duration-300">
+            <a href={waHref} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="!text-gray-400 hover:!text-[var(--vintage-gold)] transition-colors duration-300">
               <WhatsappLogo size={20} weight="duotone" />
             </a>
           </nav>

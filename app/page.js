@@ -2,6 +2,7 @@ import React from 'react'
 import dynamic from 'next/dynamic'
 import HeroMonolith from '../components/HeroMonolith'
 import FeaturedSelection from '../components/FeaturedSelection'
+import LowCostSection from '../components/LowCostSection'
 
 const About = dynamic(() => import('../components/About'), { ssr: true, loading: () => <section className="min-h-[120px] flex items-center justify-center" aria-hidden><div className="animate-pulse h-8 w-48 rounded bg-white/10" /></section> })
 
@@ -20,16 +21,18 @@ export default function Page() {
         <HeroMonolith />
       </section>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 pt-5 sm:pt-8 pb-10 md:pb-12 min-h-screen">
-        <header className="mb-2 sm:mb-4 text-center">
+      <main className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 pt-0 sm:pt-6 md:pt-10 pb-8 sm:pb-10 md:pb-12 min-h-screen">
+        <header className="mb-0 sm:mb-3 md:mb-4 text-center">
           <p className="sr-only">La Guarida es una tienda especializada en guitarras, bajos y accesorios. Ofrecemos instrumentos seleccionados, asesoramiento profesional y envíos dentro de Argentina.</p>
         </header>
 
-        <section id="seleccion-destacada" className="mt-4 sm:mt-6" aria-labelledby="seleccion-heading">
+        <section id="seleccion-destacada" className="mt-0 pt-0 sm:mt-6 sm:pt-4 md:mt-10 md:pt-6" aria-labelledby="seleccion-heading">
           <FeaturedSelection />
         </section>
 
-        <section className="!pt-2 !pb-2 md:!pt-4 md:!pb-6">
+        <LowCostSection />
+
+        <section className="mt-8 sm:mt-10 md:mt-12 !pt-4 !pb-4 md:!pt-6 md:!pb-6">
           <About />
         </section>
       </main>

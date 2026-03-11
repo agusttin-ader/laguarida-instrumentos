@@ -46,13 +46,16 @@ export default function FilterModal({ open, setOpen, categories = [], filters = 
       />
 
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="filter-modal-title"
         className={`absolute left-0 right-0 bottom-0 bg-white dark:bg-neutral-900 rounded-t-xl shadow-xl transition-transform duration-300 ${
           open ? "translate-y-0" : "translate-y-full"
         }`}
         style={{ height: "85vh" }}
       >
         <div className="p-4 flex items-center justify-between border-b border-gray-100 dark:border-neutral-800">
-          <h3 className="text-lg font-semibold">Filtrar</h3>
+          <h3 id="filter-modal-title" className="text-lg font-semibold">Filtrar</h3>
           <button onClick={() => setOpen(false)} className="text-sm px-3 py-2">Cerrar</button>
         </div>
 
@@ -97,10 +100,10 @@ export default function FilterModal({ open, setOpen, categories = [], filters = 
           </section>
         </div>
 
-        <div className="p-4 border-t border-gray-100 dark:border-neutral-800 flex gap-2">
+        <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-gray-100 dark:border-neutral-800 flex gap-2">
           <button
             onClick={() => setLocal({ categories: [], priceMin: "", priceMax: "" })}
-            className="flex-1 py-3 rounded-md border"
+            className="flex-1 min-h-[44px] py-3 rounded-md border active:scale-[0.98] transition-transform"
           >
             Limpiar
           </button>
@@ -109,7 +112,7 @@ export default function FilterModal({ open, setOpen, categories = [], filters = 
               apply();
               setOpen(false);
             }}
-            className="flex-1 py-3 rounded-md bg-[#C8102E] text-white"
+            className="flex-1 min-h-[44px] py-3 rounded-md bg-[#C8102E] text-white active:scale-[0.98] transition-transform"
           >
             Aplicar
           </button>

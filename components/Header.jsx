@@ -5,12 +5,25 @@ import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 
 const LOGO_DARK = '/images/logo/logo-fondo-oscuro.PNG'
+const SCROLL_THRESHOLD = 72
 
 export default function Header() {
   const pathname = usePathname()
   const isHome = pathname === '/' || pathname === ''
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    function onScroll() {
+      setScrolled(window.scrollY > SCROLL_THRESHOLD)
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   const navLinkClass =
-    "relative inline-flex items-center py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-[#e4e7f0]/80 hover:text-[#fffaf0] transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:-bottom-1.5 after:h-[1px] after:w-0 after:bg-[#d4a43b] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
+    "relative inline-flex items-center py-1.5 px-0.5 text-[11px] font-medium uppercase tracking-[0.18em] text-[#e4e7f0]/85 hover:text-[#fffaf0] transition-colors duration-300 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent after:content-[''] after:absolute after:left-0 after:-bottom-1.5 after:h-[1px] after:w-0 after:bg-[var(--vintage-gold)] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
 
   function handleSectionNav(e, sectionId) {
     if (!isHome) return
@@ -23,7 +36,7 @@ export default function Header() {
   const compactBottom = isProductPage ? 'pb-1 sm:pb-2 md:pb-1' : ''
   const homeCompact = isHome ? 'pt-1 pb-2 sm:pt-3 sm:pb-4 md:pt-2 md:pb-3' : ''
   return (
-    <header className={`${isHome ? homeCompact : `pt-2 pb-4 sm:pt-4 sm:pb-8 md:pt-2 md:pb-4 ${compactBottom}`} sticky top-0 z-40 md:static md:z-auto bg-[#1a1a1c]/88 backdrop-blur-md border-b border-white/5 md:bg-transparent md:backdrop-blur-0 md:border-0`}>
+    <header className={`${scrolled ? 'header-scrolled ' : ''}${isHome ? homeCompact : `pt-2 pb-4 sm:pt-4 sm:pb-8 md:pt-2 md:pb-4 ${compactBottom}`} sticky top-0 z-40 md:static md:z-auto bg-[#323232]/88 backdrop-blur-md border-b border-white/5 md:bg-transparent md:backdrop-blur-0 md:border-0`}>
       <div className="flex items-center justify-between container-tight max-w-4xl relative min-h-[58px] md:min-h-[56px]">
         <div className="flex items-center min-w-0 md:justify-start" />
 
@@ -34,24 +47,15 @@ export default function Header() {
         </a>
 
         <nav className="hidden md:flex items-center justify-end ml-auto" aria-label="Navegación principal">
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-6">
             <a href="/" className={navLinkClass}>Home</a>
-            <span className="h-[14px] w-px bg-white/14" aria-hidden />
+            <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
             <a href="/#about-section" onClick={(e) => handleSectionNav(e, 'about-section')} className={navLinkClass}>Sobre nosotros</a>
-            <span className="h-[14px] w-px bg-white/14" aria-hidden />
+            <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
             <a href="/#seleccion-destacada" onClick={(e) => handleSectionNav(e, 'seleccion-destacada')} className={navLinkClass}>Catalogo</a>
-            <span className="h-[14px] w-px bg-white/18" aria-hidden />
-            <a
-              href="/favoritos"
-              className="relative inline-flex items-center gap-1.5 text-[11px] font-medium tracking-[0.18em] uppercase text-[#e4e7f0]/70 hover:text-[#fffaf0] transition-colors after:content-[''] after:absolute after:left-0 after:-bottom-1.5 after:h-[1px] after:w-0 after:bg-[#d4a43b] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
-            >
-              <span
-                className="inline-flex h-[13px] w-[13px] items-center justify-center rounded-full border border-white/50"
-                aria-hidden
-              >
-                <span className="block h-[7px] w-[7px] rounded-full bg-white/85" />
-              </span>
-              <span>Favoritos</span>
+            <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
+            <a href="/favoritos" className={navLinkClass}>
+              Favoritos
             </a>
           </div>
         </nav>

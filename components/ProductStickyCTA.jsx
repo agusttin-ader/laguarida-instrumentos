@@ -15,7 +15,7 @@ export default function ProductStickyCTA({
   }
 
   return (
-    <div className="md:hidden fixed bottom-[68px] left-0 right-0 z-40 px-4 pb-[max(8px,env(safe-area-inset-bottom))] pt-3 bg-gradient-to-t from-[#1a1a1c] to-transparent pointer-events-none">
+    <div className="md:hidden fixed bottom-[68px] left-0 right-0 z-40 px-4 pb-[max(8px,env(safe-area-inset-bottom))] pt-3 bg-gradient-to-t from-[#222222] to-transparent pointer-events-none">
       <div className="pointer-events-auto">
         <a
           href={href}

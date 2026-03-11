@@ -18,8 +18,8 @@ export default function MobileProductCard({ product }) {
   )}`;
 
   return (
-    <article className="card-interactive w-full rounded-[20px] overflow-hidden border border-white/10 bg-[#15161a] shadow-[0_14px_34px_rgba(0,0,0,0.28)]">
-      <div className="relative w-full overflow-hidden bg-[#242428]" style={{ aspectRatio: '5/4' }}>
+    <article className="card-interactive w-full rounded-[20px] overflow-hidden border border-white/10 bg-[#262626] shadow-[0_14px_34px_rgba(0,0,0,0.28)]">
+      <div className="relative w-full overflow-hidden bg-[#2a2a2a]" style={{ aspectRatio: '5/4' }}>
         <Link href={`/guitars/${p.slug || p.id}`} aria-label={`Ir a ${p.name}`} className="block w-full h-full">
           {/* Use ImageWithSkeleton to show a skeleton while Next/Image loads for better perceived performance */}
           <ImageWithSkeleton

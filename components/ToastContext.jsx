@@ -74,7 +74,7 @@ export function ToastProvider({ children }) {
             key={id}
             className={`toast-item pointer-events-auto w-full rounded-2xl px-5 py-4 shadow-xl border backdrop-blur-md ${exiting ? 'toast-exit' : ''} ${
               type === 'success'
-                ? 'bg-[#0f1628]/95 dark:bg-[#0d1117]/95 text-white border-[#d4a43b]/40 shadow-[#d4a43b]/15 flex flex-col items-center justify-center text-center'
+                ? 'bg-[#0f1628]/95 dark:bg-[#0d1117]/95 text-white border-[var(--vintage-gold)]/40 shadow-[var(--vintage-gold)]/15 flex flex-col items-center justify-center text-center'
                 : type === 'error'
                   ? 'bg-[rgba(185,28,28,0.95)] text-white border-red-400/30 text-center'
                   : 'bg-[rgba(26,26,28,0.95)] text-white border-white/12 text-center'
@@ -86,7 +86,7 @@ export function ToastProvider({ children }) {
             }
           >
             {type === 'success' && (
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#d4a43b]/25 text-[#d4a43b] mb-2" aria-hidden>
+              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[var(--vintage-gold)]/25 text-[var(--vintage-gold)] mb-2" aria-hidden>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
               </span>
             )}

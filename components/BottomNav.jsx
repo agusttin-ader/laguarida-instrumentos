@@ -55,9 +55,9 @@ export default function BottomNav() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isFavoritos = pathname === "/favoritos";
-  const itemClass = "flex flex-col items-center justify-center min-h-touch py-2 text-sm transition-colors";
+  const itemClass = "flex-1 flex flex-col items-center justify-center min-w-0 min-h-[44px] py-2 text-sm bottom-nav-item active:scale-[0.97] transition-transform";
   const activeClass = "text-white";
-  const mutedClass = "text-white/75 hover:text-white";
+  const mutedClass = "text-white/92 hover:text-white";
 
   function smoothScrollTo(sectionId) {
     const target = document.getElementById(sectionId);
@@ -92,7 +92,7 @@ export default function BottomNav() {
   }, []);
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-white/20 bg-[#121316]/96 backdrop-blur-xl h-[68px] flex items-center justify-around px-3 pb-[env(safe-area-inset-bottom)]" aria-label="Navegación principal">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-white/20 bg-[#222222]/96 backdrop-blur-xl h-[68px] flex items-stretch px-1 pb-[env(safe-area-inset-bottom)]" aria-label="Navegación principal">
       <Link href="/" onClick={handleHomeNav} aria-label="Inicio" className={`${itemClass} ${isHome ? activeClass : mutedClass}`}>
         <IconHome className="flex-shrink-0" />
         <span className="text-[11px] mt-1 font-medium">Inicio</span>
@@ -117,7 +117,7 @@ export default function BottomNav() {
         type="button"
         onClick={handleChatOpen}
         aria-label="Abrir asistente de chat"
-        className={`${itemClass} ${mutedClass} bg-transparent border-0 p-0 cursor-pointer no-custom-btn w-full max-w-[72px]`}
+        className={`${itemClass} ${mutedClass} bg-transparent border-0 p-0 cursor-pointer no-custom-btn`}
       >
         <IconChat className="flex-shrink-0" />
         <span className="text-[11px] mt-1 font-medium">Chat</span>

@@ -125,7 +125,7 @@ export default function HybridSupportChat() {
                 className={`rounded-xl px-3 py-2 text-sm leading-relaxed ${
                   m.role === "bot"
                     ? "bg-white/10 text-white/90 border border-white/10"
-                    : "bg-[#d4a43b]/16 text-[#f3d399] border border-[#d4a43b]/35 ml-5"
+                    : "bg-[var(--vintage-gold-soft)] text-[#f3d399] border border-[var(--vintage-gold)]/35 ml-5"
                 }`}
               >
                 {m.text}
@@ -164,7 +164,7 @@ export default function HybridSupportChat() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Continuar por WhatsApp"
-              className="col-span-2 min-h-[42px] rounded-xl bg-[#d4a43b]/18 border border-[#d4a43b]/45 text-[#f3d399] text-sm font-semibold inline-flex items-center justify-center hover:bg-[#d4a43b]/26 transition-colors"
+              className="col-span-2 min-h-[42px] rounded-xl bg-[var(--vintage-gold-soft)] border border-[var(--vintage-gold)]/45 text-[#f3d399] text-sm font-semibold inline-flex items-center justify-center hover:bg-[var(--vintage-gold-soft-hover)] transition-colors"
             >
               Otra consulta por WhatsApp
             </a>
@@ -176,7 +176,7 @@ export default function HybridSupportChat() {
             type="button"
             onClick={() => setOpen(true)}
             aria-label="Abrir asistente de ayuda"
-            className="no-custom-btn group relative isolate inline-flex items-center justify-center w-12 h-12 rounded-2xl border border-white/16 bg-[#141926]/92 text-[#e9edf7] backdrop-blur-xl shadow-[0_12px_28px_rgba(0,0,0,0.38)] transition-all duration-300 motion-reduce:transition-none hover:-translate-y-0.5 hover:border-[#d4a43b]/50 hover:bg-[#1a2132] hover:shadow-[0_16px_30px_rgba(0,0,0,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4a43b]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f131d]"
+            className="no-custom-btn group relative isolate inline-flex items-center justify-center w-12 h-12 rounded-2xl border border-white/16 bg-[#141926]/92 text-[#e9edf7] backdrop-blur-xl shadow-[0_12px_28px_rgba(0,0,0,0.38)] transition-all duration-300 motion-reduce:transition-none hover:-translate-y-0.5 hover:border-[var(--vintage-gold)]/50 hover:bg-[#1a2132] hover:shadow-[0_16px_30px_rgba(0,0,0,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f131d]"
           >
             <span className="pointer-events-none absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(110,231,183,0.8)]" aria-hidden />
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden className="text-[#f1d49a]">

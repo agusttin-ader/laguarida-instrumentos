@@ -29,7 +29,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
   return (
     <article
       aria-labelledby={headingId}
-      className="card-interactive w-full rounded-[20px] overflow-hidden border border-white/10 bg-[#15161a] shadow-[0_14px_34px_rgba(0,0,0,0.28)]"
+      className="card-interactive w-full rounded-[20px] overflow-hidden border border-white/10 bg-[#262626] shadow-[0_14px_34px_rgba(0,0,0,0.28)]"
     >
       <Link
         href={`/guitars/${p.slug || p.id}`}
@@ -37,10 +37,10 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
         className="block no-custom-btn card-product-link"
       >
         {/* Image: 4/3 aspect, Next/Image for AVIF/WebP + elegant fade-in */}
-        <div className="relative w-full overflow-hidden bg-[#242428]" style={{ aspectRatio: '5/4' }}>
+        <div className="relative w-full overflow-hidden bg-[#2a2a2a]" style={{ aspectRatio: '5/4' }}>
           {img && !errored ? (
             <>
-              <div className={`absolute inset-0 bg-[#242428] transition-opacity duration-300 ${imgLoaded ? 'opacity-0 pointer-events-none' : 'animate-pulse'}`} aria-hidden />
+              <div className={`absolute inset-0 bg-[#2a2a2a] transition-opacity duration-300 ${imgLoaded ? 'opacity-0 pointer-events-none' : 'animate-pulse'}`} aria-hidden />
               <Image
                 src={img}
                 alt={titleText || 'Imagen del producto'}
@@ -56,14 +56,14 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
               />
             </>
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-[#242428] animate-pulse">
+            <div className="w-full h-full flex items-center justify-center bg-[#2a2a2a] animate-pulse">
               <span className="text-3xl opacity-50">🎸</span>
             </div>
           )}
 
           {/* Desktop: overlay on image (hidden on mobile for cleaner tap targets) */}
           <div
-            className="hidden md:flex absolute top-4 left-4 right-4 items-center justify-between px-4 py-3 rounded-xl border border-white/15"
+            className="hidden md:flex absolute top-3 sm:top-4 left-3 sm:left-4 right-3 sm:right-4 items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-white/15"
             style={{
               background: 'rgba(15,18,24,0.55)',
               WebkitBackdropFilter: 'blur(10px) saturate(120%)',
@@ -101,11 +101,11 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
           ) : null}
         </div>
 
-        {/* Mobile: card body below image (TripGlide-style full-width CTA) */}
-        <div className="md:hidden px-4 py-4 bg-[#1a1b20] border-t border-white/10">
-          <h3 className="text-base font-semibold text-white leading-snug line-clamp-2" aria-hidden>{titleText}</h3>
-          {p.price && <p className="text-[15px] font-semibold text-white/85 mt-1.5">{p.price}</p>}
-          <span className="card-mobile-cta no-custom-btn mt-3.5 flex items-center justify-center min-h-[46px] w-full rounded-xl !bg-[#f5f1e6] !text-[#111319] text-sm font-semibold py-3 border border-black/10 shadow-none">
+        {/* Mobile: card body below image — CTA proporcional */}
+        <div className="md:hidden px-3 sm:px-4 py-3 sm:py-4 bg-[#1a1b20] border-t border-white/10">
+          <h3 className="text-[15px] sm:text-base font-semibold text-white leading-snug line-clamp-2" aria-hidden>{titleText}</h3>
+          {p.price && <p className="text-[14px] sm:text-[15px] font-semibold text-white/85 mt-1 sm:mt-1.5">{p.price}</p>}
+          <span className="card-mobile-cta no-custom-btn mt-3 sm:mt-3.5 flex items-center justify-center min-h-[44px] w-full rounded-xl !bg-[#f5f1e6] !text-[#111319] text-[13px] sm:text-sm font-semibold py-2.5 sm:py-3 border border-black/10 shadow-none active:scale-[0.98] transition-transform">
             Ver más
           </span>
         </div>

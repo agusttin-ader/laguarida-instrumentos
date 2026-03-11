@@ -8,11 +8,11 @@ import React from "react";
 
 export default function SkeletonProductCard() {
   return (
-    <div className="w-full bg-white dark:bg-[#1e1e22] rounded-2xl border border-transparent overflow-hidden shadow-sm">
-      <div className="w-full bg-[#242428] animate-pulse" style={{ aspectRatio: '4/3' }} />
+    <div className="w-full bg-white dark:bg-[#262626] rounded-2xl border border-transparent overflow-hidden shadow-sm">
+      <div className="w-full bg-[#2a2a2a] animate-pulse" style={{ aspectRatio: '5/4' }} />
       <div className="p-4">
-        <div className="h-4 bg-[#242428] rounded w-3/4 animate-pulse" />
-        <div className="mt-3 h-3 bg-[#242428] rounded w-1/3 animate-pulse" />
+        <div className="h-4 bg-[#2a2a2a] rounded w-3/4 animate-pulse" />
+        <div className="mt-3 h-3 bg-[#2a2a2a] rounded w-1/3 animate-pulse" />
       </div>
     </div>
   );

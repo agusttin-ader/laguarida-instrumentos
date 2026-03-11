@@ -101,6 +101,7 @@ function buildProductPayload(body = {}, partial = false) {
   const images = toSafeStringArray(body.images, MAX_IMAGES, 2000)
   const wood = Array.isArray(body.wood) ? toSafeStringArray(body.wood, 8, MAX_TEXT) : toSafeString(body.wood, MAX_TEXT)
   const mics = Array.isArray(body.mics) ? toSafeStringArray(body.mics, 8, MAX_TEXT) : toSafeString(body.mics, MAX_TEXT)
+  const low_cost = body.low_cost === true || body.low_cost === 'true'
 
   if (!partial) {
     if (!name || !slug) return { error: 'Missing required fields: name and slug' }
@@ -116,6 +117,7 @@ function buildProductPayload(body = {}, partial = false) {
   if ('images' in body) payload.images = images
   if ('wood' in body) payload.wood = wood
   if ('mics' in body) payload.mics = mics
+  if ('low_cost' in body) payload.low_cost = low_cost
 
   if (!partial && !payload.name) return { error: 'Invalid name' }
   if (!partial && !payload.slug) return { error: 'Invalid slug' }
@@ -240,7 +242,12 @@ export async function DELETE(req) {
       return NextResponse.json({ error: 'Missing product id in query string (?id=)' }, { status: 400 })
     }
 
-    const { data, error } = await supabase.from('products').delete().eq('id', id).select()
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    if (!uuidRegex.test(id.trim())) {
+      return NextResponse.json({ error: 'Invalid product id format' }, { status: 400 })
+    }
+
+    const { data, error } = await supabase.from('products').delete().eq('id', id.trim()).select()
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: error.status || 500 })

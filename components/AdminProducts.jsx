@@ -35,7 +35,7 @@ export default function AdminProducts(){
   const [deletingId, setDeletingId] = useState(null)
   const [editingId, setEditingId] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
-  const [modalForm, setModalForm] = useState({ name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '', images: [] })
+  const [modalForm, setModalForm] = useState({ name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '', images: [], low_cost: false })
   const [modalMode, setModalMode] = useState('edit') // 'edit' | 'create'
   const [modalGalleryPreviews, setModalGalleryPreviews] = useState([]) // {id,url,name}
   const [modalUploadingMain, setModalUploadingMain] = useState(false)
@@ -101,6 +101,17 @@ export default function AdminProducts(){
     return () => clearTimeout(t)
   }, [quickOpen])
 
+  // Lock body scroll when modal (create/edit product) is open
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+    if (modalOpen) {
+      document.body.classList.add('modal-open')
+    } else {
+      document.body.classList.remove('modal-open')
+    }
+    return () => document.body.classList.remove('modal-open')
+  }, [modalOpen])
+
   // No client-side filters in admin list; show full items array
 
   async function load(){
@@ -148,15 +159,17 @@ export default function AdminProducts(){
       mics: p.mics || '',
       wood: p.wood || '',
       model: p.model || '',
-      images: Array.isArray(p.images) ? p.images.slice() : []
+      images: Array.isArray(p.images) ? p.images.slice() : [],
+      low_cost: p.low_cost === true
     })
     // do not populate or show gallery in edit mode (gallery only available when creating)
     setModalOpen(true)
   }
 
   function handleModalChange(e){
-    const { name, value } = e.target
-    setModalForm(prev => ({ ...prev, [name]: value }))
+    const { name, value, type } = e.target
+    const next = type === 'checkbox' ? e.target.checked : value
+    setModalForm(prev => ({ ...prev, [name]: next }))
   }
 
   async function handleSaveEdit(e){
@@ -190,6 +203,7 @@ export default function AdminProducts(){
         mics: modalForm.mics || undefined,
         wood: modalForm.wood || undefined,
         model: modalForm.model || undefined,
+        low_cost: Boolean(modalForm.low_cost),
       }
 
       let res
@@ -259,7 +273,7 @@ export default function AdminProducts(){
 
   function openCreateModal(){
     setModalMode('create')
-    let nextForm = { name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '', images: [] }
+    let nextForm = { name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '', images: [], low_cost: false }
     let recovered = false
 
     if (typeof window !== 'undefined') {
@@ -981,6 +995,10 @@ export default function AdminProducts(){
                     <label className="text-sm block mb-1 text-white/75">Micrófonos (mics)</label>
                     <input name="mics" value={modalForm.mics} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: SSS" />
                   </div>
+                  <div className="flex items-center gap-2 pt-1">
+                    <input type="checkbox" id="modal-low-cost" name="low_cost" checked={Boolean(modalForm.low_cost)} onChange={handleModalChange} className="rounded border-white/30 bg-white/10 text-amber-500 focus:ring-amber-500" />
+                    <label htmlFor="modal-low-cost" className="text-sm text-white/85">Incluir en sección Low cost</label>
+                  </div>
                 </div>
 
                 <div className="space-y-3">
@@ -1026,7 +1044,7 @@ export default function AdminProducts(){
                       {modalGalleryPreviews.map((p, i) => (
                         <div key={p.id} className="w-full">
                           <div
-                            className={`w-full h-16 rounded overflow-hidden border relative group ${modalGalleryDragOverIndex === i && modalGalleryDragIndex !== i ? 'border-[#d4a43b]/80 ring-1 ring-[#d4a43b]/35' : 'border-white/15'} ${canReorderModalGallery ? 'cursor-grab active:cursor-grabbing' : ''}`}
+                            className={`w-full h-16 rounded overflow-hidden border relative group ${modalGalleryDragOverIndex === i && modalGalleryDragIndex !== i ? 'border-[var(--vintage-gold)]/80 ring-1 ring-[var(--vintage-gold)]/35' : 'border-white/15'} ${canReorderModalGallery ? 'cursor-grab active:cursor-grabbing' : ''}`}
                             draggable={canReorderModalGallery}
                             onDragStart={() => handleGalleryDragStart(i)}
                             onDragOver={(e) => handleGalleryDragOver(e, i)}

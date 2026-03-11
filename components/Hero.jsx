@@ -12,7 +12,7 @@ export default function Hero(){
     <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch mt-0 container-tight">
       {/* Left column: light gray background, big title, CTA (matches image height) */}
       <ScrollReveal>
-        <div className="relative w-full max-w-[540px] rounded overflow-hidden subtle-border bg-gray-50 dark:bg-[#1e1e22] hero-aspect">
+        <div className="relative w-full max-w-[540px] rounded overflow-hidden subtle-border bg-gray-50 dark:bg-[#262626] hero-aspect">
           <div className="absolute inset-0 p-6 md:p-10 flex flex-col justify-center">
             <h2 className="display-xl tight-tracking hero-title">{HERO_PRODUCT.name}</h2>
             <p className="mt-3 subtitle-compact muted-text hero-subtitle">Strat Vintage · Alder · Nitro 3T Sunburst</p>
