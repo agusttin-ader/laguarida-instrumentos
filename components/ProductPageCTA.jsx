@@ -15,7 +15,7 @@ export default function ProductPageCTA({ price, consultHref, productName, childr
   return (
     <div className="product-cta-entrance">
       {price != null && (
-        <p className="text-2xl sm:text-[28px] md:text-[30px] font-bold text-[#161c2c] dark:text-[#f7f9ff] mb-4 sm:mb-6">{price}</p>
+        <p className="text-2xl sm:text-[28px] md:text-[30px] font-bold text-[var(--dark-text-primary)] mb-4 sm:mb-6">{price}</p>
       )}
       <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
         <a
@@ -24,7 +24,7 @@ export default function ProductPageCTA({ price, consultHref, productName, childr
           rel="noopener noreferrer"
           aria-label={`Consultar por WhatsApp sobre ${productName || 'este producto'}`}
           onClick={handleWhatsAppClick}
-          className="no-custom-btn inline-flex items-center justify-center gap-2 min-h-[40px] sm:min-h-[44px] py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg bg-[#0f1628] text-white dark:bg-[#e9eefc] dark:text-[#111728] font-semibold text-[13px] sm:text-sm hover:bg-[#1a2239] dark:hover:bg-[#dbe5ff] transition-colors"
+          className="no-custom-btn inline-flex items-center justify-center gap-2 min-h-[40px] sm:min-h-[44px] py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg btn-cta-dark font-semibold text-[13px] sm:text-sm transition-colors"
         >
           <span>Consultar por WhatsApp</span>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>

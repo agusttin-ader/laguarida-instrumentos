@@ -43,7 +43,7 @@ export default function ProductGrid({ filters = {}, items: itemsProp }) {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-5 md:gap-6 lg:gap-8">
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <div key={i} className="reveal reveal--visible" style={{ '--reveal-delay': `${(i - 1) * 60}ms` }}>
             <SkeletonProductCard />
@@ -54,22 +54,22 @@ export default function ProductGrid({ filters = {}, items: itemsProp }) {
   }
   if (!isLoading && items.length === 0 && !hasError) {
     return (
-      <div className="py-6 p-6 bg-white dark:bg-[#262626] rounded shadow">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">No hay productos</h3>
-        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Aún no hay productos disponibles. Añade algunos desde el panel de administración.</p>
+      <div className="py-6 p-6 bg-[var(--dark-bg-card)] rounded-xl border border-[var(--dark-border)] shadow">
+        <h3 className="text-lg font-semibold text-[var(--dark-text-primary)]">No hay productos</h3>
+        <p className="mt-2 text-sm text-[var(--dark-muted)]">Aún no hay productos disponibles. Añade algunos desde el panel de administración.</p>
       </div>
     )
   }
 
   return (
-    <div>
+    <div className="w-full min-w-0">
       {hasError ? (
         <div className="mb-6 p-4 rounded bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200">Error al cargar productos: {hasError}</div>
       ) : null}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-5 md:gap-6 lg:gap-8 w-full min-w-0">
         {filteredItems.map((item, idx) => (
-          <ScrollReveal key={item.id ?? item.slug ?? idx} delay={Math.min(idx * 80, 400)}>
+          <ScrollReveal key={item.id ?? item.slug ?? idx} delay={Math.min(idx * 80, 400)} className="min-w-0 w-full">
             <ProductCard item={item} priority={idx < 3} />
           </ScrollReveal>
         ))}

@@ -30,15 +30,15 @@ export default function About(){
   }
 
   return (
-    <section id="about-section" className="mt-10 sm:mt-14 md:mt-20 rounded-2xl border border-white/10 bg-gradient-to-b from-white/95 to-white/90 dark:from-[#0b0c10] dark:to-[#08090d] shadow-[0_18px_48px_rgba(0,0,0,0.16)]">
+    <section id="about-section" className="mt-10 sm:mt-14 md:mt-20 rounded-2xl border border-[var(--dark-border)] bg-gradient-to-b from-[var(--dark-bg-card)] to-[var(--dark-bg-page)] shadow-[0_18px_48px_rgba(0,0,0,0.25)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 py-7 sm:py-10 md:py-12 lg:py-14">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-7 md:gap-10 items-start">
           <div className="md:col-span-2">
             <p className="section-kicker-minimal section-underline-ocre text-gray-700 dark:text-white/70 mb-3">Sobre La Guarida</p>
-            <h2 className="section-title-minimal text-gray-900 dark:text-white sm:text-3xl md:text-[3.2rem] mb-4 md:mb-5">Una tienda, una historia</h2>
+            <h2 className="section-title-minimal text-[var(--dark-text-primary)] sm:text-3xl md:text-[3.2rem] mb-4 md:mb-5">Una tienda, una historia</h2>
             <p className="text-[15px] sm:text-base text-gray-700 dark:text-gray-200 mb-5 md:mb-7 max-w-3xl">Una tienda, una historia dedicada a las guitarras, a las busquedas sonoras y a quienes las tocan.</p>
 
-            <h3 className="text-[1.05rem] sm:text-xl font-semibold tracking-[0.01em] text-gray-900 dark:text-white mb-3 md:mb-4">Hecho por un músico, para músicos</h3>
+            <h3 className="text-[1.05rem] sm:text-xl font-semibold tracking-[0.01em] text-[var(--dark-text-primary)] mb-3 md:mb-4">Hecho por un músico, para músicos</h3>
 
             <div className="prose prose-sm max-w-none text-gray-700 dark:text-gray-200 text-[15px] sm:text-base lg:prose-base [&>p]:leading-[1.78] [&>p]:mb-3 md:[&>p]:mb-4">
               <p>La Guarida nació en el corazón de una ciudad que parecía detenerse durante la pandemia. Lo que comenzó como un pequeño proyecto de compra y venta —mi proyecto personal— se convirtió, paso a paso, en un lugar donde las guitarras encuentran dueño y las voces encuentran su refugio.</p>
@@ -57,8 +57,8 @@ export default function About(){
             </div>
           </div>
 
-          <aside className="md:col-span-1 bg-white/85 dark:bg-[#17181d] p-4 sm:p-5 md:p-6 rounded-2xl border border-gray-200/80 dark:border-white/10 shadow-[0_10px_26px_rgba(0,0,0,0.1)]">
-            <h4 className="section-title-minimal text-gray-900 dark:text-white text-[1.05rem] sm:text-[1.2rem] mb-3 md:mb-4">Contacto rápido</h4>
+          <aside className="md:col-span-1 bg-[var(--dark-bg-elevated)] p-4 sm:p-5 md:p-6 rounded-2xl border border-[var(--dark-border)] shadow-[0_10px_26px_rgba(0,0,0,0.2)]">
+            <h4 className="section-title-minimal text-[var(--dark-text-primary)] text-[1.05rem] sm:text-[1.2rem] mb-3 md:mb-4">Contacto rápido</h4>
 
             <ul className="space-y-2.5 sm:space-y-3 text-[13px] sm:text-sm text-gray-700 dark:text-gray-200 mb-4 md:mb-5">
               <li><strong>Teléfono:</strong> <a href={waLink} target="_blank" rel="noopener noreferrer" className="contact-orange hover:underline">{phone}</a></li>
@@ -92,7 +92,7 @@ export default function About(){
           <Link
             href="/"
             onClick={handleVolverAlHome}
-            className="inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] py-2.5 sm:py-3 px-5 sm:px-7 rounded-xl border border-black/10 dark:border-white/20 bg-[#f5f1e6] text-[#111319] text-[13px] sm:text-sm font-semibold hover:bg-[#efe7d6] transition-colors no-custom-btn"
+            className="inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] py-2.5 sm:py-3 px-5 sm:px-7 rounded-xl border border-white/15 bg-[var(--dark-cta-bg)] text-[var(--dark-cta-text)] text-[13px] sm:text-sm font-semibold hover:bg-[var(--dark-cta-hover)] transition-colors no-custom-btn"
           >
             Volver al home
           </Link>

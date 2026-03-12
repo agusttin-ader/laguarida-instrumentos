@@ -23,7 +23,7 @@ export default function ProductStickyCTA({
           rel="noopener noreferrer"
           aria-label={ariaLabel}
           onClick={handleClick}
-          className="flex items-center justify-center gap-2 w-full min-h-[3rem] rounded-xl bg-white text-[#141416] font-semibold text-base shadow-lg border border-white/10 btn-focus"
+          className="flex items-center justify-center gap-2 w-full min-h-[3rem] rounded-xl btn-cta-dark font-semibold text-base shadow-lg border border-white/10 btn-focus"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
             <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />

@@ -78,9 +78,9 @@ export default function HeroMonolith() {
 
   return (
     <section aria-labelledby="home-hero" className="w-full overflow-hidden">
-      {/* ——— Mobile: full-width strip, image + overlay ——— */}
-      <article className="md:hidden relative w-full">
-        <div className="relative w-full max-h-[50vh] min-h-[240px]" style={{ aspectRatio: '16/10' }}>
+      {/* ——— Mobile v6: imagen full bleed + tipo grande debajo ——— */}
+      <article className="md:hidden w-full bg-[#0a0b0e]">
+        <div className="relative w-full" style={{ height: '48vh', minHeight: '260px' }}>
           <ImageWithSkeleton
             src={imageSrc}
             alt={item.name || 'Producto destacado'}
@@ -90,30 +90,27 @@ export default function HeroMonolith() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 from-25% via-black/50 to-transparent pointer-events-none" />
-          <div className="absolute bottom-0 left-0 right-0 px-4 pb-4 pt-10 sm:pb-5 sm:pt-12">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--vintage-gold)] font-semibold">Destacado</p>
-            <h1 id="home-hero" className="mt-0.5 text-[1.25rem] sm:text-[1.35rem] font-bold leading-tight text-white line-clamp-2">
-              {item.name}
-            </h1>
-            {item.price && (
-              <p className="mt-1 sm:mt-1.5 text-[15px] sm:text-base font-bold text-white">{item.price}</p>
-            )}
-            <div className="mt-2.5 sm:mt-3 flex gap-2 sm:gap-3">
-              <Link
-                href={`/guitars/${item.slug || item.id || ''}`}
-                className="no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] flex-1 min-w-0 rounded-xl !bg-[#ffffff] text-[#0f172a] font-semibold text-[12px] sm:text-[13px] py-2.5 sm:py-3 px-3 sm:px-4 border-2 border-white shadow-[0_4px_14px_rgba(0,0,0,0.35)] transition-transform active:scale-[0.98]"
-              >
-                Ver producto
-              </Link>
-              <Link
-                href="/#seleccion-destacada"
-                className="no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] shrink-0 rounded-xl border border-white/50 text-white text-[12px] sm:text-[13px] font-medium py-2.5 sm:py-3 px-3 sm:px-5"
-              >
-                Catálogo
-              </Link>
-            </div>
-          </div>
+        </div>
+        <div className="px-5 pt-6 pb-8">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--vintage-gold)] font-semibold mb-2">Destacado</p>
+          <h1 id="home-hero" className="text-[1.75rem] font-bold leading-tight text-white tracking-tight">
+            {item.name}
+          </h1>
+          {item.price && (
+            <p className="mt-2 text-[1.125rem] font-semibold text-white/80">{item.price}</p>
+          )}
+          <Link
+            href={`/guitars/${item.slug || item.id || ''}`}
+            className="no-custom-btn mt-6 flex items-center justify-center min-h-[50px] w-full rounded-xl bg-[var(--vintage-gold-soft)] text-[#1a1b20] font-bold text-[15px] border border-[var(--vintage-gold)]/50"
+          >
+            Ver producto
+          </Link>
+          <Link
+            href="/#seleccion-destacada"
+            className="no-custom-btn mt-4 block text-center text-[13px] text-white/60 font-medium"
+          >
+            Ver catálogo
+          </Link>
         </div>
       </article>
 

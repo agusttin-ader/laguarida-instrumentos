@@ -92,7 +92,7 @@ export default function BottomNav() {
   }, []);
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-white/20 bg-[#222222]/96 backdrop-blur-xl h-[68px] flex items-stretch px-1 pb-[env(safe-area-inset-bottom)]" aria-label="Navegación principal">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-white/20 bg-[var(--dark-bg-surface)]/95 backdrop-blur-xl h-[68px] flex items-stretch px-1 pb-[env(safe-area-inset-bottom)]" aria-label="Navegación principal">
       <Link href="/" onClick={handleHomeNav} aria-label="Inicio" className={`${itemClass} ${isHome ? activeClass : mutedClass}`}>
         <IconHome className="flex-shrink-0" />
         <span className="text-[11px] mt-1 font-medium">Inicio</span>

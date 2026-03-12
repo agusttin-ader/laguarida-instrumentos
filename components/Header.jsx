@@ -36,7 +36,7 @@ export default function Header() {
   const compactBottom = isProductPage ? 'pb-1 sm:pb-2 md:pb-1' : ''
   const homeCompact = isHome ? 'pt-1 pb-2 sm:pt-3 sm:pb-4 md:pt-2 md:pb-3' : ''
   return (
-    <header className={`${scrolled ? 'header-scrolled ' : ''}${isHome ? homeCompact : `pt-2 pb-4 sm:pt-4 sm:pb-8 md:pt-2 md:pb-4 ${compactBottom}`} sticky top-0 z-40 md:static md:z-auto bg-[#323232]/88 backdrop-blur-md border-b border-white/5 md:bg-transparent md:backdrop-blur-0 md:border-0`}>
+    <header className={`${scrolled ? 'header-scrolled ' : ''}${isHome ? homeCompact : `pt-2 pb-4 sm:pt-4 sm:pb-8 md:pt-2 md:pb-4 ${compactBottom}`} sticky top-0 z-40 md:static md:z-auto bg-[var(--dark-bg-page)]/92 backdrop-blur-md border-b border-white/5 md:bg-transparent md:backdrop-blur-0 md:border-0`}>
       <div className="flex items-center justify-between container-tight max-w-4xl relative min-h-[58px] md:min-h-[56px]">
         <div className="flex items-center min-w-0 md:justify-start" />
 

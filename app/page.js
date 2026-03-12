@@ -26,7 +26,7 @@ export default function Page() {
           <p className="sr-only">La Guarida es una tienda especializada en guitarras, bajos y accesorios. Ofrecemos instrumentos seleccionados, asesoramiento profesional y envíos dentro de Argentina.</p>
         </header>
 
-        <section id="seleccion-destacada" className="mt-0 pt-0 sm:mt-6 sm:pt-4 md:mt-10 md:pt-6" aria-labelledby="seleccion-heading">
+        <section id="seleccion-destacada" className="mt-0 pt-0 sm:mt-6 sm:pt-4 md:mt-10 md:pt-6 -mx-4 md:mx-0 w-[calc(100%+2rem)] md:w-auto max-w-[100vw] md:max-w-none" aria-labelledby="seleccion-heading">
           <FeaturedSelection />
         </section>
 

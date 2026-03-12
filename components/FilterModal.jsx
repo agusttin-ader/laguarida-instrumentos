@@ -69,7 +69,7 @@ export default function FilterModal({ open, setOpen, categories = [], filters = 
                   onClick={() => toggleCategory(cat)}
                   className={`px-3 py-1 rounded-full border ${
                     local.categories.includes(cat)
-                      ? "bg-[#C8102E] text-white border-transparent"
+                      ? "bg-[var(--vintage-gold)] text-[var(--dark-cta-text)] border-transparent"
                       : "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
                   }`}
                 >
@@ -112,7 +112,7 @@ export default function FilterModal({ open, setOpen, categories = [], filters = 
               apply();
               setOpen(false);
             }}
-            className="flex-1 min-h-[44px] py-3 rounded-md bg-[#C8102E] text-white active:scale-[0.98] transition-transform"
+            className="flex-1 min-h-[44px] py-3 rounded-md bg-[var(--vintage-gold)] text-[var(--dark-cta-text)] font-semibold active:scale-[0.98] transition-transform"
           >
             Aplicar
           </button>

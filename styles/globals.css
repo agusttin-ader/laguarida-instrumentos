@@ -42,16 +42,21 @@
   --content-gap-mobile: 0.75rem;
   --content-gap-desktop: 1rem;
 
-  /* Fallbacks para tema oscuro (si .dark no está aplicado aún o se usa var() fuera de .dark) */
-  --dark-bg-page: #323232;
-  --dark-bg-surface: #3d3d3d;
-  --dark-bg-card: #393939;
-  --dark-surface-2: #2e2e2e;
-  --dark-text-primary: #ffffff;
-  --dark-text-secondary: #e8e8e8;
-  --dark-muted: #a0a0a0;
-  --dark-border: rgba(255,255,255,0.08);
-  --dark-ring: rgba(79,70,229,0.10);
+  /* Paleta oscura suave (toda la web) */
+  --dark-bg-page: #2a2b2e;
+  --dark-bg-surface: #333438;
+  --dark-bg-card: #36373b;
+  --dark-bg-elevated: #3c3d41;
+  --dark-surface-2: #2e2f32;
+  --dark-text-primary: #f4f4f8;
+  --dark-text-secondary: #d8d8e0;
+  --dark-muted: #a4a6b0;
+  --dark-border: rgba(255,255,255,0.09);
+  --dark-ring: rgba(201,162,39,0.25);
+  /* CTAs: fondo claro para contraste sobre oscuro */
+  --dark-cta-bg: #f2efe6;
+  --dark-cta-text: #1c1d22;
+  --dark-cta-hover: #e8e4d9;
 }
 
 /* Botones CTA: altura proporcional (mobile más compacto, desktop estándar) */
@@ -82,7 +87,8 @@ html {
 body{
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
-  background-color: #323232;
+  background-color: var(--dark-bg-page);
+  color: var(--dark-text-primary);
   overflow-y: visible;
 }
 
@@ -444,22 +450,26 @@ html, body, #__next, #root, main {
   color: #ffffff;
 }
 
-/* Dark theme: fondo más clarito, gris neutro + acentos vintage */
+/* Dark theme: misma paleta oscura suave */
 :root.dark,
 .dark {
-  --dark-bg-page: #323232;
-  --dark-bg-surface: #3d3d3d;
-  --dark-bg-card: #393939;
-  --dark-surface-2: #2e2e2e;
-  --dark-text-primary: #ffffff;
-  --dark-text-secondary: #e8e8e8;
-  --dark-muted: #a0a0a0;
-  --dark-border: rgba(255,255,255,0.08);
-  --dark-ring: rgba(79,70,229,0.10);
+  --dark-bg-page: #2a2b2e;
+  --dark-bg-surface: #333438;
+  --dark-bg-card: #36373b;
+  --dark-bg-elevated: #3c3d41;
+  --dark-surface-2: #2e2f32;
+  --dark-text-primary: #f4f4f8;
+  --dark-text-secondary: #d8d8e0;
+  --dark-muted: #a4a6b0;
+  --dark-border: rgba(255,255,255,0.09);
+  --dark-ring: rgba(201,162,39,0.25);
+  --dark-cta-bg: #f2efe6;
+  --dark-cta-text: #1c1d22;
+  --dark-cta-hover: #e8e4d9;
   --auth-bg: var(--dark-bg-page);
   --vintage-gold: #C9A227;
-  --vintage-gold-soft: rgba(201, 162, 39, 0.15);
-  --vintage-gold-soft-hover: rgba(201, 162, 39, 0.24);
+  --vintage-gold-soft: rgba(201, 162, 39, 0.18);
+  --vintage-gold-soft-hover: rgba(201, 162, 39, 0.28);
 }
 
 /* Inputs, selects, textareas: ensure readable colors in dark mode */
@@ -731,13 +741,13 @@ html, body, #__next, #root, main {
 .dark .btn-ghost-dark { border-color: rgba(255,255,255,0.08) }
 
 /* Convert common Tailwind background/text utility classes to dark variants when needed */
-.dark .bg-white { background-color: #262626 !important }
-.dark .bg-gray-50 { background-color: #2a2a2a !important }
-.dark .bg-gray-100 { background-color: #2a2a2a !important }
+.dark .bg-white { background-color: var(--dark-bg-card) !important }
+.dark .bg-gray-50 { background-color: var(--dark-bg-surface) !important }
+.dark .bg-gray-100 { background-color: var(--dark-bg-surface) !important }
 
-/* Ensure text utilities that target dark text flip to light */
-.dark .text-gray-900 { color: #ffffff !important }
-.dark .text-gray-800 { color: #f3f4f6 !important }
+/* Ensure text utilities that target dark text flip to light (paleta oscura suave) */
+.dark .text-gray-900 { color: var(--dark-text-primary) !important }
+.dark .text-gray-800 { color: var(--dark-text-secondary) !important }
 .dark .border-gray-100 { border-color: rgba(255,255,255,0.04) !important }
 
 /* Footer specific: slightly lighter than page background */
@@ -752,12 +762,22 @@ html, body, header, main, footer, .container-tight, .card-compact, .image-placeh
   transition: background-color 320ms ease, color 320ms ease;
 }
 
-/* Ensure header background matches page background (avoid bluish band) */
+/* Ensure header background matches page background */
 header {
   background-color: var(--dark-bg-page);
 }
 .dark header {
   background-color: var(--dark-bg-page) !important;
+}
+
+/* Botón CTA principal: fondo claro sobre oscuro para contraste */
+.btn-cta-dark {
+  background-color: var(--dark-cta-bg) !important;
+  color: var(--dark-cta-text) !important;
+  border-color: rgba(0,0,0,0.08);
+}
+.btn-cta-dark:hover {
+  background-color: var(--dark-cta-hover) !important;
 }
 
 /* Modal animations: subtle fade + scale + translateY */

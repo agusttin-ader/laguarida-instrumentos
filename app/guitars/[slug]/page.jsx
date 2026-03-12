@@ -214,35 +214,35 @@ export default async function GuitarPage({ params }) {
           </ol>
         </nav>
       </header>
-      <div className="max-w-6xl mx-auto rounded-[28px] overflow-hidden border border-[#dfe3ea] bg-[#f3f5f9] dark:bg-[#10131b] dark:border-[#2a3142] shadow-[0_22px_55px_rgba(12,20,39,0.16)] dark:shadow-[0_22px_55px_rgba(0,0,0,0.45)]">
+      <div className="max-w-6xl mx-auto rounded-[28px] overflow-hidden border border-[var(--dark-border)] bg-[var(--dark-bg-card)] shadow-[0_22px_55px_rgba(0,0,0,0.3)]">
         <main className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] items-stretch">
-          <section className="bg-[#fbfbfc] dark:bg-[#0d1118] px-4 sm:px-6 py-6 sm:py-8 md:px-10 md:py-10 border-r border-[#e6e8ef] dark:border-[#232a3a]">
+          <section className="bg-[var(--dark-bg-surface)] px-4 sm:px-6 py-6 sm:py-8 md:px-10 md:py-10 border-r border-[var(--dark-border)]">
             <GuitarGallery image_url={product.image_url} images={product.images} altBase={`${product.name}${product.brand ? ' — ' + product.brand : ''}`} />
           </section>
 
           <aside className="px-4 sm:px-6 py-5 sm:py-7 md:px-10 md:py-10">
-            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-gray-400 dark:text-gray-500 mb-2">{categoryLabel}</p>
-            <h1 className="text-[1.95rem] leading-[1.15] font-bold text-[#131722] dark:text-[#f5f7ff] mb-2">{product.name}</h1>
+            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--dark-muted)] mb-2">{categoryLabel}</p>
+            <h1 className="text-[1.95rem] leading-[1.15] font-bold text-[var(--dark-text-primary)] mb-2">{product.name}</h1>
 
             <p className="text-[14px] leading-7 text-gray-600 dark:text-gray-300 max-w-md mb-6">
               {descriptionText || 'Instrumento seleccionado y revisado profesionalmente, ideal para estudio y escenario.'}
             </p>
 
             {hasFicha && (
-              <div className="mb-6 rounded-xl border border-[#d6dbe6] dark:border-white/10 bg-[#f8f9fc] dark:bg-[#0c0c0c] overflow-hidden">
-                <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500 px-4 py-2.5 border-b border-[#e6e8ef] dark:border-white/10">Ficha técnica</p>
-                <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#e6e8ef] dark:divide-white/10">
+              <div className="mb-6 rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] overflow-hidden">
+                <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--dark-muted)] px-4 py-2.5 border-b border-[var(--dark-border)]">Ficha técnica</p>
+                <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[var(--dark-border)]">
                   <div className="px-4 py-3">
-                    <dt className="text-[9px] uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500 mb-0.5">Modelo</dt>
-                    <dd className="text-sm font-semibold text-[#1a2030] dark:text-[#eef2ff]">{modelValue}</dd>
+                    <dt className="text-[9px] uppercase tracking-[0.16em] text-[var(--dark-muted)] mb-0.5">Modelo</dt>
+                    <dd className="text-sm font-semibold text-[var(--dark-text-secondary)]">{modelValue}</dd>
                   </div>
                   <div className="px-4 py-3">
-                    <dt className="text-[9px] uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500 mb-0.5">Madera</dt>
-                    <dd className="text-sm font-semibold text-[#1a2030] dark:text-[#eef2ff]">{woodValue}</dd>
+                    <dt className="text-[9px] uppercase tracking-[0.16em] text-[var(--dark-muted)] mb-0.5">Madera</dt>
+                    <dd className="text-sm font-semibold text-[var(--dark-text-secondary)]">{woodValue}</dd>
                   </div>
                   <div className="px-4 py-3">
-                    <dt className="text-[9px] uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500 mb-0.5">Micrófonos</dt>
-                    <dd className="text-sm font-semibold text-[#1a2030] dark:text-[#eef2ff]">{micsValue}</dd>
+                    <dt className="text-[9px] uppercase tracking-[0.16em] text-[var(--dark-muted)] mb-0.5">Micrófonos</dt>
+                    <dd className="text-sm font-semibold text-[var(--dark-text-secondary)]">{micsValue}</dd>
                   </div>
                 </dl>
               </div>
@@ -261,7 +261,7 @@ export default async function GuitarPage({ params }) {
 
       {relatedProducts && relatedProducts.length > 0 && (
         <section className="mt-8 sm:mt-10 md:mt-12">
-          <h2 className="section-title-premium section-underline-ocre text-gray-900 dark:text-white mb-3 sm:mb-4">También te recomendamos</h2>
+          <h2 className="section-title-premium section-underline-ocre text-[var(--dark-text-primary)] mb-3 sm:mb-4">También te recomendamos</h2>
           <div className="flex overflow-x-auto gap-3 sm:gap-4 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-5 md:gap-6 lg:gap-8 snap-x snap-mandatory scroll-smooth">
             {relatedProducts.map(r => (
               <div key={r.id || r.slug} className="flex-shrink-0 w-[min(280px,82vw)] sm:w-auto sm:flex-shrink snap-center">
