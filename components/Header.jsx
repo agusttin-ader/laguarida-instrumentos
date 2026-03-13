@@ -23,7 +23,7 @@ export default function Header() {
   }, [])
 
   const navLinkClass =
-    "relative inline-flex items-center py-1.5 px-0.5 text-[11px] font-medium uppercase tracking-[0.18em] text-[#e4e7f0]/85 hover:text-[#fffaf0] transition-colors duration-300 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent after:content-[''] after:absolute after:left-0 after:-bottom-1.5 after:h-[1px] after:w-0 after:bg-[var(--vintage-gold)] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
+    "relative inline-flex items-center py-1.5 px-0.5 text-[12px] font-semibold uppercase tracking-[0.18em] text-[#e4e7f0]/85 hover:text-[#fffaf0] transition-colors duration-300 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent after:content-[''] after:absolute after:left-0 after:-bottom-1.5 after:h-[2px] after:w-0 after:bg-[var(--vintage-gold)] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
 
   function handleSectionNav(e, sectionId) {
     if (!isHome) return
@@ -33,11 +33,12 @@ export default function Header() {
   }
 
   const isProductPage = pathname?.startsWith('/guitars/')
-  const compactBottom = isProductPage ? 'pb-1 sm:pb-2 md:pb-1' : ''
-  const homeCompact = isHome ? 'pt-1 pb-2 sm:pt-3 sm:pb-4 md:pt-2 md:pb-3' : ''
+  const compactBottom = isProductPage ? 'pb-1 sm:pb-2 md:pb-0' : ''
+  // Desktop (md+): header al mínimo cómodo; mobile/sm se mantiene igual
+  const homeCompact = isHome ? 'pt-1 pb-2 sm:pt-3 sm:pb-4 md:pt-0 md:pb-0.5' : ''
   return (
-    <header className={`${scrolled ? 'header-scrolled ' : ''}${isHome ? homeCompact : `pt-2 pb-4 sm:pt-4 sm:pb-8 md:pt-2 md:pb-4 ${compactBottom}`} sticky top-0 z-40 md:static md:z-auto bg-[var(--dark-bg-page)]/92 backdrop-blur-md border-b border-white/5 md:bg-transparent md:backdrop-blur-0 md:border-0`}>
-      <div className="flex items-center justify-between container-tight max-w-4xl relative min-h-[58px] md:min-h-[56px]">
+    <header className={`${scrolled ? 'header-scrolled ' : ''}${isHome ? homeCompact : `pt-2 pb-4 sm:pt-4 sm:pb-8 md:pt-0 md:pb-1.5 ${compactBottom}`} sticky top-0 z-40 md:static md:z-auto bg-[var(--dark-bg-page)]/92 backdrop-blur-md border-b border-white/5 md:bg-transparent md:backdrop-blur-0 md:border-0`}>
+      <div className="flex items-center justify-between container-tight max-w-4xl relative min-h-[58px] md:min-h-[38px]">
         <div className="flex items-center min-w-0 md:justify-start" />
 
         <a href="/" aria-label="Ir al inicio" className={`logo-link block absolute left-1/2 -translate-x-1/2 z-10 top-1/2 -translate-y-1/2 pointer-events-none md:pointer-events-auto md:static md:translate-x-0 md:translate-y-0 md:ml-10 ${isHome ? 'sm:translate-y-0 md:translate-y-0' : ''}`}>

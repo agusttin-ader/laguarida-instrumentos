@@ -1266,6 +1266,8 @@ input.btn-light {
 
 /* Allow designers to opt-out for tiny icon buttons where pill would look odd */
 .no-custom-btn { border-radius: 6px !important; box-shadow: none !important }
+/* Permite círculos perfectos para icon buttons específicos (como el corazón de favoritos) */
+.favorite-heart-btn { border-radius: 999px !important; }
 
 /* Invert buttons inside dark contexts (sections, cards, or when `.dark` is present) */
 /* Applies when an ancestor has .dark or element has a dark-specific class like .dark-section or .dark-card */
@@ -1510,19 +1512,6 @@ main > section:nth-of-type(4) { animation-delay: 180ms; }
 }
 .card-interactive:active {
   transform: scale(0.98);
-}
-/* Sin expansión cuando el hover está sobre la imagen (cambiar fotos con flechas) */
-.card-interactive.card-hovering-image:hover {
-  transform: none;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
-}
-@media (min-width: 768px) {
-  .card-interactive.card-hovering-image:hover {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  }
-}
-.card-interactive.card-hovering-image:hover img {
-  transform: none;
 }
 .admin-card:hover,
 .list-panel:hover {

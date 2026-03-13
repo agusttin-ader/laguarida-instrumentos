@@ -5,6 +5,8 @@ import Image from 'next/image'
 import normalizeProduct from '../lib/utils/normalizeProduct'
 import imageService from '../lib/utils/imageService'
 import Link from 'next/link'
+import { useFavorites } from './ProductShareAndFavorite'
+import { useToast } from './ToastContext'
 
 const CARD_IMAGE_SIZES = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
 const MAX_CARD_IMAGES = 3
@@ -37,6 +39,9 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
   const hiddenSpecsCount = Math.max(0, specs.length - visibleSpecs.length)
   const objectFit = imageFit === 'contain' ? 'contain' : 'cover'
   const hasGallery = imageList.length > 1
+  const { toast } = useToast()
+  const { isFavorite, toggle } = useFavorites()
+  const fav = isFavorite(p.slug)
 
   function handleTouchStart(e) {
     touchStartX.current = e.touches[0].clientX
@@ -68,6 +73,13 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
       e.preventDefault()
       didSwipe.current = false
     }
+  }
+
+  function handleFavoriteClick(e) {
+    e.preventDefault()
+    e.stopPropagation()
+    toggle(p.slug)
+    toast(fav ? 'Quitar de tu selección' : 'Agregado a tu selección', 'default')
   }
 
   const imageBlock = (
@@ -150,6 +162,28 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
           </div>
         </>
       )}
+      {/* Favorito: corazón arriba a la derecha */}
+      <button
+        type="button"
+        onClick={handleFavoriteClick}
+        aria-label={fav ? 'Quitar de tu selección' : 'Agregar a tu selección'}
+        className="no-custom-btn favorite-heart-btn absolute top-2 right-2 z-20 w-9 h-9 md:w-10 md:h-10 flex items-center justify-center border bg-black/55 border-white/25 text-white/90 hover:bg-black/70 hover:border-white/40 backdrop-blur-sm transition-all duration-200"
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill={fav ? 'currentColor' : 'none'}
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={fav ? 'text-red-500' : 'text-white'}
+          aria-hidden
+        >
+          <path d="M20.8 7.6c0 5.8-8.8 11.4-8.8 11.4S3.2 13.4 3.2 7.6C3.2 5 5 3.2 7.6 3.2c1.7 0 3.3.9 4.4 2.3 1.1-1.4 2.7-2.3 4.4-2.3 2.6 0 4.4 1.8 4.4 4.4z" />
+        </svg>
+      </button>
       <div className="absolute inset-0 border border-white/[0.06] rounded-[inherit] pointer-events-none" aria-hidden />
     </div>
   )
