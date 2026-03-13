@@ -35,7 +35,33 @@ export default function AdminProducts(){
   const [deletingId, setDeletingId] = useState(null)
   const [editingId, setEditingId] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
-  const [modalForm, setModalForm] = useState({ name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '', images: [], low_cost: false })
+  const [modalForm, setModalForm] = useState({
+    name: '',
+    slug: '',
+    price: '',
+    image_url: '',
+    description: '',
+    mics: '',
+    wood: '',
+    model: '',
+    images: [],
+    low_cost: false,
+    scale_length: '',
+    neck_profile: '',
+    fingerboard_radius: '',
+    fingerboard_material: '',
+    neck_construction: '',
+    nut_width: '',
+    frets: '',
+    bridge: '',
+    tuners: '',
+    hardware_finish: '',
+    controls: '',
+    switching: '',
+    origin: '',
+    year: '',
+    weight: ''
+  })
   const [modalMode, setModalMode] = useState('edit') // 'edit' | 'create'
   const [modalGalleryPreviews, setModalGalleryPreviews] = useState([]) // {id,url,name}
   const [modalUploadingMain, setModalUploadingMain] = useState(false)
@@ -160,7 +186,22 @@ export default function AdminProducts(){
       wood: p.wood || '',
       model: p.model || '',
       images: Array.isArray(p.images) ? p.images.slice() : [],
-      low_cost: p.low_cost === true
+      low_cost: p.low_cost === true,
+      scale_length: p.scale_length || '',
+      neck_profile: p.neck_profile || '',
+      fingerboard_radius: p.fingerboard_radius || '',
+      fingerboard_material: p.fingerboard_material || '',
+      neck_construction: p.neck_construction || '',
+      nut_width: p.nut_width || '',
+      frets: p.frets || '',
+      bridge: p.bridge || '',
+      tuners: p.tuners || '',
+      hardware_finish: p.hardware_finish || '',
+      controls: p.controls || '',
+      switching: p.switching || '',
+      origin: p.origin || '',
+      year: p.year != null ? String(p.year) : '',
+      weight: p.weight != null ? String(p.weight) : ''
     })
     // do not populate or show gallery in edit mode (gallery only available when creating)
     setModalOpen(true)
@@ -204,6 +245,21 @@ export default function AdminProducts(){
         wood: modalForm.wood || undefined,
         model: modalForm.model || undefined,
         low_cost: Boolean(modalForm.low_cost),
+        scale_length: modalForm.scale_length || undefined,
+        neck_profile: modalForm.neck_profile || undefined,
+        fingerboard_radius: modalForm.fingerboard_radius || undefined,
+        fingerboard_material: modalForm.fingerboard_material || undefined,
+        neck_construction: modalForm.neck_construction || undefined,
+        nut_width: modalForm.nut_width || undefined,
+        frets: modalForm.frets || undefined,
+        bridge: modalForm.bridge || undefined,
+        tuners: modalForm.tuners || undefined,
+        hardware_finish: modalForm.hardware_finish || undefined,
+        controls: modalForm.controls || undefined,
+        switching: modalForm.switching || undefined,
+        origin: modalForm.origin || undefined,
+        year: modalForm.year && !Number.isNaN(Number(modalForm.year)) ? Number(modalForm.year) : undefined,
+        weight: modalForm.weight && !Number.isNaN(Number(String(modalForm.weight).replace(',', '.'))) ? Number(String(modalForm.weight).replace(',', '.')) : undefined,
       }
 
       let res
@@ -961,9 +1017,9 @@ export default function AdminProducts(){
         </div>
       ) : null}
       {modalOpen ? (
-        <div className="fixed inset-0 z-40 flex items-start justify-center px-4 py-8">
+        <div className="fixed inset-0 z-40 flex items-start justify-center px-2 sm:px-4 md:px-6 py-8">
           <div className={`fixed inset-0 bg-black/60 backdrop-blur-md ${modalClosing ? 'modal-backdrop-exit' : 'modal-backdrop-enter'}`} onClick={closeModal} />
-          <div className={`relative admin-premium-card w-full max-w-3xl z-50 p-6 max-h-[85vh] overflow-y-auto ${modalClosing ? 'modal-panel-exit' : 'modal-panel-enter'}`}>
+          <div className={`relative admin-premium-card w-full max-w-[720px] sm:max-w-[780px] z-50 p-6 max-h-[85vh] overflow-y-auto ${modalClosing ? 'modal-panel-exit' : 'modal-panel-enter'}`}>
             <h3 className="section-title-minimal text-[1.08rem] mb-1 text-white">{modalMode === 'edit' ? 'Editar producto' : 'Crear producto'}</h3>
             {modalMode === 'create' ? (
               <div className="mb-3 text-xs text-white/60">
@@ -995,6 +1051,14 @@ export default function AdminProducts(){
                     <label className="text-sm block mb-1 text-white/75">Micrófonos (mics)</label>
                     <input name="mics" value={modalForm.mics} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: SSS" />
                   </div>
+                  <div>
+                    <label className="text-sm block mb-1 text-white/75">Escala</label>
+                    <input name="scale_length" value={modalForm.scale_length} onChange={handleModalChange} className="admin-premium-input" placeholder='Ej: 25.5"' />
+                  </div>
+                  <div>
+                    <label className="text-sm block mb-1 text-white/75">Perfil de mástil</label>
+                    <input name="neck_profile" value={modalForm.neck_profile} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: C slim, D moderno" />
+                  </div>
                   <div className="flex items-center gap-2 pt-1">
                     <input type="checkbox" id="modal-low-cost" name="low_cost" checked={Boolean(modalForm.low_cost)} onChange={handleModalChange} className="rounded border-white/30 bg-white/10 text-amber-500 focus:ring-amber-500" />
                     <label htmlFor="modal-low-cost" className="text-sm text-white/85">Incluir en sección Low cost</label>
@@ -1019,6 +1083,60 @@ export default function AdminProducts(){
                     <div className="flex flex-col sm:flex-row gap-2">
                       <button type="button" className="px-3 py-2 admin-premium-btn-primary no-custom-btn" onClick={() => modalFileInputRef.current && modalFileInputRef.current.click()}>Subir nueva imagen</button>
                       <button type="button" className="px-3 py-2 admin-premium-btn-ghost no-custom-btn" onClick={() => setModalForm(prev => ({ ...prev, image_url: '' }))}>Quitar imagen</button>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    <div>
+                      <label className="text-sm block mb-1 text-white/75">Radio del diapasón</label>
+                      <input name="fingerboard_radius" value={modalForm.fingerboard_radius} onChange={handleModalChange} className="admin-premium-input" placeholder='Ej: 9.5"' />
+                    </div>
+                    <div>
+                      <label className="text-sm block mb-1 text-white/75">Madera del diapasón</label>
+                      <input name="fingerboard_material" value={modalForm.fingerboard_material} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: Rosewood, Maple" />
+                    </div>
+                    <div>
+                      <label className="text-sm block mb-1 text-white/75">Construcción del mástil</label>
+                      <input name="neck_construction" value={modalForm.neck_construction} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: Bolt-on, Set-neck" />
+                    </div>
+                    <div>
+                      <label className="text-sm block mb-1 text-white/75">Ancho de cejuela</label>
+                      <input name="nut_width" value={modalForm.nut_width} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: 42 mm" />
+                    </div>
+                    <div>
+                      <label className="text-sm block mb-1 text-white/75">Trastes</label>
+                      <input name="frets" value={modalForm.frets} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: 22 medium jumbo" />
+                    </div>
+                    <div>
+                      <label className="text-sm block mb-1 text-white/75">Puente</label>
+                      <input name="bridge" value={modalForm.bridge} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: Floyd Rose, hardtail" />
+                    </div>
+                    <div>
+                      <label className="text-sm block mb-1 text-white/75">Clavijas</label>
+                      <input name="tuners" value={modalForm.tuners} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: Gotoh locking" />
+                    </div>
+                    <div>
+                      <label className="text-sm block mb-1 text-white/75">Terminación del hardware</label>
+                      <input name="hardware_finish" value={modalForm.hardware_finish} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: Chrome, Gold" />
+                    </div>
+                    <div>
+                      <label className="text-sm block mb-1 text-white/75">Controles</label>
+                      <input name="controls" value={modalForm.controls} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: 1 volumen, 1 tono, selector 5 posiciones" />
+                    </div>
+                    <div>
+                      <label className="text-sm block mb-1 text-white/75">Conmutación (switching)</label>
+                      <input name="switching" value={modalForm.switching} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: Push-pull para coil split" />
+                    </div>
+                    <div>
+                      <label className="text-sm block mb-1 text-white/75">Origen</label>
+                      <input name="origin" value={modalForm.origin} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: Japón, México" />
+                    </div>
+                    <div>
+                      <label className="text-sm block mb-1 text-white/75">Año</label>
+                      <input name="year" value={modalForm.year} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: 2014" />
+                    </div>
+                    <div>
+                      <label className="text-sm block mb-1 text-white/75">Peso (kg aprox.)</label>
+                      <input name="weight" value={modalForm.weight} onChange={handleModalChange} className="admin-premium-input" placeholder="Ej: 3.6" />
                     </div>
                   </div>
                 </div>

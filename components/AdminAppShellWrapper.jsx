@@ -22,7 +22,7 @@ export default function AdminAppShellWrapper({ children }) {
   if (!isStandalone) return <>{children}</>
 
   return (
-    <div className="admin-app-shell mx-auto w-full max-w-[480px] min-h-[100dvh] rounded-[18px] overflow-hidden shadow-[0_10px_30px_rgba(2,6,23,0.5)] bg-gradient-to-b from-white/[0.02] to-white/[0.01]">
+    <div className="admin-app-shell mx-auto w-full max-w-[640px] md:max-w-[720px] min-h-[100dvh] rounded-[18px] overflow-hidden shadow-[0_10px_30px_rgba(2,6,23,0.5)] bg-gradient-to-b from-white/[0.02] to-white/[0.01]">
       {children}
     </div>
   )

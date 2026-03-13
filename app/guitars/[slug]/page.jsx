@@ -182,7 +182,26 @@ export default async function GuitarPage({ params }) {
   const modelValue = product.model || 'N/A'
   const woodValue = Array.isArray(product.wood) ? product.wood.join(', ') : (product.wood || 'N/A')
   const micsValue = Array.isArray(product.mics) ? product.mics.join(', ') : (product.mics || 'N/A')
-  const hasFicha = product.model || product.wood || product.mics
+  const hasFicha = Boolean(
+    product.model ||
+    product.wood ||
+    product.mics ||
+    product.scale_length ||
+    product.neck_profile ||
+    product.fingerboard_radius ||
+    product.fingerboard_material ||
+    product.neck_construction ||
+    product.nut_width ||
+    product.frets ||
+    product.bridge ||
+    product.tuners ||
+    product.hardware_finish ||
+    product.controls ||
+    product.switching ||
+    product.origin ||
+    product.year ||
+    product.weight
+  )
   const descriptionText = String(product.description || '').trim()
   const productUrl = `${SITE_URL}/guitars/${slug}`
   const productImageUrl = imageService.resolve(product.image_url || (product.images && product.images[0]))
@@ -258,15 +277,33 @@ export default async function GuitarPage({ params }) {
               <div className="mb-6">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--dark-text-secondary)] mb-3">Ficha técnica</p>
                 <ul className="flex flex-wrap gap-2">
-                  <li className="rounded-full border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] px-4 py-2 text-[13px] text-[var(--dark-text-secondary)]">
-                    <span className="text-[var(--dark-muted)]">Modelo</span> <span className="font-medium text-[var(--dark-text-primary)] ml-1">{modelValue}</span>
-                  </li>
-                  <li className="rounded-full border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] px-4 py-2 text-[13px] text-[var(--dark-text-secondary)]">
-                    <span className="text-[var(--dark-muted)]">Madera</span> <span className="font-medium text-[var(--dark-text-primary)] ml-1">{woodValue}</span>
-                  </li>
-                  <li className="rounded-full border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] px-4 py-2 text-[13px] text-[var(--dark-text-secondary)]">
-                    <span className="text-[var(--dark-muted)]">Mics</span> <span className="font-medium text-[var(--dark-text-primary)] ml-1">{micsValue}</span>
-                  </li>
+                  {[
+                    { label: 'Modelo', value: modelValue },
+                    { label: 'Madera del cuerpo', value: woodValue },
+                    { label: 'Micrófonos', value: micsValue },
+                    { label: 'Escala', value: product.scale_length },
+                    { label: 'Perfil de mástil', value: product.neck_profile },
+                    { label: 'Radio del diapasón', value: product.fingerboard_radius },
+                    { label: 'Madera del diapasón', value: product.fingerboard_material },
+                    { label: 'Construcción del mástil', value: product.neck_construction },
+                    { label: 'Ancho de cejuela', value: product.nut_width },
+                    { label: 'Trastes', value: product.frets },
+                    { label: 'Puente', value: product.bridge },
+                    { label: 'Clavijas', value: product.tuners },
+                    { label: 'Terminación del hardware', value: product.hardware_finish },
+                    { label: 'Controles', value: product.controls },
+                    { label: 'Conmutación', value: product.switching },
+                    { label: 'Origen', value: product.origin },
+                    { label: 'Año', value: product.year },
+                    { label: 'Peso (kg aprox.)', value: product.weight ? `${product.weight}` : null },
+                  ]
+                    .filter(spec => spec.value && String(spec.value).trim() !== '')
+                    .map((spec, idx) => (
+                      <li key={idx} className="rounded-full border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] px-4 py-2 text-[13px] text-[var(--dark-text-secondary)]">
+                        <span className="text-[var(--dark-muted)]">{spec.label}</span>{' '}
+                        <span className="font-medium text-[var(--dark-text-primary)] ml-1">{spec.value}</span>
+                      </li>
+                    ))}
                 </ul>
               </div>
             )}

@@ -101,7 +101,30 @@ function buildProductPayload(body = {}, partial = false) {
   const images = toSafeStringArray(body.images, MAX_IMAGES, 2000)
   const wood = Array.isArray(body.wood) ? toSafeStringArray(body.wood, 8, MAX_TEXT) : toSafeString(body.wood, MAX_TEXT)
   const mics = Array.isArray(body.mics) ? toSafeStringArray(body.mics, 8, MAX_TEXT) : toSafeString(body.mics, MAX_TEXT)
+  const scale_length = toSafeString(body.scale_length, MAX_TEXT)
+  const neck_profile = toSafeString(body.neck_profile, MAX_TEXT)
+  const fingerboard_radius = toSafeString(body.fingerboard_radius, MAX_TEXT)
+  const fingerboard_material = toSafeString(body.fingerboard_material, MAX_TEXT)
+  const neck_construction = toSafeString(body.neck_construction, MAX_TEXT)
+  const nut_width = toSafeString(body.nut_width, MAX_TEXT)
+  const frets = toSafeString(body.frets, MAX_TEXT)
+  const bridge = toSafeString(body.bridge, MAX_TEXT)
+  const tuners = toSafeString(body.tuners, MAX_TEXT)
+  const hardware_finish = toSafeString(body.hardware_finish, MAX_TEXT)
+  const controls = toSafeString(body.controls, MAX_TEXT)
+  const switching = toSafeString(body.switching, MAX_TEXT)
+  const origin = toSafeString(body.origin, MAX_TEXT)
   const low_cost = body.low_cost === true || body.low_cost === 'true'
+  let year = null
+  if (body.year !== undefined && body.year !== null && String(body.year).trim() !== '') {
+    const yr = Number(String(body.year).trim())
+    if (!Number.isNaN(yr)) year = yr
+  }
+  let weight = null
+  if (body.weight !== undefined && body.weight !== null && String(body.weight).trim() !== '') {
+    const wt = Number(String(body.weight).trim().replace(',', '.'))
+    if (!Number.isNaN(wt)) weight = wt
+  }
 
   if (!partial) {
     if (!name || !slug) return { error: 'Missing required fields: name and slug' }
@@ -117,7 +140,22 @@ function buildProductPayload(body = {}, partial = false) {
   if ('images' in body) payload.images = images
   if ('wood' in body) payload.wood = wood
   if ('mics' in body) payload.mics = mics
+  if ('scale_length' in body) payload.scale_length = scale_length
+  if ('neck_profile' in body) payload.neck_profile = neck_profile
+  if ('fingerboard_radius' in body) payload.fingerboard_radius = fingerboard_radius
+  if ('fingerboard_material' in body) payload.fingerboard_material = fingerboard_material
+  if ('neck_construction' in body) payload.neck_construction = neck_construction
+  if ('nut_width' in body) payload.nut_width = nut_width
+  if ('frets' in body) payload.frets = frets
+  if ('bridge' in body) payload.bridge = bridge
+  if ('tuners' in body) payload.tuners = tuners
+  if ('hardware_finish' in body) payload.hardware_finish = hardware_finish
+  if ('controls' in body) payload.controls = controls
+  if ('switching' in body) payload.switching = switching
+  if ('origin' in body) payload.origin = origin
   if ('low_cost' in body) payload.low_cost = low_cost
+  if ('year' in body && year !== null) payload.year = year
+  if ('weight' in body && weight !== null) payload.weight = weight
 
   if (!partial && !payload.name) return { error: 'Invalid name' }
   if (!partial && !payload.slug) return { error: 'Invalid slug' }
