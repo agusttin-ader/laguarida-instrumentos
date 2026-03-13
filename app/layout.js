@@ -1,9 +1,35 @@
 import '../styles/globals.css'
 import React from 'react'
+import { Syne } from 'next/font/google'
 import SiteShell from '../components/SiteShell'
 import ServiceWorkerRegister from '../components/ServiceWorkerRegister'
 import DisableZoomInApp from '../components/DisableZoomInApp'
 import { ToastProvider, ChatIntroToastTrigger } from '../components/ToastContext'
+
+const syne = Syne({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-syne',
+  display: 'swap'
+})
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://laguarida.com'
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'MusicStore',
+  name: 'La Guarida',
+  description: 'Tienda de guitarras e instrumentos musicales en Argentina. Catálogo curado, asesoramiento profesional y atención personalizada.',
+  url: SITE_URL,
+  logo: `${SITE_URL}/images/logo/og-pick-icon.PNG`,
+  image: `${SITE_URL}/images/logo/og-pick-icon.PNG`,
+  address: { '@type': 'PostalAddress', addressCountry: 'AR' },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    availableLanguage: 'Spanish',
+    areaServed: 'AR'
+  }
+}
 
 export const metadata = {
   title: 'La Guarida — Catálogo de Instrumentos',
@@ -43,7 +69,8 @@ export default function RootLayout({ children }) {
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="apple-touch-icon" href="/images/logo/og-pick-icon.PNG" />
       </head>
-      <body className="min-h-screen">
+      <body className={`min-h-screen ${syne.variable} ${syne.className}`}>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
         <DisableZoomInApp />
         <ToastProvider>
           <SiteShell>{children}</SiteShell>

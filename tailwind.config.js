@@ -11,7 +11,8 @@ module.exports = {
         neutralbg: '#F7F7F8'
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto']
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto'],
+        display: ['var(--font-syne)', 'Inter', 'ui-sans-serif', 'system-ui']
       },
       spacing: {
         '18': '4.5rem',

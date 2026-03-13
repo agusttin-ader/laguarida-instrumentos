@@ -1003,7 +1003,8 @@ export default function AdminProducts(){
 
                 <div className="space-y-3">
                   <div>
-                    <label className="text-sm block mb-1 text-white/75">Imagen principal</label>
+                    <label className="text-sm block mb-1 text-white/75">1. Imagen principal</label>
+                    <p className="text-[11px] text-white/55 mb-1.5">Vista frontal del instrumento (se muestra primero en la card)</p>
                     {modalForm.image_url ? (
                       <div className="w-full rounded-xl overflow-hidden border border-white/15 mb-2 relative h-40">
                         <ImageWithSkeleton src={modalForm.image_url} alt="Imagen principal" fill quality={100} className="w-full h-full" disableClientPreview />
@@ -1030,14 +1031,15 @@ export default function AdminProducts(){
 
               {modalMode === 'create' ? (
                 <div>
-                  <label className="text-sm block mb-1 text-white/75">Galería (opcional)</label>
+                  <label className="text-sm block mb-1 text-white/75">2. y 3. Imágenes adicionales (opcional)</label>
+                  <p className="text-[11px] text-white/55 mb-2">2.ª = vista trasera · 3.ª = trastera o pala. En la card se muestran hasta 3 fotos en este orden.</p>
                   <input ref={modalGalleryInputRef} type="file" accept="image/*" multiple onChange={handleModalGalleryChange} className="hidden" />
                   <div className="flex flex-col sm:flex-row gap-2">
                     <button type="button" className="px-3 py-2 admin-premium-btn-primary no-custom-btn" onClick={() => modalGalleryInputRef.current && modalGalleryInputRef.current.click()}>Subir imágenes</button>
                     <button type="button" className="px-3 py-2 admin-premium-btn-ghost no-custom-btn" onClick={() => { setModalForm(prev => ({ ...prev, images: [] })); setModalGalleryPreviews([]); setModalGalleryDragIndex(null); setModalGalleryDragOverIndex(null) }}>Limpiar galería</button>
                   </div>
                   {canReorderModalGallery ? (
-                    <p className="mt-2 text-[11px] text-white/55">Arrastrá las miniaturas para reordenar la galería.</p>
+                    <p className="mt-2 text-[11px] text-white/55">Arrastrá las miniaturas para ordenar: primera = vista trasera, segunda = trastera o pala.</p>
                   ) : null}
                   {modalGalleryPreviews.length > 0 ? (
                     <div className="mt-3 grid grid-cols-3 sm:grid-cols-4 gap-2">
@@ -1059,7 +1061,7 @@ export default function AdminProducts(){
                             ) : null}
                             {canReorderModalGallery ? (
                               <div className="absolute left-1 top-1 z-10 rounded bg-black/45 px-1.5 py-0.5 text-[10px] text-white/80 border border-white/10">
-                                {i + 1}
+                                {i === 0 ? '2. Atrás' : i === 1 ? '3. Trastera/pala' : i + 1}
                               </div>
                             ) : null}
                             {!p.uploading ? (
@@ -1068,7 +1070,9 @@ export default function AdminProducts(){
                               </button>
                             ) : null}
                           </div>
-                          <div className="text-xs mt-1 truncate text-white/75">{p.name}</div>
+                          <div className="text-xs mt-1 truncate text-white/75">
+                            {i === 0 ? 'Vista trasera' : i === 1 ? 'Trastera o pala' : p.name}
+                          </div>
                         </div>
                       ))}
                     </div>

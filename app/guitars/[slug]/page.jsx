@@ -4,13 +4,14 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.laguaridainstr
 import fs from 'fs/promises'
 import path from 'path'
 export const dynamic = 'force-dynamic'
-import GuitarGallery from '../../../components/GuitarGallery'
+import ProductGalleryModern from '../../../components/ProductGalleryModern'
 import normalizeProduct from '../../../lib/utils/normalizeProduct'
 import { getSupabaseServerClient } from '../../../lib/supabase/server'
 import ProductCard from '../../../components/ProductCard'
 import imageService from '../../../lib/utils/imageService'
 import ProductShareAndFavorite from '../../../components/ProductShareAndFavorite'
 import ProductPageCTA from '../../../components/ProductPageCTA'
+import { parseNumericPriceForSchema } from '../../../lib/utils/normalizeProduct'
 
 // Generate page metadata dynamically based on the product data
 export async function generateMetadata({ params }) {
@@ -159,13 +160,18 @@ export default async function GuitarPage({ params }) {
 
   if (!product) {
     return (
-      <div className="container-tight">
-        <header className="mt-8">
-          <p className="text-sm muted-text">Catálogo · Guitarras</p>
-        </header>
-        <div className="mt-8 p-6 bg-white rounded shadow">
-          <h2 className="text-lg font-semibold">Producto no encontrado</h2>
-          <p className="mt-2 text-sm muted-text">No se encontró la guitarra solicitada. Revisa el listado de productos en el panel de administración.</p>
+      <div className="container-tight pt-6 pb-12">
+        <nav aria-label="Breadcrumb" className="mb-6">
+          <ol className="flex flex-wrap items-center gap-1.5 text-sm text-[var(--dark-muted)]">
+            <li><a href="/" className="hover:text-[var(--dark-text-primary)] transition-colors">Inicio</a></li>
+            <li aria-hidden>/</li>
+            <li><a href="/#seleccion-destacada" className="hover:text-[var(--dark-text-primary)] transition-colors">Catálogo</a></li>
+          </ol>
+        </nav>
+        <div className="rounded-2xl border border-[var(--dark-border)] bg-[var(--dark-bg-card)] p-8 md:p-10 text-center">
+          <h1 className="text-xl font-semibold text-[var(--dark-text-primary)]">Producto no encontrado</h1>
+          <p className="mt-2 text-sm text-[var(--dark-muted)]">No encontramos ese instrumento. Revisá el catálogo o contactanos por WhatsApp.</p>
+          <a href="/#seleccion-destacada" className="no-custom-btn mt-6 inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] text-[var(--dark-text-primary)] font-medium text-sm hover:bg-white/5 transition-colors">Ver catálogo</a>
         </div>
       </div>
     )
@@ -182,69 +188,86 @@ export default async function GuitarPage({ params }) {
   const productImageUrl = imageService.resolve(product.image_url || (product.images && product.images[0]))
   const absoluteImage = productImageUrl && (productImageUrl.startsWith('http') ? productImageUrl : `${SITE_URL}${productImageUrl.startsWith('/') ? '' : '/'}${productImageUrl}`)
 
+  const numericPrice = parseNumericPriceForSchema(product.price)
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.name,
     description: descriptionText || `${product.name} — La Guarida Instrumentos`,
     url: productUrl,
+    ...(product.brand && { brand: { '@type': 'Brand', name: product.brand } }),
+    ...(product.sku && { sku: product.sku }),
     ...(absoluteImage && { image: absoluteImage }),
-    ...(product.price && {
+    ...(numericPrice != null && {
       offers: {
         '@type': 'Offer',
-        price: product.price,
-        priceCurrency: 'ARS',
-        availability: 'https://schema.org/InStock'
+        price: numericPrice,
+        priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+        url: productUrl
       }
     })
   }
 
   return (
-    <div className="container-tight pt-3 sm:pt-4 pb-8 md:pb-12">
+    <div className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <header className="mt-0 mb-1">
-        <p className="text-xs uppercase tracking-[0.22em] text-gray-500 md:hidden">Catálogo · Guitarras</p>
-        <nav aria-label="Breadcrumb" className="hidden md:block">
-          <ol className="flex flex-wrap items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
-            <li><a href="/" className="hover:text-gray-700 dark:hover:text-gray-200 transition-colors">Inicio</a></li>
-            <li aria-hidden>/</li>
-            <li><a href="/#seleccion-destacada" className="hover:text-gray-700 dark:hover:text-gray-200 transition-colors">Catálogo</a></li>
-            <li aria-hidden>/</li>
-            <li className="text-gray-700 dark:text-gray-200 font-medium truncate max-w-[200px]" aria-current="page">{product.name}</li>
+
+      {/* Sección galería: 100% ancho — breadcrumb, título a la izquierda, galería moderna */}
+      <section className="bg-[var(--dark-surface-2)] -mx-4 sm:-mx-5 md:-mx-6 lg:-mx-8 px-4 sm:px-5 md:px-6 lg:px-8 pt-4 sm:pt-6 pb-8 sm:pb-10 rounded-b-[24px] md:rounded-b-[32px] w-full">
+        <nav aria-label="Breadcrumb" className="container-tight w-full mb-4 md:mb-6">
+          <ol className="flex flex-wrap items-center gap-1.5 text-[12px] sm:text-[13px] text-[var(--dark-muted)]">
+            <li><a href="/" className="hover:text-[var(--dark-text-primary)] transition-colors">Inicio</a></li>
+            <li aria-hidden className="opacity-50">/</li>
+            <li><a href="/#seleccion-destacada" className="hover:text-[var(--dark-text-primary)] transition-colors">Catálogo</a></li>
+            <li aria-hidden className="opacity-50">/</li>
+            <li className="text-[var(--dark-text-secondary)] truncate max-w-[140px] sm:max-w-[220px]" aria-current="page">{product.name}</li>
           </ol>
         </nav>
-      </header>
-      <div className="max-w-6xl mx-auto rounded-[28px] overflow-hidden border border-[var(--dark-border)] bg-[var(--dark-bg-card)] shadow-[0_22px_55px_rgba(0,0,0,0.3)]">
-        <main className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] items-stretch">
-          <section className="bg-[var(--dark-bg-surface)] px-4 sm:px-6 py-6 sm:py-8 md:px-10 md:py-10 border-r border-[var(--dark-border)]">
-            <GuitarGallery image_url={product.image_url} images={product.images} altBase={`${product.name}${product.brand ? ' — ' + product.brand : ''}`} />
-          </section>
+        <div className="container-tight w-full">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--dark-muted)] mb-2">{categoryLabel}</p>
+          <h1 className="text-[2rem] sm:text-[2.35rem] md:text-[2.6rem] leading-[1.08] font-bold text-[var(--dark-text-primary)] tracking-tight mb-6 text-left">
+            {product.name}
+          </h1>
+          <ProductGalleryModern
+            image_url={product.image_url}
+            images={product.images}
+            altBase={`${product.name}${product.brand ? ' — ' + product.brand : ''}`}
+          />
+        </div>
+      </section>
 
-          <aside className="px-4 sm:px-6 py-5 sm:py-7 md:px-10 md:py-10">
-            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-[var(--dark-muted)] mb-2">{categoryLabel}</p>
-            <h1 className="text-[1.95rem] leading-[1.15] font-bold text-[var(--dark-text-primary)] mb-2">{product.name}</h1>
-
-            <p className="text-[14px] leading-7 text-gray-600 dark:text-gray-300 max-w-md mb-6">
+      {/* Dos columnas: Descripción (izq) | Precio, ficha y botones (der) */}
+      <section className="container-tight w-full pt-8 sm:pt-10 md:pt-12 pb-10 md:pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+          {/* Columna izquierda: descripción */}
+          <div>
+            <h2 className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.18em] text-[var(--dark-text-secondary)] mb-3">Descripción</h2>
+            <p className="text-[15px] sm:text-base leading-[1.75] text-[var(--dark-text-secondary)]">
               {descriptionText || 'Instrumento seleccionado y revisado profesionalmente, ideal para estudio y escenario.'}
             </p>
+          </div>
+
+          {/* Columna derecha: precio, ficha técnica y botones */}
+          <div className="lg:pl-0">
+            {product.price && (
+              <p className="text-2xl sm:text-[28px] font-bold text-[var(--vintage-gold)] mb-6 tracking-tight">{product.price}</p>
+            )}
 
             {hasFicha && (
-              <div className="mb-6 rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] overflow-hidden">
-                <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--dark-muted)] px-4 py-2.5 border-b border-[var(--dark-border)]">Ficha técnica</p>
-                <dl className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[var(--dark-border)]">
-                  <div className="px-4 py-3">
-                    <dt className="text-[9px] uppercase tracking-[0.16em] text-[var(--dark-muted)] mb-0.5">Modelo</dt>
-                    <dd className="text-sm font-semibold text-[var(--dark-text-secondary)]">{modelValue}</dd>
-                  </div>
-                  <div className="px-4 py-3">
-                    <dt className="text-[9px] uppercase tracking-[0.16em] text-[var(--dark-muted)] mb-0.5">Madera</dt>
-                    <dd className="text-sm font-semibold text-[var(--dark-text-secondary)]">{woodValue}</dd>
-                  </div>
-                  <div className="px-4 py-3">
-                    <dt className="text-[9px] uppercase tracking-[0.16em] text-[var(--dark-muted)] mb-0.5">Micrófonos</dt>
-                    <dd className="text-sm font-semibold text-[var(--dark-text-secondary)]">{micsValue}</dd>
-                  </div>
-                </dl>
+              <div className="mb-6">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--dark-text-secondary)] mb-3">Ficha técnica</p>
+                <ul className="flex flex-wrap gap-2">
+                  <li className="rounded-full border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] px-4 py-2 text-[13px] text-[var(--dark-text-secondary)]">
+                    <span className="text-[var(--dark-muted)]">Modelo</span> <span className="font-medium text-[var(--dark-text-primary)] ml-1">{modelValue}</span>
+                  </li>
+                  <li className="rounded-full border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] px-4 py-2 text-[13px] text-[var(--dark-text-secondary)]">
+                    <span className="text-[var(--dark-muted)]">Madera</span> <span className="font-medium text-[var(--dark-text-primary)] ml-1">{woodValue}</span>
+                  </li>
+                  <li className="rounded-full border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] px-4 py-2 text-[13px] text-[var(--dark-text-secondary)]">
+                    <span className="text-[var(--dark-muted)]">Mics</span> <span className="font-medium text-[var(--dark-text-primary)] ml-1">{micsValue}</span>
+                  </li>
+                </ul>
               </div>
             )}
 
@@ -252,19 +275,20 @@ export default async function GuitarPage({ params }) {
               price={product.price}
               consultHref={consultHref}
               productName={product.name}
+              showPrice={false}
             >
               <ProductShareAndFavorite slug={slug} name={product.name} url={productUrl} />
             </ProductPageCTA>
-          </aside>
-        </main>
-      </div>
+          </div>
+        </div>
+      </section>
 
       {relatedProducts && relatedProducts.length > 0 && (
-        <section className="mt-8 sm:mt-10 md:mt-12">
-          <h2 className="section-title-premium section-underline-ocre text-[var(--dark-text-primary)] mb-3 sm:mb-4">También te recomendamos</h2>
-          <div className="flex overflow-x-auto gap-3 sm:gap-4 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-5 md:gap-6 lg:gap-8 snap-x snap-mandatory scroll-smooth">
+        <section className="container-tight mt-10 sm:mt-12 md:mt-16 pb-10 md:pb-16" aria-labelledby="related-heading">
+          <h2 id="related-heading" className="section-title-premium section-underline-ocre text-[var(--dark-text-primary)] mb-4 sm:mb-6">También te recomendamos</h2>
+          <div className="flex overflow-x-auto gap-4 sm:gap-5 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 lg:gap-8 snap-x snap-mandatory scroll-smooth">
             {relatedProducts.map(r => (
-              <div key={r.id || r.slug} className="flex-shrink-0 w-[min(280px,82vw)] sm:w-auto sm:flex-shrink snap-center">
+              <div key={r.id || r.slug} className="flex-shrink-0 w-[min(280px,85vw)] sm:w-auto snap-center">
                 <ProductCard item={r} />
               </div>
             ))}
