@@ -1252,8 +1252,8 @@ export default function AdminProducts(){
         {recentActivity.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center rounded-xl border border-white/08 px-4 py-8 bg-white/[0.03]">
             <span className="text-3xl opacity-50 mb-2" aria-hidden>📋</span>
-            <p className="text-sm text-white/60">Aún no hay cambios en esta sesión.</p>
-            <p className="text-xs text-white/45 mt-1">Creá o editá un producto para ver la actividad.</p>
+            <p className="text-sm text-white/60">Aún no hay cambios recientes.</p>
+            <p className="text-xs text-white/45 mt-1">Creá o editá un producto para ver la actividad de los últimos 30 días.</p>
           </div>
         ) : (
           <div className="space-y-2">
