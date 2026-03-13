@@ -97,7 +97,7 @@ export default function ProductShareAndFavorite({ slug, name, url }) {
         type="button"
         onClick={handleShare}
         aria-label="Compartir producto"
-        className="no-custom-btn inline-flex items-center justify-center w-12 h-12 rounded-lg border border-[#d6dbe6] dark:border-[#3a4358] bg-[#f8f9fc] dark:bg-[#141a26] text-[#1a2030] dark:text-[#eef2ff] hover:bg-[#eef0f5] dark:hover:bg-[#1a2230] transition-colors btn-focus"
+        className="no-custom-btn inline-flex items-center justify-center w-12 h-12 rounded-lg border border-[#d6dbe6] dark:border-[#3a4358] bg-[#f8f9fc] dark:bg-[#141a26] text-[#1a2030] dark:text-[#eef2ff] hover:bg-[#eef0f5] dark:hover:bg-[#1a2230] hover:border-[var(--vintage-gold)]/30 dark:hover:border-[var(--vintage-gold)]/40 hover:scale-105 active:scale-100 transition-all duration-200 btn-focus"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
@@ -109,10 +109,10 @@ export default function ProductShareAndFavorite({ slug, name, url }) {
         type="button"
         onClick={handleFavorite}
         aria-label={fav ? 'Quitar de tu selección' : 'Agregar a tu selección'}
-        className={`no-custom-btn inline-flex items-center justify-center w-12 h-12 rounded-lg border transition-colors btn-focus ${
+        className={`no-custom-btn inline-flex items-center justify-center w-12 h-12 rounded-lg border transition-all duration-200 btn-focus ${
           fav
-            ? 'border-[var(--vintage-gold)]/45 bg-[var(--vintage-gold-soft)] text-[var(--vintage-gold)]'
-            : 'border-[#d6dbe6] dark:border-[#3a4358] bg-[#f8f9fc] dark:bg-[#141a26] text-[#1a2030] dark:text-[#eef2ff] hover:bg-[#eef0f5] dark:hover:bg-[#1a2230]'
+            ? 'border-[var(--vintage-gold)]/45 bg-[var(--vintage-gold-soft)] text-[var(--vintage-gold)] hover:bg-[var(--vintage-gold-soft-hover)] hover:border-[var(--vintage-gold)]/60 hover:scale-105 active:scale-100'
+            : 'border-[#d6dbe6] dark:border-[#3a4358] bg-[#f8f9fc] dark:bg-[#141a26] text-[#1a2030] dark:text-[#eef2ff] hover:bg-[#eef0f5] dark:hover:bg-[#1a2230] hover:border-[var(--vintage-gold)]/30 dark:hover:border-[var(--vintage-gold)]/40 hover:scale-105 active:scale-100'
         }`}
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill={fav ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

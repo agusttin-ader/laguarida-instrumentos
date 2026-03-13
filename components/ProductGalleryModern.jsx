@@ -42,14 +42,14 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
         <button
           type="button"
           onClick={() => openLightbox(0)}
-          className="no-custom-btn relative w-full aspect-[4/5] lg:aspect-auto lg:min-h-[580px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
+          className="no-custom-btn group relative w-full aspect-[4/5] lg:aspect-auto lg:min-h-[580px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
           aria-label="Ver imagen principal"
         >
           <ImageWithSkeleton
             src={mainImage}
             alt={altBase || 'Imagen del producto'}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
             sizes="(min-width:1024px) 56vw, 100vw"
             quality={100}
             priority
@@ -63,14 +63,14 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
             <button
               type="button"
               onClick={() => openLightbox(1)}
-              className="no-custom-btn relative row-span-2 min-h-[160px] sm:min-h-[220px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
+              className="no-custom-btn group relative row-span-2 min-h-[160px] sm:min-h-[220px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
               aria-label="Ver imagen 2"
             >
               <ImageWithSkeleton
                 src={sideImages[0]}
                 alt={altBase ? `${altBase} — imagen 2` : 'Imagen 2'}
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                 sizes="(min-width:1024px) 22vw, 50vw"
                 quality={100}
               />
@@ -79,14 +79,14 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
               <button
                 type="button"
                 onClick={() => openLightbox(2)}
-                className="no-custom-btn relative min-h-[120px] sm:min-h-[160px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
+                className="no-custom-btn group relative min-h-[120px] sm:min-h-[160px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
                 aria-label="Ver imagen 3"
               >
                 <ImageWithSkeleton
                   src={sideImages[1]}
                   alt={altBase ? `${altBase} — imagen 3` : 'Imagen 3'}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes="(min-width:1024px) 22vw, 50vw"
                   quality={100}
                 />
@@ -96,14 +96,14 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
               <button
                 type="button"
                 onClick={() => openLightbox(3)}
-                className="no-custom-btn relative min-h-[120px] sm:min-h-[160px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
+                className="no-custom-btn group relative min-h-[120px] sm:min-h-[160px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
                 aria-label="Ver imagen 4"
               >
                 <ImageWithSkeleton
                   src={sideImages[2]}
                   alt={altBase ? `${altBase} — imagen 4` : 'Imagen 4'}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes="(min-width:1024px) 22vw, 50vw"
                   quality={100}
                 />
@@ -114,14 +114,14 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
               <button
                 type="button"
                 onClick={() => openLightbox(4)}
-                className="no-custom-btn relative min-h-[90px] sm:min-h-[120px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
+                className="no-custom-btn group relative min-h-[90px] sm:min-h-[120px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
                 aria-label="Ver imagen 5"
               >
                 <ImageWithSkeleton
                   src={sideImages[3]}
                   alt={altBase ? `${altBase} — imagen 5` : 'Imagen 5'}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes="(min-width:1024px) 22vw, 50vw"
                   quality={100}
                 />
@@ -131,14 +131,14 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
               <button
                 type="button"
                 onClick={() => openLightbox(5)}
-                className="no-custom-btn relative row-span-2 min-h-[140px] sm:min-h-[180px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
+                className="no-custom-btn group relative row-span-2 min-h-[140px] sm:min-h-[180px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
                 aria-label="Ver imagen 6"
               >
                 <ImageWithSkeleton
                   src={sideImages[4]}
                   alt={altBase ? `${altBase} — imagen 6` : 'Imagen 6'}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes="(min-width:1024px) 22vw, 50vw"
                   quality={100}
                 />
@@ -148,14 +148,14 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
               <button
                 type="button"
                 onClick={() => openLightbox(6)}
-                className="no-custom-btn relative min-h-[90px] sm:min-h-[120px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
+                className="no-custom-btn group relative min-h-[90px] sm:min-h-[120px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
                 aria-label="Ver imagen 7"
               >
                 <ImageWithSkeleton
                   src={sideImages[5]}
                   alt={altBase ? `${altBase} — imagen 7` : 'Imagen 7'}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes="(min-width:1024px) 22vw, 50vw"
                   quality={100}
                 />

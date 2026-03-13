@@ -795,11 +795,21 @@ header {
 @keyframes fadeInBackdrop { from { opacity: 0 } to { opacity: 1 } }
 @keyframes fadeOutBackdrop { from { opacity: 1 } to { opacity: 0 } }
 
+/* Lightbox: animación al cambiar de imagen (más notoria) */
+@keyframes lightbox-image-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+.lightbox-image-in {
+  animation: lightbox-image-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 .modal-panel-enter { animation: modal-in 220ms cubic-bezier(.2,.9,.3,1) forwards }
 .modal-panel-exit  { animation: modal-out 180ms ease-in forwards }
 
 @media (prefers-reduced-motion: reduce) {
-  .modal-backdrop-enter, .modal-backdrop-exit, .modal-panel-enter, .modal-panel-exit { animation: none !important }
+  .modal-backdrop-enter, .modal-backdrop-exit, .modal-panel-enter, .modal-panel-exit,
+  .lightbox-image-in { animation: none !important }
 }
 
 .theme-toggle, .thumb {

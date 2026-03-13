@@ -24,7 +24,7 @@ export default function ProductPageCTA({ price, consultHref, productName, childr
           rel="noopener noreferrer"
           aria-label={`Consultar por WhatsApp sobre ${productName || 'este producto'}`}
           onClick={handleWhatsAppClick}
-          className="no-custom-btn inline-flex items-center justify-center gap-2.5 min-h-[44px] py-3 px-5 sm:px-6 rounded-xl border-2 border-[var(--vintage-gold)]/50 bg-[var(--vintage-gold-soft)] text-[var(--dark-cta-text)] font-semibold text-sm transition-all duration-200 hover:bg-[var(--vintage-gold-soft-hover)] hover:border-[var(--vintage-gold)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(201,162,39,0.22)] active:translate-y-0"
+          className="no-custom-btn inline-flex items-center justify-center gap-2.5 min-h-[44px] py-3 px-5 sm:px-6 rounded-xl border-2 border-[var(--vintage-gold)]/50 bg-[var(--vintage-gold-soft)] text-white font-semibold text-sm transition-all duration-200 hover:bg-[var(--vintage-gold-soft-hover)] hover:border-[var(--vintage-gold)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(201,162,39,0.22)] active:translate-y-0"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
