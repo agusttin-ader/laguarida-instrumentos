@@ -2,14 +2,17 @@
 
 import React, { useState } from 'react'
 import ProductGrid from './ProductGrid'
+import { useProducts } from '../hooks/useProducts'
 
 export default function FeaturedSelection(){
   const [q, setQ] = useState('')
+  const { products } = useProducts({ shuffleCatalog: true })
+  const featured = Array.isArray(products) ? products.filter((p) => p.low_cost !== true) : []
 
   return (
     <>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 md:gap-6 mb-3 sm:mb-5 md:mb-6 section-heading-entrance px-4 md:px-0">
-        <h2 id="seleccion-heading" className="section-title-premium section-underline-ocre text-gray-900 dark:text-white">Catalogo</h2>
+        <h2 id="seleccion-heading" className="section-title-premium section-underline-ocre text-gray-900 dark:text-white">Selección destacada</h2>
         <div className="w-full sm:w-auto min-w-0">
           <div className="search-pill w-full sm:max-w-sm" role="search">
             <span className="search-icon flex-shrink-0" aria-hidden>
@@ -27,7 +30,7 @@ export default function FeaturedSelection(){
       </div>
 
       <article>
-        <ProductGrid filters={{ q }} />
+        <ProductGrid filters={{ q }} items={featured} />
       </article>
     </>
   )

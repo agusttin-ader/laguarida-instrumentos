@@ -165,13 +165,13 @@ export default async function GuitarPage({ params }) {
           <ol className="flex flex-wrap items-center gap-1.5 text-sm text-[var(--dark-muted)]">
             <li><a href="/" className="hover:text-[var(--dark-text-primary)] transition-colors">Inicio</a></li>
             <li aria-hidden>/</li>
-            <li><a href="/#seleccion-destacada" className="hover:text-[var(--dark-text-primary)] transition-colors">Catálogo</a></li>
+            <li><a href="/#seleccion-destacada" className="hover:text-[var(--dark-text-primary)] transition-colors">Selección destacada</a></li>
           </ol>
         </nav>
         <div className="rounded-2xl border border-[var(--dark-border)] bg-[var(--dark-bg-card)] p-8 md:p-10 text-center">
           <h1 className="text-xl font-semibold text-[var(--dark-text-primary)]">Producto no encontrado</h1>
           <p className="mt-2 text-sm text-[var(--dark-muted)]">No encontramos ese instrumento. Revisá el catálogo o contactanos por WhatsApp.</p>
-          <a href="/#seleccion-destacada" className="no-custom-btn mt-6 inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] text-[var(--dark-text-primary)] font-medium text-sm hover:bg-white/5 transition-colors">Ver catálogo</a>
+          <a href="/#seleccion-destacada" className="no-custom-btn mt-6 inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] text-[var(--dark-text-primary)] font-medium text-sm hover:bg-white/5 transition-colors">Ver selección destacada</a>
         </div>
       </div>
     )
@@ -238,7 +238,7 @@ export default async function GuitarPage({ params }) {
           <ol className="flex flex-wrap items-center gap-1.5 text-[12px] sm:text-[13px] text-[var(--dark-muted)]">
             <li><a href="/" className="hover:text-[var(--dark-text-primary)] transition-colors">Inicio</a></li>
             <li aria-hidden className="opacity-50">/</li>
-            <li><a href="/#seleccion-destacada" className="hover:text-[var(--dark-text-primary)] transition-colors">Catálogo</a></li>
+            <li><a href="/#seleccion-destacada" className="hover:text-[var(--dark-text-primary)] transition-colors">Selección destacada</a></li>
             <li aria-hidden className="opacity-50">/</li>
             <li className="text-[var(--dark-text-secondary)] truncate max-w-[140px] sm:max-w-[220px]" aria-current="page">{product.name}</li>
           </ol>

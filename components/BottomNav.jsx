@@ -98,9 +98,9 @@ export default function BottomNav() {
         <span className="text-[11px] mt-1 font-medium">Inicio</span>
       </Link>
 
-      <Link href="/#seleccion-destacada" onClick={(e) => handleSectionNav(e, "seleccion-destacada")} aria-label="Catálogo" className={`${itemClass} ${isHome ? activeClass : mutedClass}`}>
+      <Link href="/#seleccion-destacada" onClick={(e) => handleSectionNav(e, "seleccion-destacada")} aria-label="Selección destacada" className={`${itemClass} ${isHome ? activeClass : mutedClass}`}>
         <IconGrid className="flex-shrink-0" />
-        <span className="text-[11px] mt-1 font-medium">Catálogo</span>
+        <span className="text-[11px] mt-1 font-medium">Selección</span>
       </Link>
 
       <Link href="/favoritos" aria-label="Tu selección" className={`${itemClass} ${isFavoritos ? activeClass : mutedClass}`}>

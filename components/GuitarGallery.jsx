@@ -153,7 +153,8 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
                   fit="contain"
                   style={{ objectPosition: 'center' }}
                   className="max-w-full max-h-full object-contain"
-                  quality={100}
+                  quality={90}
+                  disableClientPreview
                 />
               </div>
             )}
@@ -168,9 +169,10 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
                   fit="contain"
                   style={{ objectPosition: 'center' }}
                   className="max-w-full max-h-full object-contain"
-                  quality={100}
+                  quality={95}
                   priority
                   sizes="(min-width:1024px) 50vw, 100vw"
+                  disableClientPreview
                 />
               </div>
             )}
@@ -187,7 +189,7 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
                 aria-pressed={src===main}
                 className={`no-custom-btn relative w-14 h-[72px] sm:w-16 sm:h-20 flex-shrink-0 overflow-hidden rounded-lg border-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)] transition-all duration-200 flex items-center justify-center bg-[var(--dark-bg-elevated)] ${src===main ? 'border-[var(--vintage-gold)] opacity-100 ring-1 ring-[var(--vintage-gold)]/30' : 'border-[var(--dark-border)] hover:border-white/25 opacity-90 hover:opacity-100'}`}
               >
-                <ImageWithSkeleton src={src} alt={altBase ? `${altBase} — miniatura ${i+1}` : `Miniatura ${i+1}`} width={86} height={112} className="object-cover w-full h-full thumb-reset" sizes="96px" quality={100} loading="lazy" />
+                <ImageWithSkeleton src={src} alt={altBase ? `${altBase} — miniatura ${i+1}` : `Miniatura ${i+1}`} width={86} height={112} className="object-cover w-full h-full thumb-reset" sizes="96px" quality={80} loading="lazy" disableClientPreview />
               </button>
             ))}
           </div>

@@ -100,6 +100,22 @@ export default function AdminProducts(){
 
   useEffect(() => {
     load()
+    // cargar actividad reciente desde localStorage (últimos 30 días)
+    try {
+      const raw = localStorage.getItem('admin:recent-activity:v1')
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000
+        const now = Date.now()
+        const cleaned = Array.isArray(parsed)
+          ? parsed.filter((a) => a.ts && now - a.ts <= THIRTY_DAYS)
+          : []
+        setRecentActivity(cleaned)
+        if (cleaned.length !== (parsed?.length || 0)) {
+          localStorage.setItem('admin:recent-activity:v1', JSON.stringify(cleaned))
+        }
+      }
+    } catch { /* empty */ }
   }, [])
 
   useEffect(() => {
@@ -292,10 +308,7 @@ export default function AdminProducts(){
       }
       // close modal and clear previews
       closeModal()
-      addRecentActivity(
-        modalMode === 'edit' ? 'update' : 'create',
-        modalForm.name || 'Producto'
-      )
+      addRecentActivity(modalMode === 'edit' ? 'update' : 'create', modalForm.name || 'Producto')
       setSuccess(modalMode === 'edit' ? 'Producto actualizado correctamente' : 'Producto creado correctamente')
       setTimeout(() => setSuccess(null), 3000)
     } catch (err){
@@ -822,10 +835,18 @@ export default function AdminProducts(){
       id: `${stamp}-${Math.random().toString(36).slice(2, 8)}`,
       type,
       label,
-      stamp,
+      ts: stamp,
       time
     }
-    setRecentActivity(prev => [entry, ...prev].slice(0, 8))
+    setRecentActivity(prev => {
+      const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000
+      const now = Date.now()
+      const merged = [entry, ...prev].filter(a => a.ts && now - a.ts <= THIRTY_DAYS)
+      try {
+        localStorage.setItem('admin:recent-activity:v1', JSON.stringify(merged))
+      } catch { /* empty */ }
+      return merged.slice(0, 20)
+    })
   }
 
   const quickActions = React.useMemo(() => ([
@@ -1063,6 +1084,10 @@ export default function AdminProducts(){
                     <input type="checkbox" id="modal-low-cost" name="low_cost" checked={Boolean(modalForm.low_cost)} onChange={handleModalChange} className="rounded border-white/30 bg-white/10 text-amber-500 focus:ring-amber-500" />
                     <label htmlFor="modal-low-cost" className="text-sm text-white/85">Incluir en sección Low cost</label>
                   </div>
+                  <div>
+                    <label className="text-sm block mb-1 text-white/75">Descripción</label>
+                    <textarea name="description" value={modalForm.description} onChange={handleModalChange} className="admin-premium-input" rows="6" />
+                  </div>
                 </div>
 
                 <div className="space-y-3">
@@ -1140,11 +1165,6 @@ export default function AdminProducts(){
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div>
-                <label className="text-sm block mb-1 text-white/75">Descripción</label>
-                <textarea name="description" value={modalForm.description} onChange={handleModalChange} className="admin-premium-input" rows="4" />
               </div>
 
               {modalMode === 'create' ? (

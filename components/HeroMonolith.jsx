@@ -85,10 +85,11 @@ export default function HeroMonolith() {
             src={imageSrc}
             alt={item.name || 'Producto destacado'}
             fill
-            quality={100}
+            quality={95}
             sizes="100vw"
             className="object-cover"
             priority
+            disableClientPreview
           />
         </div>
         <div className="px-5 pt-6 pb-8">
@@ -109,7 +110,7 @@ export default function HeroMonolith() {
             href="/#seleccion-destacada"
             className="no-custom-btn mt-4 block text-center text-[13px] text-white/60 font-medium"
           >
-            Ver catálogo
+            Ver selección destacada
           </Link>
         </div>
       </article>
@@ -128,10 +129,11 @@ export default function HeroMonolith() {
               src={imageSrc}
               alt={item.name || 'Producto destacado'}
               fill
-              quality={100}
+              quality={95}
               sizes="(min-width:1024px) 60vw, 100vw"
               className="object-cover"
               priority
+              disableClientPreview
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent pointer-events-none" />
           </div>
@@ -165,7 +167,7 @@ export default function HeroMonolith() {
                   Ver detalles
                 </Link>
                 <Link href="/#seleccion-destacada" className="no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl border border-white/25 bg-white/5 text-white/90 text-[12px] sm:text-[13px] font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-white/12 hover:border-white/35 hover:-translate-y-0.5 active:translate-y-0 min-w-[100px] sm:min-w-0">
-                  Ver catálogo
+                  Ver selección destacada
                 </Link>
                 <WhatsAppHeroButton />
               </div>

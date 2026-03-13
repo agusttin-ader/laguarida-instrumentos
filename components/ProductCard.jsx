@@ -102,19 +102,19 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
                 pointerEvents: idx === galleryIndex ? 'auto' : 'none'
               }}
             >
-              <Image
-                src={src}
-                alt={idx === 0 ? (titleText || 'Imagen del producto') : `Imagen ${idx + 1} de ${titleText || 'producto'}`}
-                fill
-                sizes={CARD_IMAGE_SIZES}
-                quality={100}
-                loading={priority && idx === 0 ? 'eager' : 'lazy'}
-                fetchPriority={priority && idx === 0 ? 'high' : 'low'}
-                onLoad={() => setLoadedIndices((prev) => new Set(prev).add(idx))}
-                onError={() => {}}
-                className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} transition-transform duration-500 ease-out group-hover/img:scale-[1.03]`}
-                style={{ objectFit: objectFit, objectPosition: 'center' }}
-              />
+                <Image
+                  src={src}
+                  alt={idx === 0 ? (titleText || 'Imagen del producto') : `Imagen ${idx + 1} de ${titleText || 'producto'}`}
+                  fill
+                  sizes={CARD_IMAGE_SIZES}
+                  quality={85}
+                  loading={priority && idx === 0 ? 'eager' : 'lazy'}
+                  fetchPriority={priority && idx === 0 ? 'high' : 'low'}
+                  onLoad={() => setLoadedIndices((prev) => new Set(prev).add(idx))}
+                  onError={() => {}}
+                  className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} transition-transform duration-500 ease-out group-hover/img:scale-[1.03]`}
+                  style={{ objectFit: objectFit, objectPosition: 'center' }}
+                />
             </div>
           ))}
         </>

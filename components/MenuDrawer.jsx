@@ -53,7 +53,7 @@ export default function MenuDrawer({ open, setOpen }) {
           </li>
           <li>
             <Link href="/#seleccion-destacada" onClick={() => setOpen(false)} className="block px-3 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800">
-              Catálogo
+              Selección destacada
             </Link>
           </li>
           <li>

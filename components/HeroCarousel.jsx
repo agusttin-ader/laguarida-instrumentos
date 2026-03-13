@@ -145,10 +145,11 @@ export default function HeroCarousel({ interval = 5000 }){
                       src={src}
                       alt={it.name || ''}
                       fill
-                      quality={100}
-                      sizes="(min-width:1024px) 1200px, 100vw"
+                      quality={90}
+                      sizes="(min-width:1024px) 1000px, 100vw"
                       priority={i === 0}
                       className="object-cover"
+                      disableClientPreview
                       onImageLoad={(meta) => {
                         try{
                           if (!meta || !meta.naturalWidth || !meta.naturalHeight) return

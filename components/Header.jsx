@@ -53,7 +53,7 @@ export default function Header() {
             <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
             <a href="/#about-section" onClick={(e) => handleSectionNav(e, 'about-section')} className={navLinkClass}>Sobre nosotros</a>
             <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
-            <a href="/#seleccion-destacada" onClick={(e) => handleSectionNav(e, 'seleccion-destacada')} className={navLinkClass}>Catalogo</a>
+            <a href="/#seleccion-destacada" onClick={(e) => handleSectionNav(e, 'seleccion-destacada')} className={navLinkClass}>Selección destacada</a>
             <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
             <a href="/favoritos" className={navLinkClass}>
               Favoritos
