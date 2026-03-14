@@ -78,6 +78,8 @@ export default function AdminProducts(){
   const [actionProduct, setActionProduct] = useState(null) // long-press / context menu: product for Editar/Eliminar
   const longPressTimerRef = React.useRef(null)
   const longPressSuppressRef = React.useRef(false)
+  const createDraftFormRef = React.useRef(null) // ref para guardar borrador de forma síncrona en beforeunload
+  const draftAutoOpenAttemptedRef = React.useRef(false)
   const { toast } = useToast()
 
   const filteredItems = React.useMemo(() => {
@@ -117,6 +119,20 @@ export default function AdminProducts(){
       }
     } catch { /* empty */ }
   }, [])
+
+  // Tras cargar, si hay un borrador de "crear producto" (p. ej. por un refresh), abrir el modal con esos datos
+  useEffect(() => {
+    if (loading || draftAutoOpenAttemptedRef.current || typeof window === 'undefined') return
+    draftAutoOpenAttemptedRef.current = true
+    try {
+      const raw = localStorage.getItem(CREATE_DRAFT_KEY)
+      if (!raw) return
+      const parsed = JSON.parse(raw)
+      if (parsed?.form && hasMeaningfulCreateDraft(parsed.form)) {
+        openCreateModal()
+      }
+    } catch { /* empty */ }
+  }, [loading])
 
   useEffect(() => {
     function onKeyDown(e){
@@ -369,6 +385,44 @@ export default function AdminProducts(){
     setModalGalleryPreviews([])
     setModalOpen(true)
   }
+
+  // Mantener ref actualizado para poder guardar de forma síncrona al hacer refresh/cerrar pestaña
+  useEffect(() => {
+    if (modalOpen && modalMode === 'create') {
+      createDraftFormRef.current = modalForm
+    } else {
+      createDraftFormRef.current = null
+    }
+  }, [modalOpen, modalMode, modalForm])
+
+  // Guardar borrador al cerrar/refrescar la pestaña si el modal de crear está abierto
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    function saveDraftOnUnload() {
+      const form = createDraftFormRef.current
+      if (!form || !hasMeaningfulCreateDraft(form)) return
+      try {
+        const payload = { savedAt: Date.now(), form }
+        localStorage.setItem(CREATE_DRAFT_KEY, JSON.stringify(payload))
+      } catch { /* empty */ }
+    }
+
+    function onBeforeUnload() {
+      saveDraftOnUnload()
+    }
+
+    function onPageHide() {
+      saveDraftOnUnload()
+    }
+
+    window.addEventListener('beforeunload', onBeforeUnload)
+    window.addEventListener('pagehide', onPageHide)
+    return () => {
+      window.removeEventListener('beforeunload', onBeforeUnload)
+      window.removeEventListener('pagehide', onPageHide)
+    }
+  }, [])
 
   useEffect(() => {
     if (!modalOpen || modalMode !== 'create') return
