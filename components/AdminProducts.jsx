@@ -1038,9 +1038,9 @@ export default function AdminProducts(){
         </div>
       ) : null}
       {modalOpen ? (
-        <div className="fixed inset-0 z-40 flex items-start justify-center px-2 sm:px-4 md:px-6 py-8">
-          <div className={`fixed inset-0 bg-black/60 backdrop-blur-md ${modalClosing ? 'modal-backdrop-exit' : 'modal-backdrop-enter'}`} onClick={closeModal} />
-          <div className={`relative admin-premium-card w-full max-w-[720px] sm:max-w-[780px] z-50 p-6 max-h-[85vh] overflow-y-auto ${modalClosing ? 'modal-panel-exit' : 'modal-panel-enter'}`}>
+        <div className="fixed inset-0 z-[100] flex flex-col items-center overflow-y-auto px-2 sm:px-4 md:px-6 py-4 sm:py-6 min-h-full">
+          <div className={`fixed inset-0 bg-black/60 backdrop-blur-md ${modalClosing ? 'modal-backdrop-exit' : 'modal-backdrop-enter'}`} style={{ zIndex: 99 }} onClick={closeModal} aria-hidden />
+          <div className={`relative z-[100] admin-premium-card w-full max-w-[720px] sm:max-w-[780px] flex-shrink-0 my-4 sm:my-6 p-6 max-h-[85vh] overflow-y-auto ${modalClosing ? 'modal-panel-exit' : 'modal-panel-enter'}`}>
             <h3 className="section-title-minimal text-[1.08rem] mb-1 text-white">{modalMode === 'edit' ? 'Editar producto' : 'Crear producto'}</h3>
             {modalMode === 'create' ? (
               <div className="mb-3 text-xs text-white/60">
