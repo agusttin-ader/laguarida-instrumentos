@@ -801,7 +801,7 @@ header {
   to { opacity: 1; transform: scale(1); }
 }
 .lightbox-image-in {
-  animation: lightbox-image-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: lightbox-image-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .modal-panel-enter { animation: modal-in 220ms cubic-bezier(.2,.9,.3,1) forwards }
@@ -1477,9 +1477,9 @@ body.admin-login-page .admin-container {
 
 /* ===================== Premium lightweight motion ===================== */
 :root{
-  --motion-fast: 180ms;
-  --motion-base: 280ms;
-  --motion-slow: 420ms;
+  --motion-fast: 160ms;
+  --motion-base: 240ms;
+  --motion-slow: 320ms;
   --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -1492,15 +1492,16 @@ body.admin-login-page .admin-container {
 main > section {
   animation: premium-enter-up var(--motion-slow) var(--motion-ease) both;
 }
-main > section:nth-of-type(2) { animation-delay: 60ms; }
-main > section:nth-of-type(3) { animation-delay: 120ms; }
-main > section:nth-of-type(4) { animation-delay: 180ms; }
+main > section:nth-of-type(2) { animation-delay: 50ms; }
+main > section:nth-of-type(3) { animation-delay: 100ms; }
+main > section:nth-of-type(4) { animation-delay: 150ms; }
 
 
-/* Cards and panels: premium hover without heavy transforms */
+/* Cards and panels: premium hover (GPU-friendly: transform + opacity only) */
 .card-interactive,
 .admin-card,
 .list-panel {
+  contain: layout style paint;
   transition:
     transform var(--motion-base) var(--motion-ease),
     box-shadow var(--motion-base) var(--motion-ease),
@@ -1538,10 +1539,10 @@ button:not(.no-custom-btn):active {
   transform: translateY(0);
 }
 
-/* Image polish: gentle zoom on hover for image containers */
+/* Image polish: gentle zoom on hover (transform only = GPU-friendly) */
 .card-interactive img,
 .hero-slide-image {
-  transition: transform var(--motion-slow) var(--motion-ease);
+  transition: transform var(--motion-base) var(--motion-ease);
 }
 .card-interactive:hover img {
   transform: scale(1.02);

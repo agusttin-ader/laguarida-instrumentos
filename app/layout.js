@@ -14,6 +14,11 @@ const syne = Syne({
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://laguarida.com'
 
+// Preconnect to Supabase Storage so first product images load faster
+const supabaseOrigin = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? (() => { try { return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).origin } catch { return null } })()
+  : null
+
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'MusicStore',
@@ -63,6 +68,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="es" className="dark">
       <head>
+        {supabaseOrigin && <link rel="preconnect" href={supabaseOrigin} />}
+        {supabaseOrigin && <link rel="dns-prefetch" href={supabaseOrigin} />}
         <link rel="manifest" href="/manifest.json" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />

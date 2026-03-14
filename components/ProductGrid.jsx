@@ -2,7 +2,6 @@
 
 import React, { useMemo } from 'react'
 import ProductCard from './ProductCard'
-import ScrollReveal from './ScrollReveal'
 import SkeletonProductCard from './SkeletonProductCard'
 import { useProducts } from '../hooks/useProducts'
 

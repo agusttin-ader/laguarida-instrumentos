@@ -145,7 +145,7 @@ export default function HeroCarousel({ interval = 5000 }){
                       src={src}
                       alt={it.name || ''}
                       fill
-                      quality={90}
+                      quality={95}
                       sizes="(min-width:1024px) 1000px, 100vw"
                       priority={i === 0}
                       className="object-cover"

@@ -85,7 +85,7 @@ export default function HeroMonolith() {
             src={imageSrc}
             alt={item.name || 'Producto destacado'}
             fill
-            quality={95}
+            quality={100}
             sizes="100vw"
             className="object-cover"
             priority
@@ -129,7 +129,7 @@ export default function HeroMonolith() {
               src={imageSrc}
               alt={item.name || 'Producto destacado'}
               fill
-              quality={95}
+              quality={100}
               sizes="(min-width:1024px) 60vw, 100vw"
               className="object-cover"
               priority

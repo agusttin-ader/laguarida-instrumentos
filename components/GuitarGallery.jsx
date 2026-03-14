@@ -1,9 +1,17 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
 import ImageWithSkeleton from './ImageWithSkeleton'
-import GalleryLightbox from './GalleryLightbox'
 import imageService from '../lib/utils/imageService'
+
+const GalleryLightbox = dynamic(() => import('./GalleryLightbox'), { ssr: false })
+
+function usePreloadLightbox() {
+  useEffect(() => {
+    import('./GalleryLightbox')
+  }, [])
+}
 
 export default function GuitarGallery({ images = [], image_url, altBase }){
   // index is unused; gallery uses `mainSrc` to track the current main image
@@ -64,9 +72,9 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [modalOpen, JSON.stringify(modalList)])
+  usePreloadLightbox()
   // Note: body scroll lock is handled by GalleryLightbox to avoid conflicting restores
-  
-  
+
   if (!modalList || modalList.length === 0) {
     return (
       <div className="rounded-xl overflow-hidden bg-[var(--dark-surface-2)] h-56 md:h-80 flex items-center justify-center">
@@ -189,7 +197,7 @@ export default function GuitarGallery({ images = [], image_url, altBase }){
                 aria-pressed={src===main}
                 className={`no-custom-btn relative w-14 h-[72px] sm:w-16 sm:h-20 flex-shrink-0 overflow-hidden rounded-lg border-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)] transition-all duration-200 flex items-center justify-center bg-[var(--dark-bg-elevated)] ${src===main ? 'border-[var(--vintage-gold)] opacity-100 ring-1 ring-[var(--vintage-gold)]/30' : 'border-[var(--dark-border)] hover:border-white/25 opacity-90 hover:opacity-100'}`}
               >
-                <ImageWithSkeleton src={src} alt={altBase ? `${altBase} — miniatura ${i+1}` : `Miniatura ${i+1}`} width={86} height={112} className="object-cover w-full h-full thumb-reset" sizes="96px" quality={80} loading="lazy" disableClientPreview />
+                <ImageWithSkeleton src={src} alt={altBase ? `${altBase} — miniatura ${i+1}` : `Miniatura ${i+1}`} width={86} height={112} className="object-cover w-full h-full thumb-reset" sizes="96px" quality={88} loading="lazy" disableClientPreview />
               </button>
             ))}
           </div>

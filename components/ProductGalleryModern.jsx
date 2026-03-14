@@ -1,11 +1,21 @@
 "use client"
 
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import ImageWithSkeleton from './ImageWithSkeleton'
-import GalleryLightbox from './GalleryLightbox'
 import imageService from '../lib/utils/imageService'
 
+const GalleryLightbox = dynamic(() => import('./GalleryLightbox'), { ssr: false })
+
+// Preload lightbox chunk after gallery is visible so first open is instant
+function usePreloadLightbox() {
+  useEffect(() => {
+    import('./GalleryLightbox')
+  }, [])
+}
+
 export default function ProductGalleryModern({ image_url, images = [], altBase = '' }) {
+  usePreloadLightbox()
   const allImages = useMemo(() => {
     const main = imageService.resolve(image_url)
     const fromArray = (Array.isArray(images) ? images : image_url ? [image_url] : [])
@@ -51,7 +61,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
             fill
             className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
             sizes="(min-width:1024px) 52vw, 100vw"
-            quality={95}
+            quality={100}
             priority
             disableClientPreview
           />
@@ -73,7 +83,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 fill
                 className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                 sizes="(min-width:1024px) 20vw, 50vw"
-                quality={85}
+                quality={92}
                 disableClientPreview
               />
             </button>
@@ -90,7 +100,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes="(min-width:1024px) 20vw, 50vw"
-                  quality={85}
+                  quality={92}
                   disableClientPreview
                 />
               </button>
@@ -108,7 +118,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes="(min-width:1024px) 20vw, 50vw"
-                  quality={85}
+                  quality={92}
                   disableClientPreview
                 />
               </button>
@@ -127,7 +137,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes="(min-width:1024px) 20vw, 50vw"
-                  quality={85}
+                  quality={92}
                   disableClientPreview
                 />
               </button>
@@ -145,7 +155,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes="(min-width:1024px) 20vw, 50vw"
-                  quality={85}
+                  quality={92}
                   disableClientPreview
                 />
               </button>
@@ -163,7 +173,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes="(min-width:1024px) 20vw, 50vw"
-                  quality={85}
+                  quality={92}
                   disableClientPreview
                 />
               </button>

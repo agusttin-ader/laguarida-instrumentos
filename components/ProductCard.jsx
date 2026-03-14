@@ -107,12 +107,13 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
                   alt={idx === 0 ? (titleText || 'Imagen del producto') : `Imagen ${idx + 1} de ${titleText || 'producto'}`}
                   fill
                   sizes={CARD_IMAGE_SIZES}
-                  quality={85}
+                  quality={95}
                   loading={priority && idx === 0 ? 'eager' : 'lazy'}
                   fetchPriority={priority && idx === 0 ? 'high' : 'low'}
+                  decoding="async"
                   onLoad={() => setLoadedIndices((prev) => new Set(prev).add(idx))}
                   onError={() => {}}
-                  className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} transition-transform duration-500 ease-out group-hover/img:scale-[1.03]`}
+                  className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} transition-transform duration-300 ease-out group-hover/img:scale-[1.03]`}
                   style={{ objectFit: objectFit, objectPosition: 'center' }}
                 />
             </div>

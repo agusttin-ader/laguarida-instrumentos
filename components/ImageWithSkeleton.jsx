@@ -87,7 +87,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
           fetchPriority={priority ? 'high' : undefined}
           priority={priority}
           fill={fill}
-          className={`${(fit === 'contain' || (style && style.objectFit === 'contain')) ? 'object-contain' : 'object-cover'} ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${imgClassName}`}
+          className={`${(fit === 'contain' || (style && style.objectFit === 'contain')) ? 'object-contain' : 'object-cover'} ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${imgClassName}`}
           onLoad={(e) => {
             setLoaded(true);
             try {
