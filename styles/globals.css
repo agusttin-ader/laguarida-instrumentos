@@ -423,6 +423,14 @@ html:has(body.menu-open) {
   overflow: hidden;
 }
 
+/* Admin: ocultar barra de sesión (logo + Cerrar sesión) cuando el modal de crear/editar producto está abierto, para que no tape el campo Nombre en iPhone/PWA */
+body.modal-open .admin-top-bar {
+  visibility: hidden;
+  pointer-events: none;
+  position: fixed;
+  z-index: -1;
+}
+
 /* Mobile: scroll fluido y feedback táctil suave */
 @media (max-width: 767px) {
   html {

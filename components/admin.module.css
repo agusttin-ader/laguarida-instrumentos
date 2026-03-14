@@ -48,3 +48,9 @@
   font-weight: 600;
   text-align: center;
 }
+
+/* Ocultar barra de sesión (logo + Cerrar sesión) cuando el modal crear/editar producto está abierto.
+   El admin usa este layout y no carga globals.css, así que la regla debe estar aquí. */
+:global(body.modal-open .admin-top-bar) {
+  display: none !important;
+}

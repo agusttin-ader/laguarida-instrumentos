@@ -196,8 +196,8 @@ export default function ClientAuth({ children }){
           </div>
         ) : (
           <>
-            {/* Bloque superior: logo centrado + barra de sesión, alineado y compacto */}
-            <div className="relative z-30 border-b border-white/8 admin-animate-in opacity-0">
+            {/* Bloque superior: logo centrado + barra de sesión; se oculta con CSS cuando body.modal-open (modal crear/editar producto) */}
+            <div className="admin-top-bar relative z-30 border-b border-white/8 admin-animate-in opacity-0">
               <header className="flex justify-center pt-2 pb-1 px-4 md:px-6 md:pt-6 md:pb-3 xl:pt-8 xl:pb-4">
                 <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-lg" aria-label="Ir al inicio - La Guarida">
                   <Image
