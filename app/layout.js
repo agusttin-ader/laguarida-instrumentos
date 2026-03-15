@@ -5,6 +5,7 @@ import SiteShell from '../components/SiteShell'
 import ServiceWorkerRegister from '../components/ServiceWorkerRegister'
 import DisableZoomInApp from '../components/DisableZoomInApp'
 import { ToastProvider, ChatIntroToastTrigger } from '../components/ToastContext'
+import { HomeHeroImageProvider } from '../context/HomeHeroImageContext'
 
 const syne = Syne({
   subsets: ['latin', 'latin-ext'],
@@ -80,8 +81,10 @@ export default function RootLayout({ children }) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
         <DisableZoomInApp />
         <ToastProvider>
-          <SiteShell>{children}</SiteShell>
-          <ChatIntroToastTrigger />
+          <HomeHeroImageProvider>
+            <SiteShell>{children}</SiteShell>
+            <ChatIntroToastTrigger />
+          </HomeHeroImageProvider>
           <ServiceWorkerRegister />
         </ToastProvider>
       </body>

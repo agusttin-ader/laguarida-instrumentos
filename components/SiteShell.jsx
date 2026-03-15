@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic'
 import { usePathname, useRouter } from 'next/navigation'
 import Header from './Header'
 import Footer from './Footer'
-import BottomNav from './BottomNav'
 import PageTransition from './PageTransition'
 import PullToRefresh from './PullToRefresh'
 
@@ -30,6 +29,14 @@ export default function SiteShell({ children }) {
   }, [])
 
   useEffect(() => {
+    if (typeof document === 'undefined') return
+    const isHome = pathname === '/' || pathname === ''
+    if (isHome) document.body.classList.add('page-home')
+    else document.body.classList.remove('page-home')
+    return () => document.body.classList.remove('page-home')
+  }, [pathname])
+
+  useEffect(() => {
     if (typeof window === 'undefined') return
     if (pathname !== '/') return
     let targetId = null
@@ -51,14 +58,15 @@ export default function SiteShell({ children }) {
   return (
     <>
       {!isAdmin ? (
-        <PullToRefresh onRefresh={handleRefresh}>
+        <>
           <Header />
-          <main className="pb-[calc(68px+env(safe-area-inset-bottom,0px))] md:pb-0 min-h-0">
-            <PageTransition key={pathname}>{children}</PageTransition>
-          </main>
-          <BottomNav />
-          <Footer />
-        </PullToRefresh>
+          <PullToRefresh onRefresh={handleRefresh}>
+            <main className="pb-[calc(2rem+env(safe-area-inset-bottom,0px))] md:pb-0 min-h-0 pt-0">
+              <PageTransition key={pathname}>{children}</PageTransition>
+            </main>
+            <Footer />
+          </PullToRefresh>
+        </>
       ) : (
         <>
           <main>{children}</main>

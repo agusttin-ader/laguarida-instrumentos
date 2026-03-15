@@ -26,6 +26,11 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const { request } = event
   if (request.method !== 'GET') return
+  const isLocalhost = request.url.startsWith('http://localhost') || request.url.startsWith('http://127.0.0.1')
+  if (isLocalhost) {
+    event.respondWith(fetch(request))
+    return
+  }
   event.respondWith(
     fetch(request)
       .then(response => {

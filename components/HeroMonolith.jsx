@@ -1,11 +1,12 @@
 "use client"
 
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import ImageWithSkeleton from './ImageWithSkeleton'
 import imageService from '../lib/utils/imageService'
 import { useProducts } from '../hooks/useProducts'
 import { useToast } from './ToastContext'
+import { useHomeHeroImage } from '../context/HomeHeroImageContext'
 
 const WA_HREF = 'https://wa.me/5491154661749?text=' + encodeURIComponent('Hola, me interesa La Guarida, me podrias dar informacion?')
 
@@ -74,46 +75,68 @@ export default function HeroMonolith() {
     [specs]
   )
 
+  const { setHeroImageUrl } = useHomeHeroImage()
+  useEffect(() => {
+    if (imageSrc) setHeroImageUrl(imageSrc)
+    return () => setHeroImageUrl(null)
+  }, [imageSrc, setHeroImageUrl])
+
   if (loading || !item || !imageSrc) return null
 
   return (
     <section aria-labelledby="home-hero" className="w-full overflow-hidden">
-      {/* ——— Mobile v6: imagen full bleed + tipo grande debajo ——— */}
-      <article className="md:hidden w-full bg-[#0a0b0e]">
-        <div className="relative w-full" style={{ height: 'clamp(260px, 48vh, 380px)' }}>
+      {/* ——— Mobile: imagen desde borde superior (header fijo por encima), article con pt para el texto ——— */}
+      <div className="md:hidden">
+        <article
+          className="hero-mobile-editorial relative w-full min-h-[100vh] min-h-[100dvh] flex flex-col justify-end overflow-hidden pt-[calc(52px+max(0.25rem,env(safe-area-inset-top)))] sm:pt-[calc(56px+max(0.25rem,env(safe-area-inset-top)))]"
+        >
+        {/* Imagen de fondo: inset-0 para que llene todo el article (incl. zona del header) */}
+        <div className="absolute inset-0 hero-mobile-editorial-bg">
           <ImageWithSkeleton
             src={imageSrc}
             alt={item.name || 'Producto destacado'}
             fill
             quality={85}
             sizes="100vw"
-            className="object-cover"
+            className="object-cover object-top"
             priority
+            loading="eager"
             disableClientPreview
           />
+          {/* Desvanecimiento arriba: sin corte con el header / borde superior */}
+          <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.12) 28%, transparent 55%)' }} />
+          {/* Desvanecimiento abajo: transición suave con la sección siguiente */}
+          <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.35) 35%, transparent 70%)' }} />
         </div>
-        <div className="px-4 sm:px-5 pt-5 pb-6 sm:pt-6 sm:pb-8">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--vintage-gold)] font-semibold mb-2">Destacado</p>
-          <h1 id="home-hero" className="text-[1.625rem] sm:text-[1.75rem] font-bold leading-tight text-white tracking-tight">
+        {/* Contenido superpuesto abajo: destacado, título, precio y CTAs */}
+        <div className="hero-mobile-caption relative z-10 px-4 sm:px-5 pb-8 sm:pb-10 pt-16">
+          <p className="hero-mobile-badge hero-mobile-text-shadow text-[10px] uppercase tracking-[0.2em] text-white font-semibold mb-2">
+            Destacado
+          </p>
+          <h1 id="home-hero" className="hero-mobile-text-shadow text-[2rem] sm:text-[2.25rem] font-bold leading-[1.08] text-white tracking-tight">
             {item.name}
           </h1>
-          {item.price && (
-            <p className="mt-2 text-[1.0625rem] sm:text-[1.125rem] font-semibold text-white/80">{item.price}</p>
-          )}
-          <Link
-            href={`/guitars/${item.slug || item.id || ''}`}
-            className="no-custom-btn mt-5 sm:mt-6 flex items-center justify-center min-h-[48px] w-full rounded-xl bg-[var(--vintage-gold-soft)] text-[#1a1b20] font-bold text-[15px] border border-[var(--vintage-gold)]/50 active:scale-[0.98] transition-transform touch-manipulation"
-          >
-            Ver producto
-          </Link>
-          <Link
-            href="/#seleccion-destacada"
-            className="no-custom-btn mt-3 sm:mt-4 block text-center text-[13px] text-white/60 font-medium py-2 -mb-2"
-          >
-            Ver selección destacada
-          </Link>
+          {item.price ? (
+            <p className="hero-mobile-text-shadow mt-2 text-[1.125rem] font-semibold text-[var(--vintage-gold)]">{item.price}</p>
+          ) : null}
+          <div className="mt-6 flex flex-col gap-3">
+            <Link
+              href={`/guitars/${item.slug || item.id || ''}`}
+              className="hero-mobile-cta no-custom-btn flex items-center justify-center min-h-[50px] w-full rounded-full font-bold text-[15px] shadow-[0_2px_12px_rgba(0,0,0,0.35)] active:scale-[0.98] transition-transform touch-manipulation"
+              style={{ backgroundColor: '#ffffff', color: '#0f0f12' }}
+            >
+              Ver detalles
+            </Link>
+            <Link
+              href="/#seleccion-destacada"
+              className="hero-mobile-text-shadow no-custom-btn text-center text-[14px] text-white font-medium underline underline-offset-2 decoration-white/80"
+            >
+              Ver selección destacada
+            </Link>
+          </div>
         </div>
       </article>
+      </div>
 
       {/* ——— Desktop: 100% width split ——— */}
       <article className="hidden md:block relative w-full min-h-[60vh] lg:min-h-[65vh] bg-[#323232]">

@@ -3,15 +3,25 @@
 import React, { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
+import MenuDrawer from './MenuDrawer'
 
 const LOGO_DARK = '/images/logo/logo-fondo-oscuro.PNG'
 const SCROLL_THRESHOLD = 72
+
+function HamburgerIcon({ className }) {
+  return (
+    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M3 6h18M3 12h18M3 18h18" />
+    </svg>
+  )
+}
 
 export default function Header() {
   const pathname = usePathname()
   const router = useRouter()
   const isHome = pathname === '/' || pathname === ''
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -39,39 +49,103 @@ export default function Header() {
 
   const isProductPage = pathname?.startsWith('/guitars/')
   const compactBottom = isProductPage ? 'pb-1 sm:pb-2 md:pb-0' : ''
-  // Desktop (md+): header al mínimo cómodo; mobile/sm se mantiene igual
   const homeCompact = isHome ? 'pt-1 pb-2 sm:pt-3 sm:pb-4 md:pt-0 md:pb-0.5' : ''
-  return (
-    <header className={`${scrolled ? 'header-scrolled ' : ''}${isHome ? homeCompact : `pt-2 pb-4 sm:pt-4 sm:pb-8 md:pt-0 md:pb-1.5 ${compactBottom}`} sticky top-0 z-40 md:static md:z-auto bg-[var(--dark-bg-page)]/92 backdrop-blur-md border-b border-white/5 md:bg-transparent md:backdrop-blur-0 md:border-0`}>
-      <div className="flex items-center justify-between container-tight max-w-4xl relative min-h-[52px] sm:min-h-[58px] md:min-h-[38px]">
-        <div className="flex items-center min-w-0 md:justify-start" />
+  /* En home (móvil) header transparente; la imagen del hero abarca hasta arriba y se ve por debajo */
+  const mobileTransparent = isHome
+  const logoShadowStyle = { filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.9)) drop-shadow(0 4px 20px rgba(0,0,0,0.8))' }
 
-        <a href="/" aria-label="Ir al inicio" className={`logo-link block absolute left-1/2 -translate-x-1/2 z-10 top-1/2 -translate-y-1/2 pointer-events-none md:pointer-events-auto md:static md:translate-x-0 md:translate-y-0 ${isHome ? 'sm:translate-y-0 md:translate-y-0' : ''}`}>
-          <div className="relative header-logo-wrapper">
-            <Image src={LOGO_DARK} alt="La Guarida logo" width={1536} height={1024} priority style={{ objectFit: 'contain', display: 'block', height: 'auto' }} className="w-[222px] sm:w-[282px] md:w-[327px] h-auto block" quality={100} sizes="(min-width:768px) 327px, (min-width:640px) 282px, 222px" />
-          </div>
+  const mobileHeader = (
+    <>
+      {/* Fuerza header transparente en home móvil para que la imagen del hero ocupe todo el fondo */}
+      {isHome && !scrolled && (
+        <style dangerouslySetInnerHTML={{
+          __html: `@media (max-width:767px){#header-home-mobile-overlay.hero-overlay-header,.hero-overlay-header{background-color:transparent!important;background-image:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-bottom:none!important;box-shadow:none!important}}`
+        }} />
+      )}
+      <header
+        id={isHome ? 'header-home-mobile-overlay' : undefined}
+        aria-label="Cabecera"
+        className={`header-mobile md:hidden flex items-center justify-between min-h-[52px] sm:min-h-[56px] py-2 px-4 sm:px-5 ${isHome ? 'header-home-mobile hero-overlay-header' : ''} ${scrolled ? 'header-scrolled' : ''}`}
+        style={
+          isHome && !scrolled
+            ? { backgroundColor: 'transparent', borderBottom: 'none', backdropFilter: 'none', WebkitBackdropFilter: 'none' }
+            : undefined
+        }
+      >
+        <button
+          type="button"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Abrir menú"
+          className="relative z-20 flex items-center justify-center w-12 h-12 -m-2 rounded-xl text-white/95 hover:text-white no-custom-btn touch-manipulation shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+          style={{ WebkitTapHighlightColor: 'transparent', tapHighlightColor: 'transparent' }}
+        >
+          <HamburgerIcon className="w-7 h-7" />
+        </button>
+        <a
+          href="/"
+          aria-label="Ir al inicio"
+          className="relative z-10 flex flex-1 justify-center min-w-0 overflow-visible"
+          onClick={isHome ? (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) } : undefined}
+        >
+          <span style={logoShadowStyle} className="block w-[200px] sm:w-[240px] max-h-12 sm:max-h-14 overflow-visible">
+            <span className="block origin-center scale-[2.05] sm:scale-[2.2] w-full" style={{ transformOrigin: 'center' }}>
+              <Image
+                src={LOGO_DARK}
+                alt="La Guarida logo"
+                width={1536}
+                height={1024}
+                priority
+                className="w-full h-auto max-h-12 sm:max-h-14 object-contain block"
+                style={{ objectFit: 'contain' }}
+                quality={100}
+                sizes="(min-width:640px) 240px, 200px"
+              />
+            </span>
+          </span>
         </a>
+        <div className="relative z-20 w-12 flex-shrink-0" aria-hidden />
+      </header>
+      <MenuDrawer open={menuOpen} setOpen={setMenuOpen} />
+    </>
+  )
 
-        <nav className="hidden md:flex items-center justify-end ml-auto shrink-0" aria-label="Navegación principal">
-          <div className="flex items-center gap-4 xl:gap-5">
-            <a href="/" className={navLinkClass}>Home</a>
-            <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
-            <a href="/#about-section" onClick={(e) => handleSectionNav(e, 'about-section')} className={navLinkClass}>Sobre nosotros</a>
-            <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
-            <a href="/#seleccion-destacada" onClick={(e) => handleSectionNav(e, 'seleccion-destacada')} className={navLinkClass}>Selección destacada</a>
-            <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
-            <a href="/#low-cost" onClick={(e) => handleSectionNav(e, 'low-cost')} className={navLinkClass}>Low cost</a>
-            <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
-            <a href="/favoritos" className={navLinkClass}>
-              Favoritos
-            </a>
-          </div>
-        </nav>
-      </div>
-      <div className="container-tight max-w-4xl mt-1 hidden md:block">
-        <AuthIndicator />
-      </div>
-    </header>
+  return (
+    <>
+      {/* Header en flujo: en home móvil la imagen del hero ocupa el fondo (transparente) y el header hace scroll con la página */}
+      <div className="md:hidden relative z-10">{mobileHeader}</div>
+
+      {/* ——— Desktop: header actual sin cambios ——— */}
+      <header
+        className={`hidden md:block ${scrolled ? 'header-scrolled ' : ''}${isHome ? homeCompact : `pt-0 pb-1.5 ${compactBottom}`} md:bg-transparent md:backdrop-blur-0 md:border-0 relative`}
+      >
+        <div className="flex items-center justify-between container-tight max-w-4xl relative min-h-[38px]">
+          <div className="flex items-center min-w-0 md:justify-start" />
+
+          <a href="/" aria-label="Ir al inicio" className="logo-link block static z-10 pointer-events-auto">
+            <div className="relative header-logo-wrapper">
+              <Image src={LOGO_DARK} alt="La Guarida logo" width={1536} height={1024} priority style={{ objectFit: 'contain', display: 'block', height: 'auto' }} className="w-[327px] h-auto block" quality={100} sizes="327px" />
+            </div>
+          </a>
+
+          <nav className="flex items-center justify-end ml-auto shrink-0" aria-label="Navegación principal">
+            <div className="flex items-center gap-4 xl:gap-5">
+              <a href="/" className={navLinkClass}>Home</a>
+              <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
+              <a href="/#about-section" onClick={(e) => handleSectionNav(e, 'about-section')} className={navLinkClass}>Sobre nosotros</a>
+              <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
+              <a href="/#seleccion-destacada" onClick={(e) => handleSectionNav(e, 'seleccion-destacada')} className={navLinkClass}>Selección destacada</a>
+              <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
+              <a href="/#low-cost" onClick={(e) => handleSectionNav(e, 'low-cost')} className={navLinkClass}>Low cost</a>
+              <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
+              <a href="/favoritos" className={navLinkClass}>Favoritos</a>
+            </div>
+          </nav>
+        </div>
+        <div className="container-tight max-w-4xl mt-1">
+          <AuthIndicator />
+        </div>
+      </header>
+    </>
   )
 }
 

@@ -17,7 +17,12 @@ export const metadata = {
 export default function Page() {
   return (
     <>
-      <section id="home-top" aria-labelledby="home-hero" className="w-full !pt-0 !pb-0">
+      {/* -mt en móvil: el hero se superpone a la zona del header para que la imagen ocupe todo el fondo; el header hace scroll con la página */}
+      <section
+        id="home-top"
+        aria-labelledby="home-hero"
+        className="home-hero-section w-full !pt-0 !pb-0 md:mt-0 min-h-[100dvh] bg-[var(--dark-bg-page)] -mt-[calc(52px+max(0.25rem,env(safe-area-inset-top)))] sm:-mt-[calc(56px+max(0.25rem,env(safe-area-inset-top)))]"
+      >
         <HeroMonolith />
       </section>
 
