@@ -1,19 +1,25 @@
 "use client"
 
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Header from './Header'
 import Footer from './Footer'
 import BottomNav from './BottomNav'
 import PageTransition from './PageTransition'
+import PullToRefresh from './PullToRefresh'
 
 const HybridSupportChat = dynamic(() => import('./HybridSupportChat'), { ssr: false })
 
 /** Renderiza Header y Footer solo fuera de /admin para evitar doble header en login */
 export default function SiteShell({ children }) {
   const pathname = usePathname()
+  const router = useRouter()
   const isAdmin = typeof pathname === 'string' && pathname.startsWith('/admin')
+
+  const handleRefresh = useCallback(() => {
+    router.refresh()
+  }, [router])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -44,12 +50,20 @@ export default function SiteShell({ children }) {
 
   return (
     <>
-      {!isAdmin && <Header />}
-      <main className={!isAdmin ? 'pb-[calc(68px+env(safe-area-inset-bottom,0px))] md:pb-0' : ''}>
-        {!isAdmin ? <PageTransition key={pathname}>{children}</PageTransition> : children}
-      </main>
-      {!isAdmin && <BottomNav />}
-      {!isAdmin && <Footer />}
+      {!isAdmin ? (
+        <PullToRefresh onRefresh={handleRefresh}>
+          <Header />
+          <main className="pb-[calc(68px+env(safe-area-inset-bottom,0px))] md:pb-0 min-h-0">
+            <PageTransition key={pathname}>{children}</PageTransition>
+          </main>
+          <BottomNav />
+          <Footer />
+        </PullToRefresh>
+      ) : (
+        <>
+          <main>{children}</main>
+        </>
+      )}
       {!isAdmin && <HybridSupportChat />}
     </>
   )

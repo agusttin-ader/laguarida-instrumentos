@@ -44,7 +44,7 @@ self.addEventListener('push', event => {
   let payload = { title: 'La Guarida - Nuevo mensaje', body: '' }
   try {
     if (event.data) payload = event.data.json()
-  } catch (e) {
+  } catch {
     payload.body = event.data ? event.data.text() : ''
   }
   event.waitUntil(

@@ -16,20 +16,9 @@ export default function GalleryLightbox({
   const touchStartX = useRef(null)
   const touchDelta = useRef(0)
   const [mounted, setMounted] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-
   useEffect(() => {
     setMounted(true)
     return () => setMounted(false)
-  }, [])
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    const mq = window.matchMedia('(max-width: 767px)')
-    const sync = () => setIsMobile(mq.matches)
-    sync()
-    mq.addEventListener?.('change', sync)
-    return () => mq.removeEventListener?.('change', sync)
   }, [])
 
   useEffect(() => {

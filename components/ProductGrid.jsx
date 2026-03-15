@@ -42,7 +42,7 @@ export default function ProductGrid({ filters = {}, items: itemsProp }) {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-5 md:gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-5 md:gap-6 lg:gap-8">
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <div key={i} className="reveal reveal--visible" style={{ '--reveal-delay': `${(i - 1) * 60}ms` }}>
             <SkeletonProductCard />
@@ -66,7 +66,7 @@ export default function ProductGrid({ filters = {}, items: itemsProp }) {
         <div className="mb-6 p-4 rounded bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200">Error al cargar productos: {hasError}</div>
       ) : null}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-5 md:gap-6 lg:gap-8 w-full min-w-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-5 md:gap-6 lg:gap-8 w-full min-w-0">
         {filteredItems.map((item, idx) => (
           <div key={item.id ?? item.slug ?? idx} className="min-w-0 w-full">
             <ProductCard item={item} priority={idx < 3} />

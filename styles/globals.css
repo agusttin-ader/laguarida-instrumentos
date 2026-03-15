@@ -812,6 +812,18 @@ header {
   animation: lightbox-image-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+/* Ficha técnica producto: specs ocultos al desplegar (solo móvil) */
+@keyframes spec-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.product-specs-expandable-expanded .spec-item-extra {
+  animation: spec-in 0.28s ease-out forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .product-specs-expandable-expanded .spec-item-extra { animation: none; }
+}
+
 .modal-panel-enter { animation: modal-in 220ms cubic-bezier(.2,.9,.3,1) forwards }
 .modal-panel-exit  { animation: modal-out 180ms ease-in forwards }
 
@@ -1808,13 +1820,33 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   }
 
   .container-tight {
-    padding-left: 0.9rem;
-    padding-right: 0.9rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Mejorar rendimiento de scroll en listas largas */
+  .grid.grid-cols-1 .min-w-0 {
+    contain: layout style;
   }
 
   .card-interactive {
     border-color: rgba(255, 255, 255, 0.12);
     box-shadow: 0 10px 26px rgba(0, 0, 0, 0.26);
+  }
+
+  /* En móvil: sin animación de card al tocar o al cambiar imagen; solo transición suave de la imagen */
+  .card-mobile-no-motion,
+  .card-mobile-no-motion:hover,
+  .card-mobile-no-motion:active {
+    transition: none !important;
+    transform: none !important;
+  }
+  .card-mobile-no-motion img {
+    transition: opacity 0.3s ease-out !important;
+    transform: none !important;
+  }
+  .card-mobile-no-motion:hover img {
+    transform: none !important;
   }
 
   nav[aria-label="Navegación principal"] svg {

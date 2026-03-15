@@ -10,7 +10,7 @@ export default function FavoritosPage() {
   const { slugs } = useFavorites()
   const { products: allProducts, loading } = useProducts({ shuffleCatalog: false })
 
-  const slugSet = useMemo(() => new Set(slugs), [slugs.join(',')])
+  const slugSet = useMemo(() => new Set(slugs), [slugs])
   const products = useMemo(
     () => (slugs.length === 0 ? [] : allProducts.filter((p) => slugSet.has(p.slug || p.id))),
     [allProducts, slugs.length, slugSet]

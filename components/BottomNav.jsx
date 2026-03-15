@@ -24,6 +24,15 @@ function IconGrid() {
   );
 }
 
+function IconTag() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 10.586V5a1 1 0 011-1h5.586a1 1 0 01.707.293l8.5 8.5a1 1 0 010 1.414l-5.586 5.586a1 1 0 01-1.414 0l-8.5-8.5A1 1 0 014 10.586z" stroke="currentColor" strokeWidth={iconStroke} strokeLinejoin="round" />
+      <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
+    </svg>
+  );
+}
+
 function IconHeart() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -55,7 +64,7 @@ export default function BottomNav() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isFavoritos = pathname === "/favoritos";
-  const itemClass = "flex-1 flex flex-col items-center justify-center min-w-0 min-h-[44px] py-2 text-sm bottom-nav-item active:scale-[0.97] transition-transform";
+  const itemClass = "flex-1 flex flex-col items-center justify-center min-w-0 min-h-[48px] py-2.5 text-sm bottom-nav-item active:scale-[0.97] transition-transform touch-manipulation";
   const activeClass = "text-white";
   const mutedClass = "text-white/92 hover:text-white";
 
@@ -92,25 +101,30 @@ export default function BottomNav() {
   }, []);
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-white/20 bg-[var(--dark-bg-surface)]/95 backdrop-blur-xl h-[68px] flex items-stretch px-1 pb-[env(safe-area-inset-bottom)]" aria-label="Navegación principal">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-white/20 bg-[var(--dark-bg-surface)]/95 backdrop-blur-xl min-h-[68px] flex items-stretch px-1 pt-1 pb-[env(safe-area-inset-bottom)]" aria-label="Navegación principal">
       <Link href="/" onClick={handleHomeNav} aria-label="Inicio" className={`${itemClass} ${isHome ? activeClass : mutedClass}`}>
         <IconHome className="flex-shrink-0" />
-        <span className="text-[11px] mt-1 font-medium">Inicio</span>
+        <span className="text-[9px] mt-1 font-medium whitespace-nowrap">Inicio</span>
       </Link>
 
       <Link href="/#seleccion-destacada" onClick={(e) => handleSectionNav(e, "seleccion-destacada")} aria-label="Selección destacada" className={`${itemClass} ${isHome ? activeClass : mutedClass}`}>
         <IconGrid className="flex-shrink-0" />
-        <span className="text-[11px] mt-1 font-medium">Selección</span>
+        <span className="text-[9px] mt-1 font-medium whitespace-nowrap">Selección</span>
+      </Link>
+
+      <Link href="/#low-cost" onClick={(e) => handleSectionNav(e, "low-cost")} aria-label="Low cost" className={`${itemClass} ${isHome ? activeClass : mutedClass}`}>
+        <IconTag className="flex-shrink-0" />
+        <span className="text-[9px] mt-1 font-medium whitespace-nowrap">Low cost</span>
       </Link>
 
       <Link href="/favoritos" aria-label="Tu selección" className={`${itemClass} ${isFavoritos ? activeClass : mutedClass}`}>
         <IconHeart className="flex-shrink-0" />
-        <span className="text-[11px] mt-1 font-medium">Favoritos</span>
+        <span className="text-[9px] mt-1 font-medium whitespace-nowrap">Favoritos</span>
       </Link>
 
       <Link href="/#about-section" onClick={(e) => handleSectionNav(e, "about-section")} aria-label="Sobre nosotros" className={`${itemClass} ${isHome ? activeClass : mutedClass}`}>
         <IconInfo className="flex-shrink-0" />
-        <span className="text-[11px] mt-1 font-medium">Sobre</span>
+        <span className="text-[9px] mt-1 font-medium whitespace-nowrap">Sobre</span>
       </Link>
 
       <button
@@ -120,7 +134,7 @@ export default function BottomNav() {
         className={`${itemClass} ${mutedClass} bg-transparent border-0 p-0 cursor-pointer no-custom-btn`}
       >
         <IconChat className="flex-shrink-0" />
-        <span className="text-[11px] mt-1 font-medium">Chat</span>
+        <span className="text-[9px] mt-1 font-medium whitespace-nowrap">Chat</span>
       </button>
     </nav>
   );

@@ -2,21 +2,21 @@
 
 import { useEffect } from 'react'
 
-function shouldDisableZoom() {
+/**
+ * Solo desactiva zoom en PWA (standalone). En el navegador móvil se mantiene
+ * el viewport del layout (userScalable: true) para accesibilidad.
+ */
+function isStandalonePWA() {
   if (typeof window === 'undefined') return false
-  const standalone =
+  return (
     Boolean(window.navigator?.standalone) ||
     window.matchMedia?.('(display-mode: standalone)')?.matches
-  const mobile = window.matchMedia?.('(max-width: 768px)')?.matches
-  return standalone || mobile
+  )
 }
 
-/**
- * Bloquea el zoom (pinch y doble tap) en móvil y en modo app (PWA/standalone).
- */
-const NO_ZOOM =
+const NO_ZOOM_PWA =
   'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'
-const DEFAULT_VIEWPORT = 'width=device-width, initial-scale=1'
+const DEFAULT_VIEWPORT = 'width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes'
 
 export default function DisableZoomInApp() {
   useEffect(() => {
@@ -32,12 +32,12 @@ export default function DisableZoomInApp() {
     function apply() {
       viewport.setAttribute(
         'content',
-        shouldDisableZoom() ? NO_ZOOM : original
+        isStandalonePWA() ? NO_ZOOM_PWA : original
       )
     }
 
     apply()
-    const mql = window.matchMedia?.('(max-width: 768px)')
+    const mql = window.matchMedia?.('(display-mode: standalone)')
     mql?.addEventListener?.('change', apply)
 
     return () => {

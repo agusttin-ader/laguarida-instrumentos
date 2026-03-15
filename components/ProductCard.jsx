@@ -113,7 +113,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
                   decoding="async"
                   onLoad={() => setLoadedIndices((prev) => new Set(prev).add(idx))}
                   onError={() => {}}
-                  className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} transition-transform duration-300 ease-out group-hover/img:scale-[1.03]`}
+                  className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} transition-opacity duration-300 ease-out md:transition-transform md:duration-300 md:ease-out md:group-hover/img:scale-[1.03]`}
                   style={{ objectFit: objectFit, objectPosition: 'center' }}
                 />
             </div>
@@ -163,12 +163,12 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
           </div>
         </>
       )}
-      {/* Favorito: corazón arriba a la derecha */}
+      {/* Favorito: corazón arriba a la derecha — área táctil ≥44px en móvil */}
       <button
         type="button"
         onClick={handleFavoriteClick}
         aria-label={fav ? 'Quitar de tu selección' : 'Agregar a tu selección'}
-        className="no-custom-btn favorite-heart-btn absolute top-2 right-2 z-20 w-9 h-9 md:w-10 md:h-10 flex items-center justify-center border bg-black/55 border-white/25 text-white/90 hover:bg-black/70 hover:border-white/40 backdrop-blur-sm transition-all duration-200"
+        className="no-custom-btn favorite-heart-btn absolute top-2 right-2 z-20 min-w-[44px] min-h-[44px] w-11 h-11 md:w-10 md:h-10 flex items-center justify-center border bg-black/55 border-white/25 text-white/90 hover:bg-black/70 hover:border-white/40 backdrop-blur-sm transition-all duration-200 touch-manipulation"
       >
         <svg
           width="18"
@@ -192,7 +192,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
   return (
     <article
       aria-labelledby={headingId}
-      className={`card-interactive card-editorial w-full min-w-0 max-w-full overflow-hidden rounded-2xl md:rounded-[22px] border border-[var(--dark-border)] bg-[var(--dark-bg-card)] shadow-[0_4px_20px_rgba(0,0,0,0.18)] md:shadow-[0_8px_32px_rgba(0,0,0,0.2)] ${isHoveringImage ? 'card-hovering-image' : ''}`}
+      className={`card-interactive card-editorial card-mobile-no-motion w-full min-w-0 max-w-full overflow-hidden rounded-2xl md:rounded-[22px] border border-[var(--dark-border)] bg-[var(--dark-bg-card)] shadow-[0_4px_20px_rgba(0,0,0,0.18)] md:shadow-[0_8px_32px_rgba(0,0,0,0.2)] ${isHoveringImage ? 'card-hovering-image' : ''}`}
     >
       <Link
         href={`/guitars/${p.slug || p.id}`}

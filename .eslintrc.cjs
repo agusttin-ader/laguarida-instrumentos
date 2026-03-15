@@ -29,7 +29,7 @@ module.exports = {
     'no-empty': 'warn',
     'no-inner-declarations': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_' }],
-    'no-unused-vars': 'warn',
+    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     'no-undef': 'off'
   }
 }

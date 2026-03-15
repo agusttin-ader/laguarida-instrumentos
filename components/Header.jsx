@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
 
 const LOGO_DARK = '/images/logo/logo-fondo-oscuro.PNG'
@@ -9,6 +9,7 @@ const SCROLL_THRESHOLD = 72
 
 export default function Header() {
   const pathname = usePathname()
+  const router = useRouter()
   const isHome = pathname === '/' || pathname === ''
   const [scrolled, setScrolled] = useState(false)
 
@@ -23,13 +24,17 @@ export default function Header() {
   }, [])
 
   const navLinkClass =
-    "relative inline-flex items-center py-1.5 px-0.5 text-[12px] font-semibold uppercase tracking-[0.18em] text-[#e4e7f0]/85 hover:text-[#fffaf0] transition-colors duration-300 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent after:content-[''] after:absolute after:left-0 after:-bottom-1.5 after:h-[2px] after:w-0 after:bg-[var(--vintage-gold)] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
+    "relative inline-flex items-center py-1.5 px-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] whitespace-nowrap text-[#e4e7f0]/85 hover:text-[#fffaf0] transition-colors duration-300 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent after:content-[''] after:absolute after:left-0 after:-bottom-1.5 after:h-[2px] after:w-0 after:bg-[var(--vintage-gold)] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
 
   function handleSectionNav(e, sectionId) {
-    if (!isHome) return
     e.preventDefault()
-    const el = document.getElementById(sectionId)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (isHome) {
+      const el = document.getElementById(sectionId)
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      return
+    }
+    try { sessionStorage.setItem('pending-scroll-target', sectionId) } catch { /* empty */ }
+    router.push('/')
   }
 
   const isProductPage = pathname?.startsWith('/guitars/')
@@ -38,22 +43,24 @@ export default function Header() {
   const homeCompact = isHome ? 'pt-1 pb-2 sm:pt-3 sm:pb-4 md:pt-0 md:pb-0.5' : ''
   return (
     <header className={`${scrolled ? 'header-scrolled ' : ''}${isHome ? homeCompact : `pt-2 pb-4 sm:pt-4 sm:pb-8 md:pt-0 md:pb-1.5 ${compactBottom}`} sticky top-0 z-40 md:static md:z-auto bg-[var(--dark-bg-page)]/92 backdrop-blur-md border-b border-white/5 md:bg-transparent md:backdrop-blur-0 md:border-0`}>
-      <div className="flex items-center justify-between container-tight max-w-4xl relative min-h-[58px] md:min-h-[38px]">
+      <div className="flex items-center justify-between container-tight max-w-4xl relative min-h-[52px] sm:min-h-[58px] md:min-h-[38px]">
         <div className="flex items-center min-w-0 md:justify-start" />
 
-        <a href="/" aria-label="Ir al inicio" className={`logo-link block absolute left-1/2 -translate-x-1/2 z-10 top-1/2 -translate-y-1/2 pointer-events-none md:pointer-events-auto md:static md:translate-x-0 md:translate-y-0 md:ml-10 ${isHome ? 'sm:translate-y-0 md:translate-y-0' : ''}`}>
+        <a href="/" aria-label="Ir al inicio" className={`logo-link block absolute left-1/2 -translate-x-1/2 z-10 top-1/2 -translate-y-1/2 pointer-events-none md:pointer-events-auto md:static md:translate-x-0 md:translate-y-0 ${isHome ? 'sm:translate-y-0 md:translate-y-0' : ''}`}>
           <div className="relative header-logo-wrapper">
             <Image src={LOGO_DARK} alt="La Guarida logo" width={1536} height={1024} priority style={{ objectFit: 'contain', display: 'block', height: 'auto' }} className="w-[222px] sm:w-[282px] md:w-[327px] h-auto block" quality={100} sizes="(min-width:768px) 327px, (min-width:640px) 282px, 222px" />
           </div>
         </a>
 
-        <nav className="hidden md:flex items-center justify-end ml-auto" aria-label="Navegación principal">
-          <div className="flex items-center gap-6">
+        <nav className="hidden md:flex items-center justify-end ml-auto shrink-0" aria-label="Navegación principal">
+          <div className="flex items-center gap-4 xl:gap-5">
             <a href="/" className={navLinkClass}>Home</a>
             <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
             <a href="/#about-section" onClick={(e) => handleSectionNav(e, 'about-section')} className={navLinkClass}>Sobre nosotros</a>
             <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
             <a href="/#seleccion-destacada" onClick={(e) => handleSectionNav(e, 'seleccion-destacada')} className={navLinkClass}>Selección destacada</a>
+            <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
+            <a href="/#low-cost" onClick={(e) => handleSectionNav(e, 'low-cost')} className={navLinkClass}>Low cost</a>
             <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
             <a href="/favoritos" className={navLinkClass}>
               Favoritos

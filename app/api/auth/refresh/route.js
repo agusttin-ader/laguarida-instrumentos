@@ -7,7 +7,7 @@ import { getSupabaseServerClient } from '../../../../lib/supabase/server'
 const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
 const ACCESS_TOKEN_MAX_AGE = 60 * 60 // 1h (Supabase JWT expiry)
 
-export async function POST(req) {
+export async function POST(_req) {
   try {
     const cookieStore = await cookies()
     const refreshCookie =

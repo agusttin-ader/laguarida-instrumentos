@@ -11,6 +11,7 @@ import ProductCard from '../../../components/ProductCard'
 import imageService from '../../../lib/utils/imageService'
 import ProductShareAndFavorite from '../../../components/ProductShareAndFavorite'
 import ProductPageCTA from '../../../components/ProductPageCTA'
+import ProductSpecsExpandable from '../../../components/ProductSpecsExpandable'
 import { parseNumericPriceForSchema } from '../../../lib/utils/normalizeProduct'
 
 // Generate page metadata dynamically based on the product data
@@ -274,38 +275,28 @@ export default async function GuitarPage({ params }) {
             )}
 
             {hasFicha && (
-              <div className="mb-6">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--dark-text-secondary)] mb-3">Ficha técnica</p>
-                <ul className="flex flex-wrap gap-2">
-                  {[
-                    { label: 'Modelo', value: modelValue },
-                    { label: 'Madera del cuerpo', value: woodValue },
-                    { label: 'Micrófonos', value: micsValue },
-                    { label: 'Escala', value: product.scale_length },
-                    { label: 'Perfil de mástil', value: product.neck_profile },
-                    { label: 'Radio del diapasón', value: product.fingerboard_radius },
-                    { label: 'Madera del diapasón', value: product.fingerboard_material },
-                    { label: 'Construcción del mástil', value: product.neck_construction },
-                    { label: 'Ancho de cejuela', value: product.nut_width },
-                    { label: 'Trastes', value: product.frets },
-                    { label: 'Puente', value: product.bridge },
-                    { label: 'Clavijas', value: product.tuners },
-                    { label: 'Terminación del hardware', value: product.hardware_finish },
-                    { label: 'Controles', value: product.controls },
-                    { label: 'Conmutación', value: product.switching },
-                    { label: 'Origen', value: product.origin },
-                    { label: 'Año', value: product.year },
-                    { label: 'Peso (kg aprox.)', value: product.weight ? `${product.weight}` : null },
-                  ]
-                    .filter(spec => spec.value && String(spec.value).trim() !== '')
-                    .map((spec, idx) => (
-                      <li key={idx} className="rounded-full border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] px-4 py-2 text-[13px] text-[var(--dark-text-secondary)]">
-                        <span className="text-[var(--dark-muted)]">{spec.label}</span>{' '}
-                        <span className="font-medium text-[var(--dark-text-primary)] ml-1">{spec.value}</span>
-                      </li>
-                    ))}
-                </ul>
-              </div>
+              <ProductSpecsExpandable
+                specs={[
+                  { label: 'Modelo', value: modelValue },
+                  { label: 'Madera del cuerpo', value: woodValue },
+                  { label: 'Micrófonos', value: micsValue },
+                  { label: 'Escala', value: product.scale_length },
+                  { label: 'Perfil de mástil', value: product.neck_profile },
+                  { label: 'Radio del diapasón', value: product.fingerboard_radius },
+                  { label: 'Madera del diapasón', value: product.fingerboard_material },
+                  { label: 'Construcción del mástil', value: product.neck_construction },
+                  { label: 'Ancho de cejuela', value: product.nut_width },
+                  { label: 'Trastes', value: product.frets },
+                  { label: 'Puente', value: product.bridge },
+                  { label: 'Clavijas', value: product.tuners },
+                  { label: 'Terminación del hardware', value: product.hardware_finish },
+                  { label: 'Controles', value: product.controls },
+                  { label: 'Conmutación', value: product.switching },
+                  { label: 'Origen', value: product.origin },
+                  { label: 'Año', value: product.year },
+                  { label: 'Peso (kg aprox.)', value: product.weight ? `${product.weight}` : null },
+                ].filter(spec => spec.value && String(spec.value).trim() !== '')}
+              />
             )}
 
             <ProductPageCTA
