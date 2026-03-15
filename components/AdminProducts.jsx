@@ -20,6 +20,7 @@ export default function AdminProducts(){
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [listOpen, setListOpen] = useState(false)
+  const [activityOpen, setActivityOpen] = useState(false)
   const [form, setForm] = useState({ name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '' })
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(null)
@@ -102,22 +103,30 @@ export default function AdminProducts(){
 
   useEffect(() => {
     load()
-    // cargar actividad reciente desde localStorage (últimos 30 días)
-    try {
-      const raw = localStorage.getItem('admin:recent-activity:v1')
-      if (raw) {
-        const parsed = JSON.parse(raw)
-        const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000
-        const now = Date.now()
-        const cleaned = Array.isArray(parsed)
-          ? parsed.filter((a) => a.ts && now - a.ts <= THIRTY_DAYS)
-          : []
-        setRecentActivity(cleaned)
-        if (cleaned.length !== (parsed?.length || 0)) {
-          localStorage.setItem('admin:recent-activity:v1', JSON.stringify(cleaned))
+    // cargar actividad reciente desde API (todos los dispositivos); fallback a localStorage
+    async function loadActivity() {
+      try {
+        const res = await fetch('/api/admin/activity', { credentials: 'include' })
+        if (res.ok) {
+          const list = await res.json()
+          setRecentActivity(Array.isArray(list) ? list : [])
+          return
         }
-      }
-    } catch { /* empty */ }
+      } catch { /* empty */ }
+      try {
+        const raw = localStorage.getItem('admin:recent-activity:v1')
+        if (raw) {
+          const parsed = JSON.parse(raw)
+          const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000
+          const now = Date.now()
+          const cleaned = Array.isArray(parsed)
+            ? parsed.filter((a) => a.ts && now - a.ts <= THIRTY_DAYS)
+            : []
+          setRecentActivity(cleaned)
+        }
+      } catch { /* empty */ }
+    }
+    loadActivity()
   }, [])
 
   // Tras cargar, si hay un borrador de "crear producto" (p. ej. por un refresh), abrir el modal con esos datos
@@ -324,7 +333,7 @@ export default function AdminProducts(){
       }
       // close modal and clear previews
       closeModal()
-      addRecentActivity(modalMode === 'edit' ? 'update' : 'create', modalForm.name || 'Producto')
+      addRecentActivity(modalMode === 'edit' ? 'update' : 'create', modalForm.name || 'Producto', modalMode === 'edit' ? editingId : null)
       setSuccess(modalMode === 'edit' ? 'Producto actualizado correctamente' : 'Producto creado correctamente')
       setTimeout(() => setSuccess(null), 3000)
     } catch (err){
@@ -826,6 +835,7 @@ export default function AdminProducts(){
         const txt = await res.text().catch(() => '')
         throw new Error(`${res.status} ${res.statusText} ${txt}`)
       }
+      const createdOrUpdated = await res.json().catch(() => null)
       await load()
       setForm({ name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '' })
       setEditingId(null)
@@ -836,10 +846,11 @@ export default function AdminProducts(){
       galleryPreviews.forEach(p => { try { URL.revokeObjectURL(p.url) } catch (e) {} })
       setGalleryPreviews([])
       if (editingId) {
-        addRecentActivity('update', form.name || 'Producto')
+        addRecentActivity('update', form.name || 'Producto', editingId)
         toast('Producto actualizado', 'success')
       } else {
-        addRecentActivity('create', form.name || 'Producto')
+        const newId = Array.isArray(createdOrUpdated) ? createdOrUpdated?.[0]?.id : createdOrUpdated?.id
+        addRecentActivity('create', form.name || 'Producto', newId)
         toast('Producto creado', 'success')
       }
       hapticLight()
@@ -868,7 +879,7 @@ export default function AdminProducts(){
         throw new Error(`${res.status} ${res.statusText} ${txt}`)
       }
       await load()
-      addRecentActivity('delete', label)
+      addRecentActivity('delete', label, id)
       toast('Producto eliminado', 'success')
       hapticLight()
       setSuccess('Producto eliminado')
@@ -882,25 +893,32 @@ export default function AdminProducts(){
     }
   }
 
-  function addRecentActivity(type, label){
+  async function addRecentActivity(type, label, productId = null) {
     const stamp = Date.now()
     const time = new Date(stamp).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })
     const entry = {
-      id: `${stamp}-${Math.random().toString(36).slice(2, 8)}`,
+      id: `local-${stamp}-${Math.random().toString(36).slice(2, 8)}`,
       type,
       label,
       ts: stamp,
       time
     }
-    setRecentActivity(prev => {
-      const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000
-      const now = Date.now()
-      const merged = [entry, ...prev].filter(a => a.ts && now - a.ts <= THIRTY_DAYS)
-      try {
-        localStorage.setItem('admin:recent-activity:v1', JSON.stringify(merged))
-      } catch { /* empty */ }
-      return merged.slice(0, 20)
-    })
+    setRecentActivity(prev => [entry, ...prev].slice(0, 30))
+    try {
+      const res = await fetch('/api/admin/activity', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, label, product_id: productId || undefined })
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setRecentActivity(prev => {
+          const withoutLocal = prev.filter(a => a.id !== entry.id)
+          return [{ ...data, id: data.id }, ...withoutLocal].slice(0, 30)
+        })
+      }
+    } catch { /* empty */ }
   }
 
   const quickActions = React.useMemo(() => ([
@@ -1004,7 +1022,7 @@ export default function AdminProducts(){
 
   return (
     <PullToRefresh onRefresh={load}>
-    <div className="space-y-6 md:space-y-8 xl:space-y-10">
+    <div className="space-y-6 md:space-y-8 xl:space-y-10 pb-24 md:pb-12">
       {/* Action sheet: long-press o clic derecho en fila → Editar / Eliminar */}
       {actionProduct ? (
         <div className="fixed inset-0 z-[96] flex items-end sm:items-center justify-center px-0 sm:px-4">
@@ -1299,28 +1317,38 @@ export default function AdminProducts(){
       </section>
 
       <section className="p-5 md:p-6 lg:p-8 xl:p-10 admin-premium-card admin-animate-in admin-stagger-1 opacity-0">
-        <div className="flex items-center justify-between gap-3 mb-4">
-          <h2 className="text-base font-semibold tracking-tight text-white md:text-[1.05rem]">Actividad reciente</h2>
-          <span className="text-[11px] uppercase tracking-wider text-white/50">Últimos cambios</span>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-base font-semibold tracking-tight text-white md:text-[1.05rem]">Actividad reciente</h2>
+            <p className="text-[11px] text-white/45 mt-0.5">Últimos cambios en todos los dispositivos</p>
+          </div>
+          <button type="button" onClick={() => setActivityOpen(v => !v)} className="admin-btn-interact inline-flex items-center justify-center gap-2 text-sm admin-premium-btn-secondary px-3 py-2.5 w-full md:w-auto no-custom-btn rounded-xl">
+            {activityOpen ? 'Ocultar' : 'Mostrar'}
+            <svg className={`h-4 w-4 transition-transform ${activityOpen ? 'rotate-180' : 'rotate-0'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
         </div>
-        {recentActivity.length === 0 ? (
-          <div className="flex flex-col items-center justify-center text-center rounded-xl border border-white/08 px-4 py-8 bg-white/[0.03]">
-            <span className="text-3xl opacity-50 mb-2" aria-hidden>📋</span>
-            <p className="text-sm text-white/60">Aún no hay cambios recientes.</p>
-            <p className="text-xs text-white/45 mt-1">Creá o editá un producto para ver la actividad de los últimos 30 días.</p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {recentActivity.map((a) => (
-              <div key={a.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/08 bg-white/[0.03] px-4 py-2.5">
-                <p className="text-sm text-white/92 truncate">
-                  {a.type === 'create' ? 'Creaste' : a.type === 'update' ? 'Actualizaste' : 'Eliminaste'} <span className="text-white font-medium">{a.label}</span>
-                </p>
-                <span className="text-[11px] text-white/55 whitespace-nowrap">{a.time}</span>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className={`overflow-hidden transition-all duration-300 ease-out ${activityOpen ? 'max-h-[800px] mt-4' : 'max-h-0'}`}>
+          {recentActivity.length === 0 ? (
+            <div className="flex flex-col items-center justify-center text-center rounded-xl border border-white/08 px-4 py-8 bg-white/[0.03]">
+              <span className="text-3xl opacity-50 mb-2" aria-hidden>📋</span>
+              <p className="text-sm text-white/60">Aún no hay cambios recientes.</p>
+              <p className="text-xs text-white/45 mt-1">Creá o editá un producto para ver la actividad de todos los dispositivos.</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {recentActivity.map((a) => (
+                <div key={a.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/08 bg-white/[0.03] px-4 py-2.5">
+                  <p className="text-sm text-white/92 truncate">
+                    {a.type === 'create' ? 'Creaste' : a.type === 'update' ? 'Actualizaste' : 'Eliminaste'} <span className="text-white font-medium">{a.label}</span>
+                  </p>
+                  <span className="text-[11px] text-white/55 whitespace-nowrap">{a.time}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </section>
 
       <section className="p-5 md:p-6 lg:p-8 xl:p-10 admin-premium-card admin-animate-in admin-stagger-2 opacity-0">
