@@ -63,7 +63,7 @@ export default function Header() {
       <header
         id={isHome ? 'header-home-mobile-overlay' : undefined}
         aria-label="Cabecera"
-        className={`header-mobile md:hidden flex items-center justify-between min-h-[52px] sm:min-h-[56px] py-2 px-4 sm:px-5 ${isHome ? 'header-home-mobile hero-overlay-header' : ''} ${scrolled ? 'header-scrolled' : ''}`}
+        className={`header-mobile md:hidden flex items-center justify-between min-h-[52px] sm:min-h-[56px] py-2 px-4 sm:px-5 left-0 right-0 top-0 ${isHome ? 'header-home-mobile hero-overlay-header' : ''} ${scrolled ? 'header-scrolled' : ''}`}
         style={
           isHome && !scrolled
             ? { backgroundColor: 'transparent', borderBottom: 'none', backdropFilter: 'none', WebkitBackdropFilter: 'none' }
@@ -109,8 +109,8 @@ export default function Header() {
 
   return (
     <>
-      {/* Header en flujo: en home móvil la imagen del hero ocupa el fondo (transparente) y el header hace scroll con la página */}
-      <div className="md:hidden relative z-10">{mobileHeader}</div>
+      {/* Header fijo en móvil: sigue al scroll para que siempre esté visible */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-[60]">{mobileHeader}</div>
 
       {/* ——— Desktop: header actual sin cambios ——— */}
       <header

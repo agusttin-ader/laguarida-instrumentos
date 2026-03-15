@@ -18,7 +18,7 @@ export const metadata = {
 export default function Page() {
   return (
     <>
-      {/* -mt en móvil: el hero se superpone a la zona del header para que la imagen ocupe todo el fondo; el header hace scroll con la página */}
+      {/* -mt en móvil: el hero se superpone a la zona del header; el header es fijo y sigue al scroll */}
       <section
         id="home-top"
         aria-labelledby="home-hero"
