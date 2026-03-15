@@ -86,7 +86,7 @@ export default function Header() {
         <a
           href="/"
           aria-label="Ir al inicio"
-          className="relative z-10 flex flex-1 justify-center min-w-0 overflow-visible"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex justify-center min-w-0 overflow-visible pointer-events-auto"
           onClick={isHome ? (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) } : undefined}
         >
           <span style={logoShadowStyle} className="block w-[200px] sm:w-[240px] max-h-12 sm:max-h-14 overflow-visible">
