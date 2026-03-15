@@ -63,13 +63,17 @@ export default function Header() {
       <header
         id={isHome ? 'header-home-mobile-overlay' : undefined}
         aria-label="Cabecera"
-        className={`header-mobile md:hidden flex items-center justify-between min-h-[52px] sm:min-h-[56px] py-2 px-4 sm:px-5 left-0 right-0 top-0 ${isHome ? 'header-home-mobile hero-overlay-header' : ''} ${scrolled ? 'header-scrolled' : ''}`}
+        className={`header-mobile md:hidden flex items-center justify-between min-h-[52px] sm:min-h-[56px] py-2 px-4 sm:px-5 left-0 right-0 top-0 relative ${isHome ? 'header-home-mobile hero-overlay-header' : ''} ${scrolled ? 'header-scrolled' : ''}`}
         style={
           isHome && !scrolled
             ? { backgroundColor: 'transparent', borderBottom: 'none', backdropFilter: 'none', WebkitBackdropFilter: 'none' }
             : undefined
         }
       >
+        {/* Franja oscura transparente de punta a punta (solo en home sin scroll) */}
+        {isHome && !scrolled && (
+          <div className="absolute inset-0 w-full bg-black/35 pointer-events-none" aria-hidden />
+        )}
         <button
           type="button"
           onClick={() => setMenuOpen(true)}
