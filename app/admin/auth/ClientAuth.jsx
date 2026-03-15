@@ -56,8 +56,8 @@ export default function ClientAuth({ children }){
         if (!mounted) return
         setSession(data?.session ?? null)
         setUser(data?.session?.user ?? null)
-      } catch (err) {
-        console.warn('Error getting session', err)
+      } catch {
+        // Session init error; state remains null
       } finally {
         if (mounted) setLoading(false)
       }
@@ -176,8 +176,7 @@ export default function ClientAuth({ children }){
       setUser(null)
       toast('Sesión cerrada', 'success')
       router.push('/admin/login')
-    } catch (err) {
-      console.warn('Sign out error', err)
+    } catch {
       toast('Error al cerrar sesión', 'error')
     }
   }
@@ -198,40 +197,40 @@ export default function ClientAuth({ children }){
           <>
             {/* Bloque superior: logo centrado + barra de sesión; se oculta con CSS cuando body.modal-open (modal crear/editar producto) */}
             <div className="admin-top-bar relative z-30 border-b border-white/8 admin-animate-in opacity-0">
-              <header className="flex justify-center pt-2 pb-1 px-4 md:px-6 md:pt-6 md:pb-3 xl:pt-8 xl:pb-4">
+              <header className="flex justify-center pt-4 pb-2 px-4 md:px-6 md:pt-6 md:pb-3 xl:pt-8 xl:pb-4">
                 <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-lg" aria-label="Ir al inicio - La Guarida">
                   <Image
                     src="/images/logo/logo-fondo-oscuro.PNG"
                     alt="La Guarida"
                     width={1536}
                     height={1024}
-                    className="w-[180px] sm:w-[222px] md:w-[282px] h-auto block object-contain"
+                    className="w-[220px] sm:w-[240px] md:w-[282px] h-auto block object-contain"
                     quality={100}
-                    sizes="(min-width:768px) 327px, (min-width:640px) 282px, 222px"
+                    sizes="(min-width:768px) 327px, (min-width:640px) 282px, 240px"
                     priority
                   />
                 </Link>
               </header>
-              <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2 px-4 md:px-6 xl:px-8 pb-3 pt-1 md:pb-5 md:pt-3 xl:pb-6 xl:pt-4 admin-auth-bar rounded-b-xl">
+              <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-3 px-4 md:px-6 xl:px-8 pb-4 pt-2 md:pb-5 md:pt-3 xl:pb-6 xl:pt-4 admin-auth-bar rounded-b-xl">
                 <div className="flex items-center gap-3 w-full sm:w-auto order-1 sm:order-1 min-w-0">
                   {(pathname !== '/admin' && pathname !== '/admin/') && (
                     <Link
                       href="/admin"
-                      className="inline-flex items-center gap-1.5 text-sm text-white/70 hover:text-white transition-colors shrink-0 no-custom-btn rounded-lg py-1 pr-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                      className="inline-flex items-center gap-2 text-base md:text-sm text-white/70 hover:text-white transition-colors shrink-0 no-custom-btn rounded-lg py-2 pr-2 min-h-[44px] md:min-h-0 md:py-1 md:pr-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
                       aria-label="Volver al panel"
                     >
-                      <CaretLeft size={18} weight="bold" aria-hidden />
+                      <CaretLeft size={20} weight="bold" aria-hidden />
                       Panel
                     </Link>
                   )}
                   <div className="flex items-center gap-2 min-w-0 flex-1 sm:flex-initial">
                     {online === true || online === false ? (
-                      <span className="flex items-center gap-1.5 shrink-0 text-xs text-white/60" title={online ? 'Conectado' : 'Sin conexión'}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${online ? 'bg-emerald-500' : 'bg-amber-500'}`} aria-hidden />
+                      <span className="flex items-center gap-2 shrink-0 text-sm text-white/60" title={online ? 'Conectado' : 'Sin conexión'}>
+                        <span className={`w-2 h-2 rounded-full ${online ? 'bg-emerald-500' : 'bg-amber-500'}`} aria-hidden />
                         {online ? 'En línea' : 'Sin conexión'}
                       </span>
                     ) : null}
-                    <span className="text-sm text-white/75 truncate min-w-0">
+                    <span className="text-base md:text-sm text-white/75 truncate min-w-0">
                       {loading ? (
                         <span className="text-white/55">Comprobando sesión…</span>
                       ) : user ? (
@@ -241,7 +240,7 @@ export default function ClientAuth({ children }){
                   </div>
                 </div>
                 {user && (
-                  <button onClick={openLogoutConfirm} className="admin-premium-btn-danger px-3 py-1.5 text-sm w-full sm:w-auto shrink-0 no-custom-btn rounded-lg order-2 sm:order-2">Cerrar sesión</button>
+                  <button onClick={openLogoutConfirm} className="admin-premium-btn-danger px-4 py-3 md:px-3 md:py-1.5 text-base md:text-sm w-full sm:w-auto shrink-0 no-custom-btn rounded-lg order-2 sm:order-2 min-h-[48px] md:min-h-0">Cerrar sesión</button>
                 )}
               </div>
             </div>

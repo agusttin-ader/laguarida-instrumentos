@@ -50,8 +50,6 @@ export default function Header() {
   const isProductPage = pathname?.startsWith('/guitars/')
   const compactBottom = isProductPage ? 'pb-1 sm:pb-2 md:pb-0' : ''
   const homeCompact = isHome ? 'pt-1 pb-2 sm:pt-3 sm:pb-4 md:pt-0 md:pb-0.5' : ''
-  /* En home (móvil) header transparente; la imagen del hero abarca hasta arriba y se ve por debajo */
-  const mobileTransparent = isHome
   const logoShadowStyle = { filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.9)) drop-shadow(0 4px 20px rgba(0,0,0,0.8))' }
 
   const mobileHeader = (

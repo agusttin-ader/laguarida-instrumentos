@@ -5,6 +5,7 @@ import FeaturedSelection from '../components/FeaturedSelection'
 import LowCostSection from '../components/LowCostSection'
 
 const About = dynamic(() => import('../components/About'), { ssr: true, loading: () => <section className="min-h-[120px] flex items-center justify-center" aria-hidden><div className="animate-pulse h-8 w-48 rounded bg-white/10" /></section> })
+const FaqSection = dynamic(() => import('../components/FaqSection'), { ssr: true, loading: () => <section className="min-h-[120px] flex items-center justify-center" aria-hidden><div className="animate-pulse h-8 w-48 rounded bg-white/10" /></section> })
 
 export const metadata = {
   title: 'Catálogo — La Guarida',
@@ -40,6 +41,8 @@ export default function Page() {
         <section className="mt-8 sm:mt-10 md:mt-12 !pt-4 !pb-4 md:!pt-6 md:!pb-6">
           <About />
         </section>
+
+        <FaqSection />
       </main>
     </>
   )

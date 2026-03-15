@@ -12,14 +12,7 @@ export default function ServiceWorkerRegister() {
     }
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => {
-            // registration successful
-            console.log('ServiceWorker registrado:', reg.scope)
-          })
-          .catch(err => {
-            console.warn('ServiceWorker falló:', err)
-          })
+        navigator.serviceWorker.register('/sw.js').catch(() => {})
       })
     }
   }, [])

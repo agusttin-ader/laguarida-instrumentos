@@ -44,14 +44,7 @@ export default function MenuDrawer({ open, setOpen }) {
     router.push('/')
   }
 
-  function handleChat(e) {
-    e.preventDefault()
-    close()
-    if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('hybrid-chat:toggle'))
-  }
-
   const linkClass = 'block px-4 py-3 rounded-lg text-[var(--dark-text-primary)] hover:bg-white/10 transition-colors'
-  const isFavoritos = pathname === '/favoritos'
 
   return (
     <div className={`fixed inset-0 z-[10000] ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>
@@ -96,10 +89,8 @@ export default function MenuDrawer({ open, setOpen }) {
           <li>
             <a href="/#about-section" onClick={(e) => handleSection(e, 'about-section')} className={linkClass}>Sobre nosotros</a>
           </li>
-          <li className="pt-2 mt-2 border-t border-white/10">
-            <button type="button" onClick={handleChat} className={`${linkClass} w-full text-left no-custom-btn`}>
-              Chat / Asistente
-            </button>
+          <li>
+            <a href="/#faq-section" onClick={(e) => handleSection(e, 'faq-section')} className={linkClass}>Preguntas frecuentes</a>
           </li>
           <li>
             <a

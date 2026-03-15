@@ -107,7 +107,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
                   alt={idx === 0 ? (titleText || 'Imagen del producto') : `Imagen ${idx + 1} de ${titleText || 'producto'}`}
                   fill
                   sizes={CARD_IMAGE_SIZES}
-                  quality={95}
+                  quality={100}
                   loading={priority && idx === 0 ? 'eager' : 'lazy'}
                   fetchPriority={priority && idx === 0 ? 'high' : 'low'}
                   decoding="async"
@@ -192,7 +192,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
   return (
     <article
       aria-labelledby={headingId}
-      className={`card-interactive card-editorial card-mobile-no-motion w-full min-w-0 max-w-full overflow-hidden rounded-2xl md:rounded-[22px] border border-[var(--dark-border)] bg-[var(--dark-bg-card)] shadow-[0_4px_20px_rgba(0,0,0,0.18)] md:shadow-[0_8px_32px_rgba(0,0,0,0.2)] ${isHoveringImage ? 'card-hovering-image' : ''}`}
+      className={`card-interactive card-editorial card-mobile-no-motion w-full min-w-0 max-w-full overflow-hidden rounded-none md:rounded-[22px] border border-[var(--dark-border)] bg-[var(--dark-bg-card)] shadow-[0_4px_20px_rgba(0,0,0,0.18)] md:shadow-[0_8px_32px_rgba(0,0,0,0.2)] ${isHoveringImage ? 'card-hovering-image' : ''}`}
     >
       <Link
         href={`/guitars/${p.slug || p.id}`}

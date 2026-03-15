@@ -28,7 +28,7 @@ function getCached() {
 
 /**
  * Shared products hook: in-memory cache + single in-flight request deduplication.
- * Use across ProductGrid, HeroMonolith, FavoritosPage, RelatedProducts to avoid duplicate fetches.
+ * Use across ProductGrid, HeroMonolith, FavoritosPage to avoid duplicate fetches.
  */
 export function useProducts(options = {}) {
   const { shuffleCatalog = false } = options

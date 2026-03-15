@@ -4,7 +4,7 @@ import { Syne } from 'next/font/google'
 import SiteShell from '../components/SiteShell'
 import ServiceWorkerRegister from '../components/ServiceWorkerRegister'
 import DisableZoomInApp from '../components/DisableZoomInApp'
-import { ToastProvider, ChatIntroToastTrigger } from '../components/ToastContext'
+import { ToastProvider } from '../components/ToastContext'
 import { HomeHeroImageProvider } from '../context/HomeHeroImageContext'
 
 const syne = Syne({
@@ -83,7 +83,6 @@ export default function RootLayout({ children }) {
         <ToastProvider>
           <HomeHeroImageProvider>
             <SiteShell>{children}</SiteShell>
-            <ChatIntroToastTrigger />
           </HomeHeroImageProvider>
           <ServiceWorkerRegister />
         </ToastProvider>

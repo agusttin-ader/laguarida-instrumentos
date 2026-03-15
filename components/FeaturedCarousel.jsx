@@ -18,7 +18,7 @@ export default function FeaturedCarousel({ items = [] }) {
             const srcRaw = it.image_url || (it.images && it.images[0]) || ''
             const src = imageService.resolve(srcRaw)
             return (
-              <article key={it.slug || it.id || src} className="card-interactive snap-center min-w-[80%] sm:min-w-[60%] bg-white dark:bg-neutral-900 rounded-xl shadow-md border border-transparent overflow-hidden">
+              <article key={it.slug || it.id || src} className="card-interactive snap-center min-w-[80%] sm:min-w-[60%] bg-white dark:bg-neutral-900 rounded-none sm:rounded-xl shadow-md border border-transparent overflow-hidden">
                 <div className="relative w-full h-44 sm:h-56">
                   <ImageWithSkeleton
                     src={src}

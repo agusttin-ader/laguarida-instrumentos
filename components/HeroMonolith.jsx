@@ -96,7 +96,7 @@ export default function HeroMonolith() {
             src={imageSrc}
             alt={item.name || 'Producto destacado'}
             fill
-            quality={85}
+            quality={100}
             sizes="100vw"
             className="object-cover object-top"
             priority
