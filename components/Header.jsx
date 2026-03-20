@@ -74,37 +74,41 @@ export default function Header() {
         {isHome && !scrolled && (
           <div className="absolute inset-0 w-full bg-black/35 pointer-events-none" aria-hidden />
         )}
-        <button
-          type="button"
-          onClick={() => setMenuOpen(true)}
-          aria-label="Abrir menú"
-          className="relative z-20 flex items-center justify-center w-12 h-12 -m-2 rounded-xl text-white/95 hover:text-white no-custom-btn touch-manipulation shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-          style={{ WebkitTapHighlightColor: 'transparent', tapHighlightColor: 'transparent' }}
-        >
-          <HamburgerIcon className="w-7 h-7" />
-        </button>
-        <a
-          href="/"
-          aria-label="Ir al inicio"
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex justify-center min-w-0 overflow-visible pointer-events-auto"
-          onClick={isHome ? (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) } : undefined}
-        >
-          <span style={logoShadowStyle} className="block w-[200px] sm:w-[240px] max-h-12 sm:max-h-14 overflow-visible">
-            <span className="block origin-center scale-[2.05] sm:scale-[2.2] w-full" style={{ transformOrigin: 'center' }}>
-              <Image
-                src={LOGO_DARK}
-                alt="La Guarida logo"
-                width={1536}
-                height={1024}
-                priority
-                className="w-full h-auto max-h-12 sm:max-h-14 object-contain block"
-                style={{ objectFit: 'contain' }}
-                quality={82}
-                sizes="(min-width:640px) 240px, 200px"
-              />
+        <div className="relative z-20 w-12 flex-shrink-0">
+          <button
+            type="button"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Abrir menú"
+            className="flex items-center justify-center w-12 h-12 -m-2 rounded-xl text-white/95 hover:text-white no-custom-btn touch-manipulation focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            style={{ WebkitTapHighlightColor: 'transparent', tapHighlightColor: 'transparent' }}
+          >
+            <HamburgerIcon className="w-7 h-7" />
+          </button>
+        </div>
+        <div className="flex-1 flex items-center justify-center min-w-0 px-2">
+          <a
+            href="/"
+            aria-label="Ir al inicio"
+            className="z-10 flex justify-center min-w-0 overflow-visible pointer-events-auto"
+            onClick={isHome ? (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) } : undefined}
+          >
+            <span style={logoShadowStyle} className="block w-[200px] sm:w-[240px] max-h-12 sm:max-h-14 overflow-visible">
+              <span className="block origin-center scale-[2.05] sm:scale-[2.2] w-full" style={{ transformOrigin: 'center' }}>
+                <Image
+                  src={LOGO_DARK}
+                  alt="La Guarida logo"
+                  width={1536}
+                  height={1024}
+                  priority
+                  className="w-full h-auto max-h-12 sm:max-h-14 object-contain block"
+                  style={{ objectFit: 'contain' }}
+                  quality={82}
+                  sizes="(min-width:640px) 240px, 200px"
+                />
+              </span>
             </span>
-          </span>
-        </a>
+          </a>
+        </div>
         <div className="relative z-20 w-12 flex-shrink-0" aria-hidden />
       </header>
       <MenuDrawer open={menuOpen} setOpen={setMenuOpen} />
