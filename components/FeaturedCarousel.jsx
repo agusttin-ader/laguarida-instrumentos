@@ -24,8 +24,8 @@ export default function FeaturedCarousel({ items = [] }) {
                     src={src}
                     alt={it.name || ''}
                     fill
-                    sizes="(min-width:1024px) 540px, 100vw"
-                    quality={100}
+                    sizes="(min-width:1280px) 520px, (min-width:1024px) 540px, 100vw"
+                    quality={82}
                     className="object-cover"
                   />
                 </div>

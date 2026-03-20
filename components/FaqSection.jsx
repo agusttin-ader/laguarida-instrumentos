@@ -58,7 +58,7 @@ export default function FaqSection() {
   return (
     <section
       id="faq-section"
-      className="mt-6 sm:mt-10 md:mt-12 rounded-2xl border border-[var(--dark-border)] bg-gradient-to-b from-[var(--dark-bg-card)] to-[var(--dark-bg-page)] shadow-[0_18px_48px_rgba(0,0,0,0.25)]"
+      className="mt-6 sm:mt-10 md:mt-12 rounded-2xl border border-[var(--dark-border)] bg-gradient-to-b from-[var(--dark-bg-card)] to-[var(--dark-bg-page)] shadow-[0_18px_48px_rgba(0,0,0,0.25)] overflow-hidden"
       aria-labelledby="faq-heading"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 py-5 sm:py-10 md:py-12 lg:py-14 pb-20 md:pb-14 lg:pb-14">
@@ -74,7 +74,7 @@ export default function FaqSection() {
               return (
                 <div
                   key={item.id}
-                  className="rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] overflow-hidden"
+                  className={`rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] overflow-hidden transition-all duration-300 ${isOpen ? 'faq-item-open shadow-[0_10px_24px_rgba(0,0,0,0.18)]' : ''}`}
                 >
                   <button
                     type="button"
@@ -87,7 +87,7 @@ export default function FaqSection() {
                     <span className="section-title-minimal text-[var(--dark-text-primary)] text-[0.95rem] sm:text-[1.05rem] font-semibold">
                       {item.question}
                     </span>
-                    <span className="flex-shrink-0 text-[var(--dark-text-primary)]/70" aria-hidden>
+                    <span className={`flex-shrink-0 text-[var(--dark-text-primary)]/70 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} aria-hidden>
                       {isOpen ? <CaretUp size={20} weight="bold" /> : <CaretDown size={20} weight="bold" />}
                     </span>
                   </button>
@@ -95,11 +95,11 @@ export default function FaqSection() {
                     id={`faq-answer-${item.id}`}
                     role="region"
                     aria-labelledby={`faq-question-${item.id}`}
-                    className={`grid transition-[grid-template-rows] duration-200 ease-out ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+                    className={`grid transition-[grid-template-rows] duration-300 ease-out ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
                   >
                     <div className="overflow-hidden">
-                      <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-4 sm:pb-5">
-                        <p className="text-[13px] sm:text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
+                      <div className={`px-4 sm:px-5 pt-4 sm:pt-5 pb-4 sm:pb-5 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
+                        <p className="text-[13px] sm:text-sm text-gray-700 dark:text-gray-200 leading-relaxed max-w-[70ch]">
                           {item.answer}
                         </p>
                       </div>
@@ -134,14 +134,14 @@ export default function FaqSection() {
                 </a>
               </li>
             </ul>
-            <p className="section-subtitle-minimal text-gray-800 dark:text-white/80 mb-1.5 md:mb-2">Síguenos</p>
+            <p className="section-subtitle-minimal text-gray-800 dark:text-white/80 mb-2 md:mb-2.5">Síguenos</p>
             <nav className="flex items-center gap-3" aria-label="Redes sociales">
               <a
                 href={insta}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="text-gray-700 dark:text-gray-200 hover:text-pink-600 transition-colors"
+                className="no-custom-btn text-gray-700 dark:text-gray-200 hover:text-pink-600 transition-colors"
               >
                 <InstagramLogo size={20} weight="duotone" />
               </a>
@@ -150,14 +150,14 @@ export default function FaqSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
-                className="text-gray-700 dark:text-gray-200 hover:text-emerald-500 transition-colors"
+                className="no-custom-btn text-gray-700 dark:text-gray-200 hover:text-emerald-500 transition-colors"
               >
                 <WhatsappLogo size={20} weight="duotone" />
               </a>
               <a
                 href={`mailto:${mail}`}
                 aria-label="Email"
-                className="text-gray-700 dark:text-gray-200 hover:text-indigo-600 transition-colors"
+                className="no-custom-btn text-gray-700 dark:text-gray-200 hover:text-indigo-600 transition-colors"
               >
                 <EnvelopeSimple size={20} weight="duotone" />
               </a>

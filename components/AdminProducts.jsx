@@ -1168,7 +1168,7 @@ export default function AdminProducts(){
                     <p className="text-[11px] text-white/55 mb-1.5">Vista frontal del instrumento (se muestra primero en la card)</p>
                     {modalForm.image_url ? (
                       <div className="w-full rounded-xl overflow-hidden border border-white/15 mb-2 relative h-40">
-                        <ImageWithSkeleton src={modalForm.image_url} alt="Imagen principal" fill quality={100} className="w-full h-full" disableClientPreview />
+                        <ImageWithSkeleton src={modalForm.image_url} alt="Imagen principal" fill quality={82} className="w-full h-full" disableClientPreview />
                         {modalUploadingMain ? (
                           <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
                             <svg className="animate-spin h-6 w-6 text-white/90" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
@@ -1263,7 +1263,7 @@ export default function AdminProducts(){
                             onDrop={(e) => handleGalleryDrop(e, i)}
                             onDragEnd={handleGalleryDragEnd}
                           >
-                            <ImageWithSkeleton src={p.url} alt={p.name || ('Imagen ' + (i+1))} fill quality={100} className="w-full h-full" disableClientPreview />
+                            <ImageWithSkeleton src={p.url} alt={p.name || ('Imagen ' + (i+1))} fill quality={80} className="w-full h-full" disableClientPreview />
                             {p.uploading ? (
                               <div className="absolute inset-0 bg-black/35 flex items-center justify-center">
                                 <svg className="animate-spin h-5 w-5 text-white/90" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
@@ -1420,7 +1420,7 @@ export default function AdminProducts(){
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg overflow-hidden border border-white/10 bg-white/[0.04] flex items-center justify-center">
                   {imgSrc ? (
-                    <ImageWithSkeleton src={imgSrc} alt={p.name || p.slug || 'Imagen'} width={56} height={56} quality={100} disableClientPreview />
+                    <ImageWithSkeleton src={imgSrc} alt={p.name || p.slug || 'Imagen'} width={56} height={56} quality={78} disableClientPreview />
                   ) : (
                     <div className="image-placeholder w-full h-full" />
                   )}

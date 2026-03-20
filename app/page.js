@@ -27,12 +27,12 @@ export default function Page() {
         <HeroMonolith />
       </section>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 pt-0 sm:pt-6 md:pt-10 pb-8 sm:pb-10 md:pb-12 min-h-screen min-h-[100dvh]">
+      <main className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 pt-2 sm:pt-6 md:pt-10 pb-8 sm:pb-10 md:pb-12 min-h-screen min-h-[100dvh]">
         <header className="mb-0 sm:mb-3 md:mb-4 text-center">
           <p className="sr-only">La Guarida es una tienda especializada en guitarras, bajos y accesorios. Ofrecemos instrumentos seleccionados, asesoramiento profesional y envíos dentro de Argentina.</p>
         </header>
 
-        <section id="seleccion-destacada" className="mt-0 pt-0 sm:mt-6 sm:pt-4 md:mt-10 md:pt-6 -mx-4 md:mx-0 w-[calc(100%+2rem)] md:w-auto max-w-[100vw] md:max-w-none" aria-labelledby="seleccion-heading">
+        <section id="seleccion-destacada" className="mt-2 pt-1 sm:mt-6 sm:pt-4 md:mt-10 md:pt-6 -mx-4 md:mx-0 w-[calc(100%+2rem)] md:w-auto max-w-[100vw] md:max-w-none" aria-labelledby="seleccion-heading">
           <FeaturedSelection />
         </section>
 

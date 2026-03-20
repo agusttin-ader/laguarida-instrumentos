@@ -205,7 +205,7 @@ export default function ClientAuth({ children }){
                     width={1536}
                     height={1024}
                     className="w-[220px] sm:w-[240px] md:w-[282px] h-auto block object-contain"
-                    quality={100}
+                    quality={82}
                     sizes="(min-width:768px) 327px, (min-width:640px) 282px, 240px"
                     priority
                   />

@@ -1,20 +1,34 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ProductGrid from './ProductGrid'
 import { useProducts } from '../hooks/useProducts'
 
 export default function FeaturedSelection(){
   const [q, setQ] = useState('')
+  const [isFiltering, setIsFiltering] = useState(false)
   const { products } = useProducts({ shuffleCatalog: true })
   const featured = Array.isArray(products) ? products.filter((p) => p.low_cost !== true) : []
 
+  useEffect(() => {
+    if (!q) {
+      setIsFiltering(false)
+      return
+    }
+    setIsFiltering(true)
+    const t = window.setTimeout(() => setIsFiltering(false), 260)
+    return () => window.clearTimeout(t)
+  }, [q])
+
   return (
     <>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 md:gap-6 mb-3 sm:mb-5 md:mb-6 section-heading-entrance px-4 md:px-0">
-        <h2 id="seleccion-heading" className="section-title-premium section-underline-ocre text-gray-900 dark:text-white">Selección destacada</h2>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 sm:gap-4 md:gap-6 mb-3 sm:mb-5 md:mb-6 section-heading-entrance px-4 md:px-0">
+        <div>
+          <h2 id="seleccion-heading" className="section-title-premium section-underline-ocre text-gray-900 dark:text-white">Selección destacada</h2>
+          <p className="mt-2 text-[12px] sm:text-[13px] text-[var(--dark-muted)]">Encontrá instrumentos seleccionados por calidad y estado.</p>
+        </div>
         <div className="w-full sm:w-auto min-w-0">
-          <div className="search-pill w-full sm:max-w-sm" role="search">
+          <div className={`search-pill w-full sm:max-w-sm ${isFiltering ? 'search-pill-filtering' : ''}`} role="search">
             <span className="search-icon flex-shrink-0" aria-hidden>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/></svg>
             </span>
@@ -22,14 +36,14 @@ export default function FeaturedSelection(){
               aria-label="Buscar en selección destacada"
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Buscar (ej. Strato, Les Paul)"
+              placeholder="Buscar en destacada (ej. Strato, Les Paul)"
               className="search-input"
             />
           </div>
         </div>
       </div>
 
-      <article>
+      <article className={isFiltering ? 'filter-grid-updating' : ''}>
         <ProductGrid filters={{ q }} items={featured} />
       </article>
     </>

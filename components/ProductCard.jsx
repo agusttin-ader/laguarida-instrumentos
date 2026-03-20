@@ -107,7 +107,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
                   alt={idx === 0 ? (titleText || 'Imagen del producto') : `Imagen ${idx + 1} de ${titleText || 'producto'}`}
                   fill
                   sizes={CARD_IMAGE_SIZES}
-                  quality={100}
+                  quality={80}
                   loading={priority && idx === 0 ? 'eager' : 'lazy'}
                   fetchPriority={priority && idx === 0 ? 'high' : 'low'}
                   decoding="async"
@@ -155,7 +155,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
                 key={i}
                 type="button"
                 onClick={(e) => handleGalleryDotClick(e, i)}
-                className={`no-custom-btn w-2 h-2 rounded-full transition-all duration-200 min-w-2 min-h-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)] ${i === galleryIndex ? 'bg-[var(--vintage-gold)] scale-110' : 'bg-white/50 hover:bg-white/70'}`}
+                className={`no-custom-btn w-2 h-2 rounded-full transition-all duration-200 min-w-2 min-h-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)] ${i === galleryIndex ? '!bg-white border border-white/90 scale-110 shadow-[0_0_0_1.5px_rgba(255,255,255,0.26)]' : '!bg-white/45 border border-white/35 hover:!bg-white/70'}`}
                 aria-label={`Imagen ${i + 1} de ${imageList.length}`}
                 aria-current={i === galleryIndex ? 'true' : undefined}
               />

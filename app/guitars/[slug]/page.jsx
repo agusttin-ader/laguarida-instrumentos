@@ -14,6 +14,45 @@ import ProductPageCTA from '../../../components/ProductPageCTA'
 import ProductSpecsExpandable from '../../../components/ProductSpecsExpandable'
 import { parseNumericPriceForSchema } from '../../../lib/utils/normalizeProduct'
 
+function toFiniteNumber(value) {
+  if (value == null || value === '') return null
+  const n = Number(String(value).replace(',', '.'))
+  return Number.isFinite(n) ? n : null
+}
+
+function getPriceValidUntil(rawValue) {
+  if (rawValue) {
+    const d = new Date(rawValue)
+    if (!Number.isNaN(d.getTime())) return d.toISOString().slice(0, 10)
+  }
+  const d = new Date()
+  d.setMonth(d.getMonth() + 6)
+  return d.toISOString().slice(0, 10)
+}
+
+function mapReviewsForSchema(reviews = []) {
+  if (!Array.isArray(reviews) || reviews.length === 0) return []
+  return reviews
+    .map((r) => {
+      const authorName = String(r?.author || r?.authorName || r?.name || '').trim()
+      const body = String(r?.body || r?.reviewBody || r?.text || '').trim()
+      const rating = toFiniteNumber(r?.rating ?? r?.reviewRating)
+      if (!authorName || !body || rating == null) return null
+      return {
+        '@type': 'Review',
+        author: { '@type': 'Person', name: authorName },
+        reviewBody: body,
+        reviewRating: {
+          '@type': 'Rating',
+          ratingValue: rating,
+          bestRating: 5,
+          worstRating: 1,
+        },
+      }
+    })
+    .filter(Boolean)
+}
+
 // Generate page metadata dynamically based on the product data
 export async function generateMetadata({ params }) {
   const resolvedParams = await params
@@ -209,6 +248,9 @@ export default async function GuitarPage({ params }) {
   const absoluteImage = productImageUrl && (productImageUrl.startsWith('http') ? productImageUrl : `${SITE_URL}${productImageUrl.startsWith('/') ? '' : '/'}${productImageUrl}`)
 
   const numericPrice = parseNumericPriceForSchema(product.price)
+  const aggregateRatingValue = toFiniteNumber(product.aggregate_rating)
+  const reviewCountValue = toFiniteNumber(product.review_count)
+  const reviewsForSchema = mapReviewsForSchema(product.reviews).slice(0, 5)
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -223,10 +265,19 @@ export default async function GuitarPage({ params }) {
         '@type': 'Offer',
         price: numericPrice,
         priceCurrency: 'USD',
+        priceValidUntil: getPriceValidUntil(product.price_valid_until),
         availability: 'https://schema.org/InStock',
         url: productUrl
       }
-    })
+    }),
+    ...(aggregateRatingValue != null && reviewCountValue != null && reviewCountValue > 0 && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: aggregateRatingValue,
+        reviewCount: reviewCountValue,
+      }
+    }),
+    ...(reviewsForSchema.length > 0 && { review: reviewsForSchema })
   }
 
   return (

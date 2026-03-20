@@ -99,7 +99,7 @@ export default function Header() {
                 priority
                 className="w-full h-auto max-h-12 sm:max-h-14 object-contain block"
                 style={{ objectFit: 'contain' }}
-                quality={100}
+                quality={82}
                 sizes="(min-width:640px) 240px, 200px"
               />
             </span>
@@ -125,7 +125,7 @@ export default function Header() {
 
           <a href="/" aria-label="Ir al inicio" className="logo-link block static z-10 pointer-events-auto">
             <div className="relative header-logo-wrapper">
-              <Image src={LOGO_DARK} alt="La Guarida logo" width={1536} height={1024} priority style={{ objectFit: 'contain', display: 'block', height: 'auto' }} className="w-[327px] h-auto block" quality={100} sizes="327px" />
+              <Image src={LOGO_DARK} alt="La Guarida logo" width={1536} height={1024} priority style={{ objectFit: 'contain', display: 'block', height: 'auto' }} className="w-[327px] h-auto block" quality={82} sizes="327px" />
             </div>
           </a>
 

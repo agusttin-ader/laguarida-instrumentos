@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import ImageWithSkeleton from './ImageWithSkeleton'
 import imageService from '../lib/utils/imageService'
@@ -59,6 +59,8 @@ function pickFeatured(items = [], dayKey = '') {
 
 export default function HeroMonolith() {
   const { products, loading } = useProducts({ shuffleCatalog: false })
+  const [activeSlide, setActiveSlide] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
 
   const item = useMemo(() => {
     if (!products.length) return null
@@ -69,19 +71,71 @@ export default function HeroMonolith() {
   }, [products])
 
   const imageSrc = useMemo(() => imageService.resolve(item?.image_url || (item?.images && item.images[0]) || ''), [item])
-  const specs = useMemo(() => [item?.model, item?.wood, item?.mics].filter(Boolean).slice(0, 3), [item])
-  const specLine = useMemo(
-    () => specs.map((s) => (Array.isArray(s) ? s.join(', ') : s)).join(' · '),
-    [specs]
-  )
+  const heroSlides = useMemo(() => {
+    if (!products.length) return []
+    const unique = new Set()
+    const candidates = products
+      .filter((p) => (p.image_url || (p.images && p.images[0])) && p.name)
+      .slice(0, 12)
+      .map((p) => ({
+        id: p.id,
+        slug: p.slug,
+        name: p.name,
+        description: p.description,
+        price: p.price,
+        model: p.model,
+        wood: p.wood,
+        mics: p.mics,
+        src: imageService.resolve(p.image_url || (p.images && p.images[0]) || ''),
+      }))
+      .filter((p) => p.src && !unique.has(p.src) && unique.add(p.src))
+      .slice(0, 4)
+    return candidates
+  }, [products])
+  const slides = heroSlides.length ? heroSlides : [{
+    id: item?.id,
+    slug: item?.slug,
+    name: item?.name || 'Producto destacado',
+    description: item?.description,
+    price: item?.price,
+    model: item?.model,
+    wood: item?.wood,
+    mics: item?.mics,
+    src: imageSrc,
+  }]
+  const activeItem = slides[activeSlide] || slides[0] || null
+  const activeImageSrc = activeItem?.src || imageSrc
+  const specs = useMemo(() => [activeItem?.model, activeItem?.wood, activeItem?.mics].filter(Boolean).slice(0, 3), [activeItem])
+  const specLine = useMemo(() => specs.map((s) => (Array.isArray(s) ? s.join(', ') : s)).join(' · '), [specs])
+
+  useEffect(() => {
+    if (slides.length <= 1 || typeof window === 'undefined') return
+    const next = slides[(activeSlide + 1) % slides.length]
+    if (!next?.src) return
+    const img = new window.Image()
+    img.decoding = 'async'
+    img.src = next.src
+  }, [activeSlide, slides])
 
   const { setHeroImageUrl } = useHomeHeroImage()
   useEffect(() => {
-    if (imageSrc) setHeroImageUrl(imageSrc)
+    if (activeImageSrc) setHeroImageUrl(activeImageSrc)
     return () => setHeroImageUrl(null)
-  }, [imageSrc, setHeroImageUrl])
+  }, [activeImageSrc, setHeroImageUrl])
 
-  if (loading || !item || !imageSrc) return null
+  useEffect(() => {
+    setActiveSlide(0)
+  }, [heroSlides.length])
+
+  useEffect(() => {
+    if (heroSlides.length <= 1 || isPaused) return undefined
+    const id = window.setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % heroSlides.length)
+    }, 4200)
+    return () => window.clearInterval(id)
+  }, [heroSlides.length, isPaused])
+
+  if (loading || !item || !imageSrc || !activeItem) return null
 
   return (
     <section aria-labelledby="home-hero" className="w-full overflow-hidden">
@@ -89,49 +143,63 @@ export default function HeroMonolith() {
       <div className="md:hidden">
         <article
           className="hero-mobile-editorial relative w-full min-h-[100vh] min-h-[100dvh] flex flex-col justify-end overflow-hidden pt-[calc(52px+max(0.25rem,env(safe-area-inset-top)))] sm:pt-[calc(56px+max(0.25rem,env(safe-area-inset-top)))]"
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onFocusCapture={() => setIsPaused(true)}
+          onBlurCapture={() => setIsPaused(false)}
         >
         {/* Imagen de fondo: inset-0 para que llene todo el article (incl. zona del header) */}
         <div className="absolute inset-0 hero-mobile-editorial-bg">
-          <ImageWithSkeleton
-            src={imageSrc}
-            alt={item.name || 'Producto destacado'}
-            fill
-            quality={100}
-            sizes="100vw"
-            className="object-cover object-top"
-            priority
-            loading="eager"
-            disableClientPreview
-          />
+          {slides.map((slide, index) => (
+            <div
+              key={`mobile-slide-${slide.src}-${index}`}
+              className={`absolute inset-0 transition-opacity duration-700 ${index === activeSlide ? 'opacity-100' : 'opacity-0'} hero-slide-layer`}
+              aria-hidden={index !== activeSlide}
+            >
+              <ImageWithSkeleton
+                src={slide.src}
+                alt={slide.name || 'Producto destacado'}
+                fill
+                quality={82}
+                sizes="100vw"
+                className={`object-cover object-top hero-slide-image ${index === activeSlide ? 'hero-slide-image-active' : ''}`}
+                priority={index === 0}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                disableClientPreview
+              />
+            </div>
+          ))}
           {/* Desvanecimiento arriba: sin corte con el header / borde superior */}
           <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.12) 28%, transparent 55%)' }} />
           {/* Desvanecimiento abajo: transición suave con la sección siguiente */}
           <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.35) 35%, transparent 70%)' }} />
         </div>
         {/* Contenido superpuesto abajo: destacado, título, precio y CTAs */}
-        <div className="hero-mobile-caption relative z-10 px-4 sm:px-5 pb-8 sm:pb-10 pt-16">
-          <p className="hero-mobile-badge hero-mobile-text-shadow text-[10px] uppercase tracking-[0.2em] text-white font-semibold mb-2">
+        <div key={`hero-mobile-copy-${activeSlide}`} className="hero-mobile-caption hero-mobile-caption-surface hero-copy-swap relative z-10 px-4 sm:px-5 pb-10 sm:pb-10 pt-16">
+          <p className="hero-mobile-badge hero-mobile-text-shadow text-[10px] max-[360px]:text-[9px] uppercase tracking-[0.2em] text-white font-semibold mb-2">
             Destacado
           </p>
           <h1 id="home-hero" className="hero-mobile-text-shadow text-[2rem] sm:text-[2.25rem] font-bold leading-[1.08] text-white tracking-tight">
-            {item.name}
+            {activeItem.name}
           </h1>
-          {item.price ? (
-            <p className="hero-mobile-text-shadow mt-2 text-[1.125rem] font-semibold text-[var(--vintage-gold)]">{item.price}</p>
+          {activeItem.price ? (
+            <p className="hero-mobile-text-shadow mt-2 text-[1.125rem] font-semibold text-[var(--vintage-gold)]">{activeItem.price}</p>
           ) : null}
-          <div className="mt-6 flex flex-col gap-3">
+          <div className="mt-6 max-[360px]:mt-5 flex flex-col gap-3 max-[360px]:gap-2.5">
             <Link
-              href={`/guitars/${item.slug || item.id || ''}`}
-              className="hero-mobile-cta no-custom-btn flex items-center justify-center min-h-[50px] w-full rounded-full font-bold text-[15px] shadow-[0_2px_12px_rgba(0,0,0,0.35)] active:scale-[0.98] transition-transform touch-manipulation"
+              href={`/guitars/${activeItem.slug || activeItem.id || ''}`}
+              className="hero-mobile-cta no-custom-btn flex items-center justify-center min-h-[50px] max-[360px]:min-h-[46px] w-full rounded-full font-bold text-[15px] max-[360px]:text-[14px] shadow-[0_2px_12px_rgba(0,0,0,0.35)] active:scale-[0.98] transition-transform touch-manipulation"
               style={{ backgroundColor: '#ffffff', color: '#0f0f12' }}
             >
               Ver detalles
             </Link>
             <Link
               href="/#seleccion-destacada"
-              className="hero-mobile-text-shadow no-custom-btn text-center text-[14px] text-white font-medium underline underline-offset-2 decoration-white/80"
+              className="hero-mobile-text-shadow no-custom-btn text-center text-[14px] max-[360px]:text-[13px] text-white font-medium underline underline-offset-2 decoration-white/80"
             >
-              Ver selección destacada
+              Ver selección destacada →
             </Link>
           </div>
         </div>
@@ -139,7 +207,13 @@ export default function HeroMonolith() {
       </div>
 
       {/* ——— Desktop: 100% width split ——— */}
-      <article className="hidden md:block relative w-full min-h-[60vh] lg:min-h-[65vh] bg-[#323232]">
+      <article
+        className="hidden md:block relative w-full min-h-[60vh] lg:min-h-[65vh] bg-[#323232]"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onFocusCapture={() => setIsPaused(true)}
+        onBlurCapture={() => setIsPaused(false)}
+      >
         {/* Ambient orbs: flotación suave */}
         <div className="hero-orb-float pointer-events-none absolute left-0 top-1/3 h-80 w-80 rounded-full bg-[var(--vintage-gold)]/10 blur-[100px]" aria-hidden />
         <div className="hero-orb-float pointer-events-none absolute right-0 bottom-0 h-96 w-96 rounded-full bg-[var(--vintage-gold)]/5 blur-[110px]" aria-hidden />
@@ -148,36 +222,45 @@ export default function HeroMonolith() {
         <div className="relative grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] min-h-[60vh] lg:min-h-[65vh]">
           {/* Image: full width of left column, diagonal right edge */}
           <div className="relative min-h-[45vh] lg:min-h-full hero-image-entrance hero-desktop-image-cut">
-            <ImageWithSkeleton
-              src={imageSrc}
-              alt={item.name || 'Producto destacado'}
-              fill
-              quality={100}
-              sizes="(min-width:1024px) 60vw, 100vw"
-              className="object-cover"
-              priority
-              disableClientPreview
-            />
+            {slides.map((slide, index) => (
+              <div
+                key={`desktop-slide-${slide.src}-${index}`}
+                className={`absolute inset-0 transition-opacity duration-700 ${index === activeSlide ? 'opacity-100' : 'opacity-0'} hero-slide-layer`}
+                aria-hidden={index !== activeSlide}
+              >
+                <ImageWithSkeleton
+                  src={slide.src}
+                  alt={slide.name || 'Producto destacado'}
+                  fill
+                  quality={82}
+                  sizes="(min-width:1280px) 55vw, (min-width:1024px) 58vw, 100vw"
+                  className={`object-cover hero-slide-image ${index === activeSlide ? 'hero-slide-image-active' : ''}`}
+                  priority={index === 0}
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  disableClientPreview
+                />
+              </div>
+            ))}
             <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent pointer-events-none" />
           </div>
 
           {/* Content panel: right, diagonal left edge to match image cut */}
-          <div className="hero-panel-entrance relative z-10 flex flex-col justify-center px-8 lg:px-12 xl:px-16 py-12 lg:py-16 hero-desktop-panel-cut bg-gradient-to-b from-[#3d3d3d]/98 to-[#323232]/98">
-            <div className="hero-entrance flex flex-col max-w-lg">
+          <div className="hero-panel-entrance relative z-10 flex flex-col justify-center px-8 lg:px-12 xl:px-16 2xl:px-20 py-12 lg:py-16 2xl:py-20 hero-desktop-panel-cut bg-gradient-to-b from-[#3d3d3d]/98 to-[#323232]/98">
+            <div key={`hero-desktop-copy-${activeSlide}`} className="hero-entrance hero-copy-swap flex flex-col max-w-lg 2xl:max-w-xl">
               <p className="text-[11px] uppercase tracking-[0.24em] text-[var(--vintage-gold)]/90 font-medium mb-3" aria-hidden>La Guarida</p>
               <div className="rounded-full border border-[var(--vintage-gold)]/40 bg-black/20 backdrop-blur-sm w-fit px-3 py-1.5 mb-5">
                 <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--vintage-gold)] font-semibold">Producto destacado</span>
               </div>
-              <h1 id="home-hero" className="text-2xl lg:text-[2.5rem] xl:text-[2.85rem] font-bold leading-[1.06] tracking-tight text-white">
-                {item.name}
+              <h1 id="home-hero" className="text-2xl lg:text-[2.5rem] xl:text-[2.85rem] 2xl:text-[3.1rem] font-bold leading-[1.06] tracking-tight text-white">
+                {activeItem.name}
               </h1>
-              {item.description ? (
-                <p className="mt-4 text-sm lg:text-base text-white/78 leading-relaxed line-clamp-3">
-                  {item.description}
+              {activeItem.description ? (
+                <p className="mt-4 text-sm lg:text-base 2xl:text-[1.06rem] text-white/78 leading-relaxed line-clamp-3">
+                  {activeItem.description}
                 </p>
               ) : <div aria-hidden />}
-              {item.price ? (
-                <p className="mt-5 text-xl lg:text-2xl font-bold tracking-tight text-white">{item.price}</p>
+              {activeItem.price ? (
+                <p className="mt-5 text-xl lg:text-2xl 2xl:text-[1.8rem] font-bold tracking-tight text-white">{activeItem.price}</p>
               ) : <div aria-hidden />}
               {specs.length > 0 ? (
                 <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2">
@@ -186,11 +269,11 @@ export default function HeroMonolith() {
                 </div>
               ) : <div aria-hidden />}
               <div className="mt-6 lg:mt-7 flex flex-wrap gap-2 sm:gap-2.5">
-                <Link href={`/guitars/${item.slug || item.id || ''}`} className="hero-cta-primary no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl border-2 border-[var(--vintage-gold)] bg-[var(--vintage-gold-soft)] text-[var(--vintage-gold)] text-[12px] sm:text-[13px] font-bold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[var(--vintage-gold-soft-hover)] hover:border-[var(--vintage-gold)] hover:-translate-y-0.5 hover:shadow-[0_12px_26px_rgba(201,162,39,0.25)] active:translate-y-0 min-w-[120px] sm:min-w-0">
+                <Link href={`/guitars/${activeItem.slug || activeItem.id || ''}`} className="hero-cta-primary no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl border-2 border-[var(--vintage-gold)] bg-[var(--vintage-gold-soft)] text-[var(--vintage-gold)] text-[12px] sm:text-[13px] font-bold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[var(--vintage-gold-soft-hover)] hover:border-[var(--vintage-gold)] hover:-translate-y-0.5 hover:shadow-[0_12px_26px_rgba(201,162,39,0.25)] active:translate-y-0 min-w-[120px] sm:min-w-0">
                   Ver detalles
                 </Link>
                 <Link href="/#seleccion-destacada" className="no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl border border-white/25 bg-white/5 text-white/90 text-[12px] sm:text-[13px] font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-white/12 hover:border-white/35 hover:-translate-y-0.5 active:translate-y-0 min-w-[100px] sm:min-w-0">
-                  Ver selección destacada
+                  Ver selección destacada →
                 </Link>
                 <WhatsAppHeroButton />
               </div>

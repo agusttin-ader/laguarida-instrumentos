@@ -60,8 +60,8 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
             alt={altBase || 'Imagen del producto'}
             fill
             className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-            sizes="(min-width:1024px) 52vw, 100vw"
-            quality={100}
+            sizes="(min-width:1280px) 50vw, (min-width:1024px) 52vw, 100vw"
+            quality={88}
             priority
             disableClientPreview
           />
@@ -82,8 +82,8 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 alt={altBase ? `${altBase} — imagen 2` : 'Imagen 2'}
                 fill
                 className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                sizes="(min-width:1024px) 20vw, 50vw"
-                quality={100}
+                sizes="(min-width:1280px) 18vw, (min-width:1024px) 20vw, 50vw"
+                quality={76}
                 disableClientPreview
               />
             </button>
@@ -99,8 +99,8 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   alt={altBase ? `${altBase} — imagen 3` : 'Imagen 3'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes="(min-width:1024px) 20vw, 50vw"
-                  quality={100}
+                  sizes="(min-width:1280px) 18vw, (min-width:1024px) 20vw, 50vw"
+                  quality={76}
                   disableClientPreview
                 />
               </button>
@@ -117,8 +117,8 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   alt={altBase ? `${altBase} — imagen 4` : 'Imagen 4'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes="(min-width:1024px) 20vw, 50vw"
-                  quality={100}
+                  sizes="(min-width:1280px) 18vw, (min-width:1024px) 20vw, 50vw"
+                  quality={76}
                   disableClientPreview
                 />
               </button>
@@ -136,8 +136,8 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   alt={altBase ? `${altBase} — imagen 5` : 'Imagen 5'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes="(min-width:1024px) 20vw, 50vw"
-                  quality={100}
+                  sizes="(min-width:1280px) 18vw, (min-width:1024px) 20vw, 50vw"
+                  quality={76}
                   disableClientPreview
                 />
               </button>
@@ -154,8 +154,8 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   alt={altBase ? `${altBase} — imagen 6` : 'Imagen 6'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes="(min-width:1024px) 20vw, 50vw"
-                  quality={100}
+                  sizes="(min-width:1280px) 18vw, (min-width:1024px) 20vw, 50vw"
+                  quality={76}
                   disableClientPreview
                 />
               </button>
@@ -172,8 +172,8 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   alt={altBase ? `${altBase} — imagen 7` : 'Imagen 7'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes="(min-width:1024px) 20vw, 50vw"
-                  quality={100}
+                  sizes="(min-width:1280px) 18vw, (min-width:1024px) 20vw, 50vw"
+                  quality={76}
                   disableClientPreview
                 />
               </button>

@@ -68,7 +68,14 @@ export default function ProductGrid({ filters = {}, items: itemsProp }) {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-5 md:gap-6 lg:gap-8 w-full min-w-0">
         {filteredItems.map((item, idx) => (
-          <div key={item.id ?? item.slug ?? idx} className="min-w-0 w-full">
+          <div
+            key={`${item.id ?? item.slug ?? idx}-${filters.q || ''}`}
+            className="min-w-0 w-full card-appear"
+            style={{
+              '--card-appear-delay': `${Math.min(idx, 11) * 36}ms`,
+              '--card-appear-delay-mobile': `${idx <= 1 ? 0 : Math.min(idx - 1, 10) * 20}ms`
+            }}
+          >
             <ProductCard item={item} priority={idx < 3} />
           </div>
         ))}

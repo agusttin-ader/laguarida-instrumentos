@@ -33,7 +33,7 @@ export default function MobileHeader() {
 
         <div className="absolute left-1/2 -translate-x-1/2">
             <a href="/" aria-label="Inicio" className="inline-block">
-            <Image src="/images/logo/logo-fondo-claro.PNG" alt="La Guarida" width={140} height={36} priority quality={100} className="object-contain block h-auto" style={{height: 'auto'}} />
+            <Image src="/images/logo/logo-fondo-claro.PNG" alt="La Guarida" width={140} height={36} priority quality={82} className="object-contain block h-auto" style={{height: 'auto'}} />
           </a>
         </div>
 
