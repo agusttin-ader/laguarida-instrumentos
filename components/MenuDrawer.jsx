@@ -54,10 +54,10 @@ export default function MenuDrawer({ open, setOpen }) {
         aria-label="Cerrar menú"
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); close() } }}
         onClick={close}
-        className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0'}`}
+        className={`fixed inset-0 bg-black/55 transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0'}`}
       />
       <nav
-        className={`fixed top-0 left-0 bottom-0 w-80 max-w-[85%] bg-[var(--dark-bg-surface)] border-r border-white/10 transform shadow-xl transition-transform duration-200 ease-out ${open ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed top-0 left-0 bottom-0 w-80 max-w-[85%] bg-black border-r border-white/10 transform shadow-xl transition-transform duration-200 ease-out ${open ? 'translate-x-0' : '-translate-x-full'}`}
         aria-label="Menú principal"
       >
         <div className="min-h-[48px] sm:min-h-[52px] flex items-center justify-between px-5 border-b border-white/10">

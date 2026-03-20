@@ -8,11 +8,13 @@
     "start": "next start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:strict": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings 0",
-    "test:e2e": "playwright test"
+    "verify": "npm run lint:strict && npm run build",
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",
-    "next": "latest",
+    "next": "16.2.0",
     "phosphor-react": "^1.4.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",

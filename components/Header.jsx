@@ -63,19 +63,23 @@ export default function Header() {
       <header
         id={isHome ? 'header-home-mobile-overlay' : undefined}
         aria-label="Cabecera"
-        className={`header-mobile md:hidden flex items-center justify-between min-h-[52px] sm:min-h-[56px] py-2 px-4 sm:px-5 left-0 right-0 top-0 relative ${isHome ? 'header-home-mobile hero-overlay-header' : ''} ${(isHome && !scrolled) ? '' : 'border-b'} ${scrolled ? 'header-scrolled' : ''}`}
+        className={`header-mobile md:hidden flex items-center justify-between min-h-[52px] sm:min-h-[56px] py-2 px-4 sm:px-5 left-0 right-0 top-0 relative ${isHome ? 'header-home-mobile hero-overlay-header' : ''} ${scrolled ? 'header-scrolled' : ''}`}
         style={
           isHome && !scrolled
             ? { backgroundColor: 'transparent', borderBottom: 'none', backdropFilter: 'none', WebkitBackdropFilter: 'none' }
             : undefined
         }
       >
+        {/* Franja oscura transparente de punta a punta (solo en home sin scroll) */}
+        {isHome && !scrolled && (
+          <div className="absolute inset-0 w-full bg-black/35 pointer-events-none" aria-hidden />
+        )}
         <div className="relative z-20 w-12 flex-shrink-0">
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
             aria-label="Abrir menú"
-            className="flex items-center justify-center w-12 h-12 -m-2 rounded-xl text-white/95 hover:text-white no-custom-btn touch-manipulation focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="flex items-center justify-center w-12 h-12 -m-2 rounded-xl border-0 text-white/95 hover:text-white bg-black/20 hover:bg-black/28 backdrop-blur-sm no-custom-btn touch-manipulation transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{ WebkitTapHighlightColor: 'transparent', tapHighlightColor: 'transparent' }}
           >
             <HamburgerIcon className="w-7 h-7" />
