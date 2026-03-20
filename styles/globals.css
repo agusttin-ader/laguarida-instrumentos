@@ -1244,6 +1244,15 @@ section {
 .hero-slide-image-active {
   animation: hero-kenburns 4.2s ease-out both;
 }
+@keyframes hero-mobile-cinematic {
+  from { transform: scale(1.085) translateY(1.8%); filter: saturate(0.92); }
+  to { transform: scale(1.01) translateY(0); filter: saturate(1); }
+}
+@media (max-width: 767px) {
+  .hero-slide-image-mobile-active {
+    animation: hero-mobile-cinematic 4.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
 
 .hero-caption {
   opacity: 0;
@@ -1274,7 +1283,7 @@ section {
 .hero-caption--visible .hero-caption-item--6 { transition-delay: 300ms; }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-slide-image, .hero-caption, .hero-caption--visible, .hero-caption-item, .hero-slide-image-active {
+  .hero-slide-image, .hero-caption, .hero-caption--visible, .hero-caption-item, .hero-slide-image-active, .hero-slide-image-mobile-active {
     transition: none !important;
     transform: none !important;
     opacity: 1 !important;

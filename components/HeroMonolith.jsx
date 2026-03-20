@@ -76,7 +76,6 @@ export default function HeroMonolith() {
     const unique = new Set()
     const candidates = products
       .filter((p) => (p.image_url || (p.images && p.images[0])) && p.name)
-      .slice(0, 12)
       .map((p) => ({
         id: p.id,
         slug: p.slug,
@@ -89,7 +88,6 @@ export default function HeroMonolith() {
         src: imageService.resolve(p.image_url || (p.images && p.images[0]) || ''),
       }))
       .filter((p) => p.src && !unique.has(p.src) && unique.add(p.src))
-      .slice(0, 4)
     return candidates
   }, [products])
   const slides = heroSlides.length ? heroSlides : [{
@@ -136,6 +134,8 @@ export default function HeroMonolith() {
   }, [heroSlides.length, isPaused])
 
   if (loading || !item || !imageSrc || !activeItem) return null
+  const prevIndex = slides.length > 1 ? (activeSlide - 1 + slides.length) % slides.length : 0
+  const nextIndex = slides.length > 1 ? (activeSlide + 1) % slides.length : 0
 
   return (
     <section aria-labelledby="home-hero" className="w-full overflow-hidden">
@@ -152,10 +152,13 @@ export default function HeroMonolith() {
         >
         {/* Imagen de fondo: inset-0 para que llene todo el article (incl. zona del header) */}
         <div className="absolute inset-0 hero-mobile-editorial-bg">
-          {slides.map((slide, index) => (
+          {slides.map((slide, index) => {
+            const shouldRender = index === activeSlide || index === prevIndex || index === nextIndex
+            if (!shouldRender) return null
+            return (
             <div
               key={`mobile-slide-${slide.src}-${index}`}
-              className={`absolute inset-0 transition-opacity duration-700 ${index === activeSlide ? 'opacity-100' : 'opacity-0'} hero-slide-layer`}
+              className={`absolute inset-0 transition-opacity duration-1000 ${index === activeSlide ? 'opacity-100' : 'opacity-0'} hero-slide-layer`}
               aria-hidden={index !== activeSlide}
             >
               <ImageWithSkeleton
@@ -164,17 +167,16 @@ export default function HeroMonolith() {
                 fill
                 quality={82}
                 sizes="100vw"
-                className={`object-cover object-top hero-slide-image ${index === activeSlide ? 'hero-slide-image-active' : ''}`}
+                className={`object-cover object-top hero-slide-image ${index === activeSlide ? 'hero-slide-image-active hero-slide-image-mobile-active' : ''}`}
                 priority={index === 0}
                 loading={index === 0 ? 'eager' : 'lazy'}
                 disableClientPreview
               />
             </div>
-          ))}
-          {/* Desvanecimiento arriba: sin corte con el header / borde superior */}
-          <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.12) 28%, transparent 55%)' }} />
-          {/* Desvanecimiento abajo: transición suave con la sección siguiente */}
-          <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.35) 35%, transparent 70%)' }} />
+          )})}
+          {/* Overlays suaves para evitar "barras" sólidas arriba/abajo */}
+          <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.16) 0%, rgba(0,0,0,0.05) 30%, transparent 62%)' }} />
+          <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to top, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.18) 36%, transparent 74%)' }} />
         </div>
         {/* Contenido superpuesto abajo: destacado, título, precio y CTAs */}
         <div key={`hero-mobile-copy-${activeSlide}`} className="hero-mobile-caption hero-mobile-caption-surface hero-copy-swap relative z-10 px-4 sm:px-5 pb-10 sm:pb-10 pt-16">
@@ -222,7 +224,10 @@ export default function HeroMonolith() {
         <div className="relative grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] min-h-[60vh] lg:min-h-[65vh]">
           {/* Image: full width of left column, diagonal right edge */}
           <div className="relative min-h-[45vh] lg:min-h-full hero-image-entrance hero-desktop-image-cut">
-            {slides.map((slide, index) => (
+            {slides.map((slide, index) => {
+              const shouldRender = index === activeSlide || index === prevIndex || index === nextIndex
+              if (!shouldRender) return null
+              return (
               <div
                 key={`desktop-slide-${slide.src}-${index}`}
                 className={`absolute inset-0 transition-opacity duration-700 ${index === activeSlide ? 'opacity-100' : 'opacity-0'} hero-slide-layer`}
@@ -240,7 +245,7 @@ export default function HeroMonolith() {
                   disableClientPreview
                 />
               </div>
-            ))}
+            )})}
             <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent pointer-events-none" />
           </div>
 
