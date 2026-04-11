@@ -20,13 +20,15 @@ function isUsableImgUrl(u) {
   return s.startsWith('/') || /^https?:\/\//i.test(s)
 }
 
-/** URL absoluta para precarga / comprobación en el navegador */
+/** URL absoluta para precarga (misma lógica que las imágenes del hero). */
 function absoluteImageUrl(url) {
-  if (typeof window === 'undefined') return url
-  const u = typeof url === 'string' ? url.trim() : ''
-  if (!u) return u
-  if (u.startsWith('/')) return `${window.location.origin}${u}`
-  return u
+  const resolved = imageService.resolve(url) || (typeof url === 'string' ? url.trim() : '')
+  if (!resolved) return ''
+  if (/^https?:\/\//i.test(resolved)) return resolved
+  if (typeof window !== 'undefined' && resolved.startsWith('/')) {
+    return `${window.location.origin}${resolved}`
+  }
+  return resolved
 }
 
 /** Espera a que la imagen esté en caché del browser antes del crossfade */
@@ -142,10 +144,18 @@ export default function HeroMarketing({ product = null }) {
   useEffect(() => {
     let cancelled = false
 
+    const resolvedFromServer = (() => {
+      if (!imageUrl) return ''
+      const r = imageService.resolve(imageUrl)
+      if (r) return r
+      const t = imageUrl.trim()
+      if (/^https?:\/\//i.test(t)) return t
+      return ''
+    })()
     const serverSlide =
-      usePhoto && imageUrl
+      usePhoto && resolvedFromServer
         ? {
-            url: imageUrl,
+            url: resolvedFromServer,
             name: (product?.name && String(product.name).trim()) || '',
             slug: (product?.slug && String(product.slug).trim()) || '',
           }
@@ -355,6 +365,7 @@ export default function HeroMarketing({ product = null }) {
                           fill
                           sizes={HERO_SHOWROOM_IMAGE_SIZES}
                           quality={85}
+                          unoptimized
                           priority={slideIndex === 0 && i === topLayer}
                           fetchPriority={slideIndex === 0 && i === topLayer ? 'high' : 'low'}
                           decoding="async"
