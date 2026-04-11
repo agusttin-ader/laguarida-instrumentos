@@ -25,6 +25,10 @@ function supabaseRemotePatternsFromEnv() {
 const nextConfig = {
   reactStrictMode: true,
   compiler: process.env.NODE_ENV === 'production' ? { removeConsole: { exclude: ['warn', 'error'] } } : undefined,
+  experimental: {
+    // Importar solo los iconos usados de phosphor-react (menos JS en cliente)
+    optimizePackageImports: ['phosphor-react'],
+  },
   images: {
     // Allowed quality values used across the app (avoid Next.js warnings in dev/prod).
     qualities: [100, 95, 90, 88, 86, 85, 82, 80, 78, 76],

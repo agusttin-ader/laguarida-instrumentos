@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useEffect, useMemo, useState } from "react"
-import Image from "next/image"
 
 function isIOSDevice() {
   if (typeof window === "undefined") return false
@@ -23,17 +22,15 @@ export default function AdminIOSBootSplash({ children }) {
 
   const shouldRun = useMemo(() => {
     if (typeof window === "undefined") return false
-    // Si ya hay splash estático (layout app), no mostrar el de React para no duplicar.
     if (typeof window.__adminHideSplash === "function") return false
-    // iOS only; prefer installed/PWA mode to avoid desktop web flash.
     return isIOSDevice() && isStandaloneDisplay()
   }, [])
 
   useEffect(() => {
     if (!shouldRun) return
     setPhase("visible")
-    const toFade = window.setTimeout(() => setPhase("fading"), 1600)
-    const toHide = window.setTimeout(() => setPhase("hidden"), 2050)
+    const toFade = window.setTimeout(() => setPhase("fading"), 420)
+    const toHide = window.setTimeout(() => setPhase("hidden"), 580)
     return () => {
       window.clearTimeout(toFade)
       window.clearTimeout(toHide)
@@ -55,7 +52,6 @@ export default function AdminIOSBootSplash({ children }) {
       if (ae && ae instanceof HTMLElement && ae !== document.body) ae.blur()
     }
 
-    // Kill any retained focus so iOS won't pop the keyboard over the splash.
     blurActive()
     const intervalId = window.setInterval(blurActive, 120)
 
@@ -83,23 +79,19 @@ export default function AdminIOSBootSplash({ children }) {
       </div>
       {phase !== "hidden" ? (
         <div
-          className={`fixed inset-0 z-[140] transition-opacity duration-500 ${phase === "fading" ? "opacity-0" : "opacity-100"}`}
+          className={`fixed inset-0 z-[140] transition-opacity duration-200 ease-out ${phase === "fading" ? "opacity-0" : "opacity-100"}`}
           aria-hidden
         >
           <div className="absolute inset-0 bg-[#06080e]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,164,59,0.10)_0%,rgba(9,12,19,0.94)_46%,rgba(6,8,14,1)_100%)]" />
-
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3.5">
-            <div className="relative h-[96px] w-[96px] rounded-[26px] border border-white/12 bg-white/[0.025] shadow-[0_28px_70px_rgba(0,0,0,0.58)] backdrop-blur-md overflow-hidden">
-              <div className="absolute inset-0 rounded-[26px] border border-white/8" />
-              <div className="absolute inset-0 bg-gradient-to-br from-white/12 via-transparent to-transparent" />
-              <div className="absolute -inset-10 splash-soft-glow" />
-              <Image
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3">
+            <div className="flex h-[96px] w-[96px] items-center justify-center rounded-[26px] border border-white/12 bg-white/[0.03] p-[15px]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src="/images/logo/og-pick-icon.PNG"
-                alt="La Guarida"
-                fill
-                className="object-contain p-[15px]"
-                priority
+                alt=""
+                width={96}
+                height={96}
+                className="h-full w-full object-contain"
               />
             </div>
             <p className="text-[11px] uppercase tracking-[0.24em] text-white/72">La Guarida Admin</p>

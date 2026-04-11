@@ -29,14 +29,18 @@ function getCached() {
 /**
  * Shared products hook: in-memory cache + single in-flight request deduplication.
  * Use across ProductGrid, HeroMonolith, FavoritosPage to avoid duplicate fetches.
+ *
+ * @param {{ shuffleCatalog?: boolean, enabled?: boolean }} options
+ *   `enabled: false` — no suscripción ni fetch (p. ej. ProductGrid con `items` del padre).
  */
 export function useProducts(options = {}) {
-  const { shuffleCatalog = false } = options
-  const [products, setProducts] = useState(() => getCached())
-  const [loading, setLoading] = useState(() => getCached() === null)
+  const { shuffleCatalog = false, enabled = true } = options
+  const [products, setProducts] = useState(() => (enabled ? getCached() : []))
+  const [loading, setLoading] = useState(() => (enabled ? getCached() === null : false))
   const [error, setError] = useState(null)
 
   const refetch = useCallback(async () => {
+    if (!enabled) return []
     cache = { data: null, timestamp: 0 }
     inFlight = null
     setLoading(true)
@@ -55,9 +59,11 @@ export function useProducts(options = {}) {
       setLoading(false)
       inFlight = null
     }
-  }, [shuffleCatalog])
+  }, [shuffleCatalog, enabled])
 
   useEffect(() => {
+    if (!enabled) return
+
     const cached = getCached()
     if (cached !== null) {
       setProducts(shuffleCatalog ? shuffleArray([...cached]) : cached)
@@ -92,7 +98,7 @@ export function useProducts(options = {}) {
       })
 
     return () => { cancelled = true }
-  }, [shuffleCatalog])
+  }, [shuffleCatalog, enabled])
 
   return { products: products ?? [], loading, error, refetch }
 }

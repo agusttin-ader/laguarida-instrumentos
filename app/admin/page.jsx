@@ -29,7 +29,7 @@ const dashboardCards = [
 export default function AdminDashboard() {
   return (
     <div className="w-full max-w-2xl md:max-w-4xl xl:max-w-5xl mx-auto space-y-6 md:space-y-12 xl:space-y-16">
-      <div className="admin-premium-card admin-animate-in admin-stagger-0 px-5 py-4 md:px-10 md:py-8 xl:px-12 xl:py-10 rounded-xl opacity-0">
+      <div className="admin-premium-card px-5 py-4 md:px-10 md:py-8 xl:px-12 xl:py-10 rounded-xl">
         <div className="inline-flex items-center rounded-full border border-white/12 bg-white/[0.06] px-3 py-1.5 text-xs md:text-[10px] uppercase tracking-widest text-white/70">
           Consola de administración
         </div>
@@ -53,12 +53,12 @@ export default function AdminDashboard() {
                 <h2 className="text-base md:text-sm font-semibold text-white">{card.title}</h2>
                 <p className="mt-1 text-sm md:text-xs text-white/65 leading-snug">{card.description}</p>
               </div>
-              <div className="flex shrink-0 items-center text-white/50 group-hover:translate-x-0.5 transition-transform duration-200">
+              <div className="flex shrink-0 items-center text-white/50">
                 <ArrowRight size={22} weight="bold" />
               </div>
             </>
           )
-          const className = `admin-premium-card admin-animate-slide-up admin-card-hover admin-stagger-${index + 1} group flex items-center gap-4 md:gap-3 p-5 md:p-6 lg:p-7 xl:p-8 rounded-xl opacity-0 hover:border-white/20 ${card.accent} min-h-[72px] md:min-h-0`
+          const className = `admin-premium-card group flex items-center gap-4 md:gap-3 p-5 md:p-6 lg:p-7 xl:p-8 rounded-xl hover:border-white/20 ${card.accent} min-h-[72px] md:min-h-0`
           if (card.external) {
             return (
               <a

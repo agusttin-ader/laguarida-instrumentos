@@ -7,7 +7,7 @@ import { useProducts } from '../hooks/useProducts'
 export default function FeaturedSelection(){
   const [q, setQ] = useState('')
   const [isFiltering, setIsFiltering] = useState(false)
-  const { products } = useProducts({ shuffleCatalog: true })
+  const { products, loading: productsLoading } = useProducts({ shuffleCatalog: true })
   const featured = Array.isArray(products) ? products.filter((p) => p.low_cost !== true) : []
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function FeaturedSelection(){
       </div>
 
       <article className={isFiltering ? 'filter-grid-updating' : ''}>
-        <ProductGrid filters={{ q }} items={featured} />
+        <ProductGrid filters={{ q }} items={featured} parentLoading={productsLoading} />
       </article>
     </>
   )

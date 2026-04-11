@@ -5,11 +5,12 @@ import ProductCard from './ProductCard'
 import SkeletonProductCard from './SkeletonProductCard'
 import { useProducts } from '../hooks/useProducts'
 
-export default function ProductGrid({ filters = {}, items: itemsProp }) {
-  const { products, loading, error } = useProducts({ shuffleCatalog: true })
-  const items = itemsProp !== undefined ? itemsProp : products
-  const isLoading = itemsProp !== undefined ? false : loading
-  const hasError = itemsProp !== undefined ? null : error
+export default function ProductGrid({ filters = {}, items: itemsProp, parentLoading = false }) {
+  const fetchSelf = itemsProp === undefined
+  const { products, loading, error } = useProducts({ shuffleCatalog: true, enabled: fetchSelf })
+  const items = fetchSelf ? products : itemsProp
+  const isLoading = fetchSelf ? loading : parentLoading
+  const hasError = fetchSelf ? error : null
 
   const filteredItems = useMemo(() => {
     if (!items.length) return []

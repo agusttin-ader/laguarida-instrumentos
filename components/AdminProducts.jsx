@@ -67,7 +67,6 @@ export default function AdminProducts(){
   const [modalGalleryPreviews, setModalGalleryPreviews] = useState([]) // {id,url,name}
   const [modalUploadingMain, setModalUploadingMain] = useState(false)
   const [modalGalleryUploading, setModalGalleryUploading] = useState(false)
-  const [modalClosing, setModalClosing] = useState(false)
   const [modalGalleryDragIndex, setModalGalleryDragIndex] = useState(null)
   const [modalGalleryDragOverIndex, setModalGalleryDragOverIndex] = useState(null)
   const [createDraftSavedAt, setCreateDraftSavedAt] = useState(null)
@@ -344,17 +343,12 @@ export default function AdminProducts(){
   }
 
   function closeModal(){
-    // play exit animation then unmount
-    setModalClosing(true)
-    setTimeout(() => {
-      setModalOpen(false)
-      setEditingId(null)
-      setModalGalleryPreviews([])
-      setModalGalleryDragIndex(null)
-      setModalGalleryDragOverIndex(null)
-      setCreateDraftRecovered(false)
-      setModalClosing(false)
-    }, 240) // matches CSS exit duration
+    setModalOpen(false)
+    setEditingId(null)
+    setModalGalleryPreviews([])
+    setModalGalleryDragIndex(null)
+    setModalGalleryDragOverIndex(null)
+    setCreateDraftRecovered(false)
   }
 
   function hasMeaningfulCreateDraft(f){
@@ -1029,7 +1023,7 @@ export default function AdminProducts(){
           <button
             type="button"
             aria-label="Cerrar menú"
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm no-custom-btn"
+            className="absolute inset-0 bg-black/50 no-custom-btn"
             onClick={closeRowActionMenu}
           />
           <div className="relative w-full sm:max-w-xs rounded-t-2xl sm:rounded-2xl border-t sm:border border-white/12 bg-[#0e131d] shadow-2xl border-b-0 sm:border-b pb-4 sm:pb-4" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom, 0px))' }}>
@@ -1072,10 +1066,10 @@ export default function AdminProducts(){
           <button
             type="button"
             aria-label="Cerrar acciones rápidas"
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm no-custom-btn"
+            className="absolute inset-0 bg-black/50 no-custom-btn"
             onClick={() => setQuickOpen(false)}
           />
-          <div className="relative w-full max-w-xl rounded-2xl border border-white/12 bg-[#0e131d]/95 shadow-[0_24px_56px_rgba(0,0,0,0.42)] admin-animate-slide-up">
+          <div className="relative w-full max-w-xl rounded-2xl border border-white/12 bg-[#0e131d]/95 shadow-[0_24px_56px_rgba(0,0,0,0.42)]">
             <div className="px-4 py-3 border-b border-white/10">
               <div className="flex items-center gap-2 text-xs text-white/55 mb-2">
                 <span>Acciones rápidas</span>
@@ -1111,8 +1105,8 @@ export default function AdminProducts(){
       ) : null}
       {modalOpen ? (
         <div className="fixed inset-0 z-[9998] flex flex-col items-center overflow-y-auto px-2 sm:px-4 md:px-6 py-4 sm:py-6 min-h-full">
-          <div className={`fixed inset-0 bg-black/60 backdrop-blur-md ${modalClosing ? 'modal-backdrop-exit' : 'modal-backdrop-enter'}`} style={{ zIndex: 9997 }} onClick={closeModal} aria-hidden />
-          <div className={`relative z-[9999] admin-premium-card w-full max-w-[720px] sm:max-w-[780px] flex-shrink-0 my-4 sm:my-6 p-6 max-h-[85vh] overflow-y-auto ${modalClosing ? 'modal-panel-exit' : 'modal-panel-enter'}`}>
+          <div className="fixed inset-0 z-[9997] bg-black/60" onClick={closeModal} aria-hidden />
+          <div className="relative z-[9999] admin-premium-card w-full max-w-[720px] sm:max-w-[780px] flex-shrink-0 my-4 sm:my-6 p-6 max-h-[85vh] overflow-y-auto">
             <h3 className="section-title-minimal text-[1.08rem] mb-1 text-white">{modalMode === 'edit' ? 'Editar producto' : 'Crear producto'}</h3>
             {modalMode === 'create' ? (
               <div className="mb-3 text-xs text-white/60">
@@ -1298,7 +1292,7 @@ export default function AdminProducts(){
           </div>
         </div>
       ) : null}
-      <section className="p-5 md:p-6 lg:p-8 xl:p-10 admin-premium-card admin-animate-in admin-stagger-0 opacity-0">
+      <section className="p-5 md:p-6 lg:p-8 xl:p-10 admin-premium-card">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold tracking-tight text-white md:text-[1.05rem]">Crear producto</h2>
@@ -1316,7 +1310,7 @@ export default function AdminProducts(){
         
       </section>
 
-      <section className="p-5 md:p-6 lg:p-8 xl:p-10 admin-premium-card admin-animate-in admin-stagger-1 opacity-0">
+      <section className="p-5 md:p-6 lg:p-8 xl:p-10 admin-premium-card">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold tracking-tight text-white md:text-[1.05rem]">Actividad reciente</h2>
@@ -1351,7 +1345,7 @@ export default function AdminProducts(){
         </div>
       </section>
 
-      <section className="p-5 md:p-6 lg:p-8 xl:p-10 admin-premium-card admin-animate-in admin-stagger-2 opacity-0">
+      <section className="p-5 md:p-6 lg:p-8 xl:p-10 admin-premium-card">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold tracking-tight text-white md:text-[1.05rem]">Productos</h2>

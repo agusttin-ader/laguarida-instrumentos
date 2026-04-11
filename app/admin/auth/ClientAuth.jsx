@@ -15,7 +15,7 @@ export function useAdminAuth() {
   return useContext(AdminAuthContext)
 }
 
-const ADMIN_SPLASH_MIN_MS = 1200
+const ADMIN_SPLASH_MIN_MS = 350
 
 export default function ClientAuth({ children }){
   const [session, setSession] = useState(null)
@@ -196,7 +196,7 @@ export default function ClientAuth({ children }){
         ) : (
           <>
             {/* Bloque superior: logo centrado + barra de sesión; se oculta con CSS cuando body.modal-open (modal crear/editar producto) */}
-            <div className="admin-top-bar relative z-30 border-b border-white/8 admin-animate-in opacity-0">
+            <div className="admin-top-bar relative z-30 border-b border-white/8">
               <header className="flex justify-center pt-4 pb-2 px-4 md:px-6 md:pt-6 md:pb-3 xl:pt-8 xl:pb-4">
                 <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-lg" aria-label="Ir al inicio - La Guarida">
                   <Image
@@ -248,8 +248,7 @@ export default function ClientAuth({ children }){
             {showLogoutConfirm && (
               <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
                 <div
-                  className="absolute inset-0 modal-backdrop-enter backdrop-blur-sm cursor-default"
-                  style={{ backgroundColor: 'rgba(0,0,0,0.65)' }}
+                  className="absolute inset-0 cursor-default bg-black/65"
                   onClick={() => setShowLogoutConfirm(false)}
                   onKeyDown={(e) => e.key === 'Escape' && setShowLogoutConfirm(false)}
                   role="button"
@@ -257,7 +256,7 @@ export default function ClientAuth({ children }){
                   aria-label="Cerrar"
                 />
                 <div
-                  className="relative admin-premium-card w-full max-w-sm p-6 modal-panel-enter shadow-2xl"
+                  className="relative admin-premium-card w-full max-w-sm p-6 shadow-2xl"
                   role="dialog"
                   aria-modal="true"
                   aria-labelledby="logout-dialog-title"

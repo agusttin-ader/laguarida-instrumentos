@@ -8,10 +8,9 @@
 .appShell {
   max-width: 480px;
   margin: 0 auto;
-  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
   border-radius: 18px;
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  background: rgba(255,255,255,0.02);
 }
 
 .header {

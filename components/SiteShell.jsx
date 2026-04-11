@@ -3,8 +3,9 @@
 import { useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { usePathname, useRouter } from 'next/navigation'
-import Footer from './Footer'
-import PullToRefresh from './PullToRefresh'
+
+const Footer = dynamic(() => import('./Footer'), { ssr: true })
+const PullToRefresh = dynamic(() => import('./PullToRefresh'), { ssr: false })
 
 /** Reserva espacio mientras carga el chunk del header (solo cliente; evita mismatch SSR/bundle). */
 function HeaderLoading() {

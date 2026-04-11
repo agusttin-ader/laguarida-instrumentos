@@ -889,21 +889,6 @@ header:not(.header-home-mobile) {
   background-color: var(--dark-cta-hover) !important;
 }
 
-/* Modal animations: subtle fade + scale + translateY */
-@keyframes modal-in {
-  from { opacity: 0; transform: translateY(8px) scale(.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-@keyframes modal-out {
-  from { opacity: 1; transform: translateY(0) scale(1); }
-  to   { opacity: 0; transform: translateY(8px) scale(.98); }
-}
-
-.modal-backdrop-enter { animation: fadeInBackdrop 220ms cubic-bezier(.2,.9,.3,1) forwards }
-.modal-backdrop-exit  { animation: fadeOutBackdrop 180ms ease-in forwards }
-@keyframes fadeInBackdrop { from { opacity: 0 } to { opacity: 1 } }
-@keyframes fadeOutBackdrop { from { opacity: 1 } to { opacity: 0 } }
-
 /* Lightbox: animación al cambiar de imagen (más notoria) */
 @keyframes lightbox-image-in {
   from { opacity: 0; transform: scale(0.92); }
@@ -930,11 +915,7 @@ header:not(.header-home-mobile) {
   .product-specs-expandable-expanded .spec-item-extra { animation: none; }
 }
 
-.modal-panel-enter { animation: modal-in 220ms cubic-bezier(.2,.9,.3,1) forwards }
-.modal-panel-exit  { animation: modal-out 180ms ease-in forwards }
-
 @media (prefers-reduced-motion: reduce) {
-  .modal-backdrop-enter, .modal-backdrop-exit, .modal-panel-enter, .modal-panel-exit,
   .lightbox-image-in { animation: none !important }
 }
 
@@ -2405,33 +2386,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 1px 0 0 rgba(255, 255, 255, 0.05) inset;
 }
 
-/* Admin: animaciones elegantes (entrada y hover) */
-@keyframes admin-fade-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes admin-slide-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.admin-animate-in {
-  animation: admin-fade-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-.admin-animate-slide-up {
-  animation: admin-slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-.admin-stagger-0 { animation-delay: 0ms; }
-.admin-stagger-1 { animation-delay: 60ms; }
-.admin-stagger-2 { animation-delay: 120ms; }
-.admin-stagger-3 { animation-delay: 180ms; }
-.admin-stagger-4 { animation-delay: 240ms; }
-.admin-stagger-5 { animation-delay: 300ms; }
-.admin-card-hover {
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 200ms ease, box-shadow 200ms ease;
-}
-.admin-card-hover:hover {
-  transform: translateY(-2px);
-}
 .admin-btn-interact {
   transition: transform 0.2s ease, box-shadow 180ms ease, border-color 180ms ease, background-color 180ms ease;
 }
@@ -2442,25 +2396,55 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   transform: translateY(0);
 }
 @media (prefers-reduced-motion: reduce) {
-  .admin-animate-in,
-  .admin-animate-slide-up { animation: none !important; opacity: 1; transform: none !important; }
-  .admin-card-hover:hover,
   .admin-btn-interact:hover,
   .admin-btn-interact:active { transform: none !important; }
 }
 
-/* App (PWA): animaciones más ligeras para no saturar */
-.admin-app-shell .admin-animate-in,
-.admin-app-shell .admin-animate-slide-up {
-  animation-duration: 0.28s;
+/* Admin segment: boot splash (styles live in globals so the admin layout need not render <head>) */
+#admin-boot-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: radial-gradient(ellipse at center, rgba(212, 164, 59, 0.07) 0%, #06080e 52%);
 }
-.admin-app-shell .admin-stagger-1 { animation-delay: 40ms; }
-.admin-app-shell .admin-stagger-2 { animation-delay: 80ms; }
-.admin-app-shell .admin-stagger-3 { animation-delay: 120ms; }
-.admin-app-shell .admin-stagger-4 { animation-delay: 160ms; }
-.admin-app-shell .admin-stagger-5 { animation-delay: 200ms; }
-.admin-app-shell .admin-card-hover:hover { transform: translateY(-1px); }
-.admin-app-shell .admin-btn-interact:hover { transform: translateY(-0.5px); }
+#admin-boot-splash .admin-splash-inner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 1;
+}
+#admin-boot-splash .admin-splash-logo {
+  width: 96px;
+  height: 96px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  box-sizing: border-box;
+}
+#admin-boot-splash .admin-splash-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+#admin-boot-splash .admin-splash-label {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+#admin-boot-splash.admin-boot-splash-fade {
+  opacity: 0;
+  transition: opacity 0.18s ease-out;
+}
 
 .admin-premium-input {
   width: 100%;
@@ -2569,16 +2553,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 }
 @media (prefers-reduced-motion: reduce) {
   .animate-page-in { animation: none; opacity: 1; transform: none; }
-}
-
-@keyframes splash-breathe {
-  0% { opacity: 0.22; transform: scale(0.98); }
-  100% { opacity: 0.46; transform: scale(1.02); }
-}
-
-.splash-soft-glow {
-  background: radial-gradient(circle, rgba(212,164,59,0.24) 0%, rgba(212,164,59,0.08) 38%, rgba(212,164,59,0.0) 70%);
-  animation: splash-breathe 2.2s ease-in-out infinite alternate;
 }
 
 /* Minimal editorial section headings (aligned with navbar style) */
