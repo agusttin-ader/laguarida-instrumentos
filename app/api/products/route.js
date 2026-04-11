@@ -3,12 +3,27 @@ export const runtime = 'nodejs'
 import { NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '../../../lib/supabase/server'
 import { cookies } from 'next/headers'
+import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
 
 const MAX_TEXT = 500
 const MAX_NAME = 140
 const MAX_SLUG = 180
 const MAX_PRICE = 120
 const MAX_IMAGES = 12
+
+/** Asegura URLs absolutas de Storage (evita rutas /storage/... rotas en el cliente). */
+function withResolvedImageUrls(row) {
+  if (!row || typeof row !== 'object') return row
+  const p = { ...row }
+  if (p.image_url) {
+    const r = resolveImageUrl(p.image_url)
+    if (r) p.image_url = r
+  }
+  if (Array.isArray(p.images)) {
+    p.images = p.images.map((u) => resolveImageUrl(u) || u).filter(Boolean)
+  }
+  return p
+}
 
 // helper to extract sb-access-token from cookie store or raw header
 async function extractAccessToken(req) {
@@ -182,7 +197,8 @@ export async function GET(req) {
     const headers = {
       'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120, max-age=60',
     }
-    return NextResponse.json(data, { status: 200, headers })
+    const payload = Array.isArray(data) ? data.map(withResolvedImageUrls) : data
+    return NextResponse.json(payload, { status: 200, headers })
   } catch (err) {
     return NextResponse.json({ error: err.message || String(err) }, { status: 500 })
   }

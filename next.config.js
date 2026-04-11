@@ -1,4 +1,27 @@
 /** @type {import('next').NextConfig} */
+
+function supabaseRemotePatternsFromEnv() {
+  const rawUrls = [process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_URL].filter(Boolean)
+  const seen = new Set()
+  const patterns = []
+  for (const raw of rawUrls) {
+    try {
+      const u = new URL(raw)
+      if (seen.has(u.hostname)) continue
+      seen.add(u.hostname)
+      patterns.push({
+        protocol: u.protocol.replace(':', ''),
+        hostname: u.hostname,
+        port: u.port || '',
+        pathname: '/storage/v1/object/public/**',
+      })
+    } catch {
+      /* ignore invalid */
+    }
+  }
+  return patterns
+}
+
 const nextConfig = {
   reactStrictMode: true,
   compiler: process.env.NODE_ENV === 'production' ? { removeConsole: { exclude: ['warn', 'error'] } } : undefined,
@@ -7,11 +30,12 @@ const nextConfig = {
     qualities: [100, 95, 90, 88, 86, 85, 82, 80, 78, 76],
     // Prefer modern formats when available to reduce transfer size
     formats: ['image/avif', 'image/webp'],
-    // Allow Supabase Storage public URLs (project-specific hostnames under supabase.co)
+    // Host explícito desde env (build/deploy) + comodín para cualquier proyecto *.supabase.co
     remotePatterns: [
+      ...supabaseRemotePatternsFromEnv(),
       {
         protocol: 'https',
-        hostname: '*.supabase.co',
+        hostname: '**.supabase.co',
         port: '',
         pathname: '/storage/v1/object/public/**',
       },

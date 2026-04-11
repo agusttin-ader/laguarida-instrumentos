@@ -13,7 +13,7 @@ export const metadata = {
   title: 'Catálogo — La Guarida',
   description: 'Catálogo de guitarras e instrumentos musicales en Argentina. Venta de guitarras nuevas y usados, accesorios y amplificadores. Encontrá guitarras, bajos y equipos con asesoramiento profesional.',
   alternates: {
-    canonical: 'https://laguarida.com/'
+    canonical: 'https://laguaridainstrumentos.com/'
   }
 }
 
