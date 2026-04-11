@@ -1,10 +1,11 @@
 "use client"
 import React from 'react'
+import { layoutShellClassName } from '../lib/layoutShell'
 
 export default function About(){
   return (
     <section id="about-section" className="mt-6 sm:mt-14 md:mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-11">
+      <div className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-11`}>
         <div className="w-full">
           <p className="section-kicker-minimal section-underline-ocre text-gray-700 dark:text-white/70 mb-2 sm:mb-3">Sobre La Guarida</p>
           <h2 className="section-title-minimal text-[var(--dark-text-primary)] text-2xl sm:text-3xl md:text-[3.2rem] mb-3 md:mb-4 tracking-tight">Una tienda, una historia</h2>

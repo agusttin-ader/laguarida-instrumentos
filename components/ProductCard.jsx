@@ -9,7 +9,8 @@ import { useFavorites } from './ProductShareAndFavorite'
 import { useToast } from './ToastContext'
 
 // Alineado al grid (1 / 2 / 3 cols + padding del contenedor); evita warning de Next por 100vw en tarjetas más angostas
-const CARD_IMAGE_SIZES = '(max-width: 639px) min(92vw, 560px), (max-width: 1023px) min(46vw, 520px), min(34vw, 420px)'
+const CARD_IMAGE_SIZES =
+  '(max-width: 639px) min(92vw, 560px), (max-width: 1023px) min(46vw, 560px), (max-width: 1535px) min(34vw, 520px), (max-width: 1919px) min(30vw, 600px), min(26vw, 720px)'
 const MAX_CARD_IMAGES = 3
 const SWIPE_THRESHOLD = 36
 

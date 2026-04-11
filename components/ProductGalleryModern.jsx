@@ -7,6 +7,12 @@ import imageService from '../lib/utils/imageService'
 
 const GalleryLightbox = dynamic(() => import('./GalleryLightbox'), { ssr: false })
 
+/** Srcset alineado a layout ancho en 2K / 4K (evita fotos demasiado comprimidas) */
+const GALLERY_MAIN_SIZES =
+  '(max-width:1023px) 100vw, (max-width:1279px) 52vw, (max-width:1919px) min(50vw, 960px), min(46vw, 1400px)'
+const GALLERY_THUMB_SIZES =
+  '(max-width:1023px) 50vw, (max-width:1279px) 20vw, (max-width:1919px) min(18vw, 440px), min(16vw, 560px)'
+
 // Preload lightbox chunk after gallery is visible so first open is instant
 function usePreloadLightbox() {
   useEffect(() => {
@@ -47,12 +53,12 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
 
   return (
     <>
-      <div className="w-full grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-2 sm:gap-3 md:gap-4 min-h-[380px] lg:min-h-[580px]">
+      <div className="w-full grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-2 sm:gap-3 md:gap-4 min-h-[380px] lg:min-h-[580px] min-[1920px]:lg:min-h-[640px] min-[2560px]:lg:min-h-[720px]">
         {/* Imagen principal: grande a la izquierda */}
         <button
           type="button"
           onClick={() => openLightbox(0)}
-          className="no-custom-btn group relative w-full aspect-[4/5] lg:aspect-auto lg:min-h-[580px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
+          className="no-custom-btn group relative w-full aspect-[4/5] lg:aspect-auto lg:min-h-[580px] min-[1920px]:lg:min-h-[640px] min-[2560px]:lg:min-h-[720px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
           aria-label="Ver imagen principal"
         >
           <ImageWithSkeleton
@@ -60,7 +66,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
             alt={altBase || 'Imagen del producto'}
             fill
             className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-            sizes="(min-width:1280px) 50vw, (min-width:1024px) 52vw, 100vw"
+            sizes={GALLERY_MAIN_SIZES}
             quality={88}
             priority
             disableClientPreview
@@ -69,7 +75,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
 
         {/* Columna derecha: grid asimétrico + 2 filas abajo para igualar altura con la principal */}
         {sideImages.length > 0 && (
-          <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 grid-rows-[1fr_1fr_1fr_1fr] min-h-[380px] lg:min-h-[580px]">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 grid-rows-[1fr_1fr_1fr_1fr] min-h-[380px] lg:min-h-[580px] min-[1920px]:lg:min-h-[640px] min-[2560px]:lg:min-h-[720px]">
             {/* Arriba: imagen alta (span 2 rows) + dos chicas — simétrico */}
             <button
               type="button"
@@ -82,7 +88,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 alt={altBase ? `${altBase} — imagen 2` : 'Imagen 2'}
                 fill
                 className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                sizes="(min-width:1280px) 18vw, (min-width:1024px) 20vw, 50vw"
+                sizes={GALLERY_THUMB_SIZES}
                 quality={76}
                 disableClientPreview
               />
@@ -99,7 +105,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   alt={altBase ? `${altBase} — imagen 3` : 'Imagen 3'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes="(min-width:1280px) 18vw, (min-width:1024px) 20vw, 50vw"
+                  sizes={GALLERY_THUMB_SIZES}
                   quality={76}
                   disableClientPreview
                 />
@@ -117,7 +123,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   alt={altBase ? `${altBase} — imagen 4` : 'Imagen 4'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes="(min-width:1280px) 18vw, (min-width:1024px) 20vw, 50vw"
+                  sizes={GALLERY_THUMB_SIZES}
                   quality={76}
                   disableClientPreview
                 />
@@ -136,7 +142,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   alt={altBase ? `${altBase} — imagen 5` : 'Imagen 5'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes="(min-width:1280px) 18vw, (min-width:1024px) 20vw, 50vw"
+                  sizes={GALLERY_THUMB_SIZES}
                   quality={76}
                   disableClientPreview
                 />
@@ -154,7 +160,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   alt={altBase ? `${altBase} — imagen 6` : 'Imagen 6'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes="(min-width:1280px) 18vw, (min-width:1024px) 20vw, 50vw"
+                  sizes={GALLERY_THUMB_SIZES}
                   quality={76}
                   disableClientPreview
                 />
@@ -172,7 +178,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   alt={altBase ? `${altBase} — imagen 7` : 'Imagen 7'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes="(min-width:1280px) 18vw, (min-width:1024px) 20vw, 50vw"
+                  sizes={GALLERY_THUMB_SIZES}
                   quality={76}
                   disableClientPreview
                 />

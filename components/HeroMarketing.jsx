@@ -5,14 +5,15 @@ import Link from 'next/link'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import normalizeProduct from '../lib/utils/normalizeProduct'
 import imageService from '../lib/utils/imageService'
+import { layoutShellClassName } from '../lib/layoutShell'
 
 const HEADLINE = 'Instrumentos que suenan como tienen que sonar'
 const SUBHEADLINE = 'Selección real. Sin humo.'
 const SLIDE_MS = 5000
 
-/** Marco hero: max ~320px móvil, sm hasta 384px, columna ~44% en lg (max-w-xl / 7xl) */
+/** Srcset: móvil pantalla; desktop/XL/2K/4K con techo alto para no pixelar en marcos grandes */
 const HERO_SHOWROOM_IMAGE_SIZES =
-  '(max-width: 639px) min(100vw, 384px), (max-width: 1023px) min(92vw, 384px), min(45vw, 600px)'
+  '(max-width: 1023px) 100vw, (max-width: 1279px) min(50vw, 720px), (max-width: 1535px) min(45vw, 800px), (max-width: 1919px) min(42vw, 960px), min(38vw, 1400px)'
 
 function isUsableImgUrl(u) {
   if (!u || typeof u !== 'string') return false
@@ -281,8 +282,6 @@ export default function HeroMarketing({ product = null }) {
   const current = slides[slideIndex] ?? slides[0]
   const showFrameImage = Boolean(current?.url) && Boolean(layerSlots?.[0]?.url)
 
-  const displayName = (visualSlide?.name && String(visualSlide.name).trim()) || ''
-
   const productHref = useMemo(() => {
     const cs = visualSlide?.slug && String(visualSlide.slug).trim()
     if (cs) return `/guitars/${encodeURIComponent(cs)}`
@@ -334,11 +333,11 @@ export default function HeroMarketing({ product = null }) {
       {/* Luz ambiente + grain: una capa + pseudo (ver .hero-showroom-ambient en globals.css) */}
       <div className="hero-showroom-ambient" aria-hidden />
 
-      <div className="relative z-[1] mx-auto flex min-h-[100dvh] w-full max-w-7xl flex-col gap-11 px-5 pb-16 pt-[calc(4.25rem+env(safe-area-inset-top,0px))] sm:gap-12 sm:px-8 sm:pb-20 lg:flex-row lg:items-center lg:gap-16 lg:px-10 lg:pb-24 lg:pt-[calc(3.75rem+env(safe-area-inset-top,0px))] xl:px-12">
-        {/* Marco + foto (arriba en móvil) */}
-        <div className="order-1 flex w-full justify-center lg:order-2 lg:w-[44%] lg:max-w-xl lg:flex-shrink-0 lg:justify-end">
-          <figure className="hero-showroom-frame relative w-full max-w-[min(100%,320px)] sm:max-w-sm lg:max-w-none">
-            <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#121212] shadow-[0_24px_60px_rgba(0,0,0,0.45),0_0_0_1px_rgba(255,255,255,0.06)_inset]">
+      <div className={`relative z-[1] flex min-h-[100dvh] w-full ${layoutShellClassName} flex-col gap-0 px-0 pt-0 lg:flex-row lg:items-center lg:gap-16 lg:px-10 lg:pb-24 lg:pt-[calc(3.75rem+env(safe-area-inset-top,0px))] xl:px-12 min-[1920px]:lg:gap-24 min-[1920px]:xl:px-16 min-[2560px]:xl:px-20`}>
+        {/* max-lg: full-bleed; lg+: marco 3/4 que crece en XL / 2K / 4K; xl+ object-contain = foto entera */}
+        <div className="order-1 flex min-h-0 min-w-0 max-lg:h-[100dvh] max-lg:w-full max-lg:flex-none max-lg:shrink-0 max-lg:self-stretch lg:order-2 lg:mx-0 lg:flex lg:h-auto lg:w-[44%] lg:max-w-xl lg:flex-shrink-0 lg:justify-end xl:max-w-2xl min-[1536px]:lg:max-w-3xl min-[1920px]:lg:max-w-4xl min-[2560px]:lg:max-w-5xl">
+          <figure className="hero-showroom-frame relative flex h-full min-h-0 w-full max-lg:flex-1 max-lg:flex-col lg:block lg:h-auto lg:w-full lg:max-w-none">
+            <div className="relative min-h-0 w-full flex-1 overflow-hidden bg-[#121212] shadow-[0_24px_60px_rgba(0,0,0,0.45),0_0_0_1px_rgba(255,255,255,0.06)_inset] max-lg:h-[100dvh] max-lg:min-h-[100dvh] max-lg:rounded-none lg:aspect-[3/4] lg:h-auto lg:min-h-0 lg:w-full lg:flex-none lg:rounded-2xl">
               {showFrameImage && layerSlots ? (
                 <>
                   {layerSlots.map((slot, i) => (
@@ -351,14 +350,7 @@ export default function HeroMarketing({ product = null }) {
                       }`}
                       aria-hidden={i !== topLayer}
                     >
-                      <div
-                        className={
-                          i === topLayer && !reduceMotion
-                            ? 'hero-showroom-photo-kenburns relative h-full w-full'
-                            : 'relative h-full w-full'
-                        }
-                        key={slot.url}
-                      >
+                      <div className="relative h-full w-full" key={slot.url}>
                         <Image
                           src={slot.url}
                           alt={slot.name || 'Instrumento del catálogo'}
@@ -369,7 +361,7 @@ export default function HeroMarketing({ product = null }) {
                           priority={slideIndex === 0 && i === topLayer}
                           fetchPriority={slideIndex === 0 && i === topLayer ? 'high' : 'low'}
                           decoding="async"
-                          className="object-cover object-center"
+                          className="object-cover object-center max-lg:object-[center_42%] xl:object-contain xl:object-center"
                         />
                       </div>
                     </div>
@@ -391,23 +383,14 @@ export default function HeroMarketing({ product = null }) {
               )}
             </div>
             <div
-              className="pointer-events-none absolute -inset-px rounded-[1.05rem] ring-1 ring-[var(--vintage-gold)]/25"
+              className="pointer-events-none absolute -inset-px max-lg:rounded-none ring-1 ring-[var(--vintage-gold)]/25 lg:rounded-[1.05rem]"
               aria-hidden
             />
-            <figcaption className="hero-showroom-caption-fade mt-3 text-center text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--dark-muted)] lg:text-left">
-              {displayName ? (
-                <span className="text-white/70" key={visualSlide?.url ?? slideIndex}>
-                  {displayName}
-                </span>
-              ) : (
-                <span>Destacado del día</span>
-              )}
-            </figcaption>
           </figure>
         </div>
 
-        {/* Copy */}
-        <div className="order-2 flex flex-1 flex-col justify-center text-center lg:order-1 lg:max-w-xl lg:text-left">
+        {/* Copy — debajo de la imagen full-screen en móvil */}
+        <div className="order-2 flex shrink-0 flex-col justify-center px-5 pb-16 pt-10 text-center max-lg:w-full sm:px-8 lg:order-1 lg:flex-1 lg:max-w-xl lg:px-0 lg:pb-24 lg:pt-0 lg:text-left xl:max-w-2xl 2xl:max-w-3xl">
           <div className="hero-showroom-content">
             <p className="mb-4 inline-flex flex-col items-center gap-2 sm:mb-5 lg:items-start">
               <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--vintage-gold)] sm:text-xs">
@@ -420,11 +403,11 @@ export default function HeroMarketing({ product = null }) {
             </p>
             <h1
               id="home-hero"
-              className="font-display text-[1.85rem] font-bold leading-[1.1] tracking-tight text-white sm:text-[2.25rem] md:text-[2.6rem] lg:text-[2.85rem]"
+              className="font-display text-[1.85rem] font-bold leading-[1.1] tracking-tight text-white sm:text-[2.25rem] md:text-[2.6rem] lg:text-[2.85rem] xl:text-5xl 2xl:text-6xl min-[1920px]:text-[3.5rem] min-[1920px]:leading-[1.06] min-[2560px]:text-[4rem]"
             >
               {HEADLINE}
             </h1>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-[var(--dark-muted)] sm:mt-5 sm:text-lg lg:mx-0">
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-[var(--dark-muted)] sm:mt-5 sm:text-lg lg:mx-0 xl:max-w-2xl xl:text-xl 2xl:text-2xl 2xl:leading-snug">
               {SUBHEADLINE}
             </p>
             <div className="mt-9 flex flex-col items-stretch gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">

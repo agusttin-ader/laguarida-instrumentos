@@ -4,13 +4,14 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { InstagramLogo, EnvelopeSimple, WhatsappLogo } from 'phosphor-react'
+import { layoutShellClassName } from '../lib/layoutShell'
 
 export default function Footer({ compact = false }){
   const waHref = `https://wa.me/5491154661749?text=${encodeURIComponent('Hola, me interesa La Guarida, me podrias dar informacion?')}`
 
   return (
     <footer className={`${compact ? 'mt-0' : 'mt-8 md:mt-20'} bg-transparent dark:bg-transparent border-0 overflow-x-hidden`}>
-      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${compact ? 'py-4 md:py-3' : 'py-6 sm:py-8'}`}>
+      <div className={`${layoutShellClassName} px-4 sm:px-6 lg:px-8 ${compact ? 'py-4 md:py-3' : 'py-6 sm:py-8'}`}>
         {!compact && <div className="mb-4 sm:mb-5 h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent" aria-hidden />}
         <div className={`grid grid-cols-1 md:grid-cols-3 items-center ${compact ? 'gap-3 md:gap-2' : 'gap-4 sm:gap-6'}`}>
           <div className="text-center md:text-left md:justify-self-start">

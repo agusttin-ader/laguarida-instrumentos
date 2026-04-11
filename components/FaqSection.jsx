@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { CaretDown, CaretUp, InstagramLogo, WhatsappLogo, EnvelopeSimple } from 'phosphor-react'
+import { layoutShellClassName } from '../lib/layoutShell'
 
 const FAQ_ITEMS = [
   {
@@ -61,7 +62,7 @@ export default function FaqSection() {
       className="mt-6 sm:mt-10 md:mt-12"
       aria-labelledby="faq-heading"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 py-5 sm:py-10 md:py-12 lg:py-14 pb-20 md:pb-14 lg:pb-14">
+      <div className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 py-5 sm:py-10 md:py-12 lg:py-14 pb-20 md:pb-14 lg:pb-14`}>
         <p className="section-kicker-minimal section-underline-ocre text-gray-700 dark:text-white/70 mb-2 sm:mb-3">Preguntas frecuentes</p>
         <h2 id="faq-heading" className="section-title-minimal text-[var(--dark-text-primary)] text-2xl sm:text-3xl md:text-[2.5rem] mb-4 sm:mb-6 md:mb-8">
           Envíos, pagos, permutas y más

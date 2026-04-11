@@ -1172,6 +1172,15 @@ main.legal-page article {
 @media (min-width: 1024px) {
   .container-tight { padding-left: 2rem; padding-right: 2rem; }
 }
+@media (min-width: 1536px) {
+  .container-tight { max-width: 80rem; }
+}
+@media (min-width: 1920px) {
+  .container-tight { max-width: 90rem; }
+}
+@media (min-width: 2560px) {
+  .container-tight { max-width: min(100rem, 92vw); }
+}
 
 /* Card layout: ensure consistent height and spacing for product cards */
 .card-compact {

@@ -1,13 +1,12 @@
 import React from 'react'
-import dynamic from 'next/dynamic'
 import { unstable_noStore as noStore } from 'next/cache'
+import { layoutShellClassName } from '../lib/layoutShell'
 import HomeHeroDynamic from '../components/HomeHeroDynamic'
 import FeaturedSelection from '../components/FeaturedSelection'
 import LowCostSection from '../components/LowCostSection'
+import About from '../components/About'
+import FaqSection from '../components/FaqSection'
 import { fetchHeroProduct } from '../lib/data/fetchHeroProduct'
-
-const About = dynamic(() => import('../components/About'), { ssr: true, loading: () => <section className="min-h-[120px] flex items-center justify-center" aria-hidden><div className="animate-pulse h-8 w-48 rounded bg-white/10" /></section> })
-const FaqSection = dynamic(() => import('../components/FaqSection'), { ssr: true, loading: () => <section className="min-h-[120px] flex items-center justify-center" aria-hidden><div className="animate-pulse h-8 w-48 rounded bg-white/10" /></section> })
 
 export const metadata = {
   title: 'Catálogo — La Guarida',
@@ -33,7 +32,7 @@ export default async function Page() {
         <HomeHeroDynamic product={heroProduct} />
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 pt-2 sm:pt-6 md:pt-10 pb-8 sm:pb-10 md:pb-12 min-h-screen min-h-[100dvh]">
+      <div className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 pt-2 sm:pt-6 md:pt-10 pb-8 sm:pb-10 md:pb-12 min-h-screen min-h-[100dvh] min-[1920px]:px-10 min-[2560px]:px-12`}>
         <header className="mb-0 sm:mb-3 md:mb-4 text-center">
           <p className="sr-only">La Guarida es una tienda especializada en guitarras, bajos y accesorios. Ofrecemos instrumentos seleccionados, asesoramiento profesional y envíos dentro de Argentina.</p>
         </header>
