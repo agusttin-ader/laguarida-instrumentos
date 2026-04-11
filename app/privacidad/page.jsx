@@ -5,10 +5,12 @@ export const metadata = {
   description: 'Cómo recopilamos, usamos y protegemos tus datos en La Guarida Instrumentos.',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default function PrivacidadPage() {
   return (
-    <main className="container-tight py-8 sm:py-10 md:py-14">
-      <article className="max-w-4xl mx-auto rounded-2xl border border-white/16 bg-[#161920] px-5 sm:px-7 md:px-10 py-6 sm:py-8 md:py-10 shadow-[0_18px_46px_rgba(0,0,0,0.34)]">
+    <main className="legal-page container-tight py-8 sm:py-10 md:py-14">
+      <article className="max-w-4xl mx-auto bg-transparent">
         <p className="section-kicker-minimal text-[var(--dark-muted)] mb-2">Legal</p>
         <h1 className="text-[1.85rem] sm:text-[2.2rem] md:text-[2.5rem] font-bold tracking-tight text-[var(--dark-text-primary)] leading-[1.08]">
           Política de privacidad
@@ -20,8 +22,8 @@ export default function PrivacidadPage() {
           En esta página explicamos de forma clara cómo tratamos tu información cuando navegás el sitio o te contactás con nosotros.
         </p>
 
-        <div className="mt-7 space-y-0 text-[14px] sm:text-[15px] md:text-base leading-relaxed text-[var(--dark-text-secondary)]">
-          <section className="px-2 sm:px-3 py-4 sm:py-5 border-t border-[var(--dark-border)]">
+        <div className="mt-10 space-y-8 text-[14px] sm:text-[15px] md:text-base leading-relaxed text-[var(--dark-text-secondary)]">
+          <section>
             <h2 className="text-[15px] sm:text-[1.02rem] md:text-[1.08rem] font-semibold text-[var(--dark-text-primary)]">01. Información que recopilamos</h2>
             <p className="mt-1.5">
               Podemos recopilar datos de contacto que nos compartís voluntariamente (por ejemplo, por WhatsApp o correo),
@@ -29,7 +31,7 @@ export default function PrivacidadPage() {
             </p>
           </section>
 
-          <section className="px-2 sm:px-3 py-4 sm:py-5 border-t border-[var(--dark-border)]">
+          <section>
             <h2 className="text-[15px] sm:text-[1.02rem] md:text-[1.08rem] font-semibold text-[var(--dark-text-primary)]">02. Uso de la información</h2>
             <p className="mt-1.5">
               Utilizamos la información para responder consultas, brindar asesoramiento comercial, mejorar la experiencia
@@ -37,7 +39,7 @@ export default function PrivacidadPage() {
             </p>
           </section>
 
-          <section className="px-2 sm:px-3 py-4 sm:py-5 border-t border-[var(--dark-border)]">
+          <section>
             <h2 className="text-[15px] sm:text-[1.02rem] md:text-[1.08rem] font-semibold text-[var(--dark-text-primary)]">03. Conservación y protección de datos</h2>
             <p className="mt-1.5">
               Aplicamos medidas razonables para proteger la información. Conservamos los datos durante el tiempo necesario
@@ -45,7 +47,7 @@ export default function PrivacidadPage() {
             </p>
           </section>
 
-          <section className="px-2 sm:px-3 py-4 sm:py-5 border-t border-[var(--dark-border)]">
+          <section>
             <h2 className="text-[15px] sm:text-[1.02rem] md:text-[1.08rem] font-semibold text-[var(--dark-text-primary)]">04. Compartición con terceros</h2>
             <p className="mt-1.5">
               No vendemos datos personales. Podemos usar servicios de terceros para operar el sitio (por ejemplo, hosting,
@@ -53,14 +55,14 @@ export default function PrivacidadPage() {
             </p>
           </section>
 
-          <section className="px-2 sm:px-3 py-4 sm:py-5 border-t border-[var(--dark-border)]">
+          <section>
             <h2 className="text-[15px] sm:text-[1.02rem] md:text-[1.08rem] font-semibold text-[var(--dark-text-primary)]">05. Derechos del usuario</h2>
             <p className="mt-1.5">
               Podés solicitar acceso, actualización o eliminación de tus datos escribiendo a nuestros canales de contacto.
             </p>
           </section>
 
-          <section className="px-2 sm:px-3 py-4 sm:py-5 border-y border-[var(--dark-border)]">
+          <section>
             <h2 className="text-[15px] sm:text-[1.02rem] md:text-[1.08rem] font-semibold text-[var(--dark-text-primary)]">06. Cambios en esta política</h2>
             <p className="mt-1.5">
               Esta política puede actualizarse para reflejar mejoras del servicio o cambios normativos. La versión vigente

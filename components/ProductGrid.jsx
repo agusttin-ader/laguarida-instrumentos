@@ -53,7 +53,7 @@ export default function ProductGrid({ filters = {}, items: itemsProp }) {
   }
   if (!isLoading && items.length === 0 && !hasError) {
     return (
-      <div className="py-6 p-6 bg-[var(--dark-bg-card)] rounded-xl border border-[var(--dark-border)] shadow">
+      <div className="py-6 p-6 bg-[var(--dark-bg-card)] rounded-xl border border-[var(--dark-border)]">
         <h3 className="text-lg font-semibold text-[var(--dark-text-primary)]">No hay productos</h3>
         <p className="mt-2 text-sm text-[var(--dark-muted)]">Aún no hay productos disponibles. Añade algunos desde el panel de administración.</p>
       </div>

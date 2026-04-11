@@ -8,7 +8,7 @@ import React from "react";
 
 export default function SkeletonProductCard() {
   return (
-    <div className="w-full flex flex-col rounded-lg overflow-hidden shadow-sm bg-[var(--dark-bg-card)] border border-[var(--dark-border)]">
+    <div className="w-full flex flex-col rounded-lg overflow-hidden bg-[var(--dark-bg-card)] border border-[var(--dark-border)]">
       <div className="md:hidden px-4 pt-4 pb-4 bg-[var(--dark-bg-elevated)] border-b border-[var(--dark-border)] rounded-t-lg">
         <div className="flex items-start justify-between gap-2">
           <div className="h-5 bg-[var(--dark-surface-2)] rounded w-3/4 animate-pulse" />

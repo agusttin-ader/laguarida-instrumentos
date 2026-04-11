@@ -5,7 +5,8 @@ import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import MenuDrawer from './MenuDrawer'
 
-const LOGO_DARK = '/images/logo/logo-fondo-oscuro.PNG'
+/** Logo principal (horizontal, fondo oscuro / transparente) — `public/images/logo/logo-fondo-oscuro.PNG` */
+const LOGO_SRC = '/images/logo/logo-fondo-oscuro.PNG'
 const SCROLL_THRESHOLD = 72
 
 function HamburgerIcon({ className }) {
@@ -34,7 +35,7 @@ export default function Header() {
   }, [])
 
   const navLinkClass =
-    "relative inline-flex items-center py-1.5 px-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] whitespace-nowrap text-[#e4e7f0]/85 hover:text-[#fffaf0] transition-colors duration-300 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent after:content-[''] after:absolute after:left-0 after:-bottom-1.5 after:h-[2px] after:w-0 after:bg-[var(--vintage-gold)] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
+    "relative inline-flex items-center py-1 px-0.5 text-[12px] font-semibold uppercase tracking-[0.14em] whitespace-nowrap text-[#e4e7f0]/85 hover:text-[#fffaf0] transition-colors duration-300 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[var(--vintage-gold)] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
 
   function handleSectionNav(e, sectionId) {
     e.preventDefault()
@@ -47,10 +48,8 @@ export default function Header() {
     router.push('/')
   }
 
-  const isProductPage = pathname?.startsWith('/guitars/')
-  const compactBottom = isProductPage ? 'pb-1 sm:pb-2 md:pb-0' : ''
-  const homeCompact = isHome ? 'pt-1 pb-2 sm:pt-3 sm:pb-4 md:pt-0 md:pb-0.5' : ''
-  const logoShadowStyle = { filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.9)) drop-shadow(0 4px 20px rgba(0,0,0,0.8))' }
+  /** Mismo espacio arriba y abajo en desktop (logo + nav centrados en la franja). */
+  const desktopHeaderPad = 'md:py-4 lg:py-5'
 
   const mobileHeader = (
     <>
@@ -63,7 +62,7 @@ export default function Header() {
       <header
         id={isHome ? 'header-home-mobile-overlay' : undefined}
         aria-label="Cabecera"
-        className={`header-mobile md:hidden flex items-center justify-between min-h-[52px] sm:min-h-[56px] py-2 px-4 sm:px-5 left-0 right-0 top-0 relative ${isHome ? 'header-home-mobile hero-overlay-header' : ''} ${scrolled ? 'header-scrolled' : ''}`}
+        className={`header-mobile md:hidden flex items-center justify-between min-h-[52px] sm:min-h-[56px] py-2.5 sm:py-2.5 px-2 sm:px-3 left-0 right-0 top-0 relative ${isHome ? 'header-home-mobile hero-overlay-header' : ''} ${scrolled ? 'header-scrolled' : ''}`}
         style={
           isHome && !scrolled
             ? { backgroundColor: 'transparent', borderBottom: 'none', backdropFilter: 'none', WebkitBackdropFilter: 'none' }
@@ -74,67 +73,77 @@ export default function Header() {
         {isHome && !scrolled && (
           <div className="absolute inset-0 w-full bg-black/35 pointer-events-none" aria-hidden />
         )}
-        <div className="relative z-20 w-12 flex-shrink-0">
+        <div className="relative z-20 w-11 flex-shrink-0">
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
             aria-label="Abrir menú"
-            className="flex items-center justify-center w-12 h-12 -m-2 rounded-xl border-0 text-white/95 hover:text-white bg-black/20 hover:bg-black/28 backdrop-blur-sm no-custom-btn touch-manipulation transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="flex items-center justify-center w-11 h-11 -m-0.5 rounded-lg border-0 text-white/95 hover:text-white bg-black/20 hover:bg-black/28 backdrop-blur-sm no-custom-btn touch-manipulation transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{ WebkitTapHighlightColor: 'transparent', tapHighlightColor: 'transparent' }}
           >
-            <HamburgerIcon className="w-7 h-7" />
+            <HamburgerIcon className="w-6 h-6" />
           </button>
         </div>
-        <div className="flex-1 flex items-center justify-center min-w-0 px-2">
+        <div className="flex-1 flex items-center justify-center min-w-0 px-1.5">
           <a
             href="/"
             aria-label="Ir al inicio"
-            className="z-10 flex justify-center min-w-0 overflow-visible pointer-events-auto"
+            className="z-10 inline-flex justify-center items-center min-w-0 max-w-full overflow-visible pointer-events-auto leading-none"
             onClick={isHome ? (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) } : undefined}
           >
-            <span style={logoShadowStyle} className="block w-[200px] sm:w-[240px] max-h-12 sm:max-h-14 overflow-visible">
-              <span className="block origin-center scale-[2.05] sm:scale-[2.2] w-full" style={{ transformOrigin: 'center' }}>
-                <Image
-                  src={LOGO_DARK}
-                  alt="La Guarida logo"
-                  width={1536}
-                  height={1024}
-                  priority
-                  className="w-full h-auto max-h-12 sm:max-h-14 object-contain block"
-                  style={{ objectFit: 'contain' }}
-                  quality={82}
-                  sizes="(min-width:640px) 240px, 200px"
-                />
-              </span>
+            <span className="relative header-logo-wrapper inline-flex max-w-[min(280px,calc(100vw-7rem))] items-center justify-center leading-none">
+              <Image
+                src={LOGO_SRC}
+                alt="La Guarida logo"
+                width={1800}
+                height={450}
+                priority
+                className="logo-dark h-[34px] w-auto max-h-[36px] sm:h-[36px] sm:max-h-[38px] object-contain block"
+                style={{ objectFit: 'contain' }}
+                quality={82}
+                sizes="(max-width: 767px) 260px, 160px"
+              />
             </span>
           </a>
         </div>
-        <div className="relative z-20 w-12 flex-shrink-0" aria-hidden />
+        <div className="relative z-20 w-11 flex-shrink-0" aria-hidden />
       </header>
-      <MenuDrawer open={menuOpen} setOpen={setMenuOpen} />
     </>
   )
 
   return (
     <>
       {/* Header fijo en móvil: sigue al scroll para que siempre esté visible */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-[60]">{mobileHeader}</div>
+      <div className="md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)]">{mobileHeader}</div>
+      <MenuDrawer open={menuOpen} setOpen={setMenuOpen} />
 
-      {/* ——— Desktop: header actual sin cambios ——— */}
+      {/* ——— Desktop: logo alineado a la izquierda; nav a la derecha (evita recorte del scale en el borde) ——— */}
       <header
-        className={`hidden md:block ${scrolled ? 'header-scrolled ' : ''}${isHome ? homeCompact : `pt-0 pb-1.5 ${compactBottom}`} md:bg-transparent md:backdrop-blur-0 md:border-0 relative`}
+        className={`header-desktop hidden md:block ${scrolled ? 'header-scrolled ' : ''}${desktopHeaderPad} md:bg-transparent md:backdrop-blur-0 md:border-0 relative overflow-visible`}
       >
-        <div className="flex items-center justify-between container-tight max-w-4xl relative min-h-[38px]">
-          <div className="flex items-center min-w-0 md:justify-start" />
-
-          <a href="/" aria-label="Ir al inicio" className="logo-link block static z-10 pointer-events-auto">
-            <div className="relative header-logo-wrapper">
-              <Image src={LOGO_DARK} alt="La Guarida logo" width={1536} height={1024} priority style={{ objectFit: 'contain', display: 'block', height: 'auto' }} className="w-[327px] h-auto block" quality={82} sizes="327px" />
+        <div className="flex items-center justify-between gap-4 md:gap-6 container-tight max-w-5xl relative min-h-0 py-0 overflow-visible">
+          <a
+            href="/"
+            aria-label="Ir al inicio"
+            className="logo-link static z-10 pointer-events-auto shrink-0 min-w-0 overflow-visible max-w-[200px] sm:max-w-[220px]"
+          >
+            <div className="relative header-logo-wrapper header-desktop-logo-wrap">
+              <Image
+                src={LOGO_SRC}
+                alt="La Guarida logo"
+                width={1800}
+                height={450}
+                priority
+                style={{ objectFit: 'contain', display: 'block', height: 'auto' }}
+                className="logo-dark h-[18px] md:h-[20px] w-auto max-w-full object-contain object-left block"
+                quality={82}
+                sizes="(min-width: 768px) 220px, 120px"
+              />
             </div>
           </a>
 
-          <nav className="flex items-center justify-end ml-auto shrink-0" aria-label="Navegación principal">
-            <div className="flex items-center gap-4 xl:gap-5">
+          <nav className="flex items-center justify-end ml-auto shrink-0 min-w-0 overflow-visible" aria-label="Navegación principal">
+            <div className="flex items-center justify-end gap-3 xl:gap-4">
               <a href="/" className={navLinkClass}>Home</a>
               <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
               <a href="/#about-section" onClick={(e) => handleSectionNav(e, 'about-section')} className={navLinkClass}>Sobre nosotros</a>
@@ -147,7 +156,7 @@ export default function Header() {
             </div>
           </nav>
         </div>
-        <div className="container-tight max-w-4xl mt-1">
+        <div className="container-tight max-w-5xl">
           <AuthIndicator />
         </div>
       </header>
@@ -200,7 +209,7 @@ function AuthIndicator() {
   if (typeof pathname === 'string' && pathname.startsWith('/admin')) return null
 
   return (
-    <div className="hidden md:flex items-center gap-4 text-xs text-gray-300">
+    <div className="hidden md:flex items-center gap-4 text-xs text-gray-300 pt-3 border-t border-white/[0.08]">
       {(online === true || online === false) && (
         <div className="flex items-center gap-1.5">
           <span

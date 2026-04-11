@@ -66,7 +66,7 @@ export function ToastProvider({ children }) {
     <ToastContext.Provider value={value}>
       {children}
       <div
-        className="fixed top-1/2 left-1/2 z-[9999] -translate-x-1/2 -translate-y-1/2 w-full max-w-[min(90vw,22rem)] flex flex-col items-center gap-2 pointer-events-none px-4"
+        className="fixed top-1/2 left-1/2 z-[var(--z-toast)] -translate-x-1/2 -translate-y-1/2 w-full max-w-[min(90vw,22rem)] flex flex-col items-center gap-2 pointer-events-none px-4"
         aria-live="polite"
       >
         {toasts.map(({ id, message, type, exiting }) => (

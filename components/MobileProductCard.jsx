@@ -18,7 +18,7 @@ export default function MobileProductCard({ product }) {
   )}`;
 
   return (
-    <article className="card-interactive w-full rounded-none sm:rounded-[20px] overflow-hidden border border-white/10 bg-[#262626] shadow-[0_14px_34px_rgba(0,0,0,0.28)]">
+    <article className="card-interactive card-mobile-no-motion w-full rounded-none sm:rounded-[20px] overflow-hidden border border-white/12 bg-[var(--dark-bg-card)] shadow-none">
       <div className="relative w-full overflow-hidden bg-[#2a2a2a]" style={{ aspectRatio: '5/4' }}>
         <Link href={`/guitars/${p.slug || p.id}`} aria-label={`Ir a ${p.name}`} className="block w-full h-full">
           {/* Use ImageWithSkeleton to show a skeleton while Next/Image loads for better perceived performance */}
@@ -28,7 +28,7 @@ export default function MobileProductCard({ product }) {
             width={1200}
             height={900}
             quality={78}
-            sizes="(min-width:1024px) 600px, 100vw"
+            sizes="(max-width:1023px) min(92vw, 560px), 600px"
             className="w-full h-full"
             disableClientPreview
           />

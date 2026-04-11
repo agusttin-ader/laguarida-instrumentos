@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function About(){
   return (
-    <section id="about-section" className="mt-6 sm:mt-14 md:mt-20 rounded-2xl border border-[var(--dark-border)] bg-gradient-to-b from-[var(--dark-bg-card)] to-[var(--dark-bg-page)] shadow-[0_18px_48px_rgba(0,0,0,0.25)] overflow-hidden">
+    <section id="about-section" className="mt-6 sm:mt-14 md:mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 py-6 sm:py-8 md:py-10 lg:py-11">
         <div className="w-full">
           <p className="section-kicker-minimal section-underline-ocre text-gray-700 dark:text-white/70 mb-2 sm:mb-3">Sobre La Guarida</p>

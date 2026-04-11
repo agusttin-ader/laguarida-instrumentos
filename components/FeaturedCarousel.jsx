@@ -18,13 +18,13 @@ export default function FeaturedCarousel({ items = [] }) {
             const srcRaw = it.image_url || (it.images && it.images[0]) || ''
             const src = imageService.resolve(srcRaw)
             return (
-              <article key={it.slug || it.id || src} className="card-interactive snap-center min-w-[80%] sm:min-w-[60%] bg-white dark:bg-neutral-900 rounded-none sm:rounded-xl shadow-md border border-transparent overflow-hidden">
+              <article key={it.slug || it.id || src} className="card-interactive snap-center min-w-[80%] sm:min-w-[60%] bg-white dark:bg-neutral-900 rounded-none sm:rounded-xl border border-neutral-200/80 dark:border-white/10 overflow-hidden">
                 <div className="relative w-full h-44 sm:h-56">
                   <ImageWithSkeleton
                     src={src}
                     alt={it.name || ''}
                     fill
-                    sizes="(min-width:1280px) 520px, (min-width:1024px) 540px, 100vw"
+                    sizes="(max-width:639px) 85vw, (max-width:1023px) 65vw, (min-width:1280px) 520px, 540px"
                     quality={82}
                     className="object-cover"
                   />

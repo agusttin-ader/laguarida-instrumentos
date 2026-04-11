@@ -8,7 +8,8 @@ import Link from 'next/link'
 import { useFavorites } from './ProductShareAndFavorite'
 import { useToast } from './ToastContext'
 
-const CARD_IMAGE_SIZES = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
+// Alineado al grid (1 / 2 / 3 cols + padding del contenedor); evita warning de Next por 100vw en tarjetas más angostas
+const CARD_IMAGE_SIZES = '(max-width: 639px) min(92vw, 560px), (max-width: 1023px) min(46vw, 520px), min(34vw, 420px)'
 const MAX_CARD_IMAGES = 3
 const SWIPE_THRESHOLD = 36
 
@@ -113,7 +114,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
                   decoding="async"
                   onLoad={() => setLoadedIndices((prev) => new Set(prev).add(idx))}
                   onError={() => {}}
-                  className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} transition-opacity duration-300 ease-out md:transition-transform md:duration-300 md:ease-out md:group-hover/img:scale-[1.03]`}
+                  className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} transition-opacity duration-300 ease-out md:transition-transform md:duration-500 md:ease-[cubic-bezier(0.33,1,0.32,1)] md:group-hover/img:scale-[1.02]`}
                   style={{ objectFit: objectFit, objectPosition: 'center' }}
                 />
             </div>
@@ -132,7 +133,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
               type="button"
               onClick={(e) => handleArrowClick(e, -1)}
               aria-label="Imagen anterior"
-              className={`no-custom-btn absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-white transition-opacity duration-200 focus:outline-none [filter:drop-shadow(0_2px_4px_rgba(0,0,0,0.7))_drop-shadow(0_1px_3px_rgba(0,0,0,0.5))] hover:[filter:drop-shadow(0_3px_6px_rgba(0,0,0,0.8))_drop-shadow(0_2px_4px_rgba(0,0,0,0.6))] ${galleryIndex === 0 ? 'opacity-0 md:group-hover/img:opacity-40 cursor-default' : 'opacity-0 md:group-hover/img:opacity-100'}`}
+              className={`no-custom-btn absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-white transition-opacity duration-200 focus:outline-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] ${galleryIndex === 0 ? 'opacity-0 md:group-hover/img:opacity-40 cursor-default' : 'opacity-0 md:group-hover/img:opacity-100'}`}
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M15 18l-6-6 6-6" />
@@ -142,7 +143,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
               type="button"
               onClick={(e) => handleArrowClick(e, 1)}
               aria-label="Siguiente imagen"
-              className={`no-custom-btn absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-white transition-opacity duration-200 focus:outline-none [filter:drop-shadow(0_2px_4px_rgba(0,0,0,0.7))_drop-shadow(0_1px_3px_rgba(0,0,0,0.5))] hover:[filter:drop-shadow(0_3px_6px_rgba(0,0,0,0.8))_drop-shadow(0_2px_4px_rgba(0,0,0,0.6))] ${galleryIndex === imageList.length - 1 ? 'opacity-0 md:group-hover/img:opacity-40 cursor-default' : 'opacity-0 md:group-hover/img:opacity-100'}`}
+              className={`no-custom-btn absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-white transition-opacity duration-200 focus:outline-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] ${galleryIndex === imageList.length - 1 ? 'opacity-0 md:group-hover/img:opacity-40 cursor-default' : 'opacity-0 md:group-hover/img:opacity-100'}`}
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M9 18l6-6-6-6" />
@@ -155,7 +156,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
                 key={i}
                 type="button"
                 onClick={(e) => handleGalleryDotClick(e, i)}
-                className={`no-custom-btn w-2 h-2 rounded-full transition-all duration-200 min-w-2 min-h-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)] ${i === galleryIndex ? '!bg-white border border-white/90 scale-110 shadow-[0_0_0_1.5px_rgba(255,255,255,0.26)]' : '!bg-white/45 border border-white/35 hover:!bg-white/70'}`}
+                className={`no-custom-btn w-2 h-2 rounded-full transition-all duration-200 min-w-2 min-h-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)] ${i === galleryIndex ? '!bg-white border border-white/90 scale-110 ring-1 ring-white/35' : '!bg-white/45 border border-white/35 hover:!bg-white/70'}`}
                 aria-label={`Imagen ${i + 1} de ${imageList.length}`}
                 aria-current={i === galleryIndex ? 'true' : undefined}
               />
@@ -192,7 +193,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
   return (
     <article
       aria-labelledby={headingId}
-      className={`card-interactive card-editorial card-mobile-no-motion w-full min-w-0 max-w-full overflow-hidden rounded-none md:rounded-[22px] border border-[var(--dark-border)] bg-[var(--dark-bg-card)] shadow-[0_4px_20px_rgba(0,0,0,0.18)] md:shadow-[0_8px_32px_rgba(0,0,0,0.2)] ${isHoveringImage ? 'card-hovering-image' : ''}`}
+      className={`card-interactive card-editorial card-mobile-no-motion w-full min-w-0 max-w-full overflow-hidden rounded-none md:rounded-[22px] border border-[var(--dark-border)] bg-[var(--dark-bg-card)] ${isHoveringImage ? 'card-hovering-image' : ''}`}
     >
       <Link
         href={`/guitars/${p.slug || p.id}`}

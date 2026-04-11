@@ -47,7 +47,7 @@ export default function MenuDrawer({ open, setOpen }) {
   const linkClass = 'block px-5 py-4 rounded-xl text-base font-medium text-[var(--dark-text-primary)] hover:bg-white/10 transition-colors'
 
   return (
-    <div className={`fixed inset-0 z-[10000] ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>
+    <div className={`fixed inset-0 z-[var(--z-menu-drawer)] ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>
       <div
         role="button"
         tabIndex={0}
@@ -60,7 +60,7 @@ export default function MenuDrawer({ open, setOpen }) {
         className={`fixed top-0 left-0 bottom-0 w-80 max-w-[85%] bg-black border-r border-white/10 transform shadow-xl transition-transform duration-200 ease-out ${open ? 'translate-x-0' : '-translate-x-full'}`}
         aria-label="Menú principal"
       >
-        <div className="min-h-[48px] sm:min-h-[52px] flex items-center justify-between px-5 border-b border-white/10">
+        <div className="min-h-[48px] sm:min-h-[52px] flex items-center justify-between px-5 py-1.5 border-b border-white/10">
           <span className="text-lg font-semibold text-white/90">Menú</span>
           <button
             type="button"

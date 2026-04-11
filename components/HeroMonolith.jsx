@@ -24,7 +24,7 @@ function WhatsAppHeroButton() {
       rel="noopener noreferrer"
       aria-label="Contactar por WhatsApp"
       onClick={handleClick}
-      className="no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] w-10 sm:w-12 px-0 rounded-xl border border-[var(--vintage-gold)]/50 bg-[var(--vintage-gold-soft)] text-[#f3d399] text-sm font-semibold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[var(--vintage-gold-soft-hover)] hover:-translate-y-0.5 hover:shadow-[0_14px_28px_rgba(201,162,39,0.28)] active:translate-y-0 shrink-0"
+      className="no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] w-10 sm:w-12 px-0 rounded-xl border border-[var(--vintage-gold)]/50 bg-[var(--vintage-gold-soft)] text-[#f3d399] text-sm font-semibold transition-colors duration-200 ease-out hover:bg-[var(--vintage-gold-soft-hover)] active:opacity-95 shrink-0"
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
         <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
@@ -53,26 +53,31 @@ function pickFeatured(items = [], dayKey = '') {
     })
   if (!ranked.length) return null
   const pool = ranked.slice(0, Math.min(ranked.length, 12))
-  const idx = hashString(dayKey || new Date().toDateString()) % pool.length
+  const key = dayKey != null && dayKey !== '' ? dayKey : new Date().toDateString()
+  const idx = hashString(key) % pool.length
   return pool[idx]
 }
 
 export default function HeroMonolith() {
   const { products, loading } = useProducts({ shuffleCatalog: false })
+  const [hasMounted, setHasMounted] = useState(false)
   const [activeSlide, setActiveSlide] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const [initialHeroReady, setInitialHeroReady] = useState(false)
+
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
 
   const item = useMemo(() => {
-    if (!products.length) return null
-    const dayKey = typeof window !== 'undefined'
-      ? `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
-      : ''
+    if (!hasMounted || !products.length) return null
+    const dayKey = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
     return pickFeatured(products, dayKey)
-  }, [products])
+  }, [products, hasMounted])
 
   const imageSrc = useMemo(() => imageService.resolve(item?.image_url || (item?.images && item.images[0]) || ''), [item])
   const heroSlides = useMemo(() => {
-    if (!products.length) return []
+    if (!hasMounted || !products.length) return []
     const unique = new Set()
     const candidates = products
       .filter((p) => (p.image_url || (p.images && p.images[0])) && p.name)
@@ -89,7 +94,7 @@ export default function HeroMonolith() {
       }))
       .filter((p) => p.src && !unique.has(p.src) && unique.add(p.src))
     return candidates
-  }, [products])
+  }, [products, hasMounted])
   const slides = heroSlides.length ? heroSlides : [{
     id: item?.id,
     slug: item?.slug,
@@ -105,6 +110,16 @@ export default function HeroMonolith() {
   const activeImageSrc = activeItem?.src || imageSrc
   const specs = useMemo(() => [activeItem?.model, activeItem?.wood, activeItem?.mics].filter(Boolean).slice(0, 3), [activeItem])
   const specLine = useMemo(() => specs.map((s) => (Array.isArray(s) ? s.join(', ') : s)).join(' · '), [specs])
+  const dataReady = Boolean(
+    hasMounted &&
+    !loading &&
+    item &&
+    String(imageSrc || '').trim() &&
+    activeItem &&
+    String(activeImageSrc || '').trim()
+  )
+  const blockHero = !dataReady
+  const shouldShowLoader = dataReady && !initialHeroReady
 
   useEffect(() => {
     if (slides.length <= 1 || typeof window === 'undefined') return
@@ -133,16 +148,49 @@ export default function HeroMonolith() {
     return () => window.clearInterval(id)
   }, [heroSlides.length, isPaused])
 
-  if (loading || !item || !imageSrc || !activeItem) return null
+  if (blockHero) {
+    return (
+      <section aria-labelledby="home-hero" className="relative w-full overflow-hidden">
+        <article className="relative w-full min-h-[100vh] min-h-[100dvh] bg-[var(--dark-bg-page)]">
+          <div className="hero-home-loader">
+            <div className="hero-home-loader__spinner" aria-hidden />
+            {/* <img> evita diferencias SSR/cliente de next/image en el loader */}
+            <img
+              src="/images/logo/logo-fondo-oscuro.PNG"
+              alt="La Guarida"
+              width={190}
+              height={68}
+              className="hero-home-loader__brand"
+              decoding="async"
+              fetchPriority="high"
+            />
+            <p className="sr-only">Cargando catálogo destacado</p>
+          </div>
+        </article>
+      </section>
+    )
+  }
   const prevIndex = slides.length > 1 ? (activeSlide - 1 + slides.length) % slides.length : 0
   const nextIndex = slides.length > 1 ? (activeSlide + 1) % slides.length : 0
-
   return (
-    <section aria-labelledby="home-hero" className="w-full overflow-hidden">
+    <section aria-labelledby="home-hero" className="relative w-full overflow-hidden">
+      {shouldShowLoader ? (
+        <div className="hero-home-loader hero-home-loader--overlay" aria-hidden>
+          <div className="hero-home-loader__spinner" />
+          <img
+            src="/images/logo/logo-fondo-oscuro.PNG"
+            alt=""
+            width={160}
+            height={58}
+            className="hero-home-loader__brand"
+            decoding="async"
+          />
+        </div>
+      ) : null}
       {/* ——— Mobile: imagen desde borde superior (header fijo por encima), article con pt para el texto ——— */}
       <div className="md:hidden">
         <article
-          className="hero-mobile-editorial relative w-full min-h-[100vh] min-h-[100dvh] flex flex-col justify-end overflow-hidden pt-[calc(52px+max(0.25rem,env(safe-area-inset-top)))] sm:pt-[calc(56px+max(0.25rem,env(safe-area-inset-top)))]"
+          className="hero-mobile-editorial relative w-full min-h-[100vh] min-h-[100dvh] flex flex-col justify-end overflow-hidden pt-[calc(58px+max(0.25rem,env(safe-area-inset-top)))] sm:pt-[calc(62px+max(0.25rem,env(safe-area-inset-top)))]"
           onTouchStart={() => setIsPaused(true)}
           onTouchEnd={() => setIsPaused(false)}
           onMouseEnter={() => setIsPaused(true)}
@@ -167,10 +215,13 @@ export default function HeroMonolith() {
                 fill
                 quality={82}
                 sizes="100vw"
-                className={`object-cover object-top hero-slide-image ${index === activeSlide ? 'hero-slide-image-active hero-slide-image-mobile-active' : ''}`}
+                  className={`object-cover object-[center_22%] hero-slide-image ${index === activeSlide ? 'hero-slide-image-active hero-slide-image-mobile-active hero-mobile-image-polish-active' : 'hero-mobile-image-polish'}`}
                 priority={index === 0}
                 loading={index === 0 ? 'eager' : 'lazy'}
                 disableClientPreview
+                onImageLoad={() => {
+                    if (index === activeSlide && !initialHeroReady) setInitialHeroReady(true)
+                }}
               />
             </div>
           )})}
@@ -192,7 +243,7 @@ export default function HeroMonolith() {
           <div className="mt-6 max-[360px]:mt-5 flex flex-col gap-3 max-[360px]:gap-2.5">
             <Link
               href={`/guitars/${activeItem.slug || activeItem.id || ''}`}
-              className="hero-mobile-cta no-custom-btn flex items-center justify-center min-h-[50px] max-[360px]:min-h-[46px] w-full rounded-full font-bold text-[15px] max-[360px]:text-[14px] shadow-[0_2px_12px_rgba(0,0,0,0.35)] active:scale-[0.98] transition-transform touch-manipulation"
+              className="hero-mobile-cta no-custom-btn flex items-center justify-center min-h-[50px] max-[360px]:min-h-[46px] w-full rounded-full font-bold text-[15px] max-[360px]:text-[14px] active:opacity-95 transition-opacity touch-manipulation"
               style={{ backgroundColor: '#ffffff', color: '#0f0f12' }}
             >
               Ver detalles
@@ -208,76 +259,77 @@ export default function HeroMonolith() {
       </article>
       </div>
 
-      {/* ——— Desktop: 100% width split ——— */}
+      {/* ——— Desktop: hero editorial (imagen cover + panel de texto, sin marco) ——— */}
       <article
-        className="hidden md:block relative w-full min-h-[60vh] lg:min-h-[65vh] bg-[#323232]"
+        className="hidden md:block relative w-full bg-[var(--dark-bg-page)]"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onFocusCapture={() => setIsPaused(true)}
         onBlurCapture={() => setIsPaused(false)}
       >
-        {/* Ambient orbs: flotación suave */}
-        <div className="hero-orb-float pointer-events-none absolute left-0 top-1/3 h-80 w-80 rounded-full bg-[var(--vintage-gold)]/10 blur-[100px]" aria-hidden />
-        <div className="hero-orb-float pointer-events-none absolute right-0 bottom-0 h-96 w-96 rounded-full bg-[var(--vintage-gold)]/5 blur-[110px]" aria-hidden />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
-
-        <div className="relative grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] min-h-[60vh] lg:min-h-[65vh]">
-          {/* Image: full width of left column, diagonal right edge */}
-          <div className="relative min-h-[45vh] lg:min-h-full hero-image-entrance hero-desktop-image-cut">
-            {slides.map((slide, index) => {
-              const shouldRender = index === activeSlide || index === prevIndex || index === nextIndex
-              if (!shouldRender) return null
-              return (
-              <div
-                key={`desktop-slide-${slide.src}-${index}`}
-                className={`absolute inset-0 transition-opacity duration-700 ${index === activeSlide ? 'opacity-100' : 'opacity-0'} hero-slide-layer`}
-                aria-hidden={index !== activeSlide}
-              >
-                <ImageWithSkeleton
-                  src={slide.src}
-                  alt={slide.name || 'Producto destacado'}
-                  fill
-                  quality={82}
-                  sizes="(min-width:1280px) 55vw, (min-width:1024px) 58vw, 100vw"
-                  className={`object-cover hero-slide-image ${index === activeSlide ? 'hero-slide-image-active' : ''}`}
-                  priority={index === 0}
-                  loading={index === 0 ? 'eager' : 'lazy'}
-                  disableClientPreview
-                />
-              </div>
-            )})}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent pointer-events-none" />
+        <div className="hero-editorial-split grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-stretch lg:min-h-[min(88vh,920px)] xl:min-h-[min(90vh,980px)]">
+          <div className="relative min-h-[52vh] lg:min-h-full min-w-0 overflow-hidden">
+            <div className="absolute inset-0">
+              {slides.map((slide, index) => {
+                const shouldRender = index === activeSlide || index === prevIndex || index === nextIndex
+                if (!shouldRender) return null
+                return (
+                  <div
+                    key={`desktop-slide-${slide.src}-${index}`}
+                    className={`absolute inset-0 transition-opacity duration-700 ease-out ${index === activeSlide ? 'opacity-100' : 'opacity-0'} hero-slide-layer`}
+                    aria-hidden={index !== activeSlide}
+                  >
+                    <ImageWithSkeleton
+                      src={slide.src}
+                      alt={slide.name || 'Producto destacado'}
+                      fill
+                      quality={88}
+                      sizes="(min-width:1024px) 50vw, 100vw"
+                      className={`object-cover object-center hero-slide-image ${index === activeSlide ? 'hero-slide-image-active' : ''}`}
+                      priority={index === 0}
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                      disableClientPreview
+                      onImageLoad={() => {
+                        if (index === activeSlide && !initialHeroReady) setInitialHeroReady(true)
+                      }}
+                    />
+                  </div>
+                )
+              })}
+            </div>
+            {/* Degradados: apilado (tablet) y transición hacia la columna de texto (desktop) */}
+            <div
+              className="pointer-events-none absolute inset-0 z-[1] lg:hidden bg-gradient-to-t from-[var(--dark-bg-page)] via-black/25 to-black/35"
+              aria-hidden
+            />
+            <div
+              className="pointer-events-none absolute inset-0 z-[1] hidden lg:block bg-gradient-to-r from-black/15 via-transparent to-[var(--dark-bg-page)]"
+              aria-hidden
+            />
           </div>
 
-          {/* Content panel: right, diagonal left edge to match image cut */}
-          <div className="hero-panel-entrance relative z-10 flex flex-col justify-center px-8 lg:px-12 xl:px-16 2xl:px-20 py-12 lg:py-16 2xl:py-20 hero-desktop-panel-cut bg-gradient-to-b from-[#3d3d3d]/98 to-[#323232]/98">
-            <div key={`hero-desktop-copy-${activeSlide}`} className="hero-entrance hero-copy-swap flex flex-col max-w-lg 2xl:max-w-xl">
-              <p className="text-[11px] uppercase tracking-[0.24em] text-[var(--vintage-gold)]/90 font-medium mb-3" aria-hidden>La Guarida</p>
-              <div className="rounded-full border border-[var(--vintage-gold)]/40 bg-black/20 backdrop-blur-sm w-fit px-3 py-1.5 mb-5">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--vintage-gold)] font-semibold">Producto destacado</span>
-              </div>
-              <h1 id="home-hero" className="text-2xl lg:text-[2.5rem] xl:text-[2.85rem] 2xl:text-[3.1rem] font-bold leading-[1.06] tracking-tight text-white">
+          <div className="relative z-[2] flex flex-col justify-center px-8 md:px-10 lg:px-12 xl:px-14 py-12 lg:py-16 border-t border-white/10 lg:border-t-0 lg:border-l lg:border-white/10 bg-[var(--dark-bg-page)] min-w-0">
+            <div key={`hero-desktop-copy-${activeSlide}`} className="hero-copy-swap w-full max-w-[540px]">
+              <p className="text-[10px] uppercase tracking-[0.26em] text-[var(--vintage-gold)]/90 font-semibold mb-3">Selección de hoy</p>
+              <h1 id="home-hero" className="text-[2rem] lg:text-[2.35rem] xl:text-[2.75rem] font-bold leading-[1.05] tracking-tight text-white">
                 {activeItem.name}
               </h1>
+              {activeItem.price ? (
+                <p className="mt-4 text-[1.25rem] lg:text-[1.45rem] font-semibold text-[var(--vintage-gold)]">{activeItem.price}</p>
+              ) : null}
+              {specs.length > 0 ? (
+                <p className="mt-3 text-sm text-white/68 leading-snug">{specLine}</p>
+              ) : null}
               {activeItem.description ? (
-                <p className="mt-4 text-sm lg:text-base 2xl:text-[1.06rem] text-white/78 leading-relaxed line-clamp-3">
+                <p className="mt-5 text-[0.9375rem] text-white/75 leading-relaxed line-clamp-4">
                   {activeItem.description}
                 </p>
-              ) : <div aria-hidden />}
-              {activeItem.price ? (
-                <p className="mt-5 text-xl lg:text-2xl 2xl:text-[1.8rem] font-bold tracking-tight text-white">{activeItem.price}</p>
-              ) : <div aria-hidden />}
-              {specs.length > 0 ? (
-                <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2">
-                  <p className="text-[10px] uppercase tracking-[0.16em] text-white/50">Specs</p>
-                  <p className="mt-0.5 text-sm text-white/88 leading-snug">{specLine}</p>
-                </div>
-              ) : <div aria-hidden />}
-              <div className="mt-6 lg:mt-7 flex flex-wrap gap-2 sm:gap-2.5">
-                <Link href={`/guitars/${activeItem.slug || activeItem.id || ''}`} className="hero-cta-primary no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl border-2 border-[var(--vintage-gold)] bg-[var(--vintage-gold-soft)] text-[var(--vintage-gold)] text-[12px] sm:text-[13px] font-bold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-[var(--vintage-gold-soft-hover)] hover:border-[var(--vintage-gold)] hover:-translate-y-0.5 hover:shadow-[0_12px_26px_rgba(201,162,39,0.25)] active:translate-y-0 min-w-[120px] sm:min-w-0">
+              ) : null}
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Link href={`/guitars/${activeItem.slug || activeItem.id || ''}`} className="hero-cta-primary no-custom-btn inline-flex items-center justify-center min-h-[44px] py-2.5 px-5 rounded-xl border-2 border-[var(--vintage-gold)] bg-[var(--vintage-gold-soft)] text-[var(--vintage-gold)] text-[13px] font-bold transition-colors duration-200 ease-out hover:bg-[var(--vintage-gold-soft-hover)] hover:border-[var(--vintage-gold)] active:opacity-95">
                   Ver detalles
                 </Link>
-                <Link href="/#seleccion-destacada" className="no-custom-btn inline-flex items-center justify-center min-h-[40px] sm:min-h-[44px] py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl border border-white/25 bg-white/5 text-white/90 text-[12px] sm:text-[13px] font-medium transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-white/12 hover:border-white/35 hover:-translate-y-0.5 active:translate-y-0 min-w-[100px] sm:min-w-0">
+                <Link href="/#seleccion-destacada" className="no-custom-btn inline-flex items-center justify-center min-h-[44px] py-2.5 px-5 rounded-xl border border-white/22 bg-white/[0.06] text-white/90 text-[13px] font-medium transition-colors duration-200 ease-out hover:bg-white/12 hover:border-white/32 active:opacity-95">
                   Ver selección destacada →
                 </Link>
                 <WhatsAppHeroButton />

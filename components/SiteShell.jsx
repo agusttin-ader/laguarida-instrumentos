@@ -1,11 +1,28 @@
 "use client"
 
 import { useCallback, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { usePathname, useRouter } from 'next/navigation'
-import Header from './Header'
 import Footer from './Footer'
-import PageTransition from './PageTransition'
 import PullToRefresh from './PullToRefresh'
+
+/** Reserva espacio mientras carga el chunk del header (solo cliente; evita mismatch SSR/bundle). */
+function HeaderLoading() {
+  return (
+    <>
+      <div
+        className="md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[52px] sm:min-h-[56px] bg-[var(--dark-bg-page)] pointer-events-none"
+        aria-hidden
+      />
+      <div className="hidden md:block w-full min-h-[88px] lg:min-h-[96px] shrink-0" aria-hidden />
+    </>
+  )
+}
+
+const Header = dynamic(() => import('./Header'), {
+  ssr: false,
+  loading: HeaderLoading
+})
 
 /** Renderiza Header y Footer solo fuera de /admin para evitar doble header en login */
 export default function SiteShell({ children }) {
@@ -58,16 +75,18 @@ export default function SiteShell({ children }) {
         <>
           <Header />
           <PullToRefresh onRefresh={handleRefresh}>
-            <main className="pb-[calc(2rem+env(safe-area-inset-bottom,0px))] md:pb-0 min-h-0 pt-0">
-              <PageTransition key={pathname}>{children}</PageTransition>
+            <main
+              key={pathname}
+              className="animate-page-in min-h-0 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] md:pb-0 pt-0"
+              style={{ animationDuration: '0.35s' }}
+            >
+              {children}
             </main>
             <Footer />
           </PullToRefresh>
         </>
       ) : (
-        <>
-          <main>{children}</main>
-        </>
+        <main>{children}</main>
       )}
     </>
   )

@@ -4,11 +4,14 @@ import React, { useState } from 'react'
 
 const INITIAL_VISIBLE = 3
 
-function SpecItem({ spec }) {
+function SpecItem({ spec, className = '', style }) {
   return (
-    <li className="rounded-full border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] px-4 py-2 text-[13px] text-[var(--dark-text-secondary)]">
+    <li
+      className={`text-[13px] leading-snug text-[var(--dark-text-secondary)] ${className}`.trim()}
+      style={style}
+    >
       <span className="text-[var(--dark-muted)]">{spec.label}</span>{' '}
-      <span className="font-medium text-[var(--dark-text-primary)] ml-1">{spec.value}</span>
+      <span className="font-medium text-[var(--dark-text-primary)]">{spec.value}</span>
     </li>
   )
 }
@@ -27,10 +30,10 @@ export default function ProductSpecsExpandable({ specs = [] }) {
 
   return (
     <>
-      {/* Solo móvil: lista con expand/collapse y flecha sin recuadro */}
+      {/* Solo móvil: lista con expand/collapse */}
       <div className="md:hidden mb-6">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--dark-text-secondary)] mb-3">Ficha técnica</p>
-        <ul className="flex flex-wrap gap-2">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5">
           {specs.slice(0, INITIAL_VISIBLE).map((spec, idx) => (
             <SpecItem key={idx} spec={spec} />
           ))}
@@ -43,16 +46,14 @@ export default function ProductSpecsExpandable({ specs = [] }) {
               opacity: expanded ? 1 : 0
             }}
           >
-            <ul className="flex flex-wrap gap-2 pt-2">
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5 pt-2">
               {extraSpecs.map((spec, idx) => (
-                <li
+                <SpecItem
                   key={idx}
-                  className="spec-item-extra rounded-full border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] px-4 py-2 text-[13px] text-[var(--dark-text-secondary)]"
+                  spec={spec}
+                  className="spec-item-extra"
                   style={expanded ? { animationDelay: `${idx * 40}ms` } : undefined}
-                >
-                  <span className="text-[var(--dark-muted)]">{spec.label}</span>{' '}
-                  <span className="font-medium text-[var(--dark-text-primary)] ml-1">{spec.value}</span>
-                </li>
+                />
               ))}
             </ul>
           </div>
@@ -86,7 +87,7 @@ export default function ProductSpecsExpandable({ specs = [] }) {
       {/* Solo desktop: todas las specs, sin flecha */}
       <div className="hidden md:block mb-6">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--dark-text-secondary)] mb-3">Ficha técnica</p>
-        <ul className="flex flex-wrap gap-2">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5">
           {specs.map((spec, idx) => (
             <SpecItem key={idx} spec={spec} />
           ))}

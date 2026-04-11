@@ -58,7 +58,7 @@ export default function FaqSection() {
   return (
     <section
       id="faq-section"
-      className="mt-6 sm:mt-10 md:mt-12 rounded-2xl border border-[var(--dark-border)] bg-gradient-to-b from-[var(--dark-bg-card)] to-[var(--dark-bg-page)] shadow-[0_18px_48px_rgba(0,0,0,0.25)] overflow-hidden"
+      className="mt-6 sm:mt-10 md:mt-12"
       aria-labelledby="faq-heading"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-6 lg:px-8 py-5 sm:py-10 md:py-12 lg:py-14 pb-20 md:pb-14 lg:pb-14">
