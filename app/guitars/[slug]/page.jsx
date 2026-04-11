@@ -13,6 +13,18 @@ import ProductShareAndFavorite from '../../../components/ProductShareAndFavorite
 import ProductPageCTA from '../../../components/ProductPageCTA'
 import ProductSpecsExpandable from '../../../components/ProductSpecsExpandable'
 import { parseNumericPriceForSchema } from '../../../lib/utils/normalizeProduct'
+import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
+
+/** URLs absolutas de Storage en el servidor (SUPABASE_URL disponible aquí). */
+function resolveGalleryImageRef(ref) {
+  if (ref == null) return null
+  const s = typeof ref === 'string' ? ref.trim() : String(ref).trim()
+  if (!s) return null
+  const resolved = resolveImageUrl(s)
+  if (resolved) return resolved
+  if (/^https?:\/\//i.test(s)) return s
+  return null
+}
 
 function toFiniteNumber(value) {
   if (value == null || value === '') return null
@@ -244,6 +256,10 @@ export default async function GuitarPage({ params }) {
   )
   const descriptionText = String(product.description || '').trim()
   const productUrl = `${SITE_URL}/guitars/${slug}`
+  const galleryImageUrl = resolveGalleryImageRef(product.image_url) || ''
+  const galleryImages = Array.isArray(product.images)
+    ? product.images.map((x) => resolveGalleryImageRef(x)).filter(Boolean)
+    : []
   const productImageUrl = imageService.resolve(product.image_url || (product.images && product.images[0]))
   const absoluteImage = productImageUrl && (productImageUrl.startsWith('http') ? productImageUrl : `${SITE_URL}${productImageUrl.startsWith('/') ? '' : '/'}${productImageUrl}`)
 
@@ -301,8 +317,8 @@ export default async function GuitarPage({ params }) {
             {product.name}
           </h1>
           <ProductGalleryModern
-            image_url={product.image_url}
-            images={product.images}
+            image_url={galleryImageUrl}
+            images={galleryImages}
             altBase={`${product.name}${product.brand ? ' — ' + product.brand : ''}`}
           />
         </div>

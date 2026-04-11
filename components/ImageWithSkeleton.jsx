@@ -7,9 +7,16 @@ import { useEffect } from "react";
 // - Wraps Next/Image to provide a lightweight skeleton while the image is loading.
 // - Uses `onLoad` to detect when the image has finished loading (onLoadingComplete is deprecated).
 // - Keeps `alt` for accessibility (screen readers) and avoids layout shift via width/height or `fill` usage.
-// - Next/Image is used for responsive, optimized delivery (AVIF/WebP) and automatic lazy-loading.
+// - Supabase Storage: sin `unoptimized`, el optimizador de Next a veces falla y la imagen queda en error (placeholder gris).
 
-export default function ImageWithSkeleton({ src, alt, width, height, sizes, quality = 100, priority = false, loading = 'lazy', className = "", style = {}, fill = false, fit, imgClassName = '', imgStyle = {}, onImageLoad, disableClientPreview = false }) {
+function shouldBypassOptimizer(src) {
+  if (typeof src !== 'string') return false
+  const s = src.trim()
+  if (!s) return false
+  return s.includes('/storage/v1/object/public/') || /\.supabase\.co/i.test(s)
+}
+
+export default function ImageWithSkeleton({ src, alt, width, height, sizes, quality = 100, priority = false, loading = 'lazy', className = "", style = {}, fill = false, fit, imgClassName = '', imgStyle = {}, onImageLoad, disableClientPreview = false, unoptimized }) {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
   const [blurDataURL, setBlurDataURL] = useState(null)
@@ -58,6 +65,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
   const aspectRatio = (width && height) ? `${width} / ${height}` : undefined
 
   const mergedImgStyle = { ...imgStyle }
+  const useUnoptimized = unoptimized ?? shouldBypassOptimizer(src)
 
   return (
     <div
@@ -83,6 +91,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
           height={fill ? undefined : height}
           sizes={sizes}
           quality={quality}
+          unoptimized={useUnoptimized}
           loading={priority ? 'eager' : loading}
           fetchPriority={priority ? 'high' : undefined}
           priority={priority}
