@@ -1,57 +1,57 @@
 import fs from 'fs'
 import path from 'path'
 import { getSupabaseServerClient } from '../lib/supabase/server'
+import { absoluteUrl } from '../lib/siteUrl'
 
-export const dynamic = 'force-dynamic'
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://laguarida.com'
-
-export async function GET() {
-  const pages = [
-    '/'
+/** @returns {Promise<import('next').MetadataRoute.Sitemap>} */
+export default async function sitemap() {
+  const entries = [
+    {
+      url: absoluteUrl('/'),
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 1,
+    },
   ]
 
-  let productUrls = []
+  let productEntries = []
 
-  // Primary source: products in Supabase
   try {
     const supabase = getSupabaseServerClient()
-    const { data } = await supabase.from('products').select('slug, updated_at').order('updated_at', { ascending: false })
+    const { data } = await supabase
+      .from('products')
+      .select('slug, updated_at')
+      .order('updated_at', { ascending: false })
     if (Array.isArray(data) && data.length) {
-      productUrls = data
-        .map((p) => p?.slug)
-        .filter(Boolean)
-        .map((slug) => `/guitars/${slug}`)
+      productEntries = data
+        .filter((p) => p?.slug)
+        .map((p) => ({
+          url: absoluteUrl(`/guitars/${p.slug}`),
+          lastModified: p.updated_at ? new Date(p.updated_at) : new Date(),
+          changeFrequency: 'weekly',
+          priority: 0.8,
+        }))
     }
   } catch {
     /* empty */
   }
 
-  // Fallback: local markdown catalog when DB is unavailable
-  const guitarsDir = path.join(process.cwd(), 'data', 'guitars')
-  if (!productUrls.length) {
+  if (!productEntries.length) {
+    const guitarsDir = path.join(process.cwd(), 'data', 'guitars')
     try {
       const files = fs.readdirSync(guitarsDir)
-      productUrls = files
-        .filter(f => f.endsWith('.md'))
-        .map(f => `/guitars/${f.replace(/\.md$/, '')}`)
+      productEntries = files
+        .filter((f) => f.endsWith('.md'))
+        .map((f) => ({
+          url: absoluteUrl(`/guitars/${f.replace(/\.md$/, '')}`),
+          lastModified: new Date(),
+          changeFrequency: 'weekly',
+          priority: 0.8,
+        }))
     } catch {
       /* empty */
     }
   }
 
-  const urls = [...pages, ...productUrls]
-
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n` +
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    urls.map(u => `  <url>\n    <loc>${SITE_URL}${u}</loc>\n  </url>\n`).join('') +
-    `</urlset>`
-
-  return new Response(sitemap, {
-    headers: {
-      'Content-Type': 'application/xml'
-    }
-  })
+  return [...entries, ...productEntries]
 }
-
-export default GET

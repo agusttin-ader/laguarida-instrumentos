@@ -1,54 +1,34 @@
 import '../styles/globals.css'
 import React from 'react'
-import { Syne } from 'next/font/google'
+import { GeistSans } from 'geist/font/sans'
+import { GeistMono } from 'geist/font/mono'
 import SiteShell from '../components/SiteShell'
 import ServiceWorkerRegister from '../components/ServiceWorkerRegister'
 import DisableZoomInApp from '../components/DisableZoomInApp'
 import { ToastProvider } from '../components/ToastContext'
 import { HomeHeroImageProvider } from '../context/HomeHeroImageContext'
+import { absoluteUrl, getSiteUrl } from '../lib/siteUrl'
 
-const syne = Syne({
-  subsets: ['latin', 'latin-ext'],
-  variable: '--font-syne',
-  display: 'swap'
-})
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://laguarida.com'
+const siteUrl = getSiteUrl()
 
 // Preconnect to Supabase Storage so first product images load faster
 const supabaseOrigin = process.env.NEXT_PUBLIC_SUPABASE_URL
   ? (() => { try { return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).origin } catch { return null } })()
   : null
 
-const organizationJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'MusicStore',
-  name: 'La Guarida',
-  description: 'Tienda de guitarras e instrumentos musicales en Argentina. Catálogo curado, asesoramiento profesional y atención personalizada.',
-  url: SITE_URL,
-  logo: `${SITE_URL}/images/logo/og-pick-icon.PNG`,
-  image: `${SITE_URL}/images/logo/og-pick-icon.PNG`,
-  address: { '@type': 'PostalAddress', addressCountry: 'AR' },
-  contactPoint: {
-    '@type': 'ContactPoint',
-    contactType: 'customer service',
-    availableLanguage: 'Spanish',
-    areaServed: 'AR'
-  }
-}
-
 export const metadata = {
   title: 'La Guarida — Catálogo de Instrumentos',
   description: 'Tienda de guitarras e instrumentos musicales en Argentina. Catálogo curado, asesoramiento profesional y atención personalizada.',
-  metadataBase: new URL('https://laguarida.com'),
+  metadataBase: new URL(siteUrl),
+  robots: { index: true, follow: true },
   openGraph: {
-    images: ['https://laguarida.com/images/logo/og-pick-icon.PNG'],
+    images: ['/images/logo/og-pick-icon.PNG'],
     type: 'website',
     siteName: 'La Guarida'
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['https://laguarida.com/images/logo/og-pick-icon.PNG']
+    images: ['/images/logo/og-pick-icon.PNG']
   },
   icons: {
     icon: '/images/logo/og-pick-icon.PNG',
@@ -66,8 +46,25 @@ export const viewport = {
 }
 
 export default function RootLayout({ children }) {
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'MusicStore',
+    name: 'La Guarida',
+    description: 'Tienda de guitarras e instrumentos musicales en Argentina. Catálogo curado, asesoramiento profesional y atención personalizada.',
+    url: siteUrl,
+    logo: absoluteUrl('/images/logo/og-pick-icon.PNG'),
+    image: absoluteUrl('/images/logo/og-pick-icon.PNG'),
+    address: { '@type': 'PostalAddress', addressCountry: 'AR' },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      availableLanguage: 'Spanish',
+      areaServed: 'AR'
+    }
+  }
+
   return (
-    <html lang="es" className="dark">
+    <html lang="es" className={`dark ${GeistSans.variable} ${GeistMono.variable}`}>
       <head>
         {supabaseOrigin && <link rel="preconnect" href={supabaseOrigin} />}
         {supabaseOrigin && <link rel="dns-prefetch" href={supabaseOrigin} />}
@@ -77,7 +74,7 @@ export default function RootLayout({ children }) {
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="apple-touch-icon" href="/images/logo/og-pick-icon.PNG" />
       </head>
-      <body className={`min-h-screen ${syne.variable} ${syne.className}`}>
+      <body className={`min-h-screen ${GeistSans.className}`}>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
         <DisableZoomInApp />
         <ToastProvider>

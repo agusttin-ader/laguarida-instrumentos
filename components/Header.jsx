@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import MenuDrawer from './MenuDrawer'
@@ -23,6 +24,8 @@ export default function Header() {
   const isHome = pathname === '/' || pathname === ''
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  /** Home móvil: portal al slot sticky dentro del hero (sigue el scroll solo hasta el final de #home-top). */
+  const [homeHeaderSlotEl, setHomeHeaderSlotEl] = useState(null)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -33,6 +36,29 @@ export default function Header() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  useEffect(() => {
+    if (!isHome) {
+      setHomeHeaderSlotEl(null)
+      return
+    }
+    let cancelled = false
+    let raf = 0
+    function findSlot() {
+      if (cancelled) return
+      const el = document.getElementById('home-top-mobile-header-slot')
+      if (el) {
+        setHomeHeaderSlotEl(el)
+        return
+      }
+      raf = window.requestAnimationFrame(findSlot)
+    }
+    findSlot()
+    return () => {
+      cancelled = true
+      window.cancelAnimationFrame(raf)
+    }
+  }, [isHome, pathname])
 
   const navLinkClass =
     "relative inline-flex items-center py-1 px-0.5 text-[12px] font-semibold uppercase tracking-[0.14em] whitespace-nowrap text-[#e4e7f0]/85 hover:text-[#fffaf0] transition-colors duration-300 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[var(--vintage-gold)] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
@@ -56,7 +82,7 @@ export default function Header() {
       {/* Fuerza header transparente en home móvil para que la imagen del hero ocupe todo el fondo */}
       {isHome && !scrolled && (
         <style dangerouslySetInnerHTML={{
-          __html: `@media (max-width:767px){#header-home-mobile-overlay.hero-overlay-header,.hero-overlay-header{background-color:transparent!important;background-image:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-bottom:none!important;box-shadow:none!important}}`
+          __html: `@media (max-width:768px){#header-home-mobile-overlay.hero-overlay-header,.hero-overlay-header{background-color:transparent!important;background-image:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-bottom:none!important;box-shadow:none!important}}`
         }} />
       )}
       <header
@@ -71,14 +97,17 @@ export default function Header() {
       >
         {/* Franja oscura transparente de punta a punta (solo en home sin scroll) */}
         {isHome && !scrolled && (
-          <div className="absolute inset-0 w-full bg-black/35 pointer-events-none" aria-hidden />
+          <div
+            className="pointer-events-none absolute inset-0 w-full bg-gradient-to-b from-black/75 via-black/60 to-black/45"
+            aria-hidden
+          />
         )}
         <div className="relative z-20 w-11 flex-shrink-0">
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
             aria-label="Abrir menú"
-            className="flex items-center justify-center w-11 h-11 -m-0.5 rounded-lg border-0 text-white/95 hover:text-white bg-black/20 hover:bg-black/28 backdrop-blur-sm no-custom-btn touch-manipulation transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="flex items-center justify-center w-11 h-11 -m-0.5 rounded-lg border-0 text-white/95 hover:text-white bg-black/40 hover:bg-black/50 backdrop-blur-sm no-custom-btn touch-manipulation transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{ WebkitTapHighlightColor: 'transparent', tapHighlightColor: 'transparent' }}
           >
             <HamburgerIcon className="w-6 h-6" />
@@ -101,7 +130,7 @@ export default function Header() {
                 className="logo-dark h-[34px] w-auto max-h-[36px] sm:h-[36px] sm:max-h-[38px] object-contain block"
                 style={{ objectFit: 'contain' }}
                 quality={82}
-                sizes="(max-width: 767px) 260px, 160px"
+                sizes="(max-width: 768px) 260px, 160px"
               />
             </span>
           </a>
@@ -111,10 +140,21 @@ export default function Header() {
     </>
   )
 
+  /* En home con slot: el padre ya es sticky; aquí solo ancho. Sin slot aún: fixed arriba como antes. */
+  const mobileShellClass =
+    isHome && homeHeaderSlotEl
+      ? 'md:hidden w-full'
+      : 'md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)]'
+
+  const mobileShell = <div className={mobileShellClass}>{mobileHeader}</div>
+
   return (
     <>
-      {/* Header fijo en móvil: sigue al scroll para que siempre esté visible */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)]">{mobileHeader}</div>
+      {isHome
+        ? typeof document !== 'undefined'
+          ? createPortal(mobileShell, homeHeaderSlotEl || document.body)
+          : null
+        : mobileShell}
       <MenuDrawer open={menuOpen} setOpen={setMenuOpen} />
 
       {/* ——— Desktop: logo alineado a la izquierda; nav a la derecha (evita recorte del scale en el borde) ——— */}

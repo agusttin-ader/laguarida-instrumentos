@@ -206,7 +206,7 @@ export default function HeroMonolith() {
             return (
             <div
               key={`mobile-slide-${slide.src}-${index}`}
-              className={`absolute inset-0 transition-opacity duration-1000 ${index === activeSlide ? 'opacity-100' : 'opacity-0'} hero-slide-layer`}
+              className={`absolute inset-0 transition-opacity duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${index === activeSlide ? 'opacity-100' : 'opacity-0'} hero-slide-layer`}
               aria-hidden={index !== activeSlide}
             >
               <ImageWithSkeleton

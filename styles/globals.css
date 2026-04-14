@@ -1,5 +1,4 @@
-/* Import Inter for retina-ready modern sans (migrated to next/font/google) */
-/* Removed external @import — fonts are loaded via next/font/google in app/layout.js */
+/* Geist Sans / Geist Mono se cargan vía `geist` en app/layout.js (--font-geist-sans, --font-geist-mono). */
 
 /* stylelint-disable-next-line unknown-at-rules */
 @tailwind base;
@@ -13,6 +12,7 @@
   --max-width: 1200px;
   /* Stacking (UI fija y overlays) */
   --z-bottom-nav: 50;
+  --z-mobile-fab: 55;
   --z-header: 60;
   --z-toast: 9999;
   --z-menu-drawer: 10000;
@@ -186,7 +186,7 @@ body{
 }
 
 .display-xxl{
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
   font-weight: 800;
   font-size: clamp(2.5rem, 6vw, 5rem);
   line-height: 1.02;
@@ -200,7 +200,7 @@ body{
 }
 
 .display-xl{
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
   font-weight: 700;
   font-size: clamp(1.75rem, 4vw, 3rem);
   line-height: 1.06;
@@ -450,7 +450,7 @@ body{
 
 /* Editorial layout: dark-only, light text by default */
 html, body {
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
   color: #e6e7ea;
 }
 
@@ -476,8 +476,8 @@ body.modal-open .admin-top-bar {
   z-index: -1;
 }
 
-/* Mobile: scroll fluido y feedback táctil suave */
-@media (max-width: 767px) {
+/* Mobile: scroll fluido y feedback táctil suave (≤768px alineado al resto del sitio) */
+@media (max-width: 768px) {
   html {
     -webkit-overflow-scrolling: touch;
   }
@@ -487,6 +487,10 @@ body.modal-open .admin-top-bar {
   }
   a, button {
     -webkit-tap-highlight-color: rgba(201, 162, 39, 0.15);
+  }
+  img,
+  video {
+    max-width: 100%;
   }
 }
 
@@ -765,7 +769,8 @@ html, body, #__next, #root, main {
   .search-pill { width: 100%; max-width: 100%; padding: 0.55rem 0.9rem; }
   .search-pill .search-input { width: 100%; min-width: 0; }
   .card-appear {
-    animation-duration: 220ms;
+    animation-duration: 200ms;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
     animation-delay: var(--card-appear-delay-mobile, 0ms);
   }
 }
@@ -862,7 +867,7 @@ html, body, header, main, footer, .container-tight, .card-compact, .image-placeh
 header:not(.header-home-mobile) {
   background-color: var(--dark-bg-page);
 }
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   /* Home móvil: header transparente para que la imagen del hero ocupe todo el fondo (estilo Fender) */
   html.dark header.header-home-mobile,
   html.dark header.header-mobile.header-home-mobile,
@@ -1249,25 +1254,26 @@ main.legal-page article {
   align-self: stretch;
 }
 
-/* Premium card reveal: smooth ease-out, subtle scale (Linear/Vercel-style) */
+/* Scroll reveal: alineado con bloque de confianza (fade-in + slide); stagger vía --reveal-delay */
 .reveal {
   opacity: 0;
-  transform: translateY(10px) scale(0.99);
+  transform: translateY(1.25rem);
   transition:
-    opacity 360ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
-    transform 360ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+    opacity 820ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 820ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
   transform-origin: center bottom;
 }
 .reveal--visible {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
 }
 
-.reveal > * {
-  transition: box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--reveal-delay, 0ms) + 50ms);
-}
-.reveal--visible > * {
-  box-shadow: var(--shadow-hover);
+@media (max-width: 767px) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 /* Image load: elegant fade-in (no layout shift) */
@@ -1280,7 +1286,7 @@ main.legal-page article {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .reveal--visible, .reveal > *, .reveal--visible > *,
+  .reveal, .reveal--visible,
   .img-reveal, .img-reveal.img-loaded, .card-interactive {
     transition: none !important;
     transform: none !important;
@@ -1857,6 +1863,8 @@ body.admin-login-page .admin-container {
   --motion-base: 240ms;
   --motion-slow: 320ms;
   --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Curva tipo iOS / fluida en táctil (también en desktop donde aplique) */
+  --motion-ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @keyframes premium-enter-up {
@@ -1871,6 +1879,35 @@ main > section {
 main > section:nth-of-type(2) { animation-delay: 50ms; }
 main > section:nth-of-type(3) { animation-delay: 100ms; }
 main > section:nth-of-type(4) { animation-delay: 150ms; }
+
+@media (max-width: 767px) {
+  :root {
+    --motion-fast: 130ms;
+    --motion-base: 190ms;
+    --motion-slow: 250ms;
+    --motion-ease: var(--motion-ease-fluid);
+  }
+  @keyframes premium-enter-up-mobile {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  main > section {
+    animation-name: premium-enter-up-mobile;
+    animation-duration: var(--motion-slow);
+    animation-timing-function: var(--motion-ease);
+    animation-fill-mode: both;
+  }
+  main > section:nth-of-type(2) { animation-delay: 28ms; }
+  main > section:nth-of-type(3) { animation-delay: 56ms; }
+  main > section:nth-of-type(4) { animation-delay: 84ms; }
+  .filter-grid-updating {
+    animation-duration: 240ms;
+    animation-timing-function: var(--motion-ease-fluid);
+  }
+  body.menu-open .menu-drawer-panel {
+    will-change: transform;
+  }
+}
 
 
 /* Cards and panels: hover liviano (sin “elevación” pesada) */
@@ -2147,6 +2184,13 @@ button:not(.no-custom-btn):active {
   animation: premium-enter-up var(--motion-base) var(--motion-ease) both;
   animation-delay: 50ms;
 }
+@media (max-width: 767px) {
+  .section-heading-entrance {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .section-heading-entrance {
     animation: none !important;
@@ -2299,7 +2343,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     padding-top: max(0.5rem, env(safe-area-inset-top));
     padding-bottom: 0.5rem;
   }
-
   .container-tight {
     padding-left: 1rem;
     padding-right: 1rem;
@@ -2337,7 +2380,7 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     transform: none !important;
   }
 
-  nav[aria-label="Navegación principal"] svg {
+  nav.bottom-nav-dock svg {
     width: 21px;
     height: 21px;
   }
@@ -2549,7 +2592,19 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-page-in {
-  animation: page-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: page-in 0.26s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@media (max-width: 767px) {
+  @keyframes page-in-mobile {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-page-in {
+    animation-name: page-in-mobile;
+    animation-duration: 0.2s;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+    animation-fill-mode: forwards;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .animate-page-in { animation: none; opacity: 1; transform: none; }
@@ -2579,7 +2634,7 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 }
 
 .section-title-premium {
-  font-family: Inter, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-geist-sans), "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(0.9rem, 1.25vw, 1rem);
   line-height: 1.1;
   letter-spacing: 0.16em;
@@ -2714,3 +2769,9 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   }
 }
 
+/* Home móvil: subvista solo catálogo — ocultar footer (el CTA "Volver al home" está en main) */
+@media (max-width: 768px) {
+  body.mobile-home-catalog-subview footer {
+    display: none;
+  }
+}

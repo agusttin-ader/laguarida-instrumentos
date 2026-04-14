@@ -9,11 +9,13 @@ import { layoutShellClassName } from '../lib/layoutShell'
 
 const HEADLINE = 'Instrumentos que suenan como tienen que sonar'
 const SUBHEADLINE = 'Selección real. Sin humo.'
+const MOBILE_HEADLINE = 'Guitarras con historia'
+const MOBILE_SUBHEADLINE = 'Elegidas para sonar distinto'
 const SLIDE_MS = 5000
 
 /** Srcset: móvil pantalla; desktop/XL/2K/4K con techo alto para no pixelar en marcos grandes */
 const HERO_SHOWROOM_IMAGE_SIZES =
-  '(max-width: 1023px) 100vw, (max-width: 1279px) min(50vw, 720px), (max-width: 1535px) min(45vw, 800px), (max-width: 1919px) min(42vw, 960px), min(38vw, 1400px)'
+  '(max-width: 1023px) 100vw, (max-width: 1279px) min(50vw, 720px), (max-width: 1535px) min(45vw, 800px), (max-width: 1919px) min(42vw, 960px), (max-width: 2559px) min(38vw, 1400px), min(36vw, 1680px)'
 
 function isUsableImgUrl(u) {
   if (!u || typeof u !== 'string') return false
@@ -329,15 +331,17 @@ export default function HeroMarketing({ product = null }) {
   }
 
   return (
-    <div className="relative isolate min-h-[100dvh] w-full overflow-hidden bg-[var(--dark-bg-page)]">
+    <div className="relative isolate min-h-[100dvh] w-full max-[768px]:min-h-0 overflow-hidden bg-[var(--dark-bg-page)]">
       {/* Luz ambiente + grain: una capa + pseudo (ver .hero-showroom-ambient en globals.css) */}
       <div className="hero-showroom-ambient" aria-hidden />
 
-      <div className={`relative z-[1] flex min-h-[100dvh] w-full ${layoutShellClassName} flex-col gap-0 px-0 pt-0 lg:flex-row lg:items-center lg:gap-16 lg:px-10 lg:pb-24 lg:pt-[calc(3.75rem+env(safe-area-inset-top,0px))] xl:px-12 min-[1920px]:lg:gap-24 min-[1920px]:xl:px-16 min-[2560px]:xl:px-20`}>
+      <div
+        className={`relative z-[1] flex min-h-[100dvh] w-full ${layoutShellClassName} flex-col gap-0 px-0 pt-0 max-[768px]:!grid max-[768px]:!grid-cols-1 max-[768px]:auto-rows-[min(82dvh,85vh)] max-[768px]:min-h-0 lg:flex lg:min-h-[100dvh] lg:flex-row lg:items-center lg:gap-16 lg:px-10 lg:pb-24 lg:pt-[calc(3.75rem+env(safe-area-inset-top,0px))] xl:px-12 min-[1920px]:lg:gap-24 min-[1920px]:xl:px-16 min-[2560px]:xl:px-20`}
+      >
         {/* max-lg: full-bleed; lg+: marco 3/4 que crece en XL / 2K / 4K; xl+ object-contain = foto entera */}
-        <div className="order-1 flex min-h-0 min-w-0 max-lg:h-[100dvh] max-lg:w-full max-lg:flex-none max-lg:shrink-0 max-lg:self-stretch lg:order-2 lg:mx-0 lg:flex lg:h-auto lg:w-[44%] lg:max-w-xl lg:flex-shrink-0 lg:justify-end xl:max-w-2xl min-[1536px]:lg:max-w-3xl min-[1920px]:lg:max-w-4xl min-[2560px]:lg:max-w-5xl">
+        <div className="order-1 flex min-h-0 min-w-0 max-[768px]:col-start-1 max-[768px]:row-start-1 max-[768px]:h-full max-[768px]:max-h-[85vh] max-lg:h-[100dvh] max-lg:w-full max-lg:flex-none max-lg:shrink-0 max-lg:self-stretch lg:order-2 lg:mx-0 lg:flex lg:h-auto lg:w-[44%] lg:max-w-xl lg:flex-shrink-0 lg:justify-end xl:max-w-2xl min-[1536px]:lg:max-w-3xl min-[1920px]:lg:max-w-4xl min-[2560px]:lg:max-w-5xl">
           <figure className="hero-showroom-frame relative flex h-full min-h-0 w-full max-lg:flex-1 max-lg:flex-col lg:block lg:h-auto lg:w-full lg:max-w-none">
-            <div className="relative min-h-0 w-full flex-1 overflow-hidden bg-[#121212] shadow-[0_24px_60px_rgba(0,0,0,0.45),0_0_0_1px_rgba(255,255,255,0.06)_inset] max-lg:h-[100dvh] max-lg:min-h-[100dvh] max-lg:rounded-none lg:aspect-[3/4] lg:h-auto lg:min-h-0 lg:w-full lg:flex-none lg:rounded-2xl">
+            <div className="relative min-h-0 w-full flex-1 overflow-hidden bg-[#121212] shadow-[0_24px_60px_rgba(0,0,0,0.45),0_0_0_1px_rgba(255,255,255,0.06)_inset] max-[768px]:!h-full max-[768px]:!min-h-0 max-lg:h-[100dvh] max-lg:min-h-[100dvh] max-lg:rounded-none lg:aspect-[3/4] lg:h-auto lg:min-h-0 lg:w-full lg:flex-none lg:rounded-2xl">
               {showFrameImage && layerSlots ? (
                 <>
                   {layerSlots.map((slot, i) => (
@@ -357,7 +361,6 @@ export default function HeroMarketing({ product = null }) {
                           fill
                           sizes={HERO_SHOWROOM_IMAGE_SIZES}
                           quality={85}
-                          unoptimized
                           priority={slideIndex === 0 && i === topLayer}
                           fetchPriority={slideIndex === 0 && i === topLayer ? 'high' : 'low'}
                           decoding="async"
@@ -366,6 +369,10 @@ export default function HeroMarketing({ product = null }) {
                       </div>
                     </div>
                   ))}
+                  <div
+                    className="pointer-events-none absolute inset-0 z-[4] bg-gradient-to-t from-black/90 via-black/50 to-black/20 hidden max-[768px]:block"
+                    aria-hidden
+                  />
                 </>
               ) : (
                 <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-[#252a35] via-[#1a1d24] to-[#14161c] px-6 text-center">
@@ -389,10 +396,10 @@ export default function HeroMarketing({ product = null }) {
           </figure>
         </div>
 
-        {/* Copy — debajo de la imagen full-screen en móvil */}
-        <div className="order-2 flex shrink-0 flex-col justify-center px-5 pb-16 pt-10 text-center max-lg:w-full sm:px-8 lg:order-1 lg:flex-1 lg:max-w-xl lg:px-0 lg:pb-24 lg:pt-0 lg:text-left xl:max-w-2xl 2xl:max-w-3xl">
+        {/* Copy — ≤768px: overlay sobre la imagen; tablet/desktop: flujo existente */}
+        <div className="order-2 flex shrink-0 flex-col justify-center px-5 pb-16 pt-10 text-center max-[768px]:col-start-1 max-[768px]:row-start-1 max-[768px]:self-end max-[768px]:z-[25] max-[768px]:w-full max-[768px]:px-4 max-[768px]:pb-[max(1.25rem,env(safe-area-inset-bottom))] max-[768px]:!pt-2 max-[768px]:!pb-6 max-lg:w-full sm:px-8 lg:order-1 lg:row-auto lg:col-auto lg:self-auto lg:z-auto lg:flex-1 lg:max-w-xl lg:px-0 lg:pb-24 lg:pt-0 lg:text-left xl:max-w-2xl 2xl:max-w-3xl">
           <div className="hero-showroom-content">
-            <p className="mb-4 inline-flex flex-col items-center gap-2 sm:mb-5 lg:items-start">
+            <p className="mb-4 inline-flex max-[768px]:hidden flex-col items-center gap-2 sm:mb-5 lg:items-start">
               <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--vintage-gold)] sm:text-xs">
                 {kicker}
               </span>
@@ -405,23 +412,30 @@ export default function HeroMarketing({ product = null }) {
               id="home-hero"
               className="font-display text-[1.85rem] font-bold leading-[1.1] tracking-tight text-white sm:text-[2.25rem] md:text-[2.6rem] lg:text-[2.85rem] xl:text-5xl 2xl:text-6xl min-[1920px]:text-[3.5rem] min-[1920px]:leading-[1.06] min-[2560px]:text-[4rem]"
             >
-              {HEADLINE}
+              <span className="max-[768px]:hidden">{HEADLINE}</span>
+              <span className="hidden max-[768px]:inline text-[clamp(1.65rem,6.2vw,2.05rem)] leading-[1.12] tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.65)]">
+                {MOBILE_HEADLINE}
+              </span>
             </h1>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-[var(--dark-muted)] sm:mt-5 sm:text-lg lg:mx-0 xl:max-w-2xl xl:text-xl 2xl:text-2xl 2xl:leading-snug">
-              {SUBHEADLINE}
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-[var(--dark-muted)] sm:mt-5 sm:text-lg lg:mx-0 xl:max-w-2xl xl:text-xl 2xl:text-2xl 2xl:leading-snug max-[768px]:mx-auto">
+              <span className="max-[768px]:hidden">{SUBHEADLINE}</span>
+              <span className="hidden max-[768px]:inline text-sm leading-relaxed text-white/88 drop-shadow-[0_1px_8px_rgba(0,0,0,0.55)]">
+                {MOBILE_SUBHEADLINE}
+              </span>
             </p>
-            <div className="mt-9 flex flex-col items-stretch gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">
+            <div className="mt-9 flex max-[768px]:mt-6 flex-col items-stretch gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">
               <Link
                 href="/#seleccion-destacada"
                 onClick={scrollToCatalog}
                 className="no-custom-btn inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[var(--dark-cta-bg)] px-7 py-3 text-[15px] font-semibold text-[var(--dark-cta-text)] shadow-[0_1px_0_rgba(255,255,255,0.14)_inset] transition-[transform,box-shadow,background-color] duration-200 ease-out hover:bg-[var(--dark-cta-hover)] hover:shadow-[0_14px_32px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-page)]"
               >
-                Ver catálogo
+                <span className="max-[768px]:hidden">Ver catálogo</span>
+                <span className="hidden max-[768px]:inline">Ver guitarras disponibles</span>
               </Link>
               {productHref ? (
                 <Link
                   href={productHref}
-                  className="no-custom-btn inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/14 bg-white/[0.03] px-7 py-3 text-[15px] font-semibold text-white/90 backdrop-blur-sm transition-[transform,background-color,border-color] duration-200 hover:border-[var(--vintage-gold)]/35 hover:bg-white/[0.06] hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-page)]"
+                  className="no-custom-btn max-[768px]:hidden inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/14 bg-white/[0.03] px-7 py-3 text-[15px] font-semibold text-white/90 backdrop-blur-sm transition-[transform,background-color,border-color] duration-200 hover:border-[var(--vintage-gold)]/35 hover:bg-white/[0.06] hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-page)]"
                 >
                   Ver esta pieza
                 </Link>

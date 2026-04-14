@@ -2,10 +2,16 @@
 
 import React, { useMemo } from 'react'
 import ProductCard from './ProductCard'
+import ScrollReveal from './ScrollReveal'
 import SkeletonProductCard from './SkeletonProductCard'
 import { useProducts } from '../hooks/useProducts'
 
-export default function ProductGrid({ filters = {}, items: itemsProp, parentLoading = false }) {
+export default function ProductGrid({
+  filters = {},
+  items: itemsProp,
+  parentLoading = false,
+  primaryImageOnly = false
+}) {
   const fetchSelf = itemsProp === undefined
   const { products, loading, error } = useProducts({ shuffleCatalog: true, enabled: fetchSelf })
   const items = fetchSelf ? products : itemsProp
@@ -43,9 +49,13 @@ export default function ProductGrid({ filters = {}, items: itemsProp, parentLoad
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-5 md:gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 max-[768px]:!grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-[768px]:gap-3 sm:gap-5 md:gap-6 lg:gap-8">
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="reveal reveal--visible" style={{ '--reveal-delay': `${(i - 1) * 60}ms` }}>
+          <div
+            key={i}
+            className="home-grid-product-cell reveal reveal--visible"
+            style={{ '--reveal-delay': `${(i - 1) * 60}ms` }}
+          >
             <SkeletonProductCard />
           </div>
         ))}
@@ -67,18 +77,17 @@ export default function ProductGrid({ filters = {}, items: itemsProp, parentLoad
         <div className="mb-6 p-4 rounded bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200">Error al cargar productos: {hasError}</div>
       ) : null}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-5 md:gap-6 lg:gap-8 w-full min-w-0">
+      <div className="grid grid-cols-1 max-[768px]:!grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-[768px]:gap-3 sm:gap-5 md:gap-6 lg:gap-8 w-full min-w-0">
         {filteredItems.map((item, idx) => (
-          <div
+          <ScrollReveal
             key={`${item.id ?? item.slug ?? idx}-${filters.q || ''}`}
-            className="min-w-0 w-full card-appear"
-            style={{
-              '--card-appear-delay': `${Math.min(idx, 11) * 36}ms`,
-              '--card-appear-delay-mobile': `${idx <= 1 ? 0 : Math.min(idx - 1, 10) * 20}ms`
-            }}
+            className="home-grid-product-cell min-w-0 w-full"
+            delay={Math.min(idx, 12) * 55}
+            threshold={0.06}
+            rootMargin="0px 0px -10% 0px"
           >
-            <ProductCard item={item} priority={idx < 3} />
-          </div>
+            <ProductCard item={item} priority={idx < 3} primaryImageOnly={primaryImageOnly} />
+          </ScrollReveal>
         ))}
       </div>
     </div>

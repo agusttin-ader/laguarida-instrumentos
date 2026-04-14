@@ -1,6 +1,4 @@
 import React from 'react'
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.laguaridainstrumentos.com'
 import fs from 'fs/promises'
 import path from 'path'
 export const dynamic = 'force-dynamic'
@@ -14,6 +12,7 @@ import ProductPageCTA from '../../../components/ProductPageCTA'
 import ProductSpecsExpandable from '../../../components/ProductSpecsExpandable'
 import { parseNumericPriceForSchema } from '../../../lib/utils/normalizeProduct'
 import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
+import { absoluteUrl, toAbsoluteUrl } from '../../../lib/siteUrl'
 
 /** URLs absolutas de Storage en el servidor (SUPABASE_URL disponible aquí). */
 function resolveGalleryImageRef(ref) {
@@ -105,6 +104,7 @@ export async function generateMetadata({ params }) {
   const title = product && product.name ? `${product.name} | La Guarida Instrumentos` : 'La Guarida — Instrumentos'
   const description = product ? `${(product.brand || '').toString()} ${(product.model || '').toString()} — ${String(product.description || '').slice(0, 150)}`.trim() : 'Tienda de instrumentos musicales en Argentina — guitarras, bajos, amplificadores y accesorios.'
   const imageUrl = product ? imageService.resolve(product.image_url || (product.images && product.images[0])) : null
+  const ogImage = toAbsoluteUrl(imageUrl)
 
   return {
     title,
@@ -112,17 +112,17 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title,
       description,
-      images: imageUrl ? [imageUrl] : undefined,
+      images: ogImage ? [ogImage] : undefined,
       type: 'website'
     },
     alternates: {
-      canonical: `${SITE_URL}/guitars/${slug}`
+      canonical: absoluteUrl(`/guitars/${slug}`)
     },
     twitter: {
-      card: imageUrl ? 'summary_large_image' : 'summary',
+      card: ogImage ? 'summary_large_image' : 'summary',
       title,
       description,
-      images: imageUrl ? [imageUrl] : undefined,
+      images: ogImage ? [ogImage] : undefined,
     }
   }
 }
@@ -255,13 +255,13 @@ export default async function GuitarPage({ params }) {
     product.weight
   )
   const descriptionText = String(product.description || '').trim()
-  const productUrl = `${SITE_URL}/guitars/${slug}`
+  const productUrl = absoluteUrl(`/guitars/${slug}`)
   const galleryImageUrl = resolveGalleryImageRef(product.image_url) || ''
   const galleryImages = Array.isArray(product.images)
     ? product.images.map((x) => resolveGalleryImageRef(x)).filter(Boolean)
     : []
   const productImageUrl = imageService.resolve(product.image_url || (product.images && product.images[0]))
-  const absoluteImage = productImageUrl && (productImageUrl.startsWith('http') ? productImageUrl : `${SITE_URL}${productImageUrl.startsWith('/') ? '' : '/'}${productImageUrl}`)
+  const absoluteImage = toAbsoluteUrl(productImageUrl)
 
   const numericPrice = parseNumericPriceForSchema(product.price)
   const aggregateRatingValue = toFiniteNumber(product.aggregate_rating)

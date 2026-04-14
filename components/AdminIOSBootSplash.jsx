@@ -85,7 +85,6 @@ export default function AdminIOSBootSplash({ children }) {
           <div className="absolute inset-0 bg-[#06080e]" />
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3">
             <div className="flex h-[96px] w-[96px] items-center justify-center rounded-[26px] border border-white/12 bg-white/[0.03] p-[15px]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/logo/og-pick-icon.PNG"
                 alt=""

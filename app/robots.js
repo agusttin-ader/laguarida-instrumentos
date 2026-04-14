@@ -1,15 +1,15 @@
-export const dynamic = 'force-dynamic'
+import { getSiteUrl } from '../lib/siteUrl'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://laguarida.com'
-
-export async function GET() {
-  const body = `User-agent: *\nAllow: /\nDisallow: /admin\nSitemap: ${SITE_URL}/sitemap.xml\n`
-
-  return new Response(body, {
-    headers: {
-      'Content-Type': 'text/plain'
-    }
-  })
+/** @returns {import('next').MetadataRoute.Robots} */
+export default function robots() {
+  const base = getSiteUrl()
+  return {
+    rules: {
+      userAgent: '*',
+      allow: '/',
+      disallow: '/admin',
+    },
+    sitemap: `${base}/sitemap.xml`,
+    host: base,
+  }
 }
-
-export default GET

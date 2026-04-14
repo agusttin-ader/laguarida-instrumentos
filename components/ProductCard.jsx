@@ -10,11 +10,20 @@ import { useToast } from './ToastContext'
 
 // Alineado al grid (1 / 2 / 3 cols + padding del contenedor); evita warning de Next por 100vw en tarjetas más angostas
 const CARD_IMAGE_SIZES =
-  '(max-width: 639px) min(92vw, 560px), (max-width: 1023px) min(46vw, 560px), (max-width: 1535px) min(34vw, 520px), (max-width: 1919px) min(30vw, 600px), min(26vw, 720px)'
+  '(max-width: 639px) min(92vw, 560px), (max-width: 1023px) min(46vw, 560px), (max-width: 1535px) min(34vw, 520px), (max-width: 1919px) min(30vw, 600px), (max-width: 2559px) min(26vw, 720px), min(24vw, 840px)'
 const MAX_CARD_IMAGES = 3
-const SWIPE_THRESHOLD = 36
+/** Desplazamiento mínimo (px) para cambiar de foto al soltar */
+const SWIPE_DISTANCE_THRESHOLD = 48
+/** Velocidad mínima (px/ms) para flick rápido */
+const SWIPE_VELOCITY_THRESHOLD = 0.35
 
-const ProductCard = React.memo(function ProductCard({ item, priority = false, imageFit = 'cover' }) {
+const ProductCard = React.memo(function ProductCard({
+  item,
+  priority = false,
+  imageFit = 'cover',
+  /** Solo portada (p. ej. grid destacado en home); sin swipe ni mini-galería */
+  primaryImageOnly = false
+}) {
   const p = normalizeProduct(item)
   const imageList = useMemo(() => {
     const main = imageService.resolve(p.image_url)
@@ -23,12 +32,15 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
       .filter(Boolean)
     const rest = resolved.filter((url) => url !== main)
     const list = main ? [main, ...rest] : rest
-    return list.slice(0, MAX_CARD_IMAGES)
-  }, [p.images, p.image_url])
+    const capped = list.slice(0, MAX_CARD_IMAGES)
+    if (primaryImageOnly) return capped.slice(0, 1)
+    return capped
+  }, [p.images, p.image_url, primaryImageOnly])
   const [galleryIndex, setGalleryIndex] = useState(0)
   const [loadedIndices, setLoadedIndices] = useState(() => new Set())
   const [isHoveringImage, setIsHoveringImage] = useState(false)
   const touchStartX = useRef(0)
+  const touchStartTime = useRef(0)
   const didSwipe = useRef(false)
   const currentImageReady = loadedIndices.has(galleryIndex)
   const titleText = p.name || ''
@@ -46,18 +58,27 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
   const fav = isFavorite(p.slug)
 
   function handleTouchStart(e) {
+    if (!e.touches[0]) return
     touchStartX.current = e.touches[0].clientX
+    touchStartTime.current = typeof performance !== 'undefined' ? performance.now() : Date.now()
     didSwipe.current = false
   }
-  function handleTouchMove(e) {
-    const dx = e.touches[0].clientX - touchStartX.current
-    if (Math.abs(dx) < SWIPE_THRESHOLD) return
-    didSwipe.current = true
-    const current = galleryIndex
-    const next = dx < 0 ? Math.min(current + 1, imageList.length - 1) : Math.max(current - 1, 0)
-    if (next !== current) {
-      setGalleryIndex(next)
-      touchStartX.current = e.touches[0].clientX
+  function handleTouchEnd(e) {
+    if (!hasGallery || !e.changedTouches[0]) return
+    const x = e.changedTouches[0].clientX
+    const dx = x - touchStartX.current
+    const now = typeof performance !== 'undefined' ? performance.now() : Date.now()
+    const dt = Math.max(now - touchStartTime.current, 1)
+    const velocity = Math.abs(dx) / dt
+    const strongFlick = velocity >= SWIPE_VELOCITY_THRESHOLD && Math.abs(dx) >= 24
+    const farEnough = Math.abs(dx) >= SWIPE_DISTANCE_THRESHOLD
+    if (!farEnough && !strongFlick) return
+    if (dx < 0 && galleryIndex < imageList.length - 1) {
+      didSwipe.current = true
+      setGalleryIndex((i) => i + 1)
+    } else if (dx > 0 && galleryIndex > 0) {
+      didSwipe.current = true
+      setGalleryIndex((i) => i - 1)
     }
   }
   function handleGalleryDotClick(e, index) {
@@ -86,9 +107,10 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
 
   const imageBlock = (
     <div
-      className="relative w-full overflow-hidden bg-[var(--dark-surface-2)] aspect-[4/5] md:aspect-[3/4] touch-pan-y"
+      className="product-card-mobile-shell relative w-full overflow-hidden bg-[var(--dark-surface-2)] max-[768px]:bg-[#141414] aspect-[4/5] md:aspect-[3/4] touch-pan-y select-none"
       onTouchStart={hasGallery ? handleTouchStart : undefined}
-      onTouchMove={hasGallery ? handleTouchMove : undefined}
+      onTouchEnd={hasGallery ? handleTouchEnd : undefined}
+      onTouchCancel={hasGallery ? handleTouchEnd : undefined}
       onMouseEnter={() => setIsHoveringImage(true)}
       onMouseLeave={() => setIsHoveringImage(false)}
     >
@@ -98,7 +120,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
           {imageList.map((src, idx) => (
             <div
               key={idx}
-              className="absolute inset-0 transition-opacity duration-300 ease-out"
+              className="absolute inset-0 transition-opacity duration-500 ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none"
               style={{
                 opacity: idx === galleryIndex ? 1 : 0,
                 pointerEvents: idx === galleryIndex ? 'auto' : 'none'
@@ -115,8 +137,8 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
                   decoding="async"
                   onLoad={() => setLoadedIndices((prev) => new Set(prev).add(idx))}
                   onError={() => {}}
-                  className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} transition-opacity duration-300 ease-out md:transition-transform md:duration-500 md:ease-[cubic-bezier(0.33,1,0.32,1)] md:group-hover/img:scale-[1.02]`}
-                  style={{ objectFit: objectFit, objectPosition: 'center' }}
+                  className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} max-[768px]:object-contain max-[768px]:object-center transition-opacity duration-300 ease-out md:transition-transform md:duration-500 md:ease-[cubic-bezier(0.33,1,0.32,1)] md:group-hover/img:scale-[1.02] ${objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover'}`}
+                  style={{ objectPosition: 'center' }}
                 />
             </div>
           ))}
@@ -128,13 +150,18 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
       )}
       {hasGallery && (
         <>
-          {/* Flechas: solo desktop, visibles al hover — blanco con sombra para contraste */}
-          <div className="absolute inset-0 z-10 pointer-events-none md:pointer-events-auto">
+          {/* Flechas: siempre visibles en móvil (tocables); en desktop al hover */}
+          <div className="absolute inset-0 z-10 pointer-events-none">
             <button
               type="button"
               onClick={(e) => handleArrowClick(e, -1)}
+              disabled={galleryIndex === 0}
               aria-label="Imagen anterior"
-              className={`no-custom-btn absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-white transition-opacity duration-200 focus:outline-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] ${galleryIndex === 0 ? 'opacity-0 md:group-hover/img:opacity-40 cursor-default' : 'opacity-0 md:group-hover/img:opacity-100'}`}
+              className={`no-custom-btn pointer-events-auto absolute left-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white shadow-md backdrop-blur-sm transition-[opacity,transform,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none md:backdrop-blur-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
+                galleryIndex === 0
+                  ? 'cursor-default opacity-35 md:opacity-0 md:group-hover/img:opacity-40'
+                  : 'opacity-100 md:opacity-0 md:group-hover/img:opacity-100 hover:bg-black/60 md:hover:bg-transparent'
+              }`}
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M15 18l-6-6 6-6" />
@@ -143,8 +170,13 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
             <button
               type="button"
               onClick={(e) => handleArrowClick(e, 1)}
+              disabled={galleryIndex === imageList.length - 1}
               aria-label="Siguiente imagen"
-              className={`no-custom-btn absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-white transition-opacity duration-200 focus:outline-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] ${galleryIndex === imageList.length - 1 ? 'opacity-0 md:group-hover/img:opacity-40 cursor-default' : 'opacity-0 md:group-hover/img:opacity-100'}`}
+              className={`no-custom-btn pointer-events-auto absolute right-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white shadow-md backdrop-blur-sm transition-[opacity,transform,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none md:backdrop-blur-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
+                galleryIndex === imageList.length - 1
+                  ? 'cursor-default opacity-35 md:opacity-0 md:group-hover/img:opacity-40'
+                  : 'opacity-100 md:opacity-0 md:group-hover/img:opacity-100 hover:bg-black/60 md:hover:bg-transparent'
+              }`}
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M9 18l6-6-6-6" />
@@ -170,7 +202,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
         type="button"
         onClick={handleFavoriteClick}
         aria-label={fav ? 'Quitar de tu selección' : 'Agregar a tu selección'}
-        className="no-custom-btn favorite-heart-btn absolute top-2 right-2 z-20 min-w-[44px] min-h-[44px] w-11 h-11 md:w-10 md:h-10 flex items-center justify-center border bg-black/55 border-white/25 text-white/90 hover:bg-black/70 hover:border-white/40 backdrop-blur-sm transition-all duration-200 touch-manipulation"
+        className="no-custom-btn favorite-heart-btn absolute top-2 right-2 z-20 min-w-[44px] min-h-[44px] w-11 h-11 md:w-10 md:h-10 flex items-center justify-center border bg-black/55 border-white/25 text-white/90 hover:bg-black/70 hover:border-white/40 backdrop-blur-sm transition-all duration-200 touch-manipulation max-[768px]:rounded-md md:rounded-full"
       >
         <svg
           width="18"
@@ -194,7 +226,7 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
   return (
     <article
       aria-labelledby={headingId}
-      className={`card-interactive card-editorial card-mobile-no-motion w-full min-w-0 max-w-full overflow-hidden rounded-none md:rounded-[22px] border border-[var(--dark-border)] bg-[var(--dark-bg-card)] ${isHoveringImage ? 'card-hovering-image' : ''}`}
+      className={`card-interactive card-editorial card-mobile-no-motion product-card-mobile-catalog w-full min-w-0 max-w-full overflow-hidden rounded-none md:rounded-[22px] border border-[var(--dark-border)] max-[768px]:border-[var(--dark-border)] bg-[var(--dark-bg-card)] ${isHoveringImage ? 'card-hovering-image' : ''}`}
     >
       <Link
         href={`/guitars/${p.slug || p.id}`}
@@ -204,32 +236,43 @@ const ProductCard = React.memo(function ProductCard({ item, priority = false, im
       >
         {imageBlock}
 
-        <div className="flex flex-col flex-1 p-4 md:p-5 border-t border-[var(--dark-border)]">
-          <h3 id={headingId} className="text-[1rem] md:text-[1.0625rem] font-semibold text-[var(--dark-text-primary)] leading-tight line-clamp-2 tracking-tight">
+        <div className="flex min-h-0 flex-1 flex-col gap-0 border-t border-[var(--dark-border)] p-4 max-[768px]:gap-0 max-[768px]:px-3 max-[768px]:pb-3 max-[768px]:pt-3 md:gap-0 md:p-5">
+          <h3
+            id={headingId}
+            className="order-1 min-w-0 text-[1rem] font-semibold tracking-tight text-[var(--dark-text-primary)] md:text-[1.0625rem] max-[768px]:min-h-[1.35rem] max-[768px]:text-[15px] max-[768px]:font-bold max-[768px]:leading-tight max-[768px]:line-clamp-1 md:leading-snug md:line-clamp-2"
+          >
             {titleText}
           </h3>
-          {p.price && (
-            <p className="mt-1.5 text-sm md:text-base font-semibold text-[var(--vintage-gold)]">
+          {specs.length > 0 ? (
+            <>
+              <p
+                className="order-2 hidden min-h-0 max-[768px]:order-2 max-[768px]:mt-1 max-[768px]:block max-[768px]:truncate max-[768px]:text-[10px] max-[768px]:font-medium max-[768px]:uppercase max-[768px]:leading-snug max-[768px]:tracking-wider max-[768px]:text-[var(--dark-muted)]"
+                title={[...visibleSpecs, hiddenSpecsCount > 0 ? `+${hiddenSpecsCount}` : null].filter(Boolean).join(' · ')}
+              >
+                {[...visibleSpecs, hiddenSpecsCount > 0 ? `+${hiddenSpecsCount}` : null].filter(Boolean).join(' · ')}
+              </p>
+              <div className="order-3 mt-2.5 flex flex-wrap gap-1.5 max-[768px]:mt-1 max-[768px]:hidden md:order-3">
+                {visibleSpecs.map((s, i) => (
+                  <span key={i} className="rounded border border-[var(--dark-border)] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[var(--dark-muted)] md:text-[11px]">
+                    {s}
+                  </span>
+                ))}
+                {hiddenSpecsCount > 0 && (
+                  <span className="rounded border border-[var(--dark-border)] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[var(--dark-muted)] md:text-[11px]">
+                    +{hiddenSpecsCount}
+                  </span>
+                )}
+              </div>
+            </>
+          ) : null}
+          {p.price ? (
+            <p className="order-2 mt-1.5 text-sm font-semibold text-[var(--vintage-gold)] max-[768px]:order-3 max-[768px]:mt-1 max-[768px]:min-h-[1.25rem] max-[768px]:text-sm md:order-2 md:text-base">
               {p.price}
             </p>
-          )}
-          {specs.length > 0 && (
-            <div className="mt-2.5 flex flex-wrap gap-1.5">
-              {visibleSpecs.map((s, i) => (
-                <span key={i} className="text-[10px] md:text-[11px] uppercase tracking-wider text-[var(--dark-muted)] px-2 py-0.5 rounded border border-[var(--dark-border)]">
-                  {s}
-                </span>
-              ))}
-              {hiddenSpecsCount > 0 && (
-                <span className="text-[10px] md:text-[11px] uppercase tracking-wider text-[var(--dark-muted)] px-2 py-0.5 rounded border border-[var(--dark-border)]">
-                  +{hiddenSpecsCount}
-                </span>
-              )}
-            </div>
-          )}
-          <span className="mt-3 md:mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--dark-text-secondary)]">
+          ) : null}
+          <span className="order-4 mt-3 hidden items-center gap-1.5 text-xs font-medium text-[var(--dark-text-secondary)] max-[768px]:mt-0 md:mt-4 md:inline-flex">
             Ver producto
-            <svg className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+            <svg className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </span>

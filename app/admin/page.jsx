@@ -42,7 +42,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 md:gap-8 lg:gap-10 xl:gap-14">
-        {dashboardCards.map((card, index) => {
+        {dashboardCards.map((card) => {
           const Icon = card.icon
           const content = (
             <>

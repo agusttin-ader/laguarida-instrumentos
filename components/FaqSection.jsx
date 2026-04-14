@@ -3,8 +3,9 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { CaretDown, CaretUp, InstagramLogo, WhatsappLogo, EnvelopeSimple } from 'phosphor-react'
+import { Plus, Minus, InstagramLogo, WhatsappLogo, EnvelopeSimple } from 'phosphor-react'
 import { layoutShellClassName } from '../lib/layoutShell'
+import ScrollReveal from './ScrollReveal'
 
 const FAQ_ITEMS = [
   {
@@ -36,6 +37,10 @@ export default function FaqSection() {
   function handleVolverAlHome(e) {
     if (pathname === '/' || pathname === '') {
       e.preventDefault()
+      if (typeof window !== 'undefined' && window.location.hash) {
+        const path = `${window.location.pathname}${window.location.search || ''}`
+        window.history.replaceState(window.history.state, '', path)
+      }
       const el = document.getElementById('home-top')
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -62,20 +67,21 @@ export default function FaqSection() {
       className="mt-6 sm:mt-10 md:mt-12"
       aria-labelledby="faq-heading"
     >
-      <div className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 py-5 sm:py-10 md:py-12 lg:py-14 pb-20 md:pb-14 lg:pb-14`}>
-        <p className="section-kicker-minimal section-underline-ocre text-gray-700 dark:text-white/70 mb-2 sm:mb-3">Preguntas frecuentes</p>
-        <h2 id="faq-heading" className="section-title-minimal text-[var(--dark-text-primary)] text-2xl sm:text-3xl md:text-[2.5rem] mb-4 sm:mb-6 md:mb-8">
-          Envíos, pagos, permutas y más
-        </h2>
+      <div className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 py-5 sm:py-10 md:py-12 lg:py-14 pb-6 sm:pb-10 md:pb-14 lg:pb-14`}>
+        <ScrollReveal threshold={0.06} rootMargin="0px 0px -8% 0px">
+          <p className="section-kicker-minimal section-underline-ocre text-gray-700 dark:text-white/70 mb-2 sm:mb-3">Preguntas frecuentes</p>
+          <h2 id="faq-heading" className="section-title-minimal text-[var(--dark-text-primary)] text-2xl sm:text-3xl md:text-[2.5rem] mb-4 sm:mb-6 md:mb-8">
+            Envíos, pagos, permutas y más
+          </h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-10 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-10 items-start">
           <div className="lg:col-span-2 space-y-2 order-1">
             {FAQ_ITEMS.map((item) => {
               const isOpen = openId === item.id
               return (
                 <div
                   key={item.id}
-                  className={`rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] overflow-hidden transition-all duration-300 ${isOpen ? 'faq-item-open shadow-[0_10px_24px_rgba(0,0,0,0.18)]' : ''}`}
+                  className={`rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] overflow-hidden transition-[box-shadow,border-color] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${isOpen ? 'faq-item-open shadow-[0_10px_24px_rgba(0,0,0,0.18)]' : ''}`}
                 >
                   <button
                     type="button"
@@ -88,18 +94,18 @@ export default function FaqSection() {
                     <span className="section-title-minimal text-[var(--dark-text-primary)] text-[0.95rem] sm:text-[1.05rem] font-semibold">
                       {item.question}
                     </span>
-                    <span className={`flex-shrink-0 text-[var(--dark-text-primary)]/70 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} aria-hidden>
-                      {isOpen ? <CaretUp size={20} weight="bold" /> : <CaretDown size={20} weight="bold" />}
+                    <span className="flex-shrink-0 text-[var(--dark-text-primary)]/70" aria-hidden>
+                      {isOpen ? <Minus size={22} weight="bold" /> : <Plus size={22} weight="bold" />}
                     </span>
                   </button>
                   <div
                     id={`faq-answer-${item.id}`}
                     role="region"
                     aria-labelledby={`faq-question-${item.id}`}
-                    className={`grid transition-[grid-template-rows] duration-300 ease-out ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+                    className={`grid transition-[grid-template-rows] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
                   >
                     <div className="overflow-hidden">
-                      <div className={`px-4 sm:px-5 pt-4 sm:pt-5 pb-4 sm:pb-5 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
+                      <div className={`px-4 sm:px-5 pt-4 sm:pt-5 pb-4 sm:pb-5 transition-opacity duration-200 ease-out motion-reduce:transition-none ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
                         <p className="text-[13px] sm:text-sm text-gray-700 dark:text-gray-200 leading-relaxed max-w-[70ch]">
                           {item.answer}
                         </p>
@@ -164,16 +170,17 @@ export default function FaqSection() {
               </a>
             </nav>
           </aside>
-        </div>
-        <div className="mt-6 sm:mt-9 md:mt-10 flex justify-center">
-          <Link
-            href="/"
-            onClick={handleVolverAlHome}
-            className="inline-flex items-center justify-center min-h-[48px] sm:min-h-[44px] py-3 sm:py-3 px-6 sm:px-7 rounded-xl border border-white/15 bg-[var(--dark-cta-bg)] text-[var(--dark-cta-text)] text-[13px] sm:text-sm font-semibold hover:bg-[var(--dark-cta-hover)] active:opacity-90 transition-colors no-custom-btn touch-manipulation w-full max-w-[280px] sm:max-w-none"
-          >
-            Volver al home
-          </Link>
-        </div>
+          </div>
+          <div className="mt-4 sm:mt-8 md:mt-10 flex justify-center">
+            <Link
+              href="/"
+              onClick={handleVolverAlHome}
+              className="inline-flex items-center justify-center min-h-[48px] sm:min-h-[44px] py-3 sm:py-3 px-6 sm:px-7 rounded-xl border border-white/15 bg-[var(--dark-cta-bg)] text-[var(--dark-cta-text)] text-[13px] sm:text-sm font-semibold hover:bg-[var(--dark-cta-hover)] active:opacity-90 transition-colors no-custom-btn touch-manipulation w-full max-w-[280px] sm:max-w-none"
+            >
+              Volver al home
+            </Link>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   )

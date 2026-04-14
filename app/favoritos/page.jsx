@@ -3,6 +3,7 @@
 import React, { useMemo } from 'react'
 import Link from 'next/link'
 import ProductCard from '../../components/ProductCard'
+import ScrollReveal from '../../components/ScrollReveal'
 import { useFavorites } from '../../components/ProductShareAndFavorite'
 import { useProducts } from '../../hooks/useProducts'
 
@@ -53,10 +54,16 @@ export default function FavoritosPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-4 md:gap-6">
-          {products.map((item) => (
-            <div key={item.id || item.slug}>
+          {products.map((item, idx) => (
+            <ScrollReveal
+              key={item.id || item.slug}
+              className="min-w-0"
+              delay={Math.min(idx, 12) * 55}
+              threshold={0.06}
+              rootMargin="0px 0px -10% 0px"
+            >
               <ProductCard item={item} />
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       )}

@@ -9,12 +9,16 @@ const PullToRefresh = dynamic(() => import('./PullToRefresh'), { ssr: false })
 
 /** Reserva espacio mientras carga el chunk del header (solo cliente; evita mismatch SSR/bundle). */
 function HeaderLoading() {
+  const pathname = usePathname()
+  const isHome = pathname === '/' || pathname === ''
   return (
     <>
-      <div
-        className="md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[52px] sm:min-h-[56px] bg-[var(--dark-bg-page)] pointer-events-none"
-        aria-hidden
-      />
+      {!isHome ? (
+        <div
+          className="md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[52px] sm:min-h-[56px] bg-[var(--dark-bg-page)] pointer-events-none"
+          aria-hidden
+        />
+      ) : null}
       <div className="hidden md:block w-full min-h-[88px] lg:min-h-[96px] shrink-0" aria-hidden />
     </>
   )
@@ -30,6 +34,11 @@ export default function SiteShell({ children }) {
   const pathname = usePathname()
   const router = useRouter()
   const isAdmin = typeof pathname === 'string' && pathname.startsWith('/admin')
+  const isHome = pathname === '/' || pathname === ''
+  /** Móvil: header fijo arriba; el contenido debe empezar debajo (mismos valores que HeroMonolith). */
+  const mainTopPad = !isHome
+    ? 'pt-[calc(58px+max(0.25rem,env(safe-area-inset-top)))] sm:pt-[calc(62px+max(0.25rem,env(safe-area-inset-top)))] md:pt-0'
+    : 'pt-0'
 
   const handleRefresh = useCallback(() => {
     router.refresh()
@@ -78,8 +87,7 @@ export default function SiteShell({ children }) {
           <PullToRefresh onRefresh={handleRefresh}>
             <main
               key={pathname}
-              className="animate-page-in min-h-0 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] md:pb-0 pt-0"
-              style={{ animationDuration: '0.35s' }}
+              className={`animate-page-in min-h-0 pb-[max(1rem,env(safe-area-inset-bottom,0px))] md:pb-0 ${mainTopPad}`}
             >
               {children}
             </main>

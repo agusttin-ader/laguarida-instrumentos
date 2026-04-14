@@ -8,6 +8,7 @@ export const metadata = {
   title: 'La Guarida — Admin',
   description: 'Panel de administración (versión app)',
   manifest: '/manifest-admin.json',
+  robots: { index: false, follow: false },
 }
 
 export const viewport = {
@@ -30,7 +31,6 @@ export default function AdminLayout({ children }) {
       <div id="admin-boot-splash" className="admin-boot-splash-visible" aria-hidden="false">
         <div className="admin-splash-inner">
           <div className="admin-splash-logo">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/images/logo/og-pick-icon.PNG" alt="" width={96} height={96} fetchPriority="high" />
           </div>
           <p className="admin-splash-label">La Guarida Admin</p>

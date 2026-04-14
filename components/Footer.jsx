@@ -3,14 +3,18 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { InstagramLogo, EnvelopeSimple, WhatsappLogo } from 'phosphor-react'
 import { layoutShellClassName } from '../lib/layoutShell'
 
 export default function Footer({ compact = false }){
+  const pathname = usePathname()
+  const isHome = pathname === '/' || pathname === ''
   const waHref = `https://wa.me/5491154661749?text=${encodeURIComponent('Hola, me interesa La Guarida, me podrias dar informacion?')}`
+  const footerTop = compact ? 'mt-0' : isHome ? 'mt-4 md:mt-20' : 'mt-8 md:mt-20'
 
   return (
-    <footer className={`${compact ? 'mt-0' : 'mt-8 md:mt-20'} bg-transparent dark:bg-transparent border-0 overflow-x-hidden`}>
+    <footer className={`${footerTop} bg-transparent dark:bg-transparent border-0 overflow-x-hidden`}>
       <div className={`${layoutShellClassName} px-4 sm:px-6 lg:px-8 ${compact ? 'py-4 md:py-3' : 'py-6 sm:py-8'}`}>
         {!compact && <div className="mb-4 sm:mb-5 h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent" aria-hidden />}
         <div className={`grid grid-cols-1 md:grid-cols-3 items-center ${compact ? 'gap-3 md:gap-2' : 'gap-4 sm:gap-6'}`}>

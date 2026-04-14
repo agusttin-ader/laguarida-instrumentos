@@ -1,0 +1,254 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Refugio Nahuel" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - button "Cerrar menú" [expanded] [active] [ref=e5] [cursor=pointer]:
+        - generic [ref=e6]: Menú
+        - img [ref=e7]
+    - navigation "Menú móvil" [ref=e9]:
+      - list [ref=e10]:
+        - listitem [ref=e11]:
+          - link "Inicio" [ref=e12] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e13]:
+          - link "Habitaciones" [ref=e14] [cursor=pointer]:
+            - /url: /habitaciones
+        - listitem [ref=e15]:
+          - link "Servicios" [ref=e16] [cursor=pointer]:
+            - /url: /servicios
+        - listitem [ref=e17]:
+          - link "Galería" [ref=e18] [cursor=pointer]:
+            - /url: /galeria
+        - listitem [ref=e19]:
+          - link "Ubicación" [ref=e20] [cursor=pointer]:
+            - /url: /ubicacion
+        - listitem [ref=e21]:
+          - link "Reservar" [ref=e22] [cursor=pointer]:
+            - /url: /disponibilidad
+        - listitem [ref=e23]:
+          - link "Contacto" [ref=e24] [cursor=pointer]:
+            - /url: /contacto
+        - listitem [ref=e25]:
+          - link "Reservar" [ref=e26] [cursor=pointer]:
+            - /url: /reservar
+  - main [ref=e27]:
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - generic [ref=e31]:
+          - img "Vista del hostel o paisaje de Bariloche" [ref=e32]
+          - generic "Foto de Geronimo Giqueaux en Unsplash" [ref=e33]:
+            - generic [ref=e34]:
+              - generic [ref=e35]: Foto de
+              - link "Geronimo Giqueaux" [ref=e36] [cursor=pointer]:
+                - /url: https://unsplash.com/es/@ggiqueaux?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText
+              - generic [ref=e37]: en
+              - link "Unsplash" [ref=e38] [cursor=pointer]:
+                - /url: https://unsplash.com/es/fotos/casa-blanca-y-marron-cerca-de-arboles-verdes-y-lago-durante-el-dia-At0wecizwVU?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText
+        - generic:
+          - img
+          - img
+        - generic [ref=e40]:
+          - generic [ref=e41]: Patagonia editorial stay
+          - heading "Refugio Nahuel" [level=1] [ref=e42]
+          - paragraph [ref=e43]: Un refugio contemporaneo entre lago y montaña en Bariloche. Diseño calmo, hospitalidad cálida y experiencias pensadas para viajar con estilo.
+          - form "Buscar disponibilidad" [ref=e45]:
+            - paragraph [ref=e46]: Bariloche, Río Negro
+            - generic [ref=e47]:
+              - generic [ref=e48]:
+                - generic [ref=e49]: Fechas
+                - button "Fechas" [ref=e50] [cursor=pointer]:
+                  - generic [ref=e51]:
+                    - generic [ref=e52]: 14/04/2026
+                    - generic [ref=e53]: al día
+                    - generic [ref=e54]: 16/04/2026
+                  - img [ref=e55]
+              - generic [ref=e57]:
+                - generic [ref=e58]: Huéspedes
+                - button "Huéspedes" [ref=e60] [cursor=pointer]:
+                  - generic [ref=e61]: 1 huésped
+                  - img [ref=e62]
+              - button "Buscar" [ref=e65] [cursor=pointer]
+      - generic [ref=e68]:
+        - generic [ref=e69]:
+          - heading "Hospitalidad patagónica, lectura visual limpia y ritmo sereno." [level=2] [ref=e70]
+          - paragraph [ref=e71]: "Diseñamos cada rincón para que la experiencia se sienta ligera: espacios abiertos, texturas nobles y una base funcional para explorar Bariloche sin fricción."
+        - generic [ref=e72]:
+          - paragraph [ref=e73]: Curado para viajeros
+          - paragraph [ref=e74]: Dormís bien, te movés fácil y vivís la ciudad desde una estética contemporánea que prioriza confort y carácter local.
+      - generic [ref=e76]:
+        - heading "Escenas clave de tu estadía" [level=2] [ref=e77]
+        - list [ref=e78]:
+          - listitem [ref=e79]:
+            - generic [ref=e81]:
+              - img "Ubicación céntrica" [ref=e82]
+              - generic "Foto de Por completar en Unsplash" [ref=e83]:
+                - generic [ref=e84]:
+                  - generic [ref=e85]: Foto de
+                  - link "Por completar" [ref=e86] [cursor=pointer]:
+                    - /url: https://unsplash.com
+                  - generic [ref=e87]: en
+                  - link "Unsplash" [ref=e88] [cursor=pointer]:
+                    - /url: https://unsplash.com
+            - generic [ref=e89]:
+              - heading "Ubicación" [level=3] [ref=e90]
+              - paragraph [ref=e91]: Centro, lago y conexiones rápidas para moverte fácil.
+          - listitem [ref=e92]:
+            - generic [ref=e94]:
+              - img "Ambiente hostel" [ref=e95]
+              - generic "Foto de Takafumi Yamashita en Unsplash" [ref=e96]:
+                - generic [ref=e97]:
+                  - generic [ref=e98]: Foto de
+                  - link "Takafumi Yamashita" [ref=e99] [cursor=pointer]:
+                    - /url: https://unsplash.com/es/@yamashita0129?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText
+                  - generic [ref=e100]: en
+                  - link "Unsplash" [ref=e101] [cursor=pointer]:
+                    - /url: https://unsplash.com/es/fotos/habitacion-vacia-de-madera-marron-yUs-rYGedzs?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText
+            - generic [ref=e102]:
+              - heading "Ambiente" [level=3] [ref=e103]
+              - paragraph [ref=e104]: Calidez social, trabajo remoto y pausas con diseño.
+          - listitem [ref=e105]:
+            - generic [ref=e107]:
+              - img "Actividades y excursiones" [ref=e108]
+              - generic "Foto de Juano David en Unsplash" [ref=e109]:
+                - generic [ref=e110]:
+                  - generic [ref=e111]: Foto de
+                  - link "Juano David" [ref=e112] [cursor=pointer]:
+                    - /url: https://unsplash.com/es/@juanodlt_?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText
+                  - generic [ref=e113]: en
+                  - link "Unsplash" [ref=e114] [cursor=pointer]:
+                    - /url: https://unsplash.com/es/fotos/un-hombre-parado-frente-a-un-cuerpo-de-agua-tGTJ2QRJzzU?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText
+            - generic [ref=e115]:
+              - heading "Experiencias" [level=3] [ref=e116]
+              - paragraph [ref=e117]: Navegación, trekking y nieve según temporada.
+      - generic [ref=e119]:
+        - generic [ref=e120]:
+          - generic [ref=e121]:
+            - heading "Lo que dicen los huéspedes" [level=2] [ref=e122]
+            - paragraph [ref=e123]: Experiencias reales de viajeros que se alojaron en Refugio Nahuel.
+          - link "Ver preguntas frecuentes →" [ref=e124] [cursor=pointer]:
+            - /url: /faq
+        - list [ref=e125]:
+          - listitem [ref=e126]:
+            - generic [ref=e127]:
+              - generic "5 de 5 estrellas" [ref=e128]:
+                - img [ref=e129]
+                - img [ref=e131]
+                - img [ref=e133]
+                - img [ref=e135]
+                - img [ref=e137]
+              - generic [ref=e139]: Enero 2025
+            - paragraph [ref=e140]: “Excelente ubicación y muy buena onda. El desayuno está muy bien y la cocina compartida es ideal para ahorrar. Volvería sin dudar.”
+            - paragraph [ref=e141]: María G.
+            - paragraph [ref=e142]: Buenos Aires
+          - listitem [ref=e143]:
+            - generic [ref=e144]:
+              - generic "5 de 5 estrellas" [ref=e145]:
+                - img [ref=e146]
+                - img [ref=e148]
+                - img [ref=e150]
+                - img [ref=e152]
+                - img [ref=e154]
+              - generic [ref=e156]: Agosto 2024
+            - paragraph [ref=e157]: “Pasé una semana esquiando y el hostel fue la base perfecta. Cerca del centro y de los colectivos al cerro. Staff muy atento.”
+            - paragraph [ref=e158]: Lucas M.
+            - paragraph [ref=e159]: Córdoba
+          - listitem [ref=e160]:
+            - generic [ref=e161]:
+              - generic "5 de 5 estrellas" [ref=e162]:
+                - img [ref=e163]
+                - img [ref=e165]
+                - img [ref=e167]
+                - img [ref=e169]
+                - img [ref=e171]
+              - generic [ref=e173]: Diciembre 2024
+            - paragraph [ref=e174]: “Habitación privada con baño impecable. Tranquilos y limpios. Nos ayudaron a reservar la excursión a Isla Victoria.”
+            - paragraph [ref=e175]: Franco y Ana
+            - paragraph [ref=e176]: Mendoza
+        - link "Escribinos tu consulta" [ref=e178] [cursor=pointer]:
+          - /url: /contacto
+      - generic [ref=e180]:
+        - generic [ref=e181]:
+          - generic [ref=e182]:
+            - heading "Preguntas frecuentes" [level=2] [ref=e183]
+            - paragraph [ref=e184]: Información clara sobre políticas, tiempos y servicios.
+          - link "Ver todas →" [ref=e185] [cursor=pointer]:
+            - /url: /faq
+        - generic [ref=e187]:
+          - generic [ref=e188]:
+            - button "¿Cuáles son los horarios de check-in y check-out?" [ref=e189] [cursor=pointer]:
+              - generic [ref=e190]: ¿Cuáles son los horarios de check-in y check-out?
+              - img [ref=e191]
+            - generic [ref=e193]: Check-in a partir de las 14:00 y check-out hasta las 10:00. Si necesitás dejar equipaje antes o después, podés guardarlo en recepción sin cargo.
+          - generic [ref=e194]:
+            - button "¿Qué incluye el precio?" [ref=e195] [cursor=pointer]:
+              - generic [ref=e196]: ¿Qué incluye el precio?
+              - img [ref=e197]
+            - generic [ref=e199]: Incluye desayuno continental (café, té, panificados, mermeladas, fruta), Wi-Fi en todo el hostel, uso de cocina compartida, lockers en dormitorios y mapas e información turística. No incluye toallas en dormitorios compartidos (se alquilan o traer propias); en habitaciones privadas con baño sí están incluidas.
+          - generic [ref=e200]:
+            - button "¿Cuál es la política de cancelación?" [ref=e201] [cursor=pointer]:
+              - generic [ref=e202]: ¿Cuál es la política de cancelación?
+              - img [ref=e203]
+            - generic [ref=e205]: Cancelación gratuita hasta 48 horas antes del check-in. Si cancelás con menos de 48 horas, se cobra la primera noche. En fechas de temporada alta (julio, enero) puede aplicarse política extendida; se informa al reservar.
+      - generic [ref=e208]:
+        - generic [ref=e209]:
+          - generic [ref=e210]: Tu próxima base
+          - heading "Reservá tu lugar" [level=2] [ref=e211]
+          - paragraph [ref=e212]: Consultá disponibilidad y armemos tu experiencia en Bariloche.
+          - link "Ir a reservar" [ref=e213] [cursor=pointer]:
+            - /url: /reservar
+        - generic [ref=e214]:
+          - heading "Recibí ofertas y novedades" [level=3] [ref=e215]
+          - paragraph [ref=e216]: Suscribite con tu email. Sin spam, solo info útil.
+          - generic [ref=e218]:
+            - generic [ref=e219]: Email para newsletter
+            - textbox "Email para newsletter Email para newsletter" [ref=e220]:
+              - /placeholder: tu@email.com
+            - button "Suscribirme" [ref=e221] [cursor=pointer]
+  - contentinfo [ref=e222]:
+    - generic [ref=e223]:
+      - generic [ref=e224]:
+        - generic [ref=e225]:
+          - paragraph [ref=e226]: Refugio Nahuel
+          - paragraph [ref=e227]: Hostel en Bariloche, Río Negro, Argentina
+        - navigation "Pie de página" [ref=e228]:
+          - list [ref=e229]:
+            - listitem [ref=e230]:
+              - link "Habitaciones" [ref=e231] [cursor=pointer]:
+                - /url: /habitaciones
+            - listitem [ref=e232]:
+              - link "Servicios" [ref=e233] [cursor=pointer]:
+                - /url: /servicios
+            - listitem [ref=e234]:
+              - link "Galería" [ref=e235] [cursor=pointer]:
+                - /url: /galeria
+            - listitem [ref=e236]:
+              - link "Ubicación" [ref=e237] [cursor=pointer]:
+                - /url: /ubicacion
+            - listitem [ref=e238]:
+              - link "Preguntas frecuentes" [ref=e239] [cursor=pointer]:
+                - /url: /faq
+            - listitem [ref=e240]:
+              - link "Políticas" [ref=e241] [cursor=pointer]:
+                - /url: /politicas
+            - listitem [ref=e242]:
+              - link "Reservar" [ref=e243] [cursor=pointer]:
+                - /url: /reservar
+            - listitem [ref=e244]:
+              - link "Contacto" [ref=e245] [cursor=pointer]:
+                - /url: /contacto
+        - generic [ref=e246]:
+          - paragraph [ref=e247]: Newsletter
+          - paragraph [ref=e248]: Ofertas y novedades en tu email.
+          - generic [ref=e250]:
+            - generic [ref=e251]: Email para newsletter
+            - textbox "tu@email.com" [ref=e252]
+            - button "Suscribirme" [ref=e253] [cursor=pointer]
+      - paragraph [ref=e254]: "Sitio ficticio. Refugio Nahuel — Hostel en Bariloche. Imágenes: contenedores listos para Unsplash."
+  - button "Open Next.js Dev Tools" [ref=e260] [cursor=pointer]:
+    - img [ref=e261]
+  - alert [ref=e264]
+```
