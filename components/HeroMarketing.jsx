@@ -3,9 +3,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { CaretDown } from 'phosphor-react'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
-const HERO_IMAGE = '/images/hero-2.jpg'
+/** Principal + respaldo (misma ruta que en `public/`; el PNG por si falla el JPG en deploy o CDN). */
+const HERO_PRIMARY = '/images/hero-2.jpg'
+const HERO_FALLBACK = '/images/hero.PNG'
 
 /** Copy principal del hero — tono poético / refugio. */
 const HEADLINE = 'Tu refugio del buen sonido'
@@ -18,6 +20,8 @@ const MOBILE_SUBHEADLINE = 'Instrumentos con historia y trato cercano.'
  * @param {{ product?: { name?: string, category?: string, slug?: string } | null }} props
  */
 export default function HeroMarketing({ product = null }) {
+  const [heroSrc, setHeroSrc] = useState(HERO_PRIMARY)
+
   const kicker =
     product?.category && String(product.category).trim()
       ? String(product.category).trim()
@@ -39,18 +43,33 @@ export default function HeroMarketing({ product = null }) {
   }
 
   return (
-    <div className="hero-home relative isolate min-h-[100dvh] w-full max-md:min-h-0 overflow-hidden bg-[#0a0a0a]">
-      {/* Imagen con next/image (más fiable que bg-[url] con el bundler) */}
+    <div
+      className="hero-home relative isolate min-h-[100dvh] w-full max-md:min-h-0 overflow-hidden bg-[#0a0a0a]"
+      style={{
+        backgroundImage: `url(${HERO_PRIMARY})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 42%',
+      }}
+    >
+      {/*
+        unoptimized: el JPG es muy grande (p. ej. 6000px); el optimizador de Next a veces falla o tarda en serverless.
+        La capa background arriba evita “hueco” mientras hidrata el cliente (HomeHeroDynamic es ssr:false).
+      */}
       <div className="pointer-events-none absolute inset-0 z-0">
         <Image
-          src={HERO_IMAGE}
+          key={heroSrc}
+          src={heroSrc}
           alt="La Guarida — instrumentos"
           fill
           priority
           fetchPriority="high"
           quality={88}
           sizes="100vw"
+          unoptimized
           className="object-cover object-[center_42%] md:object-center"
+          onError={() =>
+            setHeroSrc((prev) => (prev === HERO_PRIMARY ? HERO_FALLBACK : prev))
+          }
         />
       </div>
 
