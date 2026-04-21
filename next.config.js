@@ -13,7 +13,7 @@ function supabaseRemotePatternsFromEnv() {
         protocol: u.protocol.replace(':', ''),
         hostname: u.hostname,
         port: u.port || '',
-        pathname: '/storage/v1/object/public/**',
+        pathname: '/storage/v1/**',
       })
     } catch {
       /* ignore invalid */
@@ -39,9 +39,9 @@ const nextConfig = {
       ...supabaseRemotePatternsFromEnv(),
       {
         protocol: 'https',
-        hostname: '**.supabase.co',
+        hostname: '*.supabase.co',
         port: '',
-        pathname: '/storage/v1/object/public/**',
+        pathname: '/storage/v1/**',
       },
     ],
   },

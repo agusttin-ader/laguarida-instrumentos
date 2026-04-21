@@ -131,7 +131,8 @@ const ProductCard = React.memo(function ProductCard({
                   alt={idx === 0 ? (titleText || 'Imagen del producto') : `Imagen ${idx + 1} de ${titleText || 'producto'}`}
                   fill
                   sizes={CARD_IMAGE_SIZES}
-                  quality={80}
+                  quality={90}
+                  unoptimized
                   loading={priority && idx === 0 ? 'eager' : 'lazy'}
                   fetchPriority={priority && idx === 0 ? 'high' : 'low'}
                   decoding="async"

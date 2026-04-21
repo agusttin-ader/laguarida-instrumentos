@@ -27,10 +27,11 @@ export default function MobileProductCard({ product }) {
             alt={p.name}
             width={1200}
             height={900}
-            quality={78}
+            quality={90}
             sizes="(max-width:1023px) min(92vw, 560px), 600px"
             className="w-full h-full"
             disableClientPreview
+            unoptimized
           />
         </Link>
       </div>

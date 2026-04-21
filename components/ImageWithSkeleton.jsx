@@ -3,6 +3,12 @@ import React, { useState } from "react";
 import NextImage from "next/image";
 import { useEffect } from "react";
 
+/** Supabase Storage / render: el optimizador de Next a veces falla; URL directa = misma calidad que el archivo. */
+function isSupabaseStorageUrl(src) {
+  if (typeof src !== "string") return false;
+  return /supabase\.co\/storage\/v1\//i.test(src.trim());
+}
+
 // ImageWithSkeleton:
 // - Wraps Next/Image to provide a lightweight skeleton while the image is loading.
 // - Uses `onLoad` to detect when the image has finished loading (onLoadingComplete is deprecated).
@@ -56,7 +62,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
   const aspectRatio = (width && height) ? `${width} / ${height}` : undefined
 
   const mergedImgStyle = { ...imgStyle }
-  const useUnoptimized = Boolean(unoptimized)
+  const useUnoptimized = Boolean(unoptimized) || isSupabaseStorageUrl(src)
 
   return (
     <div

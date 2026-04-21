@@ -24,7 +24,8 @@ export default function ProductPreviewCard({ item, priority = false }) {
             alt={title}
             fill
             sizes={PREVIEW_IMAGE_SIZES}
-            quality={78}
+            quality={90}
+            unoptimized
             loading={priority ? 'eager' : 'lazy'}
             fetchPriority={priority ? 'high' : 'low'}
             className="object-cover object-center"
