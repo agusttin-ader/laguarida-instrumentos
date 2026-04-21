@@ -11,7 +11,7 @@ export default function Footer({ compact = false }){
   const pathname = usePathname()
   const isHome = pathname === '/' || pathname === ''
   const waHref = `https://wa.me/5491154661749?text=${encodeURIComponent('Hola, me interesa La Guarida, me podrias dar informacion?')}`
-  const footerTop = compact ? 'mt-0' : isHome ? 'mt-4 md:mt-20' : 'mt-8 md:mt-20'
+  const footerTop = compact ? 'mt-0' : isHome ? 'mt-4 md:mt-8' : 'mt-8 md:mt-12'
 
   return (
     <footer className={`${footerTop} bg-transparent dark:bg-transparent border-0 overflow-x-hidden`}>

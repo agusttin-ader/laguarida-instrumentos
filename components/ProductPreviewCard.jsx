@@ -16,7 +16,7 @@ export default function ProductPreviewCard({ item, priority = false }) {
   const title = p.name || 'Instrumento'
 
   return (
-    <article className="home-preview-card flex min-h-0 min-w-0 flex-col overflow-hidden rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-card)] shadow-[0_8px_24px_rgba(0,0,0,0.25)]">
+    <article className="home-preview-card flex min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border-0 bg-[var(--dark-bg-card)] shadow-[0_8px_24px_rgba(0,0,0,0.25)] md:rounded-3xl">
       <Link href={href} className="relative block aspect-square w-full min-h-0 overflow-hidden bg-[var(--dark-surface-2)]">
         {src ? (
           <Image

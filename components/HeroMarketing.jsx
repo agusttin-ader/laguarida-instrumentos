@@ -2,324 +2,32 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import normalizeProduct from '../lib/utils/normalizeProduct'
-import imageService from '../lib/utils/imageService'
-import { layoutShellClassName } from '../lib/layoutShell'
+import { CaretDown } from 'phosphor-react'
+import { useMemo } from 'react'
 
-const HEADLINE = 'Instrumentos que suenan como tienen que sonar'
-const SUBHEADLINE = 'Selección real. Sin humo.'
-const MOBILE_HEADLINE = 'Guitarras con historia'
-const MOBILE_SUBHEADLINE = 'Elegidas para sonar distinto'
-const SLIDE_MS = 5000
+const HERO_IMAGE = '/images/hero-2.jpg'
 
-/** Srcset: móvil pantalla; desktop/XL/2K/4K con techo alto para no pixelar en marcos grandes */
-const HERO_SHOWROOM_IMAGE_SIZES =
-  '(max-width: 1023px) 100vw, (max-width: 1279px) min(50vw, 720px), (max-width: 1535px) min(45vw, 800px), (max-width: 1919px) min(42vw, 960px), (max-width: 2559px) min(38vw, 1400px), min(36vw, 1680px)'
-
-function isUsableImgUrl(u) {
-  if (!u || typeof u !== 'string') return false
-  const s = u.trim()
-  return s.startsWith('/') || /^https?:\/\//i.test(s)
-}
-
-/** URL absoluta para precarga (misma lógica que las imágenes del hero). */
-function absoluteImageUrl(url) {
-  const resolved = imageService.resolve(url) || (typeof url === 'string' ? url.trim() : '')
-  if (!resolved) return ''
-  if (/^https?:\/\//i.test(resolved)) return resolved
-  if (typeof window !== 'undefined' && resolved.startsWith('/')) {
-    return `${window.location.origin}${resolved}`
-  }
-  return resolved
-}
-
-/** Espera a que la imagen esté en caché del browser antes del crossfade */
-function preloadHeroImage(url) {
-  return new Promise((resolve, reject) => {
-    if (typeof window === 'undefined') {
-      resolve()
-      return
-    }
-    const abs = absoluteImageUrl(url)
-    if (!abs) {
-      reject(new Error('empty url'))
-      return
-    }
-    const img = new window.Image()
-    const cleanup = () => {
-      img.onload = null
-      img.onerror = null
-    }
-    img.onload = () => {
-      cleanup()
-      resolve()
-    }
-    img.onerror = () => {
-      cleanup()
-      reject(new Error('load failed'))
-    }
-    img.src = abs
-    if (img.complete && img.naturalWidth > 0) {
-      cleanup()
-      resolve()
-    }
-  })
-}
+/** Copy principal del hero — tono poético / refugio. */
+const HEADLINE = 'Tu refugio del buen sonido'
+const SUBHEADLINE = 'Instrumentos con historia y trato cercano.'
+const MOBILE_HEADLINE = 'Tu refugio del buen sonido'
+const MOBILE_SUBHEADLINE = 'Instrumentos con historia y trato cercano.'
 
 /**
- * @typedef {{ url: string, name: string, slug: string }} HeroSlide
- */
-
-/** Una imagen por producto, sin repetir URL. */
-function collectAllCatalogSlides(rows) {
-  /** @type {HeroSlide[]} */
-  const out = []
-  const seen = new Set()
-  for (const raw of rows) {
-    const p = normalizeProduct(raw)
-    if (!(p.slug || p.id) || !p.name) continue
-    const refs = []
-    if (p.image_url) refs.push(p.image_url)
-    if (Array.isArray(p.images)) refs.push(...p.images)
-    for (const ref of refs) {
-      const cand = typeof ref === 'string' ? ref.trim() : ''
-      if (!cand) continue
-      const resolved = imageService.resolve(cand)
-      if (resolved && isUsableImgUrl(resolved)) {
-        const url = resolved.trim()
-        if (seen.has(url)) break
-        seen.add(url)
-        out.push({
-          url,
-          name: p.name,
-          slug: p.slug ? String(p.slug) : '',
-        })
-        break
-      }
-    }
-  }
-  return out
-}
-
-/**
- * Hero “showroom”: imagen del producto en marco editorial (no full-bleed).
- * Rotación del catálogo cada 5s con zoom suave (CSS).
- * @param {{ product?: { name?: string, image_url?: string, category?: string, slug?: string } | null }} props
+ * Hero con `hero-2.jpg` (cover). Indicador inferior tipo alopatagonia.vercel.app (texto + flecha, sin caja).
+ * @param {{ product?: { name?: string, category?: string, slug?: string } | null }} props
  */
 export default function HeroMarketing({ product = null }) {
-  const rawUrl = product?.image_url
-
-  const imageUrl = useMemo(() => {
-    if (rawUrl == null) return ''
-    if (typeof rawUrl !== 'string') return ''
-    return rawUrl.trim()
-  }, [rawUrl])
-
-  const usePhoto =
-    imageUrl.length > 0 &&
-    (/^https?:\/\//i.test(imageUrl) || imageUrl.startsWith('/'))
-
-  /** @type {[HeroSlide[], (s: HeroSlide[]) => void]} */
-  const [slides, setSlides] = useState([])
-  const [slideIndex, setSlideIndex] = useState(0)
-  const [slidesReady, setSlidesReady] = useState(false)
-  const [reduceMotion, setReduceMotion] = useState(false)
-
-  /** Doble capa para crossfade entre fotos */
-  /** @type {[HeroSlide[] | null, (s: HeroSlide[] | null) => void]} */
-  const [layerSlots, setLayerSlots] = useState(/** @type {HeroSlide[] | null} */ (null))
-  const [topLayer, setTopLayer] = useState(0)
-  const galleryInitRef = useRef(false)
-  const topLayerRef = useRef(0)
-  const prevSlideIndexRef = useRef(0)
-  const transitionGenRef = useRef(0)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReduceMotion(mq.matches)
-    const onChange = () => setReduceMotion(mq.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
-
-  useEffect(() => {
-    let cancelled = false
-
-    const resolvedFromServer = (() => {
-      if (!imageUrl) return ''
-      const r = imageService.resolve(imageUrl)
-      if (r) return r
-      const t = imageUrl.trim()
-      if (/^https?:\/\//i.test(t)) return t
-      return ''
-    })()
-    const serverSlide =
-      usePhoto && resolvedFromServer
-        ? {
-            url: resolvedFromServer,
-            name: (product?.name && String(product.name).trim()) || '',
-            slug: (product?.slug && String(product.slug).trim()) || '',
-          }
-        : null
-
-    galleryInitRef.current = false
-    if (serverSlide) {
-      setSlides([serverSlide])
-      setSlideIndex(0)
-    } else {
-      setSlides([])
-      setSlideIndex(0)
-    }
-    setSlidesReady(false)
-
-    ;(async () => {
-      try {
-        const res = await fetch('/api/products', { cache: 'default' })
-        if (!res.ok || cancelled) {
-          if (!cancelled) setSlidesReady(true)
-          return
-        }
-        const data = await res.json()
-        if (!Array.isArray(data) || cancelled) return
-
-        let list = collectAllCatalogSlides(data)
-        if (serverSlide) {
-          list = [serverSlide, ...list.filter((s) => s.url !== serverSlide.url)]
-        }
-
-        if (!cancelled) {
-          galleryInitRef.current = false
-          setSlides(list.length ? list : serverSlide ? [serverSlide] : [])
-          setSlideIndex(0)
-          setSlidesReady(true)
-        }
-      } catch {
-        if (!cancelled) {
-          galleryInitRef.current = false
-          setSlides(serverSlide ? [serverSlide] : [])
-          setSlideIndex(0)
-          setSlidesReady(true)
-        }
-      }
-    })()
-
-    return () => {
-      cancelled = true
-    }
-  }, [usePhoto, imageUrl, rawUrl, product?.name, product?.slug])
-
-  useEffect(() => {
-    if (reduceMotion || slides.length <= 1) return
-    const id = window.setInterval(() => {
-      setSlideIndex((i) => (i + 1) % slides.length)
-    }, SLIDE_MS)
-    return () => window.clearInterval(id)
-  }, [slides, reduceMotion])
-
-  useLayoutEffect(() => {
-    if (!slides.length) {
-      setLayerSlots(null)
-      galleryInitRef.current = false
-      prevSlideIndexRef.current = 0
-      transitionGenRef.current += 1
-      return
-    }
-
-    if (!galleryInitRef.current) {
-      galleryInitRef.current = true
-      const s0 = slides[Math.min(slideIndex, slides.length - 1)] ?? slides[0]
-      setLayerSlots([s0, s0])
-      topLayerRef.current = 0
-      setTopLayer(0)
-      prevSlideIndexRef.current = slideIndex
-    }
-  }, [slides, slideIndex])
-
-  useEffect(() => {
-    if (!slides.length || !galleryInitRef.current || !layerSlots) return
-    if (slideIndex === prevSlideIndexRef.current) return
-
-    const inactive = 1 - topLayerRef.current
-    const nextSlide = slides[slideIndex]
-    if (!nextSlide?.url) return
-
-    prevSlideIndexRef.current = slideIndex
-    const gen = ++transitionGenRef.current
-
-    setLayerSlots((prev) => {
-      if (!prev) return prev
-      const n = [...prev]
-      n[inactive] = nextSlide
-      return n
-    })
-
-    preloadHeroImage(nextSlide.url)
-      .then(() => {
-        if (gen !== transitionGenRef.current) return
-        requestAnimationFrame(() => {
-          topLayerRef.current = inactive
-          setTopLayer(inactive)
-        })
-      })
-      .catch(() => {
-        if (gen !== transitionGenRef.current) return
-        if (process.env.NODE_ENV === 'development') {
-          console.warn('[Hero] No se pudo precargar la imagen:', nextSlide.url)
-        }
-        requestAnimationFrame(() => {
-          topLayerRef.current = inactive
-          setTopLayer(inactive)
-        })
-      })
-  }, [slideIndex, slides, layerSlots])
-
-  /** Pie de foto / CTA alineados con la capa visible (evita texto nuevo + foto vieja mientras precarga). */
-  const visualSlide = useMemo(() => {
-    if (!layerSlots) return slides[slideIndex] ?? slides[0]
-    return layerSlots[topLayer] ?? slides[slideIndex] ?? slides[0]
-  }, [layerSlots, topLayer, slides, slideIndex])
-
-  const current = slides[slideIndex] ?? slides[0]
-  const showFrameImage = Boolean(current?.url) && Boolean(layerSlots?.[0]?.url)
-
-  const productHref = useMemo(() => {
-    const cs = visualSlide?.slug && String(visualSlide.slug).trim()
-    if (cs) return `/guitars/${encodeURIComponent(cs)}`
-    return null
-  }, [visualSlide])
-
-  useEffect(() => {
-    if (!slides.length || slides.length <= 1) return
-    const nextIdx = (slideIndex + 1) % slides.length
-    const u = slides[nextIdx]?.url
-    if (u) preloadHeroImage(u).catch(() => {})
-  }, [slideIndex, slides])
-
-  useEffect(() => {
-    if (process.env.NODE_ENV !== 'development') return
-    console.log('[Hero] slide', slideIndex + 1, '/', slides.length, current?.url ?? '(sin url)')
-
-    if (!showFrameImage || !current?.url) return
-    const u = current.url
-    const absoluteForProbe =
-      u.startsWith('/') && typeof window !== 'undefined'
-        ? `${window.location.origin}${u}`
-        : u
-    const probe = new window.Image()
-    probe.onload = () => {}
-    probe.onerror = () =>
-      console.warn('[Hero] imagen no cargó (URL, bucket o red).')
-    probe.src = absoluteForProbe
-  }, [slideIndex, slides.length, current?.url, showFrameImage])
-
   const kicker =
     product?.category && String(product.category).trim()
       ? String(product.category).trim()
-      : 'Selección destacada'
+      : 'La Guarida'
 
-  const showLoading = !slidesReady && !usePhoto
+  const productHref = useMemo(() => {
+    const slug = product?.slug && String(product.slug).trim()
+    if (slug) return `/guitars/${encodeURIComponent(slug)}`
+    return null
+  }, [product?.slug])
 
   function scrollToCatalog(e) {
     if (typeof document === 'undefined') return
@@ -331,119 +39,96 @@ export default function HeroMarketing({ product = null }) {
   }
 
   return (
-    <div className="relative isolate min-h-[100dvh] w-full max-[768px]:min-h-0 overflow-hidden bg-[var(--dark-bg-page)]">
-      {/* Luz ambiente + grain: una capa + pseudo (ver .hero-showroom-ambient en globals.css) */}
-      <div className="hero-showroom-ambient" aria-hidden />
+    <div className="hero-home relative isolate min-h-[100dvh] w-full max-md:min-h-0 overflow-hidden bg-[#0a0a0a]">
+      {/* Imagen con next/image (más fiable que bg-[url] con el bundler) */}
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <Image
+          src={HERO_IMAGE}
+          alt="La Guarida — instrumentos"
+          fill
+          priority
+          fetchPriority="high"
+          quality={88}
+          sizes="100vw"
+          className="object-cover object-[center_42%] md:object-center"
+        />
+      </div>
 
+      {/* Desktop: viñeta hacia el centro-izquierda (copy centrado en altura) */}
       <div
-        className={`relative z-[1] flex min-h-[100dvh] w-full ${layoutShellClassName} flex-col gap-0 px-0 pt-0 max-[768px]:!grid max-[768px]:!grid-cols-1 max-[768px]:auto-rows-[min(82dvh,85vh)] max-[768px]:min-h-0 lg:flex lg:min-h-[100dvh] lg:flex-row lg:items-center lg:gap-16 lg:px-10 lg:pb-24 lg:pt-[calc(3.75rem+env(safe-area-inset-top,0px))] xl:px-12 min-[1920px]:lg:gap-24 min-[1920px]:xl:px-16 min-[2560px]:xl:px-20`}
-      >
-        {/* max-lg: full-bleed; lg+: marco 3/4 que crece en XL / 2K / 4K; xl+ object-contain = foto entera */}
-        <div className="order-1 flex min-h-0 min-w-0 max-[768px]:col-start-1 max-[768px]:row-start-1 max-[768px]:h-full max-[768px]:max-h-[85vh] max-lg:h-[100dvh] max-lg:w-full max-lg:flex-none max-lg:shrink-0 max-lg:self-stretch lg:order-2 lg:mx-0 lg:flex lg:h-auto lg:w-[44%] lg:max-w-xl lg:flex-shrink-0 lg:justify-end xl:max-w-2xl min-[1536px]:lg:max-w-3xl min-[1920px]:lg:max-w-4xl min-[2560px]:lg:max-w-5xl">
-          <figure className="hero-showroom-frame relative flex h-full min-h-0 w-full max-lg:flex-1 max-lg:flex-col lg:block lg:h-auto lg:w-full lg:max-w-none">
-            <div className="relative min-h-0 w-full flex-1 overflow-hidden bg-[#121212] shadow-[0_24px_60px_rgba(0,0,0,0.45),0_0_0_1px_rgba(255,255,255,0.06)_inset] max-[768px]:!h-full max-[768px]:!min-h-0 max-lg:h-[100dvh] max-lg:min-h-[100dvh] max-lg:rounded-none lg:aspect-[3/4] lg:h-auto lg:min-h-0 lg:w-full lg:flex-none lg:rounded-2xl">
-              {showFrameImage && layerSlots ? (
-                <>
-                  {layerSlots.map((slot, i) => (
-                    <div
-                      key={i}
-                      className={`hero-showroom-slide-layer ${
-                        i === topLayer
-                          ? 'hero-showroom-slide-layer--in'
-                          : 'hero-showroom-slide-layer--out'
-                      }`}
-                      aria-hidden={i !== topLayer}
-                    >
-                      <div className="relative h-full w-full" key={slot.url}>
-                        <Image
-                          src={slot.url}
-                          alt={slot.name || 'Instrumento del catálogo'}
-                          fill
-                          sizes={HERO_SHOWROOM_IMAGE_SIZES}
-                          quality={85}
-                          priority={slideIndex === 0 && i === topLayer}
-                          fetchPriority={slideIndex === 0 && i === topLayer ? 'high' : 'low'}
-                          decoding="async"
-                          className="object-cover object-center max-lg:object-[center_42%] xl:object-contain xl:object-center"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                  <div
-                    className="pointer-events-none absolute inset-0 z-[4] bg-gradient-to-t from-black/90 via-black/50 to-black/20 hidden max-[768px]:block"
-                    aria-hidden
-                  />
-                </>
-              ) : (
-                <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-[#252a35] via-[#1a1d24] to-[#14161c] px-6 text-center">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.35em] text-[var(--vintage-gold)]/55">
-                    La Guarida
-                  </span>
-                  {showLoading ? (
-                    <p className="text-sm leading-snug text-white/45">Cargando fotos del catálogo…</p>
-                  ) : (
-                    <p className="text-sm leading-snug text-white/45">
-                      Todavía no hay imágenes en el catálogo para mostrar acá.
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-            <div
-              className="pointer-events-none absolute -inset-px max-lg:rounded-none ring-1 ring-[var(--vintage-gold)]/25 lg:rounded-[1.05rem]"
-              aria-hidden
-            />
-          </figure>
-        </div>
+        className="pointer-events-none absolute inset-0 z-[1] hidden md:block"
+        style={{
+          background: `
+            radial-gradient(ellipse 90% 75% at 18% 48%, rgba(0,0,0,0.58) 0%, transparent 58%),
+            linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 45%, rgba(0,0,0,0.35) 100%)
+          `,
+        }}
+        aria-hidden
+      />
+      {/* Mobile: lectura al centro — viñeta suave + refuerzo abajo para el hint Catálogo */}
+      <div
+        className="pointer-events-none absolute inset-0 z-[1] md:hidden"
+        style={{
+          background:
+            'radial-gradient(ellipse 100% 70% at 50% 42%, rgba(0,0,0,0.45) 0%, transparent 55%), linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 45%), linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 35%)',
+        }}
+        aria-hidden
+      />
 
-        {/* Copy — ≤768px: overlay sobre la imagen; tablet/desktop: flujo existente */}
-        <div className="order-2 flex shrink-0 flex-col justify-center px-5 pb-16 pt-10 text-center max-[768px]:col-start-1 max-[768px]:row-start-1 max-[768px]:self-end max-[768px]:z-[25] max-[768px]:w-full max-[768px]:px-4 max-[768px]:pb-[max(1.25rem,env(safe-area-inset-bottom))] max-[768px]:!pt-2 max-[768px]:!pb-6 max-lg:w-full sm:px-8 lg:order-1 lg:row-auto lg:col-auto lg:self-auto lg:z-auto lg:flex-1 lg:max-w-xl lg:px-0 lg:pb-24 lg:pt-0 lg:text-left xl:max-w-2xl 2xl:max-w-3xl">
-          <div className="hero-showroom-content">
-            <p className="mb-4 inline-flex max-[768px]:hidden flex-col items-center gap-2 sm:mb-5 lg:items-start">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--vintage-gold)] sm:text-xs">
-                {kicker}
-              </span>
-              <span
-                className="hidden h-px w-12 bg-gradient-to-r from-[var(--vintage-gold)] to-transparent sm:block lg:mx-0"
-                aria-hidden
-              />
-            </p>
-            <h1
-              id="home-hero"
-              className="font-display text-[1.85rem] font-bold leading-[1.1] tracking-tight text-white sm:text-[2.25rem] md:text-[2.6rem] lg:text-[2.85rem] xl:text-5xl 2xl:text-6xl min-[1920px]:text-[3.5rem] min-[1920px]:leading-[1.06] min-[2560px]:text-[4rem]"
-            >
-              <span className="max-[768px]:hidden">{HEADLINE}</span>
-              <span className="hidden max-[768px]:inline text-[clamp(1.65rem,6.2vw,2.05rem)] leading-[1.12] tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.65)]">
-                {MOBILE_HEADLINE}
-              </span>
-            </h1>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-[var(--dark-muted)] sm:mt-5 sm:text-lg lg:mx-0 xl:max-w-2xl xl:text-xl 2xl:text-2xl 2xl:leading-snug max-[768px]:mx-auto">
-              <span className="max-[768px]:hidden">{SUBHEADLINE}</span>
-              <span className="hidden max-[768px]:inline text-sm leading-relaxed text-white/88 drop-shadow-[0_1px_8px_rgba(0,0,0,0.55)]">
-                {MOBILE_SUBHEADLINE}
-              </span>
-            </p>
-            <div className="mt-9 flex max-[768px]:mt-6 flex-col items-stretch gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">
+      <div className="relative z-[2] flex min-h-[100dvh] w-full flex-col justify-center px-5 pt-[max(0.75rem,env(safe-area-inset-top,0px))] pb-[max(6.5rem,env(safe-area-inset-bottom,0px))] md:min-h-[100dvh] md:px-[8%] md:pb-16 md:pt-8">
+        <div className="mx-auto w-full max-w-md text-center md:mx-0 md:max-w-[min(100%,28rem)] md:text-left sm:max-w-[min(100%,32rem)] lg:max-w-xl">
+          <p className="mb-4 flex flex-col items-center gap-3 md:items-start">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--vintage-gold)] sm:text-xs">
+              {kicker}
+            </span>
+            <span className="h-px w-10 max-md:mx-auto bg-[var(--vintage-gold)]/90 md:self-start" aria-hidden />
+          </p>
+          <h1
+            id="home-hero"
+            className="font-display text-[1.85rem] font-bold leading-[1.1] tracking-tight text-[var(--dark-text-primary)] drop-shadow-[0_2px_20px_rgba(0,0,0,0.5)] max-md:mx-auto max-md:max-w-[17ch] sm:text-[2.25rem] md:mx-0 md:max-w-none md:text-[2.6rem] lg:text-[2.85rem] xl:text-5xl 2xl:text-6xl min-[1920px]:text-[3.5rem] min-[1920px]:leading-[1.06] min-[2560px]:text-[4rem]"
+          >
+            <span className="hidden md:block">{HEADLINE}</span>
+            <span className="inline text-[clamp(1.45rem,5.5vw,1.85rem)] leading-[1.14] md:hidden">
+              {MOBILE_HEADLINE}
+            </span>
+          </h1>
+          <p className="mt-3 max-w-xl text-base leading-relaxed text-[var(--dark-muted)] [text-shadow:0_1px_14px_rgba(0,0,0,0.5)] max-md:mx-auto max-md:mt-3 max-md:max-w-[28ch] sm:mt-5 sm:text-lg md:mx-0 md:max-w-xl xl:max-w-2xl xl:text-xl 2xl:text-2xl 2xl:leading-snug">
+            <span className="hidden md:block">{SUBHEADLINE}</span>
+            <span className="inline text-[15px] leading-relaxed text-white/90 md:hidden">
+              {MOBILE_SUBHEADLINE}
+            </span>
+          </p>
+          {productHref ? (
+            <div className="mt-7 flex w-full max-w-md max-md:mx-auto sm:mt-9 md:mx-0 md:mt-9">
               <Link
-                href="/#seleccion-destacada"
-                onClick={scrollToCatalog}
-                className="no-custom-btn inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[var(--dark-cta-bg)] px-7 py-3 text-[15px] font-semibold text-[var(--dark-cta-text)] shadow-[0_1px_0_rgba(255,255,255,0.14)_inset] transition-[transform,box-shadow,background-color] duration-200 ease-out hover:bg-[var(--dark-cta-hover)] hover:shadow-[0_14px_32px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-page)]"
+                href={productHref}
+                className="no-custom-btn inline-flex min-h-[48px] w-full shrink-0 items-center justify-center rounded-3xl border border-white/18 bg-white/[0.06] px-7 py-3 text-[15px] font-semibold text-white transition-[transform,background-color,border-color] duration-200 hover:border-[var(--vintage-gold)]/40 hover:bg-white/[0.1] hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 max-md:max-w-sm max-md:self-center md:w-auto"
               >
-                <span className="max-[768px]:hidden">Ver catálogo</span>
-                <span className="hidden max-[768px]:inline">Ver guitarras disponibles</span>
+                Ver esta pieza
               </Link>
-              {productHref ? (
-                <Link
-                  href={productHref}
-                  className="no-custom-btn max-[768px]:hidden inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/14 bg-white/[0.03] px-7 py-3 text-[15px] font-semibold text-white/90 backdrop-blur-sm transition-[transform,background-color,border-color] duration-200 hover:border-[var(--vintage-gold)]/35 hover:bg-white/[0.06] hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-page)]"
-                >
-                  Ver esta pieza
-                </Link>
-              ) : null}
             </div>
-          </div>
+          ) : null}
         </div>
       </div>
+
+      {/* Indicador: grid para un mismo eje vertical entre texto y flecha */}
+      <Link
+        href="/#seleccion-destacada"
+        onClick={scrollToCatalog}
+        className="hero-scroll-hint no-custom-btn absolute left-1/2 z-[3] grid max-w-[calc(100vw-2rem)] -translate-x-1/2 grid-cols-1 justify-items-center gap-2 text-white transition-opacity duration-200 hover:opacity-95 active:opacity-85 max-md:bottom-[max(5.5rem,env(safe-area-inset-bottom,0px))] md:bottom-10"
+        aria-label="Ir al catálogo"
+      >
+        <span className="col-span-1 text-center text-[13px] font-medium uppercase leading-none tracking-[0.3em] [text-shadow:0_1px_14px_rgba(0,0,0,0.75),0_0_1px_rgba(0,0,0,0.8)] [padding-inline:0.15em] sm:text-[14px] md:text-[15px] md:tracking-[0.28em]">
+          Catálogo
+        </span>
+        <span className="hero-scroll-hint__chevron col-span-1 flex w-full justify-center text-white">
+          <CaretDown
+            className="relative left-[0.5px] h-6 w-6 opacity-90 [filter:drop-shadow(0_2px_10px_rgba(0,0,0,0.65))]"
+            weight="regular"
+            aria-hidden
+          />
+        </span>
+      </Link>
     </div>
   )
 }

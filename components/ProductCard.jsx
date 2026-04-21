@@ -157,7 +157,7 @@ const ProductCard = React.memo(function ProductCard({
               onClick={(e) => handleArrowClick(e, -1)}
               disabled={galleryIndex === 0}
               aria-label="Imagen anterior"
-              className={`no-custom-btn pointer-events-auto absolute left-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white shadow-md backdrop-blur-sm transition-[opacity,transform,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none md:backdrop-blur-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
+              className={`no-custom-btn pointer-events-auto absolute left-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white shadow-md backdrop-blur-sm max-[768px]:backdrop-blur-none transition-[opacity,transform,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none md:backdrop-blur-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
                 galleryIndex === 0
                   ? 'cursor-default opacity-35 md:opacity-0 md:group-hover/img:opacity-40'
                   : 'opacity-100 md:opacity-0 md:group-hover/img:opacity-100 hover:bg-black/60 md:hover:bg-transparent'
@@ -172,7 +172,7 @@ const ProductCard = React.memo(function ProductCard({
               onClick={(e) => handleArrowClick(e, 1)}
               disabled={galleryIndex === imageList.length - 1}
               aria-label="Siguiente imagen"
-              className={`no-custom-btn pointer-events-auto absolute right-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white shadow-md backdrop-blur-sm transition-[opacity,transform,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none md:backdrop-blur-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
+              className={`no-custom-btn pointer-events-auto absolute right-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white shadow-md backdrop-blur-sm max-[768px]:backdrop-blur-none transition-[opacity,transform,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none md:backdrop-blur-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
                 galleryIndex === imageList.length - 1
                   ? 'cursor-default opacity-35 md:opacity-0 md:group-hover/img:opacity-40'
                   : 'opacity-100 md:opacity-0 md:group-hover/img:opacity-100 hover:bg-black/60 md:hover:bg-transparent'
@@ -202,7 +202,7 @@ const ProductCard = React.memo(function ProductCard({
         type="button"
         onClick={handleFavoriteClick}
         aria-label={fav ? 'Quitar de tu selección' : 'Agregar a tu selección'}
-        className="no-custom-btn favorite-heart-btn absolute top-2 right-2 z-20 min-w-[44px] min-h-[44px] w-11 h-11 md:w-10 md:h-10 flex items-center justify-center border bg-black/55 border-white/25 text-white/90 hover:bg-black/70 hover:border-white/40 backdrop-blur-sm transition-all duration-200 touch-manipulation max-[768px]:rounded-md md:rounded-full"
+        className="no-custom-btn favorite-heart-btn absolute top-2 right-2 z-20 min-w-[44px] min-h-[44px] w-11 h-11 md:w-10 md:h-10 flex items-center justify-center border bg-black/55 border-white/25 text-white/90 hover:bg-black/70 hover:border-white/40 backdrop-blur-sm max-[768px]:backdrop-blur-none transition-all duration-200 touch-manipulation max-[768px]:rounded-md md:rounded-full"
       >
         <svg
           width="18"
@@ -219,14 +219,13 @@ const ProductCard = React.memo(function ProductCard({
           <path d="M20.8 7.6c0 5.8-8.8 11.4-8.8 11.4S3.2 13.4 3.2 7.6C3.2 5 5 3.2 7.6 3.2c1.7 0 3.3.9 4.4 2.3 1.1-1.4 2.7-2.3 4.4-2.3 2.6 0 4.4 1.8 4.4 4.4z" />
         </svg>
       </button>
-      <div className="absolute inset-0 border border-white/[0.06] rounded-[inherit] pointer-events-none" aria-hidden />
     </div>
   )
 
   return (
     <article
       aria-labelledby={headingId}
-      className={`card-interactive card-editorial card-mobile-no-motion product-card-mobile-catalog w-full min-w-0 max-w-full overflow-hidden rounded-none md:rounded-[22px] border border-[var(--dark-border)] max-[768px]:border-[var(--dark-border)] bg-[var(--dark-bg-card)] ${isHoveringImage ? 'card-hovering-image' : ''}`}
+      className={`card-interactive card-editorial card-mobile-no-motion product-card-mobile-catalog w-full min-w-0 max-w-full overflow-hidden rounded-2xl border-0 bg-[var(--dark-bg-card)] md:rounded-3xl ${isHoveringImage ? 'card-hovering-image' : ''}`}
     >
       <Link
         href={`/guitars/${p.slug || p.id}`}
@@ -236,7 +235,7 @@ const ProductCard = React.memo(function ProductCard({
       >
         {imageBlock}
 
-        <div className="flex min-h-0 flex-1 flex-col gap-0 border-t border-[var(--dark-border)] p-4 max-[768px]:gap-0 max-[768px]:px-3 max-[768px]:pb-3 max-[768px]:pt-3 md:gap-0 md:p-5">
+        <div className="flex min-h-0 flex-1 flex-col gap-0 p-4 max-[768px]:gap-0 max-[768px]:px-3 max-[768px]:pb-3 max-[768px]:pt-3 md:gap-0 md:p-5">
           <h3
             id={headingId}
             className="order-1 min-w-0 text-[1rem] font-semibold tracking-tight text-[var(--dark-text-primary)] md:text-[1.0625rem] max-[768px]:min-h-[1.35rem] max-[768px]:text-[15px] max-[768px]:font-bold max-[768px]:leading-tight max-[768px]:line-clamp-1 md:leading-snug md:line-clamp-2"
@@ -253,12 +252,12 @@ const ProductCard = React.memo(function ProductCard({
               </p>
               <div className="order-3 mt-2.5 flex flex-wrap gap-1.5 max-[768px]:mt-1 max-[768px]:hidden md:order-3">
                 {visibleSpecs.map((s, i) => (
-                  <span key={i} className="rounded border border-[var(--dark-border)] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[var(--dark-muted)] md:text-[11px]">
+                  <span key={i} className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[var(--dark-muted)] md:text-[11px]">
                     {s}
                   </span>
                 ))}
                 {hiddenSpecsCount > 0 && (
-                  <span className="rounded border border-[var(--dark-border)] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[var(--dark-muted)] md:text-[11px]">
+                  <span className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[var(--dark-muted)] md:text-[11px]">
                     +{hiddenSpecsCount}
                   </span>
                 )}

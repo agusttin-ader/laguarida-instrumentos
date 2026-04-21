@@ -1,6 +1,6 @@
 "use client"
 
-import React, { Fragment, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ScrollReveal from './ScrollReveal'
 
 /** Actualizar si el contador pasa a venir de API o env. */
@@ -18,12 +18,6 @@ const FRAME_STRIDE = 1
 function easeOutCubic(t) {
   return 1 - (1 - t) ** 3
 }
-
-/** #C9A227 — gradientes inline evitan fallos de Tailwind con `var(--x)/opacity`. */
-const GRADIENT_GOLD_H = 'linear-gradient(90deg, transparent 0%, rgba(201, 162, 39, 0.75) 50%, transparent 100%)'
-const GRADIENT_CREAM_H = 'linear-gradient(90deg, transparent 0%, rgba(247, 244, 238, 0.28) 50%, transparent 100%)'
-const GRADIENT_GOLD_V = 'linear-gradient(180deg, transparent 0%, rgba(201, 162, 39, 0.65) 45%, rgba(201, 162, 39, 0.65) 55%, transparent 100%)'
-const GRADIENT_GOLD_H_MOBILE = 'linear-gradient(90deg, transparent 0%, rgba(201, 162, 39, 0.6) 50%, transparent 100%)'
 
 const STATS_META = [
   {
@@ -55,45 +49,10 @@ function formatQuality(p) {
   return `${Math.round(p)}%`
 }
 
-function EditorialSectionRule() {
-  return (
-    <div className="flex w-full min-w-0 flex-col gap-2" aria-hidden>
-      <div
-        className="h-[2px] w-full min-w-0 shrink-0"
-        style={{ background: GRADIENT_GOLD_H }}
-      />
-      <div
-        className="h-px w-full min-w-0 shrink-0"
-        style={{ background: GRADIENT_CREAM_H }}
-      />
-    </div>
-  )
-}
-
-function GoldRuleVertical() {
-  return (
-    <div
-      className="hidden w-[2px] shrink-0 self-stretch md:mx-3 md:block md:min-h-[7.5rem] lg:mx-4 lg:min-h-[8rem]"
-      style={{ background: GRADIENT_GOLD_V }}
-      aria-hidden
-    />
-  )
-}
-
-function GoldRuleMobileBetween() {
-  return (
-    <div
-      className="my-4 h-[2px] w-full min-w-0 shrink-0 md:hidden"
-      style={{ background: GRADIENT_GOLD_H_MOBILE }}
-      aria-hidden
-    />
-  )
-}
-
 const StatCard = memo(function StatCard({ label, value, description, className = '' }) {
   return (
     <div
-      className={`flex flex-col gap-2 rounded-2xl border border-[color:rgba(201,162,39,0.2)] bg-[var(--dark-bg-card)] px-4 py-5 text-left shadow-[inset_0_1px_0_0_var(--vintage-gold-soft)] md:gap-2.5 md:rounded-xl md:px-5 md:py-6 ${className}`}
+      className={`flex flex-col gap-2 rounded-2xl border-0 bg-[var(--dark-bg-card)] px-4 py-5 text-left md:gap-2.5 md:rounded-xl md:px-5 md:py-6 ${className}`}
     >
       <p className="text-[0.65rem] font-medium uppercase tracking-[0.16em] text-[var(--vintage-gold)] md:text-xs md:tracking-[0.18em]">
         {label}
@@ -105,6 +64,16 @@ const StatCard = memo(function StatCard({ label, value, description, className =
     </div>
   )
 })
+
+/** Doble regla fina para enmarcar el bloque de confianza. */
+function TrustSectionRulesDouble() {
+  return (
+    <div className="flex w-full flex-col gap-1" aria-hidden>
+      <div className="h-px w-full shrink-0 bg-[#C9A227]/70" />
+      <div className="h-px w-full shrink-0 bg-[#C9A227]/40" />
+    </div>
+  )
+}
 
 /**
  * Bloque de confianza — mismo ScrollReveal que el resto del home; conteo al hacerse visible.
@@ -191,7 +160,7 @@ export default function HomeTrustStats() {
 
   return (
     <section
-      className="-mx-4 mt-6 mb-5 w-[calc(100%+2rem)] bg-[var(--dark-bg-page)] sm:-mx-5 sm:mt-8 sm:mb-7 sm:w-[calc(100%+2.5rem)] md:mx-0 md:mt-10 md:mb-10 md:w-full"
+      className="mx-0 mt-0 mb-2 w-full bg-[var(--dark-bg-page)] sm:mb-2 md:mt-1 md:mb-3"
       aria-label="Indicadores de trayectoria y confianza"
     >
       <ScrollReveal
@@ -200,46 +169,32 @@ export default function HomeTrustStats() {
         rootMargin="64px 0px -8% 0px"
         onVisible={onReveal}
       >
-        <EditorialSectionRule />
-
-        <div className="md:hidden">
-          <div className="flex flex-col gap-0 px-4 pb-3 pt-3">
-            {STATS_META.map((item, index) => (
-              <Fragment key={item.key}>
-                {index > 0 ? <GoldRuleMobileBetween /> : null}
-                <StatCard
-                  label={item.label}
-                  value={valueFor(item.key)}
-                  description={item.description}
-                  className="w-full"
-                />
-              </Fragment>
+        <div className="flex flex-col gap-2 px-0 pt-1 pb-3 md:mx-auto md:max-w-6xl md:gap-3 md:px-0 md:pt-2 md:pb-5 lg:px-0 lg:pt-2 lg:pb-5">
+          <TrustSectionRulesDouble />
+          <div className="flex flex-col gap-3 md:hidden">
+            {STATS_META.map((item) => (
+              <StatCard
+                key={item.key}
+                label={item.label}
+                value={valueFor(item.key)}
+                description={item.description}
+                className="w-full !gap-1 !py-3 md:!gap-1.5 md:!py-3.5 [&>p:nth-of-type(2)]:!min-h-[2.1rem] md:[&>p:nth-of-type(2)]:!min-h-[2.35rem]"
+              />
             ))}
           </div>
-        </div>
-
-        <div className="mx-auto hidden max-w-6xl md:block md:px-4 md:py-8 lg:px-0 lg:py-10">
-          <div className="flex min-w-0 flex-row items-stretch justify-center gap-0 lg:gap-1">
-            {STATS_META.map((item, index) => (
-              <Fragment key={item.key}>
-                {index > 0 ? (
-                  <>
-                    <GoldRuleMobileBetween />
-                    <GoldRuleVertical />
-                  </>
-                ) : null}
-                <StatCard
-                  label={item.label}
-                  value={valueFor(item.key)}
-                  description={item.description}
-                  className="flex-1"
-                />
-              </Fragment>
+          <div className="hidden min-w-0 md:flex md:flex-row md:items-stretch md:gap-4 lg:gap-5">
+            {STATS_META.map((item) => (
+              <StatCard
+                key={item.key}
+                label={item.label}
+                value={valueFor(item.key)}
+                description={item.description}
+                className="min-w-0 flex-1 !gap-1 !py-3 md:!gap-1.5 md:!py-3.5 [&>p:nth-of-type(2)]:!min-h-[2.1rem] md:[&>p:nth-of-type(2)]:!min-h-[2.35rem]"
+              />
             ))}
           </div>
+          <TrustSectionRulesDouble />
         </div>
-
-        <EditorialSectionRule />
       </ScrollReveal>
     </section>
   )

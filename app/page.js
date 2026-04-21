@@ -1,6 +1,5 @@
 import { unstable_noStore as noStore } from 'next/cache'
 import HomePageContent from '../components/HomePageContent'
-import { MobileHomeCatalogProvider } from '../components/MobileHomeCatalogContext'
 import { fetchHeroProduct } from '../lib/data/fetchHeroProduct'
 import { absoluteUrl } from '../lib/siteUrl'
 
@@ -17,9 +16,5 @@ export default async function Page() {
   noStore()
   const heroProduct = await fetchHeroProduct()
 
-  return (
-    <MobileHomeCatalogProvider>
-      <HomePageContent heroProduct={heroProduct} />
-    </MobileHomeCatalogProvider>
-  )
+  return <HomePageContent heroProduct={heroProduct} />
 }

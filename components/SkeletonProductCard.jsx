@@ -8,8 +8,8 @@ import React from "react";
 
 export default function SkeletonProductCard() {
   return (
-    <div className="w-full flex flex-col rounded-lg overflow-hidden bg-[var(--dark-bg-card)] border border-[var(--dark-border)]">
-      <div className="md:hidden px-4 pt-4 pb-4 bg-[var(--dark-bg-elevated)] border-b border-[var(--dark-border)] rounded-t-lg">
+    <div className="flex w-full flex-col overflow-hidden rounded-2xl border-0 bg-[var(--dark-bg-card)] md:rounded-3xl">
+      <div className="rounded-t-2xl bg-[var(--dark-bg-elevated)] px-4 pb-4 pt-4 md:hidden">
         <div className="flex items-start justify-between gap-2">
           <div className="h-5 bg-[var(--dark-surface-2)] rounded w-3/4 animate-pulse" />
           <div className="h-5 w-16 bg-[var(--dark-surface-2)] rounded-full animate-pulse shrink-0" />
@@ -21,7 +21,7 @@ export default function SkeletonProductCard() {
           <div className="h-11 w-28 bg-[var(--dark-surface-2)] rounded-xl animate-pulse" />
         </div>
       </div>
-      <div className="w-full bg-[var(--dark-surface-2)] animate-pulse aspect-[4/3] md:aspect-[5/4] rounded-b-lg md:rounded-none" />
+      <div className="aspect-[4/3] w-full animate-pulse rounded-b-2xl bg-[var(--dark-surface-2)] md:aspect-[5/4] md:rounded-none" />
     </div>
   );
 }

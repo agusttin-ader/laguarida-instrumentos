@@ -64,10 +64,12 @@ export default function FaqSection() {
   return (
     <section
       id="faq-section"
-      className="mt-6 sm:mt-10 md:mt-12"
+      className="mt-3 sm:mt-4 md:mt-5"
       aria-labelledby="faq-heading"
     >
-      <div className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 py-5 sm:py-10 md:py-12 lg:py-14 pb-6 sm:pb-10 md:pb-14 lg:pb-14`}>
+      <div
+        className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 pt-4 sm:pt-5 md:pt-7 lg:pt-8 pb-4 sm:pb-6 md:pb-7 lg:pb-8`}
+      >
         <ScrollReveal threshold={0.06} rootMargin="0px 0px -8% 0px">
           <p className="section-kicker-minimal section-underline-ocre text-gray-700 dark:text-white/70 mb-2 sm:mb-3">Preguntas frecuentes</p>
           <h2 id="faq-heading" className="section-title-minimal text-[var(--dark-text-primary)] text-2xl sm:text-3xl md:text-[2.5rem] mb-4 sm:mb-6 md:mb-8">
@@ -117,7 +119,7 @@ export default function FaqSection() {
             })}
           </div>
 
-          <aside className="lg:col-span-1 order-2 bg-[var(--dark-bg-elevated)] p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl border border-[var(--dark-border)] shadow-[0_10px_26px_rgba(0,0,0,0.2)] lg:sticky lg:top-6 mt-2 sm:mt-0 pt-5 sm:pt-4 border-t border-[var(--dark-border)] sm:border-t-0 sm:pt-6">
+          <aside className="order-2 mt-4 rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] p-4 shadow-[0_10px_26px_rgba(0,0,0,0.2)] sm:mt-0 sm:rounded-2xl sm:p-5 md:p-6 lg:sticky lg:top-6 lg:col-span-1">
             <h3 className="section-title-minimal text-[var(--dark-text-primary)] text-[1.05rem] sm:text-[1.2rem] mb-3 md:mb-4">
               Contacto rápido
             </h3>
@@ -171,7 +173,7 @@ export default function FaqSection() {
             </nav>
           </aside>
           </div>
-          <div className="mt-4 sm:mt-8 md:mt-10 flex justify-center">
+          <div className="mt-4 sm:mt-5 md:mt-6 flex justify-center">
             <Link
               href="/"
               onClick={handleVolverAlHome}

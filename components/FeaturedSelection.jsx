@@ -1,35 +1,15 @@
 "use client"
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ProductGrid from './ProductGrid'
-import MobileCatalogShowcaseSlider from './MobileCatalogShowcaseSlider'
 import ScrollReveal from './ScrollReveal'
-import { useMobileHomeCatalog } from './MobileHomeCatalogContext'
 import { useProducts } from '../hooks/useProducts'
-
-function filterByQuery(items, q) {
-  const t = q && String(q).trim()
-  if (!t) return items
-  const qLower = t.toLowerCase()
-  return items.filter((item) => {
-    const hay = (
-      String(item.name || '') +
-      ' ' +
-      String(item.model || '') +
-      ' ' +
-      String(item.description || '')
-    ).toLowerCase()
-    return hay.includes(qLower)
-  })
-}
 
 export default function FeaturedSelection() {
   const [q, setQ] = useState('')
   const [isFiltering, setIsFiltering] = useState(false)
-  const { effectiveView, isMobile, setView } = useMobileHomeCatalog()
   const { products, loading: productsLoading } = useProducts({ shuffleCatalog: true })
   const featured = Array.isArray(products) ? products.filter((p) => p.low_cost !== true) : []
-  const filteredFeatured = useMemo(() => filterByQuery(featured, q), [featured, q])
 
   useEffect(() => {
     if (!q) {
@@ -41,22 +21,10 @@ export default function FeaturedSelection() {
     return () => window.clearTimeout(t)
   }, [q])
 
-  const showMobileExpand =
-    isMobile &&
-    effectiveView === 'landing' &&
-    !productsLoading &&
-    filteredFeatured.length > 0
-  const hideGridOnMobile =
-    isMobile &&
-    effectiveView === 'landing' &&
-    !productsLoading &&
-    filteredFeatured.length > 0
-  const showMobileSlider = isMobile && effectiveView === 'landing'
-
   return (
     <>
-      <ScrollReveal className="mb-3 w-full min-w-0 sm:mb-5 md:mb-6" threshold={0.1} rootMargin="0px 0px -6% 0px">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 sm:gap-4 md:gap-6 px-4 md:px-0">
+      <ScrollReveal className="mb-3 w-full min-w-0 sm:mb-4 md:mb-5" threshold={0.1} rootMargin="0px 0px -6% 0px">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4 md:gap-6">
           <div className="min-w-0">
             <h2
               id="seleccion-heading"
@@ -64,11 +32,11 @@ export default function FeaturedSelection() {
             >
               Selección destacada
             </h2>
-            <p className="mt-2 text-[12px] sm:text-[13px] text-[var(--dark-muted)] max-[768px]:hidden">
+            <p className="mt-2 text-[12px] sm:text-[13px] text-[var(--dark-muted)] hidden md:block">
               Encontrá instrumentos seleccionados por calidad y estado.
             </p>
           </div>
-          <div className="w-full sm:w-auto min-w-0 max-[768px]:order-3 min-[769px]:order-none">
+          <div className="order-3 w-full min-w-0 sm:order-none sm:w-auto">
             <div
               className={`search-pill w-full sm:max-w-sm ${isFiltering ? 'search-pill-filtering' : ''}`}
               role="search"
@@ -102,25 +70,7 @@ export default function FeaturedSelection() {
         </div>
       </ScrollReveal>
 
-      {showMobileSlider ? (
-        <div className="mb-4 px-0 md:hidden">
-          <MobileCatalogShowcaseSlider items={filteredFeatured} loading={productsLoading} />
-        </div>
-      ) : null}
-
-      {showMobileExpand ? (
-        <div className="mb-4 px-4 md:hidden">
-          <button
-            type="button"
-            className="no-custom-btn w-full min-h-[48px] rounded-xl border border-white/14 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white/90 transition-colors hover:border-[var(--vintage-gold)]/35 hover:bg-white/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-page)]"
-            onClick={() => setView('featured')}
-          >
-            Ver catálogo completo
-          </button>
-        </div>
-      ) : null}
-
-      <article className={`${isFiltering ? 'filter-grid-updating' : ''} ${hideGridOnMobile ? 'max-[768px]:hidden' : ''}`}>
+      <article className={isFiltering ? 'filter-grid-updating' : ''}>
         <ProductGrid
           filters={{ q }}
           items={featured}

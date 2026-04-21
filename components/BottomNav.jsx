@@ -87,7 +87,7 @@ export default function BottomNav() {
   }
 
   return (
-    <nav className="bottom-nav-dock md:hidden fixed bottom-0 left-0 right-0 z-[var(--z-bottom-nav)] border-t border-white/15 bg-[var(--dark-bg-surface)]/65 backdrop-blur-xl min-h-[68px] flex items-stretch px-1 pt-1 pb-[env(safe-area-inset-bottom)]" aria-label="Navegación inferior">
+    <nav className="bottom-nav-dock md:hidden fixed bottom-0 left-0 right-0 z-[var(--z-bottom-nav)] border-t border-white/15 bg-[var(--dark-bg-surface)]/92 min-h-[68px] flex items-stretch px-1 pt-1 pb-[env(safe-area-inset-bottom)]" aria-label="Navegación inferior">
       <Link href="/" onClick={handleHomeNav} aria-label="Inicio" className={`${itemClass} ${isHome ? activeClass : mutedClass}`}>
         <IconHome className="flex-shrink-0" />
         <span className="mt-1 whitespace-nowrap">Inicio</span>

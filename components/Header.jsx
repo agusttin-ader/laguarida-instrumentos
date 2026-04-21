@@ -12,7 +12,7 @@ const SCROLL_THRESHOLD = 72
 
 function HamburgerIcon({ className }) {
   return (
-    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg className={className} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M3 6h18M3 12h18M3 18h18" />
     </svg>
   )
@@ -79,38 +79,20 @@ export default function Header() {
 
   const mobileHeader = (
     <>
-      {/* Fuerza header transparente en home móvil para que la imagen del hero ocupe todo el fondo */}
-      {isHome && !scrolled && (
-        <style dangerouslySetInnerHTML={{
-          __html: `@media (max-width:768px){#header-home-mobile-overlay.hero-overlay-header,.hero-overlay-header{background-color:transparent!important;background-image:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-bottom:none!important;box-shadow:none!important}}`
-        }} />
-      )}
       <header
         id={isHome ? 'header-home-mobile-overlay' : undefined}
         aria-label="Cabecera"
-        className={`header-mobile md:hidden flex items-center justify-between min-h-[52px] sm:min-h-[56px] py-2.5 sm:py-2.5 px-2 sm:px-3 left-0 right-0 top-0 relative ${isHome ? 'header-home-mobile hero-overlay-header' : ''} ${scrolled ? 'header-scrolled' : ''}`}
-        style={
-          isHome && !scrolled
-            ? { backgroundColor: 'transparent', borderBottom: 'none', backdropFilter: 'none', WebkitBackdropFilter: 'none' }
-            : undefined
-        }
+        className={`header-mobile md:hidden flex items-center justify-between min-h-[52px] sm:min-h-[56px] py-2.5 sm:py-2.5 px-2 sm:px-3 left-0 right-0 top-0 relative ${isHome ? 'header-home-mobile' : ''} ${scrolled ? 'header-scrolled' : ''}`}
       >
-        {/* Franja oscura transparente de punta a punta (solo en home sin scroll) */}
-        {isHome && !scrolled && (
-          <div
-            className="pointer-events-none absolute inset-0 w-full bg-gradient-to-b from-black/75 via-black/60 to-black/45"
-            aria-hidden
-          />
-        )}
-        <div className="relative z-20 w-11 flex-shrink-0">
+        <div className="relative z-20 w-12 flex-shrink-0">
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
             aria-label="Abrir menú"
-            className="flex items-center justify-center w-11 h-11 -m-0.5 rounded-lg border-0 text-white/95 hover:text-white bg-black/40 hover:bg-black/50 backdrop-blur-sm no-custom-btn touch-manipulation transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="flex items-center justify-center w-12 h-12 -m-0.5 rounded-lg border-0 text-white/95 hover:text-white bg-black/50 hover:bg-black/60 no-custom-btn touch-manipulation transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{ WebkitTapHighlightColor: 'transparent', tapHighlightColor: 'transparent' }}
           >
-            <HamburgerIcon className="w-6 h-6" />
+            <HamburgerIcon className="w-7 h-7" />
           </button>
         </div>
         <div className="flex-1 flex items-center justify-center min-w-0 px-1.5">
@@ -120,7 +102,7 @@ export default function Header() {
             className="z-10 inline-flex justify-center items-center min-w-0 max-w-full overflow-visible pointer-events-auto leading-none"
             onClick={isHome ? (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) } : undefined}
           >
-            <span className="relative header-logo-wrapper inline-flex max-w-[min(280px,calc(100vw-7rem))] items-center justify-center leading-none">
+            <span className="relative header-logo-wrapper inline-flex max-w-[min(280px,calc(100vw-8.5rem))] items-center justify-center leading-none">
               <Image
                 src={LOGO_SRC}
                 alt="La Guarida logo"
@@ -135,7 +117,7 @@ export default function Header() {
             </span>
           </a>
         </div>
-        <div className="relative z-20 w-11 flex-shrink-0" aria-hidden />
+        <div className="relative z-20 w-12 flex-shrink-0" aria-hidden />
       </header>
     </>
   )
