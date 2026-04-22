@@ -6,7 +6,7 @@ import { CaretDown } from 'phosphor-react'
 import { useMemo, useState } from 'react'
 
 /** Principal + respaldo (misma ruta que en `public/`; el PNG por si falla el JPG en deploy o CDN). */
-const HERO_PRIMARY = '/images/hero-2.jpg'
+const HERO_PRIMARY = '/images/hero5.jpg'
 const HERO_FALLBACK = '/images/hero.PNG'
 
 /** Copy principal del hero — tono poético / refugio. */
@@ -16,7 +16,7 @@ const MOBILE_HEADLINE = 'Tu refugio del buen sonido'
 const MOBILE_SUBHEADLINE = 'Instrumentos con historia y trato cercano.'
 
 /**
- * Hero con `hero-2.jpg` (cover). Indicador inferior tipo alopatagonia.vercel.app (texto + flecha, sin caja).
+ * Hero con `hero5.jpg` (cover). Indicador inferior tipo alopatagonia.vercel.app (texto + flecha, sin caja).
  * @param {{ product?: { name?: string, category?: string, slug?: string } | null }} props
  */
 export default function HeroMarketing({ product = null }) {
@@ -63,7 +63,7 @@ export default function HeroMarketing({ product = null }) {
           fill
           priority
           fetchPriority="high"
-          quality={88}
+          quality={70}
           sizes="100vw"
           unoptimized
           className="object-cover object-[center_42%] md:object-center"

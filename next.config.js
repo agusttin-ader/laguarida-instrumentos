@@ -31,7 +31,7 @@ const nextConfig = {
   },
   images: {
     // Allowed quality values used across the app (avoid Next.js warnings in dev/prod).
-    qualities: [100, 95, 90, 88, 86, 85, 82, 80, 78, 76],
+    qualities: [100, 95, 92, 90, 88, 86, 85, 82, 80, 78, 76, 75, 72, 70, 68, 65, 62, 60],
     // Prefer modern formats when available to reduce transfer size
     formats: ['image/avif', 'image/webp'],
     // Host explícito desde env (build/deploy) + comodín para cualquier proyecto *.supabase.co

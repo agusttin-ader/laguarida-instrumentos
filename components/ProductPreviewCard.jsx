@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import normalizeProduct from '../lib/utils/normalizeProduct'
@@ -14,6 +15,7 @@ export default function ProductPreviewCard({ item, priority = false }) {
   const src = main || (typeof p.image_url === 'string' ? p.image_url.trim() : '')
   const href = p.slug ? `/guitars/${encodeURIComponent(p.slug)}` : '#'
   const title = p.name || 'Instrumento'
+  const [imgLoaded, setImgLoaded] = useState(false)
 
   return (
     <article className="home-preview-card flex min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border-0 bg-[var(--dark-bg-card)] shadow-[0_8px_24px_rgba(0,0,0,0.25)] md:rounded-3xl">
@@ -24,11 +26,13 @@ export default function ProductPreviewCard({ item, priority = false }) {
             alt={title}
             fill
             sizes={PREVIEW_IMAGE_SIZES}
-            quality={90}
-            unoptimized
+            quality={72}
+            priority={priority}
             loading={priority ? 'eager' : 'lazy'}
             fetchPriority={priority ? 'high' : 'low'}
-            className="object-cover object-center"
+            decoding="async"
+            onLoad={() => setImgLoaded(true)}
+            className={`img-reveal object-cover object-center transform-gpu [backface-visibility:hidden] ${imgLoaded ? 'img-loaded' : ''}`}
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-[var(--dark-surface-2)]">

@@ -111,7 +111,7 @@ export default function Header() {
                 priority
                 className="logo-dark h-[34px] w-auto max-h-[36px] sm:h-[36px] sm:max-h-[38px] object-contain block"
                 style={{ objectFit: 'contain' }}
-                quality={82}
+                quality={68}
                 sizes="(max-width: 768px) 260px, 160px"
               />
             </span>
@@ -158,7 +158,7 @@ export default function Header() {
                 priority
                 style={{ objectFit: 'contain', display: 'block', height: 'auto' }}
                 className="logo-dark h-[18px] md:h-[20px] w-auto max-w-full object-contain object-left block"
-                quality={82}
+                quality={68}
                 sizes="(min-width: 768px) 220px, 120px"
               />
             </div>

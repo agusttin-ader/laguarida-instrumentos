@@ -213,7 +213,7 @@ export default function HeroMonolith() {
                 src={slide.src}
                 alt={slide.name || 'Producto destacado'}
                 fill
-                quality={82}
+                quality={65}
                 sizes="100vw"
                   className={`object-cover object-[center_22%] hero-slide-image ${index === activeSlide ? 'hero-slide-image-active hero-slide-image-mobile-active hero-mobile-image-polish-active' : 'hero-mobile-image-polish'}`}
                 priority={index === 0}
@@ -283,7 +283,7 @@ export default function HeroMonolith() {
                       src={slide.src}
                       alt={slide.name || 'Producto destacado'}
                       fill
-                      quality={88}
+                      quality={70}
                       sizes="(min-width:1024px) 50vw, 100vw"
                       className={`object-cover object-center hero-slide-image ${index === activeSlide ? 'hero-slide-image-active' : ''}`}
                       priority={index === 0}

@@ -3,17 +3,11 @@ import React, { useState } from "react";
 import NextImage from "next/image";
 import { useEffect } from "react";
 
-/** Supabase Storage / render: el optimizador de Next a veces falla; URL directa = misma calidad que el archivo. */
-function isSupabaseStorageUrl(src) {
-  if (typeof src !== "string") return false;
-  return /supabase\.co\/storage\/v1\//i.test(src.trim());
-}
-
 // ImageWithSkeleton:
 // - Wraps Next/Image to provide a lightweight skeleton while the image is loading.
 // - Uses `onLoad` to detect when the image has finished loading (onLoadingComplete is deprecated).
 // - Keeps `alt` for accessibility (screen readers) and avoids layout shift via width/height or `fill` usage.
-export default function ImageWithSkeleton({ src, alt, width, height, sizes, quality = 100, priority = false, loading = 'lazy', className = "", style = {}, fill = false, fit, imgClassName = '', imgStyle = {}, onImageLoad, disableClientPreview = false, unoptimized }) {
+export default function ImageWithSkeleton({ src, alt, width, height, sizes, quality = 72, priority = false, loading = 'lazy', className = "", style = {}, fill = false, fit, imgClassName = '', imgStyle = {}, onImageLoad, disableClientPreview = false, unoptimized }) {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
   const [blurDataURL, setBlurDataURL] = useState(null)
@@ -61,8 +55,13 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
   // compute an aspect-ratio placeholder when width/height are provided
   const aspectRatio = (width && height) ? `${width} / ${height}` : undefined
 
-  const mergedImgStyle = { ...imgStyle }
-  const useUnoptimized = Boolean(unoptimized) || isSupabaseStorageUrl(src)
+  const mergedImgStyle = {
+    backfaceVisibility: 'hidden',
+    WebkitBackfaceVisibility: 'hidden',
+    transform: 'translateZ(0)',
+    ...imgStyle
+  }
+  const useUnoptimized = Boolean(unoptimized)
 
   return (
     <div
@@ -89,11 +88,14 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
           sizes={sizes}
           quality={quality}
           unoptimized={useUnoptimized}
+          placeholder={blurDataURL ? 'blur' : 'empty'}
+          blurDataURL={blurDataURL || undefined}
           loading={priority ? 'eager' : loading}
           fetchPriority={priority ? 'high' : undefined}
           priority={priority}
           fill={fill}
-          className={`${(fit === 'contain' || (style && style.objectFit === 'contain')) ? 'object-contain' : 'object-cover'} ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${imgClassName}`}
+          decoding="async"
+          className={`${(fit === 'contain' || (style && style.objectFit === 'contain')) ? 'object-contain' : 'object-cover'} ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-[300ms] ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none ${imgClassName}`}
           onLoad={(e) => {
             setLoaded(true);
             try {

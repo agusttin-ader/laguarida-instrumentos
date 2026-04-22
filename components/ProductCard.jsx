@@ -120,7 +120,7 @@ const ProductCard = React.memo(function ProductCard({
           {imageList.map((src, idx) => (
             <div
               key={idx}
-              className="absolute inset-0 transition-opacity duration-500 ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none"
+              className="absolute inset-0 transition-opacity duration-[360ms] ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none"
               style={{
                 opacity: idx === galleryIndex ? 1 : 0,
                 pointerEvents: idx === galleryIndex ? 'auto' : 'none'
@@ -131,14 +131,14 @@ const ProductCard = React.memo(function ProductCard({
                   alt={idx === 0 ? (titleText || 'Imagen del producto') : `Imagen ${idx + 1} de ${titleText || 'producto'}`}
                   fill
                   sizes={CARD_IMAGE_SIZES}
-                  quality={90}
-                  unoptimized
+                  quality={72}
+                  priority={Boolean(priority && idx === 0)}
                   loading={priority && idx === 0 ? 'eager' : 'lazy'}
                   fetchPriority={priority && idx === 0 ? 'high' : 'low'}
                   decoding="async"
                   onLoad={() => setLoadedIndices((prev) => new Set(prev).add(idx))}
                   onError={() => {}}
-                  className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} max-[768px]:object-contain max-[768px]:object-center transition-opacity duration-300 ease-out md:transition-transform md:duration-500 md:ease-[cubic-bezier(0.33,1,0.32,1)] md:group-hover/img:scale-[1.02] ${objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover'}`}
+                  className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} max-[768px]:object-contain max-[768px]:object-center transform-gpu [backface-visibility:hidden] transition-opacity duration-[300ms] ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none ${objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover'}`}
                   style={{ objectPosition: 'center' }}
                 />
             </div>

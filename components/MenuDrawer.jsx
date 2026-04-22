@@ -80,7 +80,7 @@ export default function MenuDrawer({ open, setOpen }) {
               height={450}
               className="h-8 w-auto max-h-9 object-contain object-left"
               style={{ objectFit: 'contain' }}
-              quality={82}
+              quality={68}
               sizes="200px"
               priority
             />

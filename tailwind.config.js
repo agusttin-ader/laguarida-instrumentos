@@ -8,7 +8,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        neutralbg: '#F7F7F8'
+        neutralbg: '#F7F7F8',
+        brand: {
+          cream: '#FFF0DA',
+          red: '#ED0003',
+          ink: '#120703',
+          brown: '#6C3B2A',
+          gold: '#FFC308'
+        }
       },
       fontFamily: {
         sans: ['var(--font-geist-sans)', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto'],
