@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -10,8 +10,6 @@ import {
   SignOut,
   X,
 } from 'phosphor-react'
-
-const SIDEBAR_W = 'w-[260px]'
 
 function navActive(pathname, matcher) {
   if (typeof matcher === 'function') return matcher(pathname)
@@ -58,30 +56,54 @@ export default function AdminDeskShell({
   const pathname = usePathname() || ''
   const [drawerOpen, setDrawerOpen] = useState(false)
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mq = window.matchMedia('(max-width: 767px)')
+    const syncBodyScroll = () => {
+      if (mq.matches && drawerOpen) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = ''
+      }
+    }
+    syncBodyScroll()
+    mq.addEventListener('change', syncBodyScroll)
+    return () => {
+      mq.removeEventListener('change', syncBodyScroll)
+      document.body.style.overflow = ''
+    }
+  }, [drawerOpen])
+
+  useEffect(() => {
+    if (!drawerOpen) return
+    const onKey = (e) => {
+      if (e.key === 'Escape') setDrawerOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [drawerOpen])
+
   const displayName = user?.email
     ? String(user.email).split('@')[0].replace(/[._-]/g, ' ').trim()
     : ''
 
   return (
     <div className="admin-desk-root flex min-h-screen w-full bg-[#0f1219] text-slate-100">
-      {drawerOpen ? (
-        /* div (no <button>): estilos globales de button usan border-radius:999px y deforman un overlay a pantalla completa */
-        <div
-          className="fixed inset-0 z-[60] cursor-default bg-black/55 md:hidden"
-          onClick={() => setDrawerOpen(false)}
-          role="presentation"
-          aria-hidden
-        />
-      ) : null}
-
       <aside
-        className={`admin-desk-sidebar fixed md:sticky top-0 z-[70] flex h-screen shrink-0 flex-col border-r border-white/10 bg-[#12151f] text-white transition-transform duration-200 ease-out md:translate-x-0 ${SIDEBAR_W} ${
-          drawerOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-        }`}
+        className={`admin-desk-sidebar flex flex-col bg-[#12151f] text-white transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] max-md:transform-gpu
+          fixed inset-0 z-[70] h-dvh w-full max-w-none overflow-hidden border-0
+          md:sticky md:inset-auto md:top-0 md:z-auto md:h-screen md:w-[260px] md:max-w-[260px] md:shrink-0 md:overflow-visible md:border-r md:border-white/10 md:duration-0
+          ${drawerOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
-        <div className="flex h-16 items-center gap-2 border-b border-white/10 px-5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg shadow-black/40">
-            <span className="text-[11px] font-black tracking-tight text-slate-900">LG</span>
+        <div className="flex min-h-16 items-center gap-2 border-b border-white/10 px-5 pt-[max(0px,env(safe-area-inset-top,0px))] md:pt-0">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl">
+            <img
+              src="/images/logo/og-pick-icon.PNG"
+              alt=""
+              width={36}
+              height={36}
+              className="h-full w-full object-contain"
+            />
           </div>
           <div className="min-w-0 leading-tight">
             <p className="truncate text-sm font-bold tracking-tight text-white">La Guarida</p>
@@ -91,7 +113,7 @@ export default function AdminDeskShell({
           </div>
           <button
             type="button"
-            className="ml-auto flex h-10 w-10 items-center justify-center rounded-xl text-slate-300 hover:bg-white/10 md:hidden no-custom-btn"
+            className="ml-auto flex h-10 w-10 items-center justify-center rounded-xl text-slate-300 transition-transform duration-150 hover:bg-white/10 active:scale-[0.96] md:hidden no-custom-btn"
             onClick={() => setDrawerOpen(false)}
             aria-label="Cerrar"
           >
@@ -99,7 +121,7 @@ export default function AdminDeskShell({
           </button>
         </div>
 
-        <nav className="flex min-h-0 flex-1 flex-col overflow-y-auto px-3 py-5">
+        <nav className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-y-contain px-3 py-5">
           <div className="min-h-0 flex-1">
             <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
               Productos
@@ -112,7 +134,7 @@ export default function AdminDeskShell({
                     <Link
                       href={href}
                       onClick={() => setDrawerOpen(false)}
-                      className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors no-custom-btn ${
+                      className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors duration-200 ease-out no-custom-btn ${
                         active
                           ? 'bg-white/[0.14] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]'
                           : 'text-slate-300 hover:bg-white/[0.08] hover:text-white'
@@ -136,7 +158,7 @@ export default function AdminDeskShell({
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setDrawerOpen(false)}
-              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-white/[0.08] hover:text-white no-custom-btn"
+              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-300 transition-colors duration-200 ease-out hover:bg-white/[0.08] hover:text-white no-custom-btn"
             >
               <Storefront size={22} weight="regular" className="text-emerald-400" />
               Ver tienda
@@ -144,14 +166,16 @@ export default function AdminDeskShell({
           </div>
         </nav>
 
-        <div className="border-t border-white/10 p-3">
+        <div
+          className="border-t border-white/10 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] md:pb-3"
+        >
           <button
             type="button"
             onClick={() => {
               setDrawerOpen(false)
               onLogout()
             }}
-            className="admin-desk-btn-danger flex w-full items-center justify-center gap-2 px-3 py-3 text-sm font-semibold no-custom-btn"
+            className="admin-desk-btn-danger-on-hover group flex w-full items-center justify-center gap-2 px-3 py-3 text-sm font-semibold no-custom-btn transition-[background-color,border-color,box-shadow,color] duration-150"
           >
             <SignOut size={20} weight="bold" className="shrink-0" />
             Cerrar sesión
@@ -166,7 +190,7 @@ export default function AdminDeskShell({
         <header className="admin-desk-top sticky top-0 z-30 flex flex-wrap items-center gap-3 border-b border-white/10 bg-[#161b26] px-4 py-3 shadow-[0_4px_24px_rgba(0,0,0,0.35)] sm:px-6 md:px-8">
           <button
             type="button"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/12 bg-white/[0.06] text-slate-200 shadow-sm hover:bg-white/10 md:hidden no-custom-btn"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/12 bg-white/[0.06] text-slate-200 shadow-sm transition-transform duration-150 hover:bg-white/10 active:scale-[0.96] md:hidden no-custom-btn"
             onClick={() => setDrawerOpen(true)}
             aria-label="Abrir menú"
           >

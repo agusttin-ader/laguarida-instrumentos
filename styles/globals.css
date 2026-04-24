@@ -2613,6 +2613,20 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   --admin-desk-muted: #cbd5e1;
 }
 
+.admin-desk-sidebar nav {
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-desk-sidebar {
+    transition-duration: 0.01ms !important;
+  }
+
+  .admin-desk-card {
+    transition: none;
+  }
+}
+
 .admin-desk-card {
   border-radius: 18px;
   background: var(--admin-desk-surface);
@@ -2699,6 +2713,26 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   background: #f87171;
 }
 
+/* Misma intención que danger, pero rojo solo al hover (p. ej. cerrar sesión en sidebar). */
+.admin-desk-btn-danger-on-hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+}
+
+.admin-desk-btn-danger-on-hover:hover {
+  background: #ef4444;
+  color: #fff;
+  border-color: #fca5a5;
+  box-shadow: 0 2px 16px rgba(239, 68, 68, 0.35);
+}
+
+.admin-desk-btn-danger-on-hover:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.35);
+}
+
 .admin-desk-btn-ghost {
   background: transparent;
   color: #e2e8f0;
@@ -2712,6 +2746,7 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 .admin-desk-btn-primary:active,
 .admin-desk-btn-secondary:active,
 .admin-desk-btn-danger:active,
+.admin-desk-btn-danger-on-hover:active,
 .admin-desk-btn-ghost:active {
   opacity: 0.94;
 }

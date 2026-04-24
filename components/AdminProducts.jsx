@@ -447,7 +447,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
                 aria-label="Buscar producto por nombre"
                 value={adminQ}
                 onChange={(e) => setAdminQ(e.target.value)}
-                placeholder="Nombre o parte del slug…"
+                placeholder="Nombre o parte del nombre…"
                 className="admin-desk-input rounded-xl py-3 pr-3 text-[15px] sm:text-sm"
                 style={{ paddingLeft: '2.65rem' }}
               />
