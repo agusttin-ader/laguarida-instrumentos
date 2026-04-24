@@ -1,0 +1,37 @@
+"use client"
+
+import React from 'react'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import { CaretLeft } from 'phosphor-react'
+import AdminProductForm from '../../../../../components/admin/AdminProductForm'
+
+export default function AdminProductoEditarPage() {
+  const params = useParams()
+  const id = params?.id != null ? String(params.id) : ''
+
+  return (
+    <div className="mx-auto w-full max-w-5xl animate-page-in space-y-5 md:space-y-6">
+      <div className="flex flex-col gap-3 px-0.5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <Link
+            href="/admin/productos/catalogo"
+            className="no-custom-btn mb-2 inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 transition-colors hover:text-indigo-300"
+          >
+            <CaretLeft size={14} weight="bold" aria-hidden />
+            Volver a productos
+          </Link>
+          <h1 className="text-xl font-semibold tracking-tight text-slate-50 sm:text-2xl">Editar producto</h1>
+          <p className="mt-1 max-w-xl text-sm text-slate-300">
+            Los cambios se publican al guardar. Volvé al listado cuando quieras elegir otro producto.
+          </p>
+        </div>
+      </div>
+      {id ? <AdminProductForm mode="edit" editingId={id} /> : (
+        <div className="rounded-2xl border border-white/10 bg-[#1a1d26]/90 p-6 text-sm text-slate-400">
+          Identificador de producto no válido.
+        </div>
+      )}
+    </div>
+  )
+}

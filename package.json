@@ -10,7 +10,8 @@
     "lint:strict": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings 0",
     "verify": "npm run lint:strict && npm run build",
     "test:e2e": "playwright test",
-    "test:e2e:install": "playwright install"
+    "test:e2e:install": "playwright install",
+    "cleanup:supabase": "node scripts/cleanup-supabase-from-site.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",

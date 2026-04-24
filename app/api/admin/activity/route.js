@@ -56,7 +56,9 @@ export async function GET(req) {
       ts: new Date(row.created_at).getTime(),
       time: new Date(row.created_at).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
     }))
-    return NextResponse.json(list)
+    return NextResponse.json(list, {
+      headers: { 'Cache-Control': 'private, no-store' },
+    })
   } catch (err) {
     return NextResponse.json({ error: err.message || String(err) }, { status: 500 })
   }

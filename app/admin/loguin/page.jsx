@@ -15,7 +15,7 @@ export default function LoguinRedirect(){
         if (res.ok) {
           const j = await res.json()
           if (j?.authenticated) {
-            router.replace('/admin')
+            router.replace('/admin/productos/catalogo')
             return
           }
         }

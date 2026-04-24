@@ -123,7 +123,7 @@ export default function AdminLoginPage() {
 
       // Server sets HttpOnly session cookie; navigate to admin and let the
       // client auth provider verify the server-side session via /api/auth/me.
-      router.push('/admin')
+      router.push('/admin/productos/catalogo')
     } catch (err) {
       setError(err?.message || 'An unexpected error occurred')
       setLoading(false)

@@ -247,9 +247,9 @@ function AuthIndicator() {
         <span className="font-medium text-gray-100 truncate max-w-[220px]">{auth.email || 'Admin'}</span>
       </div>
       <a
-        href="/admin"
+        href="/admin/productos/catalogo"
         className="no-custom-btn inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 bg-white/[0.03] text-[11px] font-medium text-white/90 hover:bg-white/[0.08] transition-colors"
-        aria-label="Ir al panel de administración"
+        aria-label="Ir al administrador (catálogo)"
       >
         <svg
           width="15"

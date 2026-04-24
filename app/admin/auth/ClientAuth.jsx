@@ -1,10 +1,8 @@
 "use client"
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { CaretLeft } from 'phosphor-react'
 import supabase from '../../../lib/supabase/client'
-import Footer from '../../../components/Footer'
+import AdminDeskShell from '../../../components/admin/AdminDeskShell'
 import { useToast } from '../../../components/ToastContext'
 import { hapticLight } from '../../../lib/haptics'
 
@@ -154,9 +152,9 @@ export default function ClientAuth({ children }){
       })()
     }
 
-    // if already signed in and on login page, redirect to /admin
+    // if already signed in and on login page, redirect to catálogo
     if (user && isLogin) {
-      router.push('/admin')
+      router.push('/admin/productos/catalogo')
     }
   }, [loading, user, pathname, router])
 
@@ -193,61 +191,16 @@ export default function ClientAuth({ children }){
             </div>
           </div>
         ) : (
-          <>
-            {/* Bloque superior: logo centrado + barra de sesión; se oculta con CSS cuando body.modal-open (modal crear/editar producto) */}
-            <div className="admin-top-bar relative z-30 border-b border-white/8">
-              <header className="flex justify-center pt-4 pb-2 px-4 md:px-6 md:pt-6 md:pb-3 xl:pt-8 xl:pb-4">
-                <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-lg" aria-label="Ir al inicio - La Guarida">
-                  {/* <img> estático: evita /_next/image (402 en Vercel) y cachés del SW con respuestas malas */}
-                  <img
-                    src="/images/logo/logo-fondo-oscuro.PNG"
-                    alt="La Guarida"
-                    width={282}
-                    height={188}
-                    decoding="async"
-                    fetchPriority="high"
-                    className="w-[220px] sm:w-[240px] md:w-[282px] h-auto block object-contain"
-                  />
-                </Link>
-              </header>
-              <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-3 px-4 md:px-6 xl:px-8 pb-4 pt-2 md:pb-5 md:pt-3 xl:pb-6 xl:pt-4 admin-auth-bar rounded-b-xl">
-                <div className="flex items-center gap-3 w-full sm:w-auto order-1 sm:order-1 min-w-0">
-                  {(pathname !== '/admin' && pathname !== '/admin/') && (
-                    <Link
-                      href="/admin"
-                      className="inline-flex items-center gap-2 text-base md:text-sm text-white/70 hover:text-white transition-colors shrink-0 no-custom-btn rounded-lg py-2 pr-2 min-h-[44px] md:min-h-0 md:py-1 md:pr-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-                      aria-label="Volver al panel"
-                    >
-                      <CaretLeft size={20} weight="bold" aria-hidden />
-                      Panel
-                    </Link>
-                  )}
-                  <div className="flex items-center gap-2 min-w-0 flex-1 sm:flex-initial">
-                    {online === true || online === false ? (
-                      <span className="flex items-center gap-2 shrink-0 text-sm text-white/60" title={online ? 'Conectado' : 'Sin conexión'}>
-                        <span className={`w-2 h-2 rounded-full ${online ? 'bg-emerald-500' : 'bg-amber-500'}`} aria-hidden />
-                        {online ? 'En línea' : 'Sin conexión'}
-                      </span>
-                    ) : null}
-                    <span className="text-base md:text-sm text-white/75 truncate min-w-0">
-                      {loading ? (
-                        <span className="text-white/55">Comprobando sesión…</span>
-                      ) : user ? (
-                        <span className="text-white/90 break-all">{user.email}</span>
-                      ) : null}
-                    </span>
-                  </div>
-                </div>
-                {user && (
-                  <button onClick={openLogoutConfirm} className="admin-premium-btn-danger px-4 py-3 md:px-3 md:py-1.5 text-base md:text-sm w-full sm:w-auto shrink-0 no-custom-btn rounded-lg order-2 sm:order-2 min-h-[48px] md:min-h-0">Cerrar sesión</button>
-                )}
-              </div>
-            </div>
-
-            {showLogoutConfirm && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <AdminDeskShell
+            user={user}
+            loading={loading}
+            online={online}
+            onLogout={openLogoutConfirm}
+          >
+            {showLogoutConfirm ? (
+              <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
                 <div
-                  className="absolute inset-0 cursor-default bg-black/65"
+                  className="absolute inset-0 cursor-default bg-slate-900/45"
                   onClick={() => setShowLogoutConfirm(false)}
                   onKeyDown={(e) => e.key === 'Escape' && setShowLogoutConfirm(false)}
                   role="button"
@@ -255,67 +208,60 @@ export default function ClientAuth({ children }){
                   aria-label="Cerrar"
                 />
                 <div
-                  className="relative admin-premium-card w-full max-w-sm p-6 shadow-2xl"
+                  className="relative admin-desk-card w-full max-w-sm p-6 shadow-2xl"
                   role="dialog"
                   aria-modal="true"
                   aria-labelledby="logout-dialog-title"
                 >
-                  <h2 id="logout-dialog-title" className="text-lg font-semibold text-white mb-1">
+                  <h2 id="logout-dialog-title" className="text-lg font-semibold text-slate-50 mb-1">
                     ¿Cerrar sesión?
                   </h2>
-                  <p className="text-sm text-white/70 mb-6">
+                  <p className="text-sm text-slate-300 mb-6">
                     Vas a salir del panel de administración.
                   </p>
-                  <div className="flex gap-3 justify-end">
+                  <div className="flex flex-wrap gap-3 justify-end">
                     <button
                       type="button"
                       onClick={() => setShowLogoutConfirm(false)}
-                      className="admin-premium-btn-ghost px-4 py-2.5 no-custom-btn rounded-xl"
+                      className="admin-desk-btn-ghost px-4 py-2.5 no-custom-btn"
                     >
                       Cancelar
                     </button>
                     <button
                       type="button"
                       onClick={doSignOut}
-                      className="admin-premium-btn-danger px-4 py-2.5 no-custom-btn rounded-xl"
+                      className="admin-desk-btn-danger px-4 py-2.5 no-custom-btn"
                     >
                       Aceptar
                     </button>
                   </div>
                 </div>
               </div>
-            )}
+            ) : null}
 
-            <div className="flex flex-col flex-1 min-h-0">
-              <div className="flex-1 py-4 md:py-10 lg:py-12 xl:py-14">
-                {loading ? (
-                  <div className="w-full max-w-2xl md:max-w-4xl xl:max-w-5xl mx-auto space-y-6 md:space-y-12 animate-pulse">
-                    <div className="rounded-xl border border-white/8 bg-white/[0.03] px-4 py-8 md:px-10 md:py-10">
-                      <div className="h-4 w-24 rounded bg-white/10" />
-                      <div className="h-6 w-3/4 mt-4 rounded bg-white/10" />
-                      <div className="h-4 w-full mt-2 rounded bg-white/10" />
+            {loading ? (
+              <div className="mx-auto w-full max-w-5xl space-y-6 animate-pulse md:space-y-8">
+                <div className="admin-desk-card px-5 py-8 md:px-10 md:py-10">
+                  <div className="h-4 w-28 rounded-lg bg-white/12" />
+                  <div className="mt-4 h-7 w-4/5 max-w-md rounded-lg bg-white/12" />
+                  <div className="mt-3 h-4 w-full max-w-xl rounded-lg bg-white/8" />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {[1, 2].map((i) => (
+                    <div key={i} className="admin-desk-card flex items-center gap-3 p-6">
+                      <div className="h-12 w-12 rounded-xl bg-white/12" />
+                      <div className="min-w-0 flex-1">
+                        <div className="h-4 w-24 rounded-lg bg-white/12" />
+                        <div className="mt-2 h-3 w-16 rounded bg-white/8" />
+                      </div>
                     </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      {[1, 2].map((i) => (
-                        <div key={i} className="rounded-xl border border-white/8 bg-white/[0.03] p-6 flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-white/10" />
-                          <div className="flex-1">
-                            <div className="h-4 w-20 rounded bg-white/10" />
-                            <div className="h-3 w-16 mt-2 rounded bg-white/10" />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  children
-                )}
+                  ))}
+                </div>
               </div>
-              <div className="mt-auto pt-6 md:pt-10 xl:pt-12 border-t border-white/8">
-                <Footer compact />
-              </div>
-            </div>
-          </>
+            ) : (
+              children
+            )}
+          </AdminDeskShell>
         )}
       </div>
     </AdminAuthContext.Provider>

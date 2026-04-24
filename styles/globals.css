@@ -496,8 +496,9 @@ html:has(body.menu-open) {
   overflow: hidden;
 }
 
-/* Admin: ocultar barra de sesión (logo + Cerrar sesión) cuando el modal de crear/editar producto está abierto, para que no tape el campo Nombre en iPhone/PWA */
-body.modal-open .admin-top-bar {
+/* Admin: ocultar cabecera cuando el modal de producto está abierto (móvil / PWA) */
+body.modal-open .admin-top-bar,
+body.modal-open .admin-desk-top {
   visibility: hidden;
   pointer-events: none;
   position: fixed;
@@ -2407,18 +2408,42 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   transform: none !important;
 }
 
-/* ===================== Admin premium redesign (iOS-safe, no backdrop-filter) ===================== */
+/* ===================== Admin premium redesign (iOS-safe) ===================== */
 .admin-premium-card {
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  background: rgba(28, 30, 36, 0.98);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.32), 0 1px 0 0 rgba(255, 255, 255, 0.04) inset;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(165deg, rgba(22, 26, 34, 0.98) 0%, rgba(16, 19, 26, 0.99) 100%);
+  box-shadow:
+    0 4px 28px rgba(0, 0, 0, 0.28),
+    0 1px 0 0 rgba(255, 255, 255, 0.04) inset;
   transition: border-color 200ms ease, box-shadow 200ms ease;
 }
 
 .admin-premium-card:hover {
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 1px 0 0 rgba(255, 255, 255, 0.05) inset;
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 10px 36px rgba(0, 0, 0, 0.36),
+    0 1px 0 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+.admin-section-title {
+  font-size: 1.0625rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.96);
+}
+
+@media (min-width: 768px) {
+  .admin-section-title {
+    font-size: 1.125rem;
+  }
+}
+
+.admin-section-desc {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.45;
+  margin-top: 0.25rem;
 }
 
 .admin-btn-interact {
@@ -2498,8 +2523,8 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 
 .admin-premium-input:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.22);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+  border-color: rgba(224, 141, 0, 0.45);
+  box-shadow: 0 0 0 3px rgba(224, 141, 0, 0.12);
 }
 
 .admin-premium-btn-primary,
@@ -2577,6 +2602,146 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 
 .admin-premium-muted {
   color: rgba(255, 255, 255, 0.6);
+}
+
+/* ===================== Admin desk (modo oscuro, alto contraste) ===================== */
+.admin-desk-root {
+  --admin-desk-surface: #1a1d26;
+  --admin-desk-surface-deep: #14161e;
+  --admin-desk-border: rgba(255, 255, 255, 0.12);
+  --admin-desk-text: #f1f5f9;
+  --admin-desk-muted: #cbd5e1;
+}
+
+.admin-desk-card {
+  border-radius: 18px;
+  background: var(--admin-desk-surface);
+  border: 1px solid var(--admin-desk-border);
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.35);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.admin-desk-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.42);
+}
+
+.admin-desk-stat-card {
+  border-radius: 18px;
+  background: var(--admin-desk-surface);
+  border: 1px solid var(--admin-desk-border);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.admin-desk-input {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--admin-desk-surface-deep);
+  color: var(--admin-desk-text);
+  padding: 0.65rem 0.9rem;
+  font-size: 0.9375rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-desk-input::placeholder {
+  color: #94a3b8;
+}
+
+.admin-desk-input:focus {
+  outline: none;
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.28);
+}
+
+.admin-desk-btn-primary,
+.admin-desk-btn-secondary,
+.admin-desk-btn-danger,
+.admin-desk-btn-ghost {
+  border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: opacity 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background-color 0.18s ease,
+    filter 0.18s ease;
+}
+
+.admin-desk-btn-primary {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 20px rgba(79, 70, 229, 0.45);
+}
+
+.admin-desk-btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+.admin-desk-btn-secondary {
+  background: rgba(255, 255, 255, 0.09);
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.admin-desk-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-desk-btn-danger {
+  background: #ef4444;
+  color: #fff;
+  border: 1px solid #fca5a5;
+  box-shadow: 0 2px 16px rgba(239, 68, 68, 0.35);
+}
+
+.admin-desk-btn-danger:hover {
+  background: #f87171;
+}
+
+.admin-desk-btn-ghost {
+  background: transparent;
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.admin-desk-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.admin-desk-btn-primary:active,
+.admin-desk-btn-secondary:active,
+.admin-desk-btn-danger:active,
+.admin-desk-btn-ghost:active {
+  opacity: 0.94;
+}
+
+.admin-desk-btn-primary:focus-visible,
+.admin-desk-btn-secondary:focus-visible,
+.admin-desk-btn-danger:focus-visible,
+.admin-desk-btn-ghost:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(165, 180, 252, 0.45);
+}
+
+.admin-desk-section-title {
+  font-size: 1.0625rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: #f8fafc;
+}
+
+@media (min-width: 768px) {
+  .admin-desk-section-title {
+    font-size: 1.125rem;
+  }
+}
+
+.admin-desk-section-desc {
+  font-size: 0.8125rem;
+  color: #cbd5e1;
+  margin-top: 0.25rem;
+  line-height: 1.45;
 }
 
 @keyframes page-in {

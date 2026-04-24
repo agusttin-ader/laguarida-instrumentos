@@ -169,7 +169,7 @@ export default async function GuitarPage({ params }) {
         .select(PRODUCT_LIST_COLUMNS)
         .neq('slug', product.slug)
         .order('created_at', { ascending: false })
-        .limit(72)
+        .limit(36)
       // Build a normalized set of words from brand, model and name (remove diacritics)
       const normalizeText = (s = '') => String(s || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
       const wordsSource = `${product.brand || ''} ${product.model || ''} ${product.name || ''}`

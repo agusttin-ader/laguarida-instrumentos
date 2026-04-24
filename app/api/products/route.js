@@ -1,7 +1,7 @@
 export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
-import { getSupabaseServerClient } from '../../../lib/supabase/server'
+import { getSupabaseServerClient, getSupabaseAdminClient } from '../../../lib/supabase/server'
 import { PRODUCT_LIST_COLUMNS } from '../../../lib/data/productColumns'
 import { cookies } from 'next/headers'
 import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
@@ -11,6 +11,69 @@ const MAX_NAME = 140
 const MAX_SLUG = 180
 const MAX_PRICE = 120
 const MAX_IMAGES = 12
+const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'products'
+
+/**
+ * De una URL pública de Storage devuelve la ruta del objeto dentro del bucket,
+ * solo si el bucket coincide con STORAGE_BUCKET.
+ */
+function tryParseStorageObjectPath(url) {
+  if (!url || typeof url !== 'string') return null
+  const u = url.trim().split('?')[0]
+  const m = u.match(/\/storage\/v1\/object\/public\/([^/]+)\/(.+)$/)
+  if (!m) return null
+  const bucket = m[1]
+  if (bucket !== STORAGE_BUCKET) return null
+  try {
+    return decodeURIComponent(m[2])
+  } catch {
+    return m[2]
+  }
+}
+
+function collectStorageObjectPathsFromRow(row) {
+  const paths = new Set()
+  const add = (ref) => {
+    if (!ref || typeof ref !== 'string') return
+    const p = tryParseStorageObjectPath(ref)
+    if (p) paths.add(p)
+    const resolved = resolveImageUrl(ref)
+    if (resolved && resolved !== ref) {
+      const p2 = tryParseStorageObjectPath(resolved)
+      if (p2) paths.add(p2)
+    }
+  }
+  if (row?.image_url) add(row.image_url)
+  if (Array.isArray(row?.images)) row.images.forEach(add)
+  return [...paths]
+}
+
+async function removeProductFilesFromStorage(deletedRows) {
+  if (!Array.isArray(deletedRows) || !deletedRows.length) {
+    return { skipped: true, removed: 0 }
+  }
+  const all = new Set()
+  for (const row of deletedRows) {
+    for (const p of collectStorageObjectPathsFromRow(row)) all.add(p)
+  }
+  const paths = [...all]
+  if (!paths.length) return { skipped: true, removed: 0 }
+
+  try {
+    const admin = getSupabaseAdminClient()
+    const { error } = await admin.storage.from(STORAGE_BUCKET).remove(paths)
+    if (error) {
+      return { ok: false, removed: 0, error: error.message || String(error) }
+    }
+    return { ok: true, removed: paths.length }
+  } catch (e) {
+    return {
+      ok: false,
+      removed: 0,
+      error: e instanceof Error ? e.message : String(e),
+    }
+  }
+}
 
 /** Asegura URLs absolutas de Storage (evita rutas /storage/... rotas en el cliente). */
 function withResolvedImageUrls(row) {
@@ -198,9 +261,12 @@ export async function GET(req) {
       return NextResponse.json({ error: error.message }, { status: error.status || 500 })
     }
 
-    const headers = {
-      'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600, max-age=120',
-    }
+    // Listado autenticado (`*`): no cachear en CDN ni compartir entre usuarios.
+    const headers = accessToken
+      ? { 'Cache-Control': 'private, no-store' }
+      : {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600, max-age=120',
+        }
     const payload = Array.isArray(data) ? data.map(withResolvedImageUrls) : data
     return NextResponse.json(payload, { status: 200, headers })
   } catch (err) {
@@ -305,13 +371,29 @@ export async function DELETE(req) {
       return NextResponse.json({ error: 'Invalid product id format' }, { status: 400 })
     }
 
-    const { data, error } = await supabase.from('products').delete().eq('id', id.trim()).select()
+    const idTrim = id.trim()
+    const { data: existing, error: fetchErr } = await supabase
+      .from('products')
+      .select('id, image_url, images')
+      .eq('id', idTrim)
+      .maybeSingle()
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: error.status || 500 })
+    if (fetchErr) {
+      return NextResponse.json({ error: fetchErr.message }, { status: fetchErr.status || 500 })
+    }
+    if (!existing) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    return NextResponse.json({ success: true, deleted: data }, { status: 200 })
+    const { error: delErr } = await supabase.from('products').delete().eq('id', idTrim)
+
+    if (delErr) {
+      return NextResponse.json({ error: delErr.message }, { status: delErr.status || 500 })
+    }
+
+    const storage = await removeProductFilesFromStorage([existing])
+
+    return NextResponse.json({ success: true, deleted: [existing], storage }, { status: 200 })
   } catch (err) {
     return NextResponse.json({ error: err.message || String(err) }, { status: 500 })
   }

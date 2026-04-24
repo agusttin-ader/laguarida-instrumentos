@@ -2,6 +2,7 @@ import React from 'react'
 import AdminServiceWorkerRegister from '../../components/AdminServiceWorkerRegister'
 import ClientAuth from './auth/ClientAuth'
 import AdminIOSBootSplash from '../../components/AdminIOSBootSplash'
+import RegisterAdminHideSplash from '../../components/admin/RegisterAdminHideSplash'
 import styles from '../../components/admin.module.css'
 
 export const metadata = {
@@ -16,18 +17,13 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
-  themeColor: '#0b1220',
+  themeColor: '#0f1219',
 }
 
 export default function AdminLayout({ children }) {
   return (
     <>
-      <script
-        dangerouslySetInnerHTML={{
-          __html:
-            'window.__adminHideSplash=function(){var e=document.getElementById("admin-boot-splash");if(e){e.classList.add("admin-boot-splash-fade");e.setAttribute("aria-hidden","true");setTimeout(function(){e.remove();},200);}};',
-        }}
-      />
+      <RegisterAdminHideSplash />
       <div id="admin-boot-splash" className="admin-boot-splash-visible" aria-hidden="false">
         <div className="admin-splash-inner">
           <div className="admin-splash-logo">
@@ -36,12 +32,11 @@ export default function AdminLayout({ children }) {
           <p className="admin-splash-label">La Guarida Admin</p>
         </div>
       </div>
-      <div className={`${styles.adminBody} admin-root dark min-h-screen`}>
+      <div className={`${styles.adminBody} admin-root min-h-screen`}>
         <div className={`${styles.appShell} admin-app-shell min-h-screen flex flex-col`}>
           <ClientAuth>
             <AdminIOSBootSplash>
-              {/* SiteShell ya envuelve /admin en <main>; evitar <main> anidado */}
-              <div className="flex flex-1 flex-col px-4 pt-3 pb-6">{children}</div>
+              <div className="flex min-h-0 flex-1 flex-col">{children}</div>
             </AdminIOSBootSplash>
           </ClientAuth>
         </div>
