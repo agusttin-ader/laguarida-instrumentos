@@ -2,6 +2,7 @@ export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '../../../lib/supabase/server'
+import { PRODUCT_LIST_COLUMNS } from '../../../lib/data/productColumns'
 import { cookies } from 'next/headers'
 import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
 
@@ -95,8 +96,10 @@ function normalizeSlug(value) {
 
 function isLikelyUrl(value) {
   if (!value) return true
+  const s = String(value).trim()
+  if (/^blob:|^data:/i.test(s)) return false
   try {
-    const u = new URL(value)
+    const u = new URL(s)
     return u.protocol === 'http:' || u.protocol === 'https:'
   } catch {
     return false
@@ -185,9 +188,10 @@ export async function GET(req) {
   try {
     const accessToken = await extractAccessToken(req)
     const supabase = await getSupabaseServerClient(accessToken)
+    const columns = accessToken ? '*' : PRODUCT_LIST_COLUMNS
     const { data, error } = await supabase
       .from('products')
-      .select('*')
+      .select(columns)
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -195,7 +199,7 @@ export async function GET(req) {
     }
 
     const headers = {
-      'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120, max-age=60',
+      'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600, max-age=120',
     }
     const payload = Array.isArray(data) ? data.map(withResolvedImageUrls) : data
     return NextResponse.json(payload, { status: 200, headers })

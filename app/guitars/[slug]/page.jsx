@@ -1,9 +1,10 @@
 import React from 'react'
 import fs from 'fs/promises'
 import path from 'path'
-export const dynamic = 'force-dynamic'
 import ProductGalleryModern from '../../../components/ProductGalleryModern'
 import normalizeProduct from '../../../lib/utils/normalizeProduct'
+import { fetchProductRowBySlug } from '../../../lib/data/fetchProductBySlug'
+import { PRODUCT_LIST_COLUMNS } from '../../../lib/data/productColumns'
 import { getSupabaseServerClient } from '../../../lib/supabase/server'
 import ProductCard from '../../../components/ProductCard'
 import imageService from '../../../lib/utils/imageService'
@@ -13,6 +14,8 @@ import ProductSpecsExpandable from '../../../components/ProductSpecsExpandable'
 import { parseNumericPriceForSchema } from '../../../lib/utils/normalizeProduct'
 import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
 import { absoluteUrl, toAbsoluteUrl } from '../../../lib/siteUrl'
+
+export const revalidate = 300
 
 /** URLs absolutas de Storage en el servidor (SUPABASE_URL disponible aquí). */
 function resolveGalleryImageRef(ref) {
@@ -69,15 +72,9 @@ export async function generateMetadata({ params }) {
   const resolvedParams = await params
   const { slug } = resolvedParams || {}
   let product = null
-  try {
-    if (slug) {
-      const supabase = getSupabaseServerClient()
-      const { data } = await supabase.from('products').select('*').eq('slug', slug).maybeSingle()
-      if (data) product = normalizeProduct(data)
-    }
-  } catch {
-    // ignore errors — metadata can fallback to defaults below
-    product = null
+  if (slug) {
+    const row = await fetchProductRowBySlug(slug)
+    if (row) product = normalizeProduct(row)
   }
 
   // local markdown fallback
@@ -131,17 +128,10 @@ export default async function GuitarPage({ params }) {
   const resolvedParams = await params
   const { slug } = resolvedParams ?? {}
 
-  // Query Supabase directly for the product by slug
   let product = null
-  try {
-    if (slug) {
-      const supabase = getSupabaseServerClient()
-      // Only filter by slug; use maybeSingle
-      const { data } = await supabase.from('products').select('*').eq('slug', slug).maybeSingle()
-      if (data) product = normalizeProduct(data)
-    }
-  } catch {
-    product = null
+  if (slug) {
+    const row = await fetchProductRowBySlug(slug)
+    if (row) product = normalizeProduct(row)
   }
 
   // Fallback: try to load local markdown data if Supabase has no product
@@ -174,7 +164,12 @@ export default async function GuitarPage({ params }) {
   try {
     if (product) {
       const supabase = getSupabaseServerClient()
-      const { data: allProducts } = await supabase.from('products').select('*').limit(200)
+      const { data: allProducts } = await supabase
+        .from('products')
+        .select(PRODUCT_LIST_COLUMNS)
+        .neq('slug', product.slug)
+        .order('created_at', { ascending: false })
+        .limit(72)
       // Build a normalized set of words from brand, model and name (remove diacritics)
       const normalizeText = (s = '') => String(s || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
       const wordsSource = `${product.brand || ''} ${product.model || ''} ${product.name || ''}`

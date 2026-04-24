@@ -3,6 +3,8 @@ import path from 'path'
 import { getSupabaseServerClient } from '../lib/supabase/server'
 import { absoluteUrl } from '../lib/siteUrl'
 
+export const revalidate = 3600
+
 /** @returns {Promise<import('next').MetadataRoute.Sitemap>} */
 export default async function sitemap() {
   const entries = [

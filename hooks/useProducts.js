@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import shuffleArray from '../lib/utils/shuffle'
 import normalizeProduct from '../lib/utils/normalizeProduct'
 
-const CACHE_TTL_MS = 60 * 1000 // 1 minute
+const CACHE_TTL_MS = 5 * 60 * 1000 // 5 min — menos requests al API / Supabase entre visitas
 let cache = { data: null, timestamp: 0 }
 let inFlight = null
 

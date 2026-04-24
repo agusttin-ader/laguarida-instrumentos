@@ -1,7 +1,8 @@
-import { unstable_noStore as noStore } from 'next/cache'
 import HomePageContent from '../components/HomePageContent'
 import { fetchHeroProduct } from '../lib/data/fetchHeroProduct'
 import { absoluteUrl } from '../lib/siteUrl'
+
+export const revalidate = 600
 
 export const metadata = {
   title: 'Catálogo — La Guarida',
@@ -13,7 +14,6 @@ export const metadata = {
 }
 
 export default async function Page() {
-  noStore()
   const heroProduct = await fetchHeroProduct()
 
   return <HomePageContent heroProduct={heroProduct} />

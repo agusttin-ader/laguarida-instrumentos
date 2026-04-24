@@ -1,4 +1,4 @@
-const CACHE_NAME = 'laguarida-admin-pwa-v1'
+const CACHE_NAME = 'laguarida-admin-pwa-v2'
 const OFFLINE_URL = '/offline.html'
 const URLS_TO_CACHE = [
   '/admin',
@@ -24,11 +24,20 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const { request } = event
   if (request.method !== 'GET') return
+
+  const url = new URL(request.url)
+  if (url.origin !== self.location.origin) return
+  // No interceptar: evita cachear 402 del Image Optimization de Vercel ni respuestas de API.
+  if (url.pathname.startsWith('/_next/image')) return
+  if (url.pathname.startsWith('/api/')) return
+
   event.respondWith(
     fetch(request)
       .then(response => {
-        const resClone = response.clone()
-        caches.open(CACHE_NAME).then(cache => cache.put(request, resClone))
+        if (response.ok) {
+          const resClone = response.clone()
+          caches.open(CACHE_NAME).then(cache => cache.put(request, resClone)).catch(() => {})
+        }
         return response
       })
       .catch(() => {

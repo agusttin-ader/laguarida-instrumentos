@@ -1,7 +1,6 @@
 "use client"
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import { CaretLeft } from 'phosphor-react'
 import supabase from '../../../lib/supabase/client'
@@ -199,15 +198,15 @@ export default function ClientAuth({ children }){
             <div className="admin-top-bar relative z-30 border-b border-white/8">
               <header className="flex justify-center pt-4 pb-2 px-4 md:px-6 md:pt-6 md:pb-3 xl:pt-8 xl:pb-4">
                 <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-lg" aria-label="Ir al inicio - La Guarida">
-                  <Image
+                  {/* <img> estático: evita /_next/image (402 en Vercel) y cachés del SW con respuestas malas */}
+                  <img
                     src="/images/logo/logo-fondo-oscuro.PNG"
                     alt="La Guarida"
-                    width={1536}
-                    height={1024}
+                    width={282}
+                    height={188}
+                    decoding="async"
+                    fetchPriority="high"
                     className="w-[220px] sm:w-[240px] md:w-[282px] h-auto block object-contain"
-                    quality={70}
-                    sizes="(min-width:768px) 327px, (min-width:640px) 282px, 240px"
-                    priority
                   />
                 </Link>
               </header>

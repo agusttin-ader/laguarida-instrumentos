@@ -274,6 +274,17 @@ export default function AdminProducts(){
       })
       if (duplicate) throw new Error('Dos productos no deben llamarse igual')
 
+      if (modalUploadingMain || modalGalleryUploading) {
+        throw new Error('Esperá a que terminen de subir las imágenes antes de guardar.')
+      }
+      const mainImg = String(modalForm.image_url || '').trim()
+      if (mainImg && /^blob:|^data:/i.test(mainImg)) {
+        throw new Error('La imagen principal aún no terminó de subirse. Esperá unos segundos e intentá de nuevo.')
+      }
+      if (Array.isArray(modalForm.images) && modalForm.images.some((u) => /^blob:|^data:/i.test(String(u || '')))) {
+        throw new Error('Hay fotos de la galería que aún se están subiendo. Esperá e intentá de nuevo.')
+      }
+
       const payload = {
         name: modalForm.name || undefined,
         slug: genSlug || undefined,
@@ -1285,7 +1296,7 @@ export default function AdminProducts(){
               ) : null}
 
               <div className="flex flex-col sm:flex-row gap-2 mt-2">
-                <button type="submit" className="px-4 py-2 admin-premium-btn-primary no-custom-btn w-full sm:w-auto" disabled={submitting}>{submitting ? (modalMode === 'edit' ? 'Guardando…' : 'Creando…') : (modalMode === 'edit' ? 'Guardar cambios' : 'Crear producto')}</button>
+                <button type="submit" className="px-4 py-2 admin-premium-btn-primary no-custom-btn w-full sm:w-auto" disabled={submitting || modalUploadingMain || modalGalleryUploading}>{submitting ? (modalMode === 'edit' ? 'Guardando…' : 'Creando…') : (modalUploadingMain || modalGalleryUploading) ? 'Subiendo imágenes…' : (modalMode === 'edit' ? 'Guardar cambios' : 'Crear producto')}</button>
                 <button type="button" className="px-4 py-2 admin-premium-btn-ghost no-custom-btn w-full sm:w-auto" onClick={closeModal}>Cancelar</button>
               </div>
             </form>

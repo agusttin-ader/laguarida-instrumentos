@@ -61,7 +61,10 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
     transform: 'translateZ(0)',
     ...imgStyle
   }
-  const useUnoptimized = Boolean(unoptimized)
+  const srcStr = typeof src === 'string' ? src.trim() : ''
+  const isSupabaseObject =
+    srcStr.includes('supabase.co') && srcStr.includes('/storage/v1/object/')
+  const useUnoptimized = Boolean(unoptimized) || isSupabaseObject
 
   return (
     <div
