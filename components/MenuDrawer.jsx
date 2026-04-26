@@ -55,7 +55,7 @@ export default function MenuDrawer({ open, setOpen }) {
   }
 
   const rowClass =
-    'no-custom-btn flex w-full items-center justify-between gap-4 py-5 pl-5 pr-4 text-left text-[1.125rem] font-bold leading-snug tracking-tight text-[var(--dark-text-primary)] border-b border-white/[0.08] transition-colors hover:bg-white/[0.04] active:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--vintage-gold)]/45'
+    'no-custom-btn flex w-full min-h-[52px] items-center justify-between gap-4 py-6 pl-5 pr-4 text-left text-[1.125rem] sm:text-[1.25rem] font-bold leading-normal tracking-tight text-[var(--dark-text-primary)] border-b border-white/[0.08] transition-colors hover:bg-white/[0.04] active:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--vintage-gold)]/45'
 
   return (
     <div className={`fixed inset-0 z-[var(--z-menu-drawer)] md:hidden ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>
@@ -65,13 +65,13 @@ export default function MenuDrawer({ open, setOpen }) {
         aria-label="Cerrar menú"
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); close() } }}
         onClick={close}
-        className={`fixed inset-0 bg-black/60 transition-opacity duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${open ? 'opacity-100' : 'opacity-0'}`}
+        className={`fixed inset-0 z-0 bg-black/60 transition-opacity duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${open ? 'opacity-100' : 'opacity-0'}`}
       />
       <nav
-        className={`menu-drawer-panel fixed top-0 left-0 bottom-0 flex w-full max-w-none flex-col bg-[var(--dark-bg-page)] shadow-[12px_0_40px_rgba(0,0,0,0.45)] transition-transform duration-[260ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${open ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`menu-drawer-panel fixed inset-0 z-10 flex h-full w-full max-w-none flex-col bg-[var(--dark-bg-page)] transition-transform duration-[260ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${open ? 'translate-x-0' : '-translate-x-full'}`}
         aria-label="Menú principal"
       >
-        <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-4">
+        <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-4">
           <Link href="/" onClick={handleHome} className="relative block min-w-0 max-w-[min(220px,calc(100vw-5rem))] py-1" aria-label="Ir al inicio">
             <Image
               src={LOGO_SRC}
@@ -97,7 +97,7 @@ export default function MenuDrawer({ open, setOpen }) {
           </button>
         </div>
 
-        <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-2">
+        <ul className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-3">
           <li>
             <Link href="/" onClick={handleHome} className={rowClass}>
               <span>Inicio</span>

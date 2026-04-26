@@ -15,7 +15,7 @@ export default function LowCostSection() {
   if (!loading && !lowCostProducts.length) return null
 
   return (
-    <section id="low-cost" className="mt-6 sm:mt-8 md:mt-10" aria-labelledby="low-cost-heading">
+    <section id="low-cost" className="mt-8 sm:mt-10 md:mt-12 max-[768px]:mt-10" aria-labelledby="low-cost-heading">
       <ScrollReveal className="mb-3 sm:mb-4 md:mb-5" threshold={0.1} rootMargin="0px 0px -6% 0px">
         <h2
           id="low-cost-heading"

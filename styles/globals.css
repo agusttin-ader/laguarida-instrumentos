@@ -45,7 +45,7 @@
   --vintage-muted: #9A6B5A;
 
   /* Design tokens: botones y espaciado responsive */
-  --btn-h-mobile: 40px;
+  --btn-h-mobile: 48px;
   --btn-h-desktop: 44px;
   --btn-px-mobile: 0.875rem;
   --btn-px-desktop: 1.25rem;
@@ -165,6 +165,47 @@ body{
   overflow-y: visible;
 }
 
+/* Mobile typography & rhythm (≤767px; aligns with Tailwind `md` at 768px) */
+@media (max-width: 767px) {
+  body {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  main h1:not(.sr-only) {
+    font-size: clamp(1.75rem, 6vw, 2rem);
+    line-height: 1.45;
+  }
+  main h2 {
+    font-size: clamp(1.375rem, 4vw, 1.5rem);
+    line-height: 1.45;
+  }
+  .section-title-premium {
+    font-size: clamp(1.125rem, 3.8vw, 1.25rem) !important;
+    line-height: 1.45 !important;
+    letter-spacing: 0.14em !important;
+  }
+  .section-title-minimal {
+    font-size: clamp(1.375rem, 4vw, 1.5rem);
+    line-height: 1.45;
+  }
+  .section-kicker-minimal {
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+  .card-desc {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  .body-copy {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+  .search-pill .search-input {
+    font-size: 1rem !important;
+    line-height: 1.45;
+  }
+}
+
 /* Toast: animación premium entrada/salida */
 @keyframes toast-enter {
   from {
@@ -252,9 +293,9 @@ body{
   .hero-aspect { padding-top: 150%; }
 }
 
-/* Slightly smaller hero title on narrow viewports for better balance */
-@media (max-width: 640px) {
-  .hero-title { font-size: 1.4rem !important; line-height: 1.06 }
+/* Hero title on narrow viewports: readable scale (aligned with mobile h1 target) */
+@media (max-width: 768px) {
+  .hero-title { font-size: clamp(1.75rem, 5.5vw, 2rem) !important; line-height: 1.45 }
 }
 
 .subtitle-compact{
@@ -1161,6 +1202,13 @@ section {
   section { padding-top: 2.5rem; padding-bottom: 2.5rem; }
 }
 
+@media (max-width: 768px) {
+  section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
 /* Páginas legales (/terminos, /privacidad): sin panel ni borde; mismo negro que el body */
 main.legal-page,
 main.legal-page article {
@@ -1265,6 +1313,22 @@ main.legal-page article {
   min-height: 38px !important;
   line-height: 1 !important;
   border-radius: 999px !important;
+}
+
+@media (max-width: 768px) {
+  .card-compact .card-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.625rem;
+    width: 100%;
+  }
+  .card-compact .card-actions a,
+  .card-compact .card-actions button {
+    width: 100%;
+    min-height: 48px !important;
+    font-size: 1rem !important;
+    justify-content: center;
+  }
 }
 
 .card-compact .card-actions a:hover,
@@ -2337,8 +2401,8 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     padding-bottom: 0.5rem;
   }
   .container-tight {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
   }
 
   /* Mejorar rendimiento de scroll en listas largas */

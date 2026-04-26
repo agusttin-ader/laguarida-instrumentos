@@ -21,7 +21,7 @@ export default function SkeletonProductCard() {
           <div className="h-11 w-28 bg-[var(--dark-surface-2)] rounded-xl animate-pulse" />
         </div>
       </div>
-      <div className="aspect-[4/3] w-full animate-pulse rounded-b-2xl bg-[var(--dark-surface-2)] md:aspect-[5/4] md:rounded-none" />
+      <div className="aspect-[4/5] w-full animate-pulse rounded-b-2xl bg-[var(--dark-surface-2)] md:aspect-[3/4] md:rounded-none" />
     </div>
   );
 }

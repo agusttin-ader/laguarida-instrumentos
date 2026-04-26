@@ -17,14 +17,14 @@ export default function ProductPageCTA({ price, consultHref, productName, childr
       {showPrice && price != null && (
         <p className="text-2xl sm:text-[28px] font-bold text-[var(--vintage-gold)] mb-5 sm:mb-6 tracking-tight">{price}</p>
       )}
-      <div className="flex flex-wrap gap-3 items-center">
+      <div className="flex flex-col max-md:w-full max-md:gap-3 md:flex-row md:flex-wrap md:items-center gap-3">
         <a
           href={consultHref}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`Consultar por WhatsApp sobre ${productName || 'este producto'}`}
           onClick={handleWhatsAppClick}
-          className="no-custom-btn inline-flex items-center justify-center gap-2.5 min-h-[44px] py-3 px-5 sm:px-6 rounded-xl border-2 border-[var(--vintage-gold)]/50 bg-[var(--vintage-gold-soft)] text-white font-semibold text-sm transition-all duration-200 hover:bg-[var(--vintage-gold-soft-hover)] hover:border-[var(--vintage-gold)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(255,195,8,0.22)] active:translate-y-0"
+          className="no-custom-btn inline-flex w-full max-md:min-h-[48px] md:w-auto items-center justify-center gap-2.5 min-h-[44px] py-3 px-5 sm:px-6 rounded-xl border-2 border-[var(--vintage-gold)]/50 bg-[var(--vintage-gold-soft)] text-white font-semibold text-base md:text-sm transition-all duration-200 hover:bg-[var(--vintage-gold-soft-hover)] hover:border-[var(--vintage-gold)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(255,195,8,0.22)] active:translate-y-0"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />

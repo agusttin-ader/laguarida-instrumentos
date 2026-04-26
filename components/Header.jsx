@@ -82,7 +82,7 @@ export default function Header() {
       <header
         id={isHome ? 'header-home-mobile-overlay' : undefined}
         aria-label="Cabecera"
-        className={`header-mobile md:hidden flex items-center justify-between min-h-[52px] sm:min-h-[56px] py-2.5 sm:py-2.5 px-2 sm:px-3 left-0 right-0 top-0 relative ${isHome ? 'header-home-mobile' : ''} ${scrolled ? 'header-scrolled' : ''}`}
+        className={`header-mobile md:hidden flex items-center justify-between min-h-[52px] sm:min-h-[56px] py-2.5 sm:py-2.5 px-4 sm:px-5 left-0 right-0 top-0 relative ${isHome ? 'header-home-mobile' : ''} ${scrolled ? 'header-scrolled' : ''}`}
       >
         <div className="relative z-20 w-12 flex-shrink-0">
           <button

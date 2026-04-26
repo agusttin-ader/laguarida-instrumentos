@@ -32,7 +32,7 @@ export default function FeaturedSelection() {
             >
               Selección destacada
             </h2>
-            <p className="mt-2 text-[12px] sm:text-[13px] text-[var(--dark-muted)] hidden md:block">
+            <p className="mt-2 text-[15px] leading-relaxed text-[var(--dark-muted)] md:text-[13px]">
               Encontrá instrumentos seleccionados por calidad y estado.
             </p>
           </div>

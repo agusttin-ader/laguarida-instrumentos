@@ -16,17 +16,17 @@ export default function About(){
             <p className="mb-5 hidden max-w-3xl text-[14px] leading-relaxed text-gray-700 dark:text-gray-200 sm:text-base md:mb-6 md:block">
               Una tienda, una historia dedicada a las guitarras, a las búsquedas sonoras y a quienes las tocan.
             </p>
-            <p className="mb-4 max-w-3xl text-[14px] leading-relaxed text-gray-200 md:hidden">
+            <p className="mb-4 max-w-3xl max-md:max-w-none text-base leading-relaxed text-gray-200 md:hidden">
               Guitarras e instrumentos seleccionados, con trato cercano y asesoramiento real para quienes buscan un sonido propio.
             </p>
 
             <div className="rounded-xl border border-[var(--dark-border)] bg-white/[0.03] px-4 sm:px-5 py-3 sm:py-4 mb-5 md:mb-6">
-              <p className="text-[13px] sm:text-[15px] italic text-[var(--dark-text-secondary)] leading-relaxed">
+              <p className="text-base sm:text-[15px] italic text-[var(--dark-text-secondary)] leading-relaxed">
                 Hecho por un músico, para músicos.
               </p>
             </div>
 
-            <div className="prose prose-sm max-w-none text-[14px] text-gray-200 md:hidden [&>p]:mb-0 [&>p]:leading-relaxed">
+            <div className="prose prose-sm max-w-none text-base text-gray-200 md:hidden [&>p]:mb-0 [&>p]:leading-relaxed [&>p]:text-base">
               <p>
                 La Guarida nació como un proyecto personal y creció como un refugio para la música: honestidad,
                 instrumentos curados y atención directa. Si tenés dudas, escribinos.

@@ -49,7 +49,7 @@ export default function ProductGrid({
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-5 md:gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 gap-5 max-[767px]:gap-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <div
             key={i}
@@ -77,7 +77,7 @@ export default function ProductGrid({
         <div className="mb-6 p-4 rounded bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200">Error al cargar productos: {hasError}</div>
       ) : null}
 
-      <div className="grid w-full min-w-0 grid-cols-2 gap-3.5 sm:gap-5 md:gap-6 lg:grid-cols-3 lg:gap-8">
+      <div className="grid w-full min-w-0 grid-cols-1 gap-5 max-[767px]:gap-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
         {filteredItems.map((item, idx) => (
           <ScrollReveal
             key={`${item.id ?? item.slug ?? idx}-${filters.q || ''}`}

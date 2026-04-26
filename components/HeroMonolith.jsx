@@ -190,7 +190,7 @@ export default function HeroMonolith() {
       {/* ——— Mobile: imagen desde borde superior (header fijo por encima), article con pt para el texto ——— */}
       <div className="md:hidden">
         <article
-          className="hero-mobile-editorial relative w-full min-h-[100vh] min-h-[100dvh] flex flex-col justify-end overflow-hidden pt-[calc(58px+max(0.25rem,env(safe-area-inset-top)))] sm:pt-[calc(62px+max(0.25rem,env(safe-area-inset-top)))]"
+          className="hero-mobile-editorial relative w-full min-h-[80vh] min-h-[80dvh] flex flex-col justify-center overflow-hidden pt-[calc(58px+max(0.25rem,env(safe-area-inset-top)))] pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:pt-[calc(62px+max(0.25rem,env(safe-area-inset-top)))]"
           onTouchStart={() => setIsPaused(true)}
           onTouchEnd={() => setIsPaused(false)}
           onMouseEnter={() => setIsPaused(true)}
@@ -230,27 +230,27 @@ export default function HeroMonolith() {
           <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(to top, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.18) 36%, transparent 74%)' }} />
         </div>
         {/* Contenido superpuesto abajo: destacado, título, precio y CTAs */}
-        <div key={`hero-mobile-copy-${activeSlide}`} className="hero-mobile-caption hero-mobile-caption-surface hero-copy-swap relative z-10 px-4 sm:px-5 pb-10 sm:pb-10 pt-16">
-          <p className="hero-mobile-badge hero-mobile-text-shadow text-[10px] max-[360px]:text-[9px] uppercase tracking-[0.2em] text-white font-semibold mb-2">
+        <div key={`hero-mobile-copy-${activeSlide}`} className="hero-mobile-caption hero-mobile-caption-surface hero-copy-swap relative z-10 w-full max-w-none px-4 sm:px-5 py-6 sm:py-8">
+          <p className="hero-mobile-badge hero-mobile-text-shadow text-[11px] uppercase tracking-[0.18em] text-white font-semibold mb-2.5 leading-normal">
             Destacado
           </p>
-          <h1 id="home-hero" className="hero-mobile-text-shadow text-[2rem] sm:text-[2.25rem] font-bold leading-[1.08] text-white tracking-tight">
+          <h1 id="home-hero" className="hero-mobile-text-shadow text-[clamp(1.75rem,6vw,2rem)] font-bold leading-[1.45] text-white tracking-tight">
             {activeItem.name}
           </h1>
           {activeItem.price ? (
-            <p className="hero-mobile-text-shadow mt-2 text-[1.125rem] font-semibold text-[var(--vintage-gold)]">{activeItem.price}</p>
+            <p className="hero-mobile-text-shadow mt-2.5 text-[1.125rem] leading-snug font-semibold text-[var(--vintage-gold)]">{activeItem.price}</p>
           ) : null}
-          <div className="mt-6 max-[360px]:mt-5 flex flex-col gap-3 max-[360px]:gap-2.5">
+          <div className="mt-6 flex w-full flex-col gap-3">
             <Link
               href={`/guitars/${activeItem.slug || activeItem.id || ''}`}
-              className="hero-mobile-cta no-custom-btn flex items-center justify-center min-h-[50px] max-[360px]:min-h-[46px] w-full rounded-full font-bold text-[15px] max-[360px]:text-[14px] active:opacity-95 transition-opacity touch-manipulation"
+              className="hero-mobile-cta no-custom-btn flex min-h-[48px] w-full items-center justify-center rounded-full px-5 py-3 text-base font-bold leading-normal active:opacity-95 touch-manipulation"
               style={{ backgroundColor: '#ffffff', color: '#0f0f12' }}
             >
               Ver detalles
             </Link>
             <Link
               href="/#seleccion-destacada"
-              className="hero-mobile-text-shadow no-custom-btn text-center text-[14px] max-[360px]:text-[13px] text-white font-medium underline underline-offset-2 decoration-white/80"
+              className="hero-mobile-text-shadow no-custom-btn min-h-[48px] w-full text-center text-base leading-normal text-white font-medium underline underline-offset-[0.2em] decoration-white/80 flex items-center justify-center"
             >
               Ver selección destacada →
             </Link>

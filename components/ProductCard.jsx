@@ -10,7 +10,7 @@ import { useToast } from './ToastContext'
 
 // Alineado al grid (1 / 2 / 3 cols + padding del contenedor); evita warning de Next por 100vw en tarjetas más angostas
 const CARD_IMAGE_SIZES =
-  '(max-width: 639px) min(92vw, 560px), (max-width: 1023px) min(46vw, 560px), (max-width: 1535px) min(34vw, 520px), (max-width: 1919px) min(30vw, 600px), (max-width: 2559px) min(26vw, 720px), min(24vw, 840px)'
+  '(max-width: 767px) min(100vw, 720px), (max-width: 1023px) min(46vw, 560px), (max-width: 1535px) min(34vw, 520px), (max-width: 1919px) min(30vw, 600px), (max-width: 2559px) min(26vw, 720px), min(24vw, 840px)'
 const MAX_CARD_IMAGES = 3
 /** Desplazamiento mínimo (px) para cambiar de foto al soltar */
 const SWIPE_DISTANCE_THRESHOLD = 48
@@ -107,7 +107,7 @@ const ProductCard = React.memo(function ProductCard({
 
   const imageBlock = (
     <div
-      className="product-card-mobile-shell relative w-full overflow-hidden bg-[var(--dark-surface-2)] max-[768px]:bg-[#141414] aspect-[4/5] md:aspect-[3/4] touch-pan-y select-none"
+      className="product-card-mobile-shell relative w-full overflow-hidden bg-[var(--dark-surface-2)] max-[767px]:bg-[#141414] aspect-[4/5] md:aspect-[3/4] touch-pan-y select-none"
       onTouchStart={hasGallery ? handleTouchStart : undefined}
       onTouchEnd={hasGallery ? handleTouchEnd : undefined}
       onTouchCancel={hasGallery ? handleTouchEnd : undefined}
@@ -236,22 +236,22 @@ const ProductCard = React.memo(function ProductCard({
       >
         {imageBlock}
 
-        <div className="flex min-h-0 flex-1 flex-col gap-0 p-4 max-[768px]:gap-0 max-[768px]:px-3 max-[768px]:pb-3 max-[768px]:pt-3 md:gap-0 md:p-5">
+        <div className="flex min-h-0 flex-1 flex-col gap-0 p-4 max-[767px]:gap-1 max-[767px]:px-4 max-[767px]:pb-4 max-[767px]:pt-4 md:gap-0 md:p-5">
           <h3
             id={headingId}
-            className="order-1 min-w-0 text-[1rem] font-semibold tracking-tight text-[var(--dark-text-primary)] md:text-[1.0625rem] max-[768px]:min-h-[1.35rem] max-[768px]:text-[15px] max-[768px]:font-bold max-[768px]:leading-tight max-[768px]:line-clamp-1 md:leading-snug md:line-clamp-2"
+            className="order-1 min-w-0 text-[1rem] font-semibold tracking-tight text-[var(--dark-text-primary)] md:text-[1.0625rem] max-[767px]:text-base max-[767px]:font-bold max-[767px]:leading-snug max-[767px]:line-clamp-2 md:leading-snug md:line-clamp-2"
           >
             {titleText}
           </h3>
           {specs.length > 0 ? (
             <>
               <p
-                className="order-2 hidden min-h-0 max-[768px]:order-2 max-[768px]:mt-1 max-[768px]:block max-[768px]:truncate max-[768px]:text-[10px] max-[768px]:font-medium max-[768px]:uppercase max-[768px]:leading-snug max-[768px]:tracking-wider max-[768px]:text-[var(--dark-muted)]"
+                className="order-2 hidden min-h-0 max-[767px]:order-2 max-[767px]:mt-0.5 max-[767px]:block max-[767px]:truncate max-[767px]:text-[11px] max-[767px]:font-medium max-[767px]:uppercase max-[767px]:leading-snug max-[767px]:tracking-wider max-[767px]:text-[var(--dark-muted)]"
                 title={[...visibleSpecs, hiddenSpecsCount > 0 ? `+${hiddenSpecsCount}` : null].filter(Boolean).join(' · ')}
               >
                 {[...visibleSpecs, hiddenSpecsCount > 0 ? `+${hiddenSpecsCount}` : null].filter(Boolean).join(' · ')}
               </p>
-              <div className="order-3 mt-2.5 flex flex-wrap gap-1.5 max-[768px]:mt-1 max-[768px]:hidden md:order-3">
+              <div className="order-3 mt-2.5 flex flex-wrap gap-1.5 max-[767px]:mt-1 max-[767px]:hidden md:order-3">
                 {visibleSpecs.map((s, i) => (
                   <span key={i} className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[var(--dark-muted)] md:text-[11px]">
                     {s}
@@ -266,11 +266,11 @@ const ProductCard = React.memo(function ProductCard({
             </>
           ) : null}
           {p.price ? (
-            <p className="order-2 mt-1.5 text-sm font-semibold text-[var(--vintage-gold)] max-[768px]:order-3 max-[768px]:mt-1 max-[768px]:min-h-[1.25rem] max-[768px]:text-sm md:order-2 md:text-base">
+            <p className="order-2 mt-1.5 text-sm font-semibold text-[var(--vintage-gold)] max-[767px]:order-3 max-[767px]:mt-1.5 max-[767px]:text-base md:order-2 md:text-base">
               {p.price}
             </p>
           ) : null}
-          <span className="order-4 mt-3 hidden items-center gap-1.5 text-xs font-medium text-[var(--dark-text-secondary)] max-[768px]:mt-0 md:mt-4 md:inline-flex">
+          <span className="order-4 mt-3 hidden items-center gap-1.5 text-xs font-medium text-[var(--dark-text-secondary)] max-[767px]:mt-0 md:mt-4 md:inline-flex">
             Ver producto
             <svg className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
