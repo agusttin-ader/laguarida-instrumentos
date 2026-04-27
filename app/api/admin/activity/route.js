@@ -40,11 +40,16 @@ export async function GET(req) {
     if (authErr || !authData?.user) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
+    const url = new URL(req.url)
+    const requestedLimit = Number(url.searchParams.get('limit') || LIMIT)
+    const limit = Number.isFinite(requestedLimit)
+      ? Math.min(Math.max(Math.trunc(requestedLimit), 1), 1000)
+      : LIMIT
     const { data, error } = await supabase
       .from('admin_activity')
       .select('id, type, product_id, label, created_at')
       .order('created_at', { ascending: false })
-      .limit(LIMIT)
+      .limit(limit)
     if (error) {
       return NextResponse.json({ error: error.message }, { status: error.status || 500 })
     }

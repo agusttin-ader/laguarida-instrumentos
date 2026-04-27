@@ -83,17 +83,9 @@ export default function AdminIOSBootSplash({ children }) {
           aria-hidden
         >
           <div className="absolute inset-0 bg-[#06080e]" />
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3">
-            <div className="flex h-[96px] w-[96px] items-center justify-center rounded-[26px] border border-white/12 bg-white/[0.03] p-[15px]">
-              <img
-                src="/images/logo/og-pick-icon.PNG"
-                alt=""
-                width={96}
-                height={96}
-                className="h-full w-full object-contain"
-              />
-            </div>
-            <p className="text-[11px] uppercase tracking-[0.24em] text-white/72">La Guarida Admin</p>
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4">
+            <div className="h-11 w-11 rounded-full border-[3px] border-white/20 border-t-white animate-spin" aria-hidden />
+            <p className="text-[11px] uppercase tracking-[0.24em] text-white/72">Cargando admin</p>
           </div>
         </div>
       ) : null}

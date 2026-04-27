@@ -3,7 +3,6 @@
 import React, { useMemo } from 'react'
 import Link from 'next/link'
 import ProductCard from '../../components/ProductCard'
-import ScrollReveal from '../../components/ScrollReveal'
 import { useFavorites } from '../../components/ProductShareAndFavorite'
 import { useProducts } from '../../hooks/useProducts'
 
@@ -32,16 +31,9 @@ export default function FavoritosPage() {
       </header>
 
       {loading && slugs.length > 0 ? (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-[20px] overflow-hidden border border-[var(--dark-border)] bg-[var(--dark-bg-card)] animate-pulse">
-              <div className="w-full bg-white/10" style={{ aspectRatio: '5/4' }} />
-              <div className="p-4">
-                <div className="h-4 bg-white/10 rounded w-3/4" />
-                <div className="h-3 bg-white/10 rounded w-1/3 mt-2" />
-              </div>
-            </div>
-          ))}
+        <div className="w-full py-10 md:py-14 flex flex-col items-center justify-center gap-3">
+          <div className="app-loading-spinner" aria-hidden />
+          <p className="text-sm text-[var(--dark-muted)]">Cargando productos…</p>
         </div>
       ) : products.length === 0 ? (
         <div className="rounded-2xl border border-[var(--dark-border)] bg-[var(--dark-bg-card)] p-10 text-center">
@@ -54,16 +46,10 @@ export default function FavoritosPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
-          {products.map((item, idx) => (
-            <ScrollReveal
-              key={item.id || item.slug}
-              className="min-w-0"
-              delay={Math.min(idx, 12) * 55}
-              threshold={0.06}
-              rootMargin="0px 0px -10% 0px"
-            >
+          {products.map((item) => (
+            <div key={item.id || item.slug} className="min-w-0">
               <ProductCard item={item} />
-            </ScrollReveal>
+            </div>
           ))}
         </div>
       )}

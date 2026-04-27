@@ -28,18 +28,18 @@ function matchNuevo(pathname) {
 
 const productosNavItems = [
   {
-    href: '/admin/productos/nuevo',
-    label: 'Nuevo producto',
-    icon: Plus,
-    match: matchNuevo,
-    iconClass: 'text-emerald-400',
-  },
-  {
     href: '/admin/productos/catalogo',
     label: 'Catálogo',
     icon: List,
     match: matchCatalogo,
     iconClass: 'text-indigo-300',
+  },
+  {
+    href: '/admin/productos/nuevo',
+    label: 'Nuevo producto',
+    icon: Plus,
+    match: matchNuevo,
+    iconClass: 'text-emerald-400',
   },
 ]
 

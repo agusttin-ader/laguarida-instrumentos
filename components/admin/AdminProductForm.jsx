@@ -41,6 +41,16 @@ function generateSlug(text) {
   return s
 }
 
+function parsePriceAndCurrency(rawPrice) {
+  const raw = String(rawPrice || '').trim()
+  if (!raw) return { amount: '', currency: 'USD' }
+  const upper = raw.toUpperCase()
+  const currency = upper.startsWith('ARS') ? 'ARS' : 'USD'
+  const amountMatch = raw.match(/[\d.,]+/)
+  const amount = amountMatch ? amountMatch[0].replace(',', '.') : ''
+  return { amount, currency }
+}
+
 async function addRecentActivityClient(type, label, productId = null) {
   const stamp = Date.now()
   try {
@@ -71,6 +81,7 @@ export default function AdminProductForm({ mode, editingId = null }) {
     name: '',
     slug: '',
     price: '',
+    currency: 'USD',
     image_url: '',
     description: '',
     mics: '',
@@ -108,10 +119,12 @@ export default function AdminProductForm({ mode, editingId = null }) {
   const [galleryExtraOpen, setGalleryExtraOpen] = useState(false)
 
   function populateFromProduct(p) {
+    const parsedPrice = parsePriceAndCurrency(p.price)
     setForm({
       name: p.name || '',
       slug: p.slug || '',
-      price: p.price || '',
+      price: parsedPrice.amount,
+      currency: parsedPrice.currency,
       image_url: p.image_url || '',
       description: p.description || '',
       mics: p.mics || '',
@@ -189,6 +202,7 @@ export default function AdminProductForm({ mode, editingId = null }) {
     if (mode !== 'create') return
     let nextForm = {
       name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '',
+      currency: 'USD',
       images: [], low_cost: false,
       scale_length: '', neck_profile: '', fingerboard_radius: '', fingerboard_material: '',
       neck_construction: '', nut_width: '', frets: '', bridge: '', tuners: '', hardware_finish: '',
@@ -281,6 +295,9 @@ export default function AdminProductForm({ mode, editingId = null }) {
       }
       const priceNumber = Number(String(form.price).replace(',', '.'))
       if (Number.isNaN(priceNumber)) throw new Error('El precio debe ser un número')
+      if (form.currency !== 'USD' && form.currency !== 'ARS') {
+        throw new Error('Seleccioná la moneda del precio')
+      }
 
       const genSlug = generateSlug(form.name)
       const nameNormalized = String(form.name).trim().toLowerCase()
@@ -306,7 +323,7 @@ export default function AdminProductForm({ mode, editingId = null }) {
       const payload = {
         name: form.name || undefined,
         slug: genSlug || undefined,
-        price: priceNumber,
+        price: `${form.currency} ${priceNumber}`,
         image_url: form.image_url || undefined,
         images: Array.isArray(form.images) && form.images.length ? form.images : undefined,
         description: form.description || undefined,
@@ -551,7 +568,40 @@ export default function AdminProductForm({ mode, editingId = null }) {
               </div>
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-slate-200">Precio</label>
-                <input name="price" value={form.price} onChange={handleModalChange} className="admin-desk-input" />
+                <input
+                  name="price"
+                  value={form.price}
+                  onChange={handleModalChange}
+                  className="admin-desk-input"
+                  inputMode="decimal"
+                  placeholder="Ej: 1500 o 1500.50"
+                />
+                <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <label className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-200">
+                    <input
+                      type="radio"
+                      name="currency"
+                      value="USD"
+                      checked={form.currency === 'USD'}
+                      onChange={handleModalChange}
+                      className="h-4 w-4"
+                      required
+                    />
+                    <span>USD (dólares)</span>
+                  </label>
+                  <label className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-200">
+                    <input
+                      type="radio"
+                      name="currency"
+                      value="ARS"
+                      checked={form.currency === 'ARS'}
+                      onChange={handleModalChange}
+                      className="h-4 w-4"
+                      required
+                    />
+                    <span>Pesos argentinos (ARS)</span>
+                  </label>
+                </div>
               </div>
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-slate-200">Descripción</label>

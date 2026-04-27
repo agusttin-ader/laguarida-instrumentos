@@ -9,6 +9,25 @@ import ImageWithSkeleton from './ImageWithSkeleton'
 import PullToRefresh from './PullToRefresh'
 import { useToast } from './ToastContext'
 import { hapticLight } from '../lib/haptics'
+
+function toSeoStatus(product) {
+  const nameLen = String(product?.name || '').trim().length
+  const descLen = String(product?.description || '').trim().length
+  const hasImage = Boolean(product?.image_url || (Array.isArray(product?.images) && product.images[0]))
+  const okTitle = nameLen >= 20 && nameLen <= 70
+  const okDesc = descLen >= 120 && descLen <= 180
+  const okImage = hasImage
+  const score = [okTitle, okDesc, okImage].filter(Boolean).length
+  if (score === 3) return { label: 'SEO OK', tone: 'ok' }
+  if (score === 2) return { label: 'SEO medio', tone: 'mid' }
+  return { label: 'SEO bajo', tone: 'low' }
+}
+
+function csvEscape(value) {
+  const s = String(value ?? '')
+  if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`
+  return s
+}
 export default function AdminProducts({ showNewProductHeroSection = true }) {
   const router = useRouter()
   const quickInputRef = React.useRef(null)
@@ -32,14 +51,54 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
     if (!Array.isArray(items)) return []
     if (!adminQ || String(adminQ).trim() === '') return items
     const ql = String(adminQ).trim().toLowerCase()
-    return items.filter((p) => (String(p.name || p.slug || '')).toLowerCase().includes(ql))
+    return items.filter((p) => {
+      const hay = [
+        p.name,
+        p.slug,
+        p.model,
+        p.brand,
+      ]
+        .map((v) => String(v || '').toLowerCase())
+        .join(' ')
+      return hay.includes(ql)
+    })
   }, [items, adminQ])
+
+  const dashboardStats = React.useMemo(() => {
+    const total = items.length
+    const lowCost = items.filter((p) => p.low_cost === true).length
+    const missingPrice = items.filter((p) => !String(p.price || '').trim()).length
+    const missingImage = items.filter((p) => !(p.image_url || (Array.isArray(p.images) && p.images[0]))).length
+    const shortDescription = items.filter((p) => String(p.description || '').trim().length > 0 && String(p.description || '').trim().length < 80).length
+    return { total, lowCost, missingPrice, missingImage, shortDescription }
+  }, [items])
+
+  const qualityAlerts = React.useMemo(() => {
+    return items
+      .map((p) => {
+        const reasons = []
+        if (!String(p.price || '').trim()) reasons.push('sin precio')
+        if (!String(p.description || '').trim()) reasons.push('sin descripción')
+        if (String(p.description || '').trim().length > 0 && String(p.description || '').trim().length < 80) reasons.push('descripción corta')
+        if (!(p.image_url || (Array.isArray(p.images) && p.images[0]))) reasons.push('sin imagen')
+        if (!String(p.model || '').trim()) reasons.push('sin modelo')
+        return reasons.length
+          ? {
+              id: p.id,
+              label: p.name || p.slug || p.id,
+              reasons,
+            }
+          : null
+      })
+      .filter(Boolean)
+      .slice(0, 8)
+  }, [items])
 
   useEffect(() => {
     load()
     async function loadActivity() {
       try {
-        const res = await fetch('/api/admin/activity', { credentials: 'include' })
+        const res = await fetch('/api/admin/activity?limit=500', { credentials: 'include' })
         if (res.ok) {
           const list = await res.json()
           setRecentActivity(Array.isArray(list) ? list : [])
@@ -61,6 +120,25 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
     }
     loadActivity()
   }, [])
+
+  const monthlyStats = React.useMemo(() => {
+    const byMonth = new Map()
+    for (const a of recentActivity) {
+      if (!a?.ts) continue
+      const d = new Date(a.ts)
+      if (Number.isNaN(d.getTime())) continue
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+      if (!byMonth.has(key)) {
+        byMonth.set(key, { month: key, create: 0, update: 0, delete: 0, total: 0 })
+      }
+      const row = byMonth.get(key)
+      if (a.type === 'create') row.create += 1
+      if (a.type === 'update') row.update += 1
+      if (a.type === 'delete') row.delete += 1
+      row.total += 1
+    }
+    return [...byMonth.values()].sort((a, b) => (a.month < b.month ? 1 : -1))
+  }, [recentActivity])
 
   useEffect(() => {
     function onKeyDown(e) {
@@ -99,6 +177,63 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
     } finally {
       setLoading(false)
     }
+  }
+
+  function goToEdit(productId) {
+    if (!productId) return
+    router.push(`/admin/productos/${encodeURIComponent(productId)}/editar`)
+  }
+
+  function exportCatalogCsv() {
+    const headers = [
+      'id',
+      'slug',
+      'name',
+      'price',
+      'brand',
+      'model',
+      'low_cost',
+      'image_url',
+      'description',
+    ]
+    const rows = items.map((p) => [
+      p.id,
+      p.slug,
+      p.name,
+      p.price,
+      p.brand || '',
+      p.model || '',
+      p.low_cost ? 'true' : 'false',
+      p.image_url || '',
+      String(p.description || '').replace(/\s+/g, ' ').trim(),
+    ])
+    const csv = [headers, ...rows].map((row) => row.map(csvEscape).join(',')).join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `catalogo-${new Date().toISOString().slice(0, 10)}.csv`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+    toast('CSV exportado', 'success')
+  }
+
+  function exportMonthlyStatsCsv() {
+    const headers = ['mes', 'altas', 'ediciones', 'ventas', 'total_movimientos']
+    const rows = monthlyStats.map((m) => [m.month, m.create, m.update, m.delete, m.total])
+    const csv = [headers, ...rows].map((row) => row.map(csvEscape).join(',')).join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `estadisticas-mensuales-${new Date().toISOString().slice(0, 10)}.csv`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+    toast('Estadísticas mensuales exportadas', 'success')
   }
 
   async function handleDelete(id, name) {
@@ -187,12 +322,18 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
       run: () => load(),
     },
     {
+      id: 'export-csv',
+      label: 'Exportar catálogo CSV',
+      hint: 'Descargar backup del catálogo',
+      run: () => exportCatalogCsv(),
+    },
+    {
       id: 'clear-search',
       label: 'Limpiar búsqueda',
       hint: 'Vaciar filtro actual',
       run: () => setAdminQ(''),
     },
-  ]), [listOpen, router])
+  ]), [listOpen, router, items])
 
   const quickFiltered = React.useMemo(() => {
     const q = String(quickQ || '').trim().toLowerCase()
@@ -226,7 +367,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
       e.stopPropagation()
       return
     }
-    router.push(`/admin/productos/${encodeURIComponent(p.id)}/editar`)
+    goToEdit(p.id)
   }
 
   function handleRowDelete(e, id, name) {
@@ -374,6 +515,117 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
         ) : null}
 
         <section className="admin-desk-card rounded-2xl p-4 sm:p-6 md:p-7">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="admin-desk-section-title">Resumen del catálogo</h2>
+              <p className="admin-desk-section-desc">Estado general, pendientes y exportación rápida.</p>
+            </div>
+            <button
+              type="button"
+              onClick={exportCatalogCsv}
+              className="admin-btn-interact admin-desk-btn-secondary no-custom-btn inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm md:w-auto"
+            >
+              Exportar CSV
+            </button>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
+              <p className="text-[11px] uppercase tracking-wide text-slate-400">Total</p>
+              <p className="mt-1 text-lg font-semibold text-slate-100">{dashboardStats.total}</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
+              <p className="text-[11px] uppercase tracking-wide text-slate-400">Low Cost</p>
+              <p className="mt-1 text-lg font-semibold text-slate-100">{dashboardStats.lowCost}</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
+              <p className="text-[11px] uppercase tracking-wide text-slate-400">Sin precio</p>
+              <p className="mt-1 text-lg font-semibold text-amber-300">{dashboardStats.missingPrice}</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
+              <p className="text-[11px] uppercase tracking-wide text-slate-400">Sin imagen</p>
+              <p className="mt-1 text-lg font-semibold text-amber-300">{dashboardStats.missingImage}</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
+              <p className="text-[11px] uppercase tracking-wide text-slate-400">Desc. corta</p>
+              <p className="mt-1 text-lg font-semibold text-amber-300">{dashboardStats.shortDescription}</p>
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-white/10 bg-[#141a24]">
+            <div className="border-b border-white/10 px-4 py-2.5">
+              <p className="text-sm font-medium text-slate-200">Pendientes de calidad</p>
+            </div>
+            {qualityAlerts.length === 0 ? (
+              <p className="px-4 py-4 text-sm text-emerald-300">Todo en orden por ahora.</p>
+            ) : (
+              <div className="divide-y divide-white/10">
+                {qualityAlerts.map((a) => (
+                  <button
+                    key={a.id}
+                    type="button"
+                    onClick={() => goToEdit(a.id)}
+                    className="no-custom-btn flex w-full items-center justify-between gap-3 px-4 py-3 text-left hover:bg-white/[0.04]"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-slate-100">{a.label}</p>
+                      <p className="mt-1 text-xs text-amber-300">{a.reasons.join(' · ')}</p>
+                    </div>
+                    <span className="shrink-0 text-xs text-slate-400">Editar</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="admin-desk-card rounded-2xl p-4 sm:p-6 md:p-7">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="admin-desk-section-title">Estadísticas mensuales</h2>
+              <p className="admin-desk-section-desc">Movimientos por mes (altas, ediciones y ventas).</p>
+            </div>
+            <button
+              type="button"
+              onClick={exportMonthlyStatsCsv}
+              className="admin-btn-interact admin-desk-btn-secondary no-custom-btn inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm md:w-auto"
+            >
+              Exportar tabla mensual
+            </button>
+          </div>
+          <div className="mt-4 overflow-x-auto rounded-xl border border-white/10">
+            <table className="min-w-full text-left text-sm">
+              <thead className="bg-white/[0.04] text-slate-300">
+                <tr>
+                  <th className="px-4 py-2.5 font-semibold">Mes</th>
+                  <th className="px-4 py-2.5 font-semibold">Altas</th>
+                  <th className="px-4 py-2.5 font-semibold">Ediciones</th>
+                  <th className="px-4 py-2.5 font-semibold">Ventas</th>
+                  <th className="px-4 py-2.5 font-semibold">Total</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/10 text-slate-200">
+                {monthlyStats.length === 0 ? (
+                  <tr>
+                    <td className="px-4 py-4 text-slate-400" colSpan={5}>Sin datos aún para estadísticas mensuales.</td>
+                  </tr>
+                ) : (
+                  monthlyStats.map((m) => (
+                    <tr key={m.month}>
+                      <td className="px-4 py-2.5">{m.month}</td>
+                      <td className="px-4 py-2.5">{m.create}</td>
+                      <td className="px-4 py-2.5">{m.update}</td>
+                      <td className="px-4 py-2.5">{m.delete}</td>
+                      <td className="px-4 py-2.5 font-semibold">{m.total}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="admin-desk-card rounded-2xl p-4 sm:p-6 md:p-7">
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
             <div>
               <h2 className="admin-desk-section-title">Actividad reciente</h2>
@@ -398,7 +650,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
                 {recentActivity.map((a) => (
                   <div key={a.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.05] px-4 py-2.5">
                     <p className="truncate text-sm text-slate-200">
-                      {a.type === 'create' ? 'Creaste' : a.type === 'update' ? 'Actualizaste' : 'Eliminaste'}{' '}
+                      {a.type === 'create' ? 'Creaste' : a.type === 'update' ? 'Actualizaste' : 'Vendiste'}{' '}
                       <span className="font-semibold text-white">{a.label}</span>
                     </p>
                     <span className="whitespace-nowrap text-[11px] text-slate-400">{a.time}</span>
@@ -476,6 +728,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
           <div className={`mt-4 divide-y divide-white/10 overflow-hidden rounded-xl border border-white/12 bg-[#141a24] transition-all duration-300 ease-out ${listOpen ? 'max-h-[2000px] py-0' : 'max-h-0 border-transparent'}`}>
             {filteredItems.map((p) => {
               const imgSrc = imageService.resolve(p.image_url || (p.images && p.images[0]))
+              const seo = toSeoStatus(p)
               return (
                 <div
                   key={p.id}
@@ -496,7 +749,25 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
                     </div>
                     <div className="min-w-0">
                       <div className="break-words font-medium leading-tight text-slate-100">{p.name || p.slug || p.id}</div>
-                      <div className="text-sm text-slate-300">{p.price || '-'}</div>
+                      <div className="mt-1 flex flex-wrap items-center gap-2">
+                        <span className="text-sm text-slate-300">{p.price || '-'}</span>
+                        {p.low_cost ? (
+                          <span className="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-300">
+                            Low cost
+                          </span>
+                        ) : null}
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+                            seo.tone === 'ok'
+                              ? 'border border-emerald-400/30 bg-emerald-500/10 text-emerald-300'
+                              : seo.tone === 'mid'
+                                ? 'border border-amber-400/30 bg-amber-500/10 text-amber-300'
+                                : 'border border-rose-400/30 bg-rose-500/10 text-rose-300'
+                          }`}
+                        >
+                          {seo.label}
+                        </span>
+                      </div>
                     </div>
                   </div>
                   <div className="grid w-full grid-cols-2 items-center gap-2 sm:flex sm:w-auto">

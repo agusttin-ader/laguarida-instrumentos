@@ -2,8 +2,6 @@
 
 import React, { useMemo } from 'react'
 import ProductCard from './ProductCard'
-import ScrollReveal from './ScrollReveal'
-import SkeletonProductCard from './SkeletonProductCard'
 import { useProducts } from '../hooks/useProducts'
 
 export default function ProductGrid({
@@ -49,16 +47,9 @@ export default function ProductGrid({
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 gap-5 max-[767px]:gap-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div
-            key={i}
-            className="home-grid-product-cell reveal reveal--visible"
-            style={{ '--reveal-delay': `${(i - 1) * 60}ms` }}
-          >
-            <SkeletonProductCard />
-          </div>
-        ))}
+      <div className="w-full py-10 md:py-14 flex flex-col items-center justify-center gap-3">
+        <div className="app-loading-spinner" aria-hidden />
+        <p className="text-sm text-[var(--dark-muted)]">Cargando productos…</p>
       </div>
     )
   }
@@ -79,15 +70,9 @@ export default function ProductGrid({
 
       <div className="grid w-full min-w-0 grid-cols-1 gap-5 max-[767px]:gap-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
         {filteredItems.map((item, idx) => (
-          <ScrollReveal
-            key={`${item.id ?? item.slug ?? idx}-${filters.q || ''}`}
-            className="home-grid-product-cell min-w-0 w-full"
-            delay={Math.min(idx, 12) * 55}
-            threshold={0.06}
-            rootMargin="0px 0px -10% 0px"
-          >
+          <div key={`${item.id ?? item.slug ?? idx}-${filters.q || ''}`} className="home-grid-product-cell min-w-0 w-full">
             <ProductCard item={item} priority={idx < 3} primaryImageOnly={primaryImageOnly} />
-          </ScrollReveal>
+          </div>
         ))}
       </div>
     </div>

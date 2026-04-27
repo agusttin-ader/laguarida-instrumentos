@@ -26,10 +26,8 @@ export default function AdminLayout({ children }) {
       <RegisterAdminHideSplash />
       <div id="admin-boot-splash" className="admin-boot-splash-visible" aria-hidden="false">
         <div className="admin-splash-inner">
-          <div className="admin-splash-logo">
-            <img src="/images/logo/og-pick-icon.PNG" alt="" width={96} height={96} fetchPriority="high" />
-          </div>
-          <p className="admin-splash-label">La Guarida Admin</p>
+          <div className="admin-splash-spinner" aria-hidden />
+          <p className="admin-splash-label">Cargando admin</p>
         </div>
       </div>
       <div className={`${styles.adminBody} admin-root min-h-screen`}>

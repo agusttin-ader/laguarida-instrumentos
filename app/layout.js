@@ -8,6 +8,7 @@ import DisableZoomInApp from '../components/DisableZoomInApp'
 import { ToastProvider } from '../components/ToastContext'
 import { HomeHeroImageProvider } from '../context/HomeHeroImageContext'
 import { absoluteUrl, getSiteUrl } from '../lib/siteUrl'
+import { Analytics } from '@vercel/analytics/react'
 
 const siteUrl = getSiteUrl()
 
@@ -82,6 +83,7 @@ export default function RootLayout({ children }) {
             <SiteShell>{children}</SiteShell>
           </HomeHeroImageProvider>
           <ServiceWorkerRegister />
+          <Analytics />
         </ToastProvider>
       </body>
     </html>

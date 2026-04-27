@@ -49,6 +49,13 @@ export default function Footer({ compact = false }){
             </div>
           </div>
         </div>
+        {!compact && (
+          <div className="mt-5 sm:mt-6 flex items-center justify-center">
+            <p className="footer-credit text-[11px] sm:text-xs tracking-[0.08em] uppercase">
+              Diseñada por <span className="footer-credit-name">Agustín Ader</span>
+            </p>
+          </div>
+        )}
       </div>
     </footer>
   )
