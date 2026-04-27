@@ -16,6 +16,8 @@ const MAX_CARD_IMAGES = 3
 const SWIPE_DISTANCE_THRESHOLD = 48
 /** Velocidad mínima (px/ms) para flick rápido */
 const SWIPE_VELOCITY_THRESHOLD = 0.35
+/** Solo montar la foto actual y la adyacente: evita 2–3 descargas por card al cargar el grid */
+const GALLERY_MOUNT_RADIUS = 1
 
 const ProductCard = React.memo(function ProductCard({
   item,
@@ -117,33 +119,43 @@ const ProductCard = React.memo(function ProductCard({
     >
       {imageList.length > 0 ? (
         <>
-          <div className={`absolute inset-0 bg-[var(--dark-surface-2)] transition-opacity duration-300 ${currentImageReady ? 'opacity-0 pointer-events-none' : 'animate-pulse'}`} aria-hidden />
-          {imageList.map((src, idx) => (
-            <div
-              key={idx}
-              className="absolute inset-0 transition-opacity duration-[360ms] ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none"
-              style={{
-                opacity: idx === galleryIndex ? 1 : 0,
-                pointerEvents: idx === galleryIndex ? 'auto' : 'none'
-              }}
-            >
+          <div
+            className={`absolute inset-0 z-0 bg-[var(--dark-surface-2)] transition-opacity duration-200 ${currentImageReady ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+            aria-hidden
+          />
+          {imageList.map((src, idx) => {
+            if (Math.abs(idx - galleryIndex) > GALLERY_MOUNT_RADIUS) return null
+            const isActive = idx === galleryIndex
+            const isMainSlot = idx === 0
+            const eager = Boolean(priority && isMainSlot && isActive)
+            return (
+              <div
+                key={idx}
+                className="absolute inset-0 transition-opacity duration-[360ms] ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none"
+                style={{
+                  opacity: isActive ? 1 : 0,
+                  pointerEvents: isActive ? 'auto' : 'none',
+                  zIndex: isActive ? 1 : 0,
+                }}
+              >
                 <Image
                   src={src}
                   alt={idx === 0 ? (titleText || 'Imagen del producto') : `Imagen ${idx + 1} de ${titleText || 'producto'}`}
                   fill
                   sizes={CARD_IMAGE_SIZES}
-                  quality={72}
-                  priority={Boolean(priority && idx === 0)}
-                  loading={priority && idx === 0 ? 'eager' : 'lazy'}
-                  fetchPriority={priority && idx === 0 ? 'high' : 'low'}
+                  quality={68}
+                  priority={Boolean(priority && isMainSlot && isActive)}
+                  loading={eager ? 'eager' : 'lazy'}
+                  fetchPriority={eager ? 'high' : isActive ? 'auto' : 'low'}
                   decoding="async"
                   onLoad={() => setLoadedIndices((prev) => new Set(prev).add(idx))}
                   onError={() => {}}
                   className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} max-[768px]:object-contain max-[768px]:object-center transform-gpu [backface-visibility:hidden] transition-opacity duration-[300ms] ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none ${objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover'}`}
                   style={{ objectPosition: 'center' }}
                 />
-            </div>
-          ))}
+              </div>
+            )
+          })}
         </>
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-[var(--dark-surface-2)] animate-pulse">

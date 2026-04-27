@@ -3,10 +3,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { CaretDown } from 'phosphor-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-/** Principal + respaldo (misma ruta que en `public/`; el PNG por si falla el JPG en deploy o CDN). */
-const HERO_PRIMARY = '/images/hero5.jpg'
+/** Variantes optimizadas para balancear carga y calidad por dispositivo. */
+const HERO_PRIMARY_DESKTOP = '/images/hero5-desktop.jpg'
+const HERO_PRIMARY_MOBILE = '/images/hero5-mobile.jpg'
 const HERO_FALLBACK = '/images/hero.PNG'
 
 /** Copy principal del hero — tono poético / refugio. */
@@ -16,11 +17,20 @@ const MOBILE_HEADLINE = 'Tu refugio del buen sonido'
 const MOBILE_SUBHEADLINE = 'Instrumentos con historia y trato cercano.'
 
 /**
- * Hero con `hero5.jpg` (cover). Indicador inferior tipo alopatagonia.vercel.app (texto + flecha, sin caja).
+ * Hero con imagen optimizada (cover). Indicador inferior tipo alopatagonia.vercel.app (texto + flecha, sin caja).
  * @param {{ product?: { name?: string, category?: string, slug?: string } | null }} props
  */
 export default function HeroMarketing({ product = null }) {
-  const [heroSrc, setHeroSrc] = useState(HERO_PRIMARY)
+  const [heroSrc, setHeroSrc] = useState(HERO_PRIMARY_DESKTOP)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mq = window.matchMedia('(max-width: 767px)')
+    const syncSrc = () => setHeroSrc(mq.matches ? HERO_PRIMARY_MOBILE : HERO_PRIMARY_DESKTOP)
+    syncSrc()
+    mq.addEventListener('change', syncSrc)
+    return () => mq.removeEventListener('change', syncSrc)
+  }, [])
 
   const kicker =
     product?.category && String(product.category).trim()
@@ -46,15 +56,12 @@ export default function HeroMarketing({ product = null }) {
     <div
       className="hero-home relative isolate min-h-[100dvh] w-full max-md:min-h-0 overflow-hidden bg-[#0a0a0a]"
       style={{
-        backgroundImage: `url(${HERO_PRIMARY})`,
+        backgroundImage: `url(${heroSrc})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center 42%',
       }}
     >
-      {/*
-        unoptimized: el JPG es muy grande (p. ej. 6000px); el optimizador de Next a veces falla o tarda en serverless.
-        La capa background arriba evita “hueco” mientras hidrata el cliente (HomeHeroDynamic es ssr:false).
-      */}
+      {/* La capa background evita “hueco” mientras hidrata el cliente (HomeHeroDynamic es ssr:false). */}
       <div className="pointer-events-none absolute inset-0 z-0">
         <Image
           key={heroSrc}
@@ -63,12 +70,12 @@ export default function HeroMarketing({ product = null }) {
           fill
           priority
           fetchPriority="high"
-          quality={70}
+          quality={64}
           sizes="100vw"
           unoptimized
           className="object-cover object-[center_42%] md:object-center"
           onError={() =>
-            setHeroSrc((prev) => (prev === HERO_PRIMARY ? HERO_FALLBACK : prev))
+            setHeroSrc((prev) => (prev === HERO_FALLBACK ? prev : HERO_FALLBACK))
           }
         />
       </div>

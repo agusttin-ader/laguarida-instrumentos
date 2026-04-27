@@ -2,8 +2,18 @@
 
 import React from 'react'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { CaretLeft } from 'phosphor-react'
-import AdminProductForm from '../../../../components/admin/AdminProductForm'
+
+const AdminProductForm = dynamic(() => import('../../../../components/admin/AdminProductForm'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex flex-col items-center justify-center gap-3 py-16" aria-busy="true">
+      <span className="app-loading-spinner" aria-hidden />
+      <p className="text-sm text-slate-400">Cargando formulario…</p>
+    </div>
+  ),
+})
 
 export default function AdminProductoNuevoPage() {
   return (

@@ -377,9 +377,9 @@ export default async function GuitarPage({ params }) {
         <section className="container-tight mt-10 sm:mt-12 md:mt-16 pb-10 md:pb-16" aria-labelledby="related-heading">
           <h2 id="related-heading" className="section-title-premium section-underline-ocre text-[var(--dark-text-primary)] mb-4 sm:mb-6">También te recomendamos</h2>
           <div className="flex overflow-x-auto gap-4 sm:gap-5 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 lg:gap-8 snap-x snap-mandatory scroll-smooth">
-            {relatedProducts.map(r => (
+            {relatedProducts.map((r, idx) => (
               <div key={r.id || r.slug} className="flex-shrink-0 w-[min(280px,85vw)] sm:w-auto snap-center">
-                <ProductCard item={r} />
+                <ProductCard item={r} priority={idx < 2} />
               </div>
             ))}
           </div>

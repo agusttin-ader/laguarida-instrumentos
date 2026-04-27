@@ -1,26 +1,28 @@
 "use client"
 /* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars, no-empty */
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useDeferredValue, useEffect, useMemo, useState, startTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import normalizeProduct from '../lib/utils/normalizeProduct'
 import imageService from '../lib/utils/imageService'
-import ImageWithSkeleton from './ImageWithSkeleton'
 import PullToRefresh from './PullToRefresh'
 import { useToast } from './ToastContext'
 import { hapticLight } from '../lib/haptics'
 
-function toSeoStatus(product) {
-  const nameLen = String(product?.name || '').trim().length
-  const descLen = String(product?.description || '').trim().length
-  const hasImage = Boolean(product?.image_url || (Array.isArray(product?.images) && product.images[0]))
-  const okTitle = nameLen >= 20 && nameLen <= 70
-  const okDesc = descLen >= 120 && descLen <= 180
-  const okImage = hasImage
-  const score = [okTitle, okDesc, okImage].filter(Boolean).length
-  if (score === 3) return { label: 'SEO OK', tone: 'ok' }
-  if (score === 2) return { label: 'SEO medio', tone: 'mid' }
-  return { label: 'SEO bajo', tone: 'low' }
+const ACTIVITY_FETCH_LIMIT = 200
+const CATALOG_PAGE_SIZE = 35
+const LS_DEBOUNCE_MS = 450
+
+function useDebouncedLocalStorage(key, value) {
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const t = setTimeout(() => {
+      try {
+        localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value))
+      } catch { /* empty */ }
+    }, LS_DEBOUNCE_MS)
+    return () => clearTimeout(t)
+  }, [key, value])
 }
 
 function csvEscape(value) {
@@ -28,6 +30,118 @@ function csvEscape(value) {
   if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`
   return s
 }
+
+const PRODUCT_STATUS_OPTIONS = [
+  { value: 'available', label: 'Disponible' },
+  { value: 'reserved', label: 'Reservada' },
+  { value: 'sold', label: 'Vendida' },
+]
+const PIPELINE_OPTIONS = [
+  { value: 'new', label: 'Nuevo lead' },
+  { value: 'responded', label: 'Respondido' },
+  { value: 'negotiation', label: 'Negociación' },
+  { value: 'closed', label: 'Cerrado' },
+]
+
+const DEFAULT_OPS_STATIC = Object.freeze({ status: 'available', pipeline: 'new' })
+
+const AdminCatalogRow = React.memo(function AdminCatalogRow({
+  product: p,
+  ops,
+  deletingId,
+  onRowEdit,
+  onRowDelete,
+  onStatusChange,
+  onPipelineChange,
+  onContextMenu,
+  onTouchStart,
+  onTouchEnd,
+  onTouchMove,
+  onTouchCancel,
+}) {
+  const imgSrc = imageService.resolve(p.image_url || (p.images && p.images[0]))
+  return (
+    <div
+      className="admin-item flex touch-manipulation flex-col gap-3 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3.5"
+      onContextMenu={onContextMenu}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      onTouchMove={onTouchMove}
+      onTouchCancel={onTouchCancel}
+    >
+      <div className="flex min-w-0 items-center gap-3">
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/12 bg-[#131820] shadow-inner sm:h-12 sm:w-12 md:h-14 md:w-14">
+          {imgSrc ? (
+            <img
+              src={imgSrc}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover"
+              width={56}
+              height={56}
+            />
+          ) : (
+            <div className="image-placeholder h-full w-full" />
+          )}
+        </div>
+        <div className="min-w-0">
+          <div className="break-words font-medium leading-tight text-slate-100">{p.name || p.slug || p.id}</div>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <span className="text-sm text-slate-300">{p.price || '-'}</span>
+            {p.low_cost ? (
+              <span className="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-300">
+                Low cost
+              </span>
+            ) : null}
+          </div>
+        </div>
+      </div>
+      <div className="grid w-full grid-cols-2 items-center gap-2 sm:flex sm:w-auto">
+        <select
+          value={ops.status}
+          onChange={(e) => onStatusChange(p.id, e.target.value)}
+          className="admin-desk-input h-auto min-h-0 px-2.5 py-2 text-[12px] sm:text-xs"
+        >
+          {PRODUCT_STATUS_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
+        <select
+          value={ops.pipeline}
+          onChange={(e) => onPipelineChange(p.id, e.target.value)}
+          className="admin-desk-input h-auto min-h-0 px-2.5 py-2 text-[12px] sm:text-xs"
+        >
+          {PIPELINE_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
+        <button
+          type="button"
+          onClick={(e) => onRowEdit(e, p)}
+          className="admin-btn-interact admin-desk-btn-secondary no-custom-btn inline-flex items-center justify-center gap-1.5 whitespace-nowrap px-2.5 py-2 text-[13px] sm:px-3 sm:py-1.5 sm:text-sm"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20h9" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z" /></svg>
+          Editar
+        </button>
+        <button
+          type="button"
+          className="admin-btn-interact admin-desk-btn-danger no-custom-btn inline-flex items-center justify-center gap-1.5 whitespace-nowrap px-2.5 py-2 text-[13px] disabled:cursor-not-allowed disabled:opacity-60 sm:px-3 sm:py-1.5 sm:text-sm"
+          onClick={(e) => onRowDelete(e, p.id, p.name)}
+          disabled={deletingId === p.id}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 7h12M9 7V5h6v2m-7 3v7m4-7v7m4-7v7M5 7l1 13h12l1-13" /></svg>
+          {deletingId === p.id ? 'Procesando' : 'Vendido/Eliminar'}
+        </button>
+      </div>
+    </div>
+  )
+}, (a, b) =>
+  a.product.id === b.product.id
+  && a.ops.status === b.ops.status
+  && a.ops.pipeline === b.ops.pipeline
+  && a.deletingId === b.deletingId)
+
 export default function AdminProducts({ showNewProductHeroSection = true }) {
   const router = useRouter()
   const quickInputRef = React.useRef(null)
@@ -43,14 +157,30 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
   const [recentActivity, setRecentActivity] = useState([])
   const [adminQ, setAdminQ] = useState('')
   const [actionProduct, setActionProduct] = useState(null)
+  const [opsByProduct, setOpsByProduct] = useState({})
+  const [tasks, setTasks] = useState([])
+  const [newTaskText, setNewTaskText] = useState('')
+  const [newTaskProductId, setNewTaskProductId] = useState('')
+  const [saleDraft, setSaleDraft] = useState({ productId: '', buyer: '', channel: 'WhatsApp', finalPrice: '', notes: '' })
+  const [salesByProduct, setSalesByProduct] = useState({})
+  const [historyByProduct, setHistoryByProduct] = useState({})
+  const [historyProductId, setHistoryProductId] = useState('')
+  const [toolsOpen, setToolsOpen] = useState(false)
+  const [catalogVisible, setCatalogVisible] = useState(CATALOG_PAGE_SIZE)
   const longPressTimerRef = React.useRef(null)
   const longPressSuppressRef = React.useRef(false)
   const { toast } = useToast()
+  const deferredAdminQ = useDeferredValue(adminQ)
 
-  const filteredItems = React.useMemo(() => {
+  useDebouncedLocalStorage('admin:ops-by-product:v1', opsByProduct)
+  useDebouncedLocalStorage('admin:tasks:v1', tasks)
+  useDebouncedLocalStorage('admin:sales-by-product:v1', salesByProduct)
+  useDebouncedLocalStorage('admin:history-by-product:v1', historyByProduct)
+
+  const filteredItems = useMemo(() => {
     if (!Array.isArray(items)) return []
-    if (!adminQ || String(adminQ).trim() === '') return items
-    const ql = String(adminQ).trim().toLowerCase()
+    if (!deferredAdminQ || String(deferredAdminQ).trim() === '') return items
+    const ql = String(deferredAdminQ).trim().toLowerCase()
     return items.filter((p) => {
       const hay = [
         p.name,
@@ -62,9 +192,29 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
         .join(' ')
       return hay.includes(ql)
     })
-  }, [items, adminQ])
+  }, [items, deferredAdminQ])
 
-  const dashboardStats = React.useMemo(() => {
+  const productSelectOptions = useMemo(
+    () => items.map((p) => ({ id: p.id, label: p.name || p.slug || p.id })),
+    [items],
+  )
+
+  const productNameById = useMemo(() => {
+    const m = new Map()
+    for (const p of items) m.set(String(p.id), p.name || p.slug || p.id)
+    return m
+  }, [items])
+
+  useEffect(() => {
+    setCatalogVisible(CATALOG_PAGE_SIZE)
+  }, [adminQ, items.length])
+
+  const pagedCatalogItems = useMemo(
+    () => filteredItems.slice(0, catalogVisible),
+    [filteredItems, catalogVisible],
+  )
+
+  const dashboardStats = useMemo(() => {
     const total = items.length
     const lowCost = items.filter((p) => p.low_cost === true).length
     const missingPrice = items.filter((p) => !String(p.price || '').trim()).length
@@ -73,7 +223,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
     return { total, lowCost, missingPrice, missingImage, shortDescription }
   }, [items])
 
-  const qualityAlerts = React.useMemo(() => {
+  const qualityAlerts = useMemo(() => {
     return items
       .map((p) => {
         const reasons = []
@@ -94,17 +244,49 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
       .slice(0, 8)
   }, [items])
 
+  const load = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/products', { credentials: 'include' })
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+      const data = await res.json()
+      setItems(Array.isArray(data) ? data.map((d) => normalizeProduct(d)) : [])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    try {
+      const opsRaw = localStorage.getItem('admin:ops-by-product:v1')
+      const tasksRaw = localStorage.getItem('admin:tasks:v1')
+      const salesRaw = localStorage.getItem('admin:sales-by-product:v1')
+      const historyRaw = localStorage.getItem('admin:history-by-product:v1')
+      if (opsRaw) setOpsByProduct(JSON.parse(opsRaw) || {})
+      if (tasksRaw) setTasks(Array.isArray(JSON.parse(tasksRaw)) ? JSON.parse(tasksRaw) : [])
+      if (salesRaw) setSalesByProduct(JSON.parse(salesRaw) || {})
+      if (historyRaw) setHistoryByProduct(JSON.parse(historyRaw) || {})
+    } catch { /* empty */ }
+  }, [])
+
   useEffect(() => {
     load()
+    let cancelled = false
     async function loadActivity() {
       try {
-        const res = await fetch('/api/admin/activity?limit=500', { credentials: 'include' })
+        const res = await fetch(`/api/admin/activity?limit=${ACTIVITY_FETCH_LIMIT}`, { credentials: 'include' })
+        if (cancelled) return
         if (res.ok) {
           const list = await res.json()
           setRecentActivity(Array.isArray(list) ? list : [])
           return
         }
       } catch { /* empty */ }
+      if (cancelled) return
       try {
         const raw = localStorage.getItem('admin:recent-activity:v1')
         if (raw) {
@@ -118,10 +300,22 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
         }
       } catch { /* empty */ }
     }
-    loadActivity()
-  }, [])
+    const schedule =
+      typeof window !== 'undefined' && typeof window.requestIdleCallback === 'function'
+        ? window.requestIdleCallback(() => { loadActivity() }, { timeout: 1800 })
+        : setTimeout(loadActivity, 400)
+    return () => {
+      cancelled = true
+      if (typeof window !== 'undefined' && typeof window.cancelIdleCallback === 'function') {
+        window.cancelIdleCallback(schedule)
+      } else {
+        clearTimeout(schedule)
+      }
+    }
+  }, [load])
 
-  const monthlyStats = React.useMemo(() => {
+  const monthlyStats = useMemo(() => {
+    if (!toolsOpen) return []
     const byMonth = new Map()
     for (const a of recentActivity) {
       if (!a?.ts) continue
@@ -138,7 +332,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
       row.total += 1
     }
     return [...byMonth.values()].sort((a, b) => (a.month < b.month ? 1 : -1))
-  }, [recentActivity])
+  }, [recentActivity, toolsOpen])
 
   useEffect(() => {
     function onKeyDown(e) {
@@ -163,21 +357,6 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
     const t = setTimeout(() => quickInputRef.current?.focus(), 10)
     return () => clearTimeout(t)
   }, [quickOpen])
-
-  async function load() {
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await fetch('/api/products', { credentials: 'include' })
-      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
-      const data = await res.json()
-      setItems(Array.isArray(data) ? data.map((d) => normalizeProduct(d)) : [])
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
-    } finally {
-      setLoading(false)
-    }
-  }
 
   function goToEdit(productId) {
     if (!productId) return
@@ -236,6 +415,89 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
     toast('Estadísticas mensuales exportadas', 'success')
   }
 
+  function addProductHistory(productId, message) {
+    if (!productId || !message) return
+    const entry = {
+      id: `h-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      ts: Date.now(),
+      message,
+    }
+    setHistoryByProduct((prev) => ({
+      ...prev,
+      [productId]: [entry, ...(Array.isArray(prev[productId]) ? prev[productId] : [])].slice(0, 80),
+    }))
+  }
+
+  function updateProductOps(productId, partial) {
+    if (!productId) return
+    setOpsByProduct((prev) => {
+      const current = prev[productId] || DEFAULT_OPS_STATIC
+      const next = { ...current, ...partial }
+      return { ...prev, [productId]: next }
+    })
+  }
+
+  function setProductStatus(productId, value) {
+    updateProductOps(productId, { status: value })
+    const p = items.find((x) => String(x.id) === String(productId))
+    addProductHistory(productId, `Estado cambiado a ${PRODUCT_STATUS_OPTIONS.find((o) => o.value === value)?.label || value}.`)
+    if (p) addRecentActivity('update', `${p.name || p.slug || p.id} · estado ${value}`, productId)
+  }
+
+  function setProductPipeline(productId, value) {
+    updateProductOps(productId, { pipeline: value })
+    const p = items.find((x) => String(x.id) === String(productId))
+    addProductHistory(productId, `Pipeline: ${PIPELINE_OPTIONS.find((o) => o.value === value)?.label || value}.`)
+    if (p) addRecentActivity('update', `${p.name || p.slug || p.id} · pipeline ${value}`, productId)
+  }
+
+  function addTask() {
+    const text = String(newTaskText || '').trim()
+    if (!text) return
+    const task = {
+      id: `t-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      text,
+      productId: newTaskProductId || null,
+      done: false,
+      createdAt: Date.now(),
+    }
+    setTasks((prev) => [task, ...prev].slice(0, 120))
+    if (task.productId) addProductHistory(task.productId, `Nueva tarea: ${text}`)
+    setNewTaskText('')
+    setNewTaskProductId('')
+    toast('Tarea creada', 'success')
+  }
+
+  function toggleTaskDone(taskId) {
+    setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, done: !t.done } : t)))
+  }
+
+  function removeTask(taskId) {
+    setTasks((prev) => prev.filter((t) => t.id !== taskId))
+  }
+
+  function saveSaleRecord() {
+    const productId = saleDraft.productId
+    if (!productId) {
+      toast('Seleccioná un producto para registrar venta', 'error')
+      return
+    }
+    const record = {
+      buyer: String(saleDraft.buyer || '').trim(),
+      channel: String(saleDraft.channel || '').trim() || 'WhatsApp',
+      finalPrice: String(saleDraft.finalPrice || '').trim(),
+      notes: String(saleDraft.notes || '').trim(),
+      soldAt: Date.now(),
+    }
+    setSalesByProduct((prev) => ({ ...prev, [productId]: record }))
+    updateProductOps(productId, { status: 'sold', pipeline: 'closed' })
+    addProductHistory(productId, `Venta registrada (${record.channel}${record.finalPrice ? ` · ${record.finalPrice}` : ''}).`)
+    const p = items.find((x) => String(x.id) === String(productId))
+    if (p) addRecentActivity('delete', p.name || p.slug || p.id, productId)
+    setSaleDraft({ productId: '', buyer: '', channel: 'WhatsApp', finalPrice: '', notes: '' })
+    toast('Venta registrada', 'success')
+  }
+
   async function handleDelete(id, name) {
     const label = name || id
     if (!confirm(`¿Eliminar "${label}"? Esta acción no se puede deshacer.`)) return
@@ -290,7 +552,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
     } catch { /* empty */ }
   }
 
-  const quickActions = React.useMemo(() => ([
+  const quickActions = useMemo(() => ([
     {
       id: 'create',
       label: 'Crear producto',
@@ -301,14 +563,14 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
       id: 'toggle-list',
       label: listOpen ? 'Ocultar productos' : 'Mostrar productos',
       hint: 'Alternar visibilidad de la lista',
-      run: () => setListOpen((v) => !v),
+      run: () => startTransition(() => setListOpen((v) => !v)),
     },
     {
       id: 'focus-search',
       label: 'Buscar productos',
       hint: 'Enfocar campo de búsqueda',
       run: () => {
-        setListOpen(true)
+        startTransition(() => setListOpen(true))
         setTimeout(() => {
           const el = document.getElementById('admin-search-input')
           if (el) el.focus()
@@ -333,9 +595,9 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
       hint: 'Vaciar filtro actual',
       run: () => setAdminQ(''),
     },
-  ]), [listOpen, router, items])
+  ]), [listOpen, router, items, load])
 
-  const quickFiltered = React.useMemo(() => {
+  const quickFiltered = useMemo(() => {
     const q = String(quickQ || '').trim().toLowerCase()
     if (!q) return quickActions
     return quickActions.filter((a) =>
@@ -582,6 +844,122 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
         <section className="admin-desk-card rounded-2xl p-4 sm:p-6 md:p-7">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
+              <h2 className="admin-desk-section-title">Herramientas</h2>
+              <p className="admin-desk-section-desc">Tareas, venta, historial y estadísticas mensuales. Van ocultas por defecto para aligerar la carga del panel.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => startTransition(() => setToolsOpen((v) => !v))}
+              className="admin-btn-interact admin-desk-btn-secondary no-custom-btn inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm md:w-auto"
+            >
+              {toolsOpen ? 'Ocultar herramientas' : 'Mostrar herramientas'}
+              <svg className={`h-4 w-4 transition-transform ${toolsOpen ? 'rotate-180' : 'rotate-0'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+          {toolsOpen ? (
+            <div className="mt-6 space-y-6">
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div className="rounded-xl border border-white/10 bg-[#141a24] p-4">
+              <h3 className="text-sm font-semibold text-slate-100">Recordatorios y tareas</h3>
+              <div className="mt-3 grid grid-cols-1 gap-2">
+                <input
+                  value={newTaskText}
+                  onChange={(e) => setNewTaskText(e.target.value)}
+                  placeholder="Ej: subir foto trasera de la PRS"
+                  className="admin-desk-input"
+                />
+                <select
+                  value={newTaskProductId}
+                  onChange={(e) => setNewTaskProductId(e.target.value)}
+                  className="admin-desk-input"
+                >
+                  <option value="">Sin producto asociado</option>
+                  {productSelectOptions.map((o) => (
+                    <option key={o.id} value={o.id}>{o.label}</option>
+                  ))}
+                </select>
+                <button type="button" onClick={addTask} className="admin-desk-btn-primary no-custom-btn px-4 py-2.5 text-sm">Agregar tarea</button>
+              </div>
+              <div className="mt-3 max-h-[280px] space-y-2 overflow-y-auto">
+                {tasks.length === 0 ? (
+                  <p className="text-xs text-slate-400">No hay tareas todavía.</p>
+                ) : tasks.map((t) => (
+                  <div key={t.id} className="flex items-start gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2">
+                    <input type="checkbox" checked={Boolean(t.done)} onChange={() => toggleTaskDone(t.id)} className="mt-0.5 h-4 w-4" />
+                    <div className="min-w-0 flex-1">
+                      <p className={`text-sm ${t.done ? 'line-through text-slate-500' : 'text-slate-200'}`}>{t.text}</p>
+                      {t.productId ? (
+                        <p className="mt-0.5 text-[11px] text-slate-400">
+                          {productNameById.get(String(t.productId)) || t.productId}
+                        </p>
+                      ) : null}
+                    </div>
+                    <button type="button" onClick={() => removeTask(t.id)} className="no-custom-btn text-xs text-rose-300">Quitar</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-white/10 bg-[#141a24] p-4">
+              <h3 className="text-sm font-semibold text-slate-100">Ficha de comprador / venta</h3>
+              <div className="mt-3 grid grid-cols-1 gap-2">
+                <select value={saleDraft.productId} onChange={(e) => setSaleDraft((prev) => ({ ...prev, productId: e.target.value }))} className="admin-desk-input">
+                  <option value="">Seleccionar producto</option>
+                  {productSelectOptions.map((o) => (
+                    <option key={o.id} value={o.id}>{o.label}</option>
+                  ))}
+                </select>
+                <input value={saleDraft.buyer} onChange={(e) => setSaleDraft((prev) => ({ ...prev, buyer: e.target.value }))} placeholder="Comprador (opcional)" className="admin-desk-input" />
+                <input value={saleDraft.finalPrice} onChange={(e) => setSaleDraft((prev) => ({ ...prev, finalPrice: e.target.value }))} placeholder="Monto final (opcional)" className="admin-desk-input" />
+                <input value={saleDraft.channel} onChange={(e) => setSaleDraft((prev) => ({ ...prev, channel: e.target.value }))} placeholder="Canal (WhatsApp/IG/etc.)" className="admin-desk-input" />
+                <textarea value={saleDraft.notes} onChange={(e) => setSaleDraft((prev) => ({ ...prev, notes: e.target.value }))} placeholder="Notas internas" className="admin-desk-input" rows={3} />
+                <button type="button" onClick={saveSaleRecord} className="admin-desk-btn-primary no-custom-btn px-4 py-2.5 text-sm">Registrar venta</button>
+              </div>
+            </div>
+              </div>
+
+          <div>
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="admin-desk-section-title">Historial por producto</h2>
+              <p className="admin-desk-section-desc">Cambios de estado, pipeline, tareas y ventas.</p>
+            </div>
+            <select
+              value={historyProductId}
+              onChange={(e) => setHistoryProductId(e.target.value)}
+              className="admin-desk-input md:max-w-sm"
+            >
+              <option value="">Seleccionar producto</option>
+              {productSelectOptions.map((o) => (
+                <option key={o.id} value={o.id}>{o.label}</option>
+              ))}
+            </select>
+          </div>
+          <div className="mt-3 rounded-xl border border-white/10 bg-[#141a24] p-3">
+            {!historyProductId ? (
+              <p className="text-sm text-slate-400">Elegí un producto para ver el historial.</p>
+            ) : (
+              <div className="space-y-2">
+                {(historyByProduct[historyProductId] || []).length === 0 ? (
+                  <p className="text-sm text-slate-400">Todavía no hay eventos registrados para este producto.</p>
+                ) : (
+                  (historyByProduct[historyProductId] || []).map((e) => (
+                    <div key={e.id} className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2">
+                      <p className="text-sm text-slate-200">{e.message}</p>
+                      <p className="mt-0.5 text-[11px] text-slate-400">{new Date(e.ts).toLocaleString('es-AR')}</p>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+          </div>
+
+          <div>
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
               <h2 className="admin-desk-section-title">Estadísticas mensuales</h2>
               <p className="admin-desk-section-desc">Movimientos por mes (altas, ediciones y ventas).</p>
             </div>
@@ -623,6 +1001,9 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
               </tbody>
             </table>
           </div>
+          </div>
+            </div>
+          ) : null}
         </section>
 
         <section className="admin-desk-card rounded-2xl p-4 sm:p-6 md:p-7">
@@ -631,34 +1012,36 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
               <h2 className="admin-desk-section-title">Actividad reciente</h2>
               <p className="admin-desk-section-desc">Últimos cambios (sincronizado entre dispositivos)</p>
             </div>
-            <button type="button" onClick={() => setActivityOpen((v) => !v)} className="admin-btn-interact admin-desk-btn-secondary no-custom-btn inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm md:w-auto">
+            <button type="button" onClick={() => startTransition(() => setActivityOpen((v) => !v))} className="admin-btn-interact admin-desk-btn-secondary no-custom-btn inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm md:w-auto">
               {activityOpen ? 'Ocultar' : 'Mostrar'}
               <svg className={`h-4 w-4 transition-transform ${activityOpen ? 'rotate-180' : 'rotate-0'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
           </div>
-          <div className={`overflow-hidden transition-all duration-300 ease-out ${activityOpen ? 'mt-4 max-h-[800px]' : 'max-h-0'}`}>
-            {recentActivity.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-xl border border-white/12 bg-white/[0.04] px-4 py-8 text-center">
-                <span className="mb-2 text-3xl opacity-50" aria-hidden>📋</span>
-                <p className="text-sm text-slate-400">Aún no hay cambios recientes.</p>
-                <p className="mt-1 text-xs text-slate-400">Creá o editá un producto para ver la actividad de todos los dispositivos.</p>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {recentActivity.map((a) => (
-                  <div key={a.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.05] px-4 py-2.5">
-                    <p className="truncate text-sm text-slate-200">
-                      {a.type === 'create' ? 'Creaste' : a.type === 'update' ? 'Actualizaste' : 'Vendiste'}{' '}
-                      <span className="font-semibold text-white">{a.label}</span>
-                    </p>
-                    <span className="whitespace-nowrap text-[11px] text-slate-400">{a.time}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {activityOpen ? (
+            <div className="mt-4">
+              {recentActivity.length === 0 ? (
+                <div className="flex flex-col items-center justify-center rounded-xl border border-white/12 bg-white/[0.04] px-4 py-8 text-center">
+                  <span className="mb-2 text-3xl opacity-50" aria-hidden>📋</span>
+                  <p className="text-sm text-slate-400">Aún no hay cambios recientes.</p>
+                  <p className="mt-1 text-xs text-slate-400">Creá o editá un producto para ver la actividad de todos los dispositivos.</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {recentActivity.map((a) => (
+                    <div key={a.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.05] px-4 py-2.5">
+                      <p className="truncate text-sm text-slate-200">
+                        {a.type === 'create' ? 'Creaste' : a.type === 'update' ? 'Actualizaste' : 'Vendiste'}{' '}
+                        <span className="font-semibold text-white">{a.label}</span>
+                      </p>
+                      <span className="whitespace-nowrap text-[11px] text-slate-400">{a.time}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : null}
         </section>
 
         <section className="admin-desk-card rounded-2xl p-4 sm:p-6 md:p-7">
@@ -679,7 +1062,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
               </p>
             </div>
             <div className="flex w-full shrink-0 items-center gap-2 md:w-auto">
-              <button type="button" onClick={() => setListOpen((v) => !v)} className="admin-btn-interact admin-desk-btn-secondary no-custom-btn inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm md:w-auto">
+              <button type="button" onClick={() => startTransition(() => setListOpen((v) => !v))} className="admin-btn-interact admin-desk-btn-secondary no-custom-btn inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm md:w-auto">
                 {listOpen ? 'Ocultar' : 'Mostrar'}
                 <svg className={`h-4 w-4 transition-transform ${listOpen ? 'rotate-180' : 'rotate-0'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -725,65 +1108,44 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
               <p className="mt-1 text-xs text-slate-400">Usá &quot;Crear producto&quot; para cargar el primer ítem del catálogo.</p>
             </div>
           ) : null}
-          <div className={`mt-4 divide-y divide-white/10 overflow-hidden rounded-xl border border-white/12 bg-[#141a24] transition-all duration-300 ease-out ${listOpen ? 'max-h-[2000px] py-0' : 'max-h-0 border-transparent'}`}>
-            {filteredItems.map((p) => {
-              const imgSrc = imageService.resolve(p.image_url || (p.images && p.images[0]))
-              const seo = toSeoStatus(p)
-              return (
-                <div
-                  key={p.id}
-                  className="admin-item flex touch-manipulation flex-col gap-3 px-3 py-4 transition-colors duration-200 hover:bg-white/[0.04] sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3.5"
-                  onContextMenu={(e) => { e.preventDefault(); openRowActionMenu(p) }}
-                  onTouchStart={() => handleRowTouchStart(p)}
-                  onTouchEnd={handleRowTouchEnd}
-                  onTouchMove={handleRowTouchEnd}
-                  onTouchCancel={handleRowTouchEnd}
+          {listOpen && !loading && items.length > 0 ? (
+            <>
+              <div className="mt-4 divide-y divide-white/10 overflow-hidden rounded-xl border border-white/12 bg-[#141a24] py-0">
+                {pagedCatalogItems.map((p) => {
+                  const ops = opsByProduct[p.id] || DEFAULT_OPS_STATIC
+                  return (
+                    <AdminCatalogRow
+                      key={p.id}
+                      product={p}
+                      ops={ops}
+                      deletingId={deletingId}
+                      onRowEdit={handleRowEdit}
+                      onRowDelete={handleRowDelete}
+                      onStatusChange={setProductStatus}
+                      onPipelineChange={setProductPipeline}
+                      onContextMenu={(e) => { e.preventDefault(); openRowActionMenu(p) }}
+                      onTouchStart={() => handleRowTouchStart(p)}
+                      onTouchEnd={handleRowTouchEnd}
+                      onTouchMove={handleRowTouchEnd}
+                      onTouchCancel={handleRowTouchEnd}
+                    />
+                  )
+                })}
+              </div>
+              {filteredItems.length > pagedCatalogItems.length ? (
+                <button
+                  type="button"
+                  onClick={() => startTransition(() => setCatalogVisible((n) => n + CATALOG_PAGE_SIZE))}
+                  className="admin-btn-interact admin-desk-btn-secondary no-custom-btn mt-3 w-full rounded-xl px-4 py-3 text-sm"
                 >
-                  <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/12 bg-[#131820] shadow-inner sm:h-12 sm:w-12 md:h-14 md:w-14">
-                      {imgSrc ? (
-                        <ImageWithSkeleton src={imgSrc} alt={p.name || p.slug || 'Imagen'} width={56} height={56} quality={62} disableClientPreview />
-                      ) : (
-                        <div className="image-placeholder h-full w-full" />
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <div className="break-words font-medium leading-tight text-slate-100">{p.name || p.slug || p.id}</div>
-                      <div className="mt-1 flex flex-wrap items-center gap-2">
-                        <span className="text-sm text-slate-300">{p.price || '-'}</span>
-                        {p.low_cost ? (
-                          <span className="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-300">
-                            Low cost
-                          </span>
-                        ) : null}
-                        <span
-                          className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
-                            seo.tone === 'ok'
-                              ? 'border border-emerald-400/30 bg-emerald-500/10 text-emerald-300'
-                              : seo.tone === 'mid'
-                                ? 'border border-amber-400/30 bg-amber-500/10 text-amber-300'
-                                : 'border border-rose-400/30 bg-rose-500/10 text-rose-300'
-                          }`}
-                        >
-                          {seo.label}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="grid w-full grid-cols-2 items-center gap-2 sm:flex sm:w-auto">
-                    <button type="button" onClick={(e) => handleRowEdit(e, p)} className="admin-btn-interact admin-desk-btn-secondary no-custom-btn inline-flex items-center justify-center gap-1.5 whitespace-nowrap px-2.5 py-2 text-[13px] sm:px-3 sm:py-1.5 sm:text-sm">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20h9" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z" /></svg>
-                      Editar
-                    </button>
-                    <button type="button" className="admin-btn-interact admin-desk-btn-danger no-custom-btn inline-flex items-center justify-center gap-1.5 whitespace-nowrap px-2.5 py-2 text-[13px] disabled:cursor-not-allowed disabled:opacity-60 sm:px-3 sm:py-1.5 sm:text-sm" onClick={(e) => handleRowDelete(e, p.id, p.name)} disabled={deletingId === p.id}>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 7h12M9 7V5h6v2m-7 3v7m4-7v7m4-7v7M5 7l1 13h12l1-13" /></svg>
-                      {deletingId === p.id ? 'Eliminando' : 'Eliminar'}
-                    </button>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+                  Cargar más
+                  <span className="ml-1.5 tabular-nums text-slate-400">
+                    ({filteredItems.length - pagedCatalogItems.length} restantes)
+                  </span>
+                </button>
+              ) : null}
+            </>
+          ) : null}
         </section>
       </div>
     </PullToRefresh>

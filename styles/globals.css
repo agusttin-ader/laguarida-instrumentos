@@ -819,6 +819,36 @@ html, body, #__next, #root, main {
   animation: filter-grid-soft-refresh 200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Grid de productos: entrada suave solo cuando la carga fue lenta (ver ProductGrid + hook) */
+@keyframes product-grid-cell-soft-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.product-grid--slow-enter .home-grid-product-cell {
+  animation: product-grid-cell-soft-in 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(min(var(--grid-cell-i, 0), 14) * 52ms);
+}
+@media (max-width: 767px) {
+  .product-grid--slow-enter .home-grid-product-cell {
+    animation-duration: 0.4s;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+    animation-delay: calc(min(var(--grid-cell-i, 0), 10) * 44ms);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .product-grid--slow-enter .home-grid-product-cell {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 @keyframes card-appear-in {
   from {
     opacity: 0.92;
@@ -2878,6 +2908,14 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 }
 @media (prefers-reduced-motion: reduce) {
   .animate-page-in { animation: none; opacity: 1; transform: none; }
+}
+
+/* Admin: sin animación page-in en cada vista (menos trabajo compositor / más fluido) */
+.admin-root .animate-page-in,
+.admin-app-shell .animate-page-in {
+  animation: none;
+  opacity: 1;
+  transform: none;
 }
 
 /* Minimal editorial section headings (aligned with navbar style) */

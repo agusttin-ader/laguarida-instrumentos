@@ -5,6 +5,7 @@ import Link from 'next/link'
 import ProductCard from '../../components/ProductCard'
 import { useFavorites } from '../../components/ProductShareAndFavorite'
 import { useProducts } from '../../hooks/useProducts'
+import { useSoftEnterAfterSlowLoad } from '../../hooks/useSoftEnterAfterSlowLoad'
 
 export default function FavoritosPage() {
   const { slugs } = useFavorites()
@@ -15,6 +16,9 @@ export default function FavoritosPage() {
     () => (slugs.length === 0 ? [] : allProducts.filter((p) => slugSet.has(p.slug || p.id))),
     [allProducts, slugs.length, slugSet]
   )
+
+  const favoritesGridLoading = loading && slugs.length > 0
+  const softGridEnter = useSoftEnterAfterSlowLoad(favoritesGridLoading, 420)
 
   return (
     <div className="container-tight pt-10 sm:pt-14 pb-8 md:pb-12">
@@ -45,10 +49,16 @@ export default function FavoritosPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
-          {products.map((item) => (
-            <div key={item.id || item.slug} className="min-w-0">
-              <ProductCard item={item} />
+        <div
+          className={`grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-6 lg:grid-cols-3${softGridEnter ? ' product-grid--slow-enter' : ''}`}
+        >
+          {products.map((item, idx) => (
+            <div
+              key={item.id || item.slug}
+              className="home-grid-product-cell min-w-0 [content-visibility:auto] [contain-intrinsic-size:auto_28rem]"
+              style={{ '--grid-cell-i': idx }}
+            >
+              <ProductCard item={item} priority={idx < 4} />
             </div>
           ))}
         </div>
