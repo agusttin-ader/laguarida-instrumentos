@@ -1,5 +1,4 @@
 "use client"
-/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars, no-empty */
 
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useState, startTransition } from 'react'
 import { useRouter } from 'next/navigation'
@@ -34,25 +33,15 @@ function csvEscape(value) {
 const PRODUCT_STATUS_OPTIONS = [
   { value: 'available', label: 'Disponible' },
   { value: 'reserved', label: 'Reservada' },
-  { value: 'sold', label: 'Vendida' },
 ]
-const PIPELINE_OPTIONS = [
-  { value: 'new', label: 'Nuevo lead' },
-  { value: 'responded', label: 'Respondido' },
-  { value: 'negotiation', label: 'Negociación' },
-  { value: 'closed', label: 'Cerrado' },
-]
-
-const DEFAULT_OPS_STATIC = Object.freeze({ status: 'available', pipeline: 'new' })
 
 const AdminCatalogRow = React.memo(function AdminCatalogRow({
   product: p,
-  ops,
+  listingStatus,
   deletingId,
   onRowEdit,
   onRowDelete,
   onStatusChange,
-  onPipelineChange,
   onContextMenu,
   onTouchStart,
   onTouchEnd,
@@ -62,15 +51,15 @@ const AdminCatalogRow = React.memo(function AdminCatalogRow({
   const imgSrc = imageService.resolve(p.image_url || (p.images && p.images[0]))
   return (
     <div
-      className="admin-item flex touch-manipulation flex-col gap-3 px-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3.5"
+      className="admin-catalog-row flex touch-manipulation flex-col gap-4 rounded-2xl border border-white/[0.09] bg-[#151922]/95 px-4 py-4 shadow-[0_2px_20px_rgba(0,0,0,0.22)] sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:px-5 sm:py-4 hover:border-white/[0.13]"
       onContextMenu={onContextMenu}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
       onTouchMove={onTouchMove}
       onTouchCancel={onTouchCancel}
     >
-      <div className="flex min-w-0 items-center gap-3">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/12 bg-[#131820] shadow-inner sm:h-12 sm:w-12 md:h-14 md:w-14">
+      <div className="flex min-w-0 flex-1 items-center gap-3.5 sm:gap-4">
+        <div className="flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#0d1016] ring-1 ring-white/10 sm:h-16 sm:w-16">
           {imgSrc ? (
             <img
               src={imgSrc}
@@ -78,17 +67,24 @@ const AdminCatalogRow = React.memo(function AdminCatalogRow({
               loading="lazy"
               decoding="async"
               className="h-full w-full object-cover"
-              width={56}
-              height={56}
+              width={64}
+              height={64}
             />
           ) : (
             <div className="image-placeholder h-full w-full" />
           )}
         </div>
-        <div className="min-w-0">
-          <div className="break-words font-medium leading-tight text-slate-100">{p.name || p.slug || p.id}</div>
-          <div className="mt-1 flex flex-wrap items-center gap-2">
-            <span className="text-sm text-slate-300">{p.price || '-'}</span>
+        <div className="min-w-0 flex-1">
+          <div className="break-words text-[15px] font-semibold leading-snug tracking-tight text-slate-50 sm:text-[0.95rem]">
+            {p.name || p.slug || p.id}
+          </div>
+          <div className="mt-1.5 flex flex-wrap items-center gap-2">
+            <span className="text-[13px] tabular-nums text-slate-400">{p.price || '—'}</span>
+            {listingStatus === 'reserved' ? (
+              <span className="rounded-full border border-amber-400/35 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-200/95">
+                Reservada
+              </span>
+            ) : null}
             {p.low_cost ? (
               <span className="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-300">
                 Low cost
@@ -97,49 +93,42 @@ const AdminCatalogRow = React.memo(function AdminCatalogRow({
           </div>
         </div>
       </div>
-      <div className="grid w-full grid-cols-2 items-center gap-2 sm:flex sm:w-auto">
+      <div className="admin-catalog-toolbar w-full sm:w-auto sm:shrink-0">
+        <label className="sr-only" htmlFor={`listing-${p.id}`}>Estado en tienda</label>
         <select
-          value={ops.status}
+          id={`listing-${p.id}`}
+          value={listingStatus}
           onChange={(e) => onStatusChange(p.id, e.target.value)}
-          className="admin-desk-input h-auto min-h-0 px-2.5 py-2 text-[12px] sm:text-xs"
+          className="admin-catalog-select no-custom-btn flex-1 sm:flex-initial"
+          aria-label="Estado del producto"
         >
           {PRODUCT_STATUS_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
-        <select
-          value={ops.pipeline}
-          onChange={(e) => onPipelineChange(p.id, e.target.value)}
-          className="admin-desk-input h-auto min-h-0 px-2.5 py-2 text-[12px] sm:text-xs"
-        >
-          {PIPELINE_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}
         </select>
         <button
           type="button"
           onClick={(e) => onRowEdit(e, p)}
-          className="admin-btn-interact admin-desk-btn-secondary no-custom-btn inline-flex items-center justify-center gap-1.5 whitespace-nowrap px-2.5 py-2 text-[13px] sm:px-3 sm:py-1.5 sm:text-sm"
+          className="admin-btn-interact admin-desk-btn-secondary no-custom-btn inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-[11px] px-3 py-2.5 text-[13px] font-semibold sm:flex-initial sm:py-2"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20h9" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z" /></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 shrink-0 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20h9" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z" /></svg>
           Editar
         </button>
         <button
           type="button"
-          className="admin-btn-interact admin-desk-btn-danger no-custom-btn inline-flex items-center justify-center gap-1.5 whitespace-nowrap px-2.5 py-2 text-[13px] disabled:cursor-not-allowed disabled:opacity-60 sm:px-3 sm:py-1.5 sm:text-sm"
+          className="admin-btn-interact admin-desk-btn-danger no-custom-btn inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-[11px] px-3 py-2.5 text-[13px] font-semibold disabled:cursor-not-allowed disabled:opacity-60 sm:flex-initial sm:py-2"
           onClick={(e) => onRowDelete(e, p.id, p.name)}
           disabled={deletingId === p.id}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 7h12M9 7V5h6v2m-7 3v7m4-7v7m4-7v7M5 7l1 13h12l1-13" /></svg>
-          {deletingId === p.id ? 'Procesando' : 'Vendido/Eliminar'}
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 shrink-0 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 7h12M9 7V5h6v2m-7 3v7m4-7v7m4-7v7M5 7l1 13h12l1-13" /></svg>
+          {deletingId === p.id ? 'Procesando…' : 'Vendido / eliminar'}
         </button>
       </div>
     </div>
   )
 }, (a, b) =>
   a.product.id === b.product.id
-  && a.ops.status === b.ops.status
-  && a.ops.pipeline === b.ops.pipeline
+  && a.listingStatus === b.listingStatus
   && a.deletingId === b.deletingId)
 
 export default function AdminProducts({ showNewProductHeroSection = true }) {
@@ -157,7 +146,6 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
   const [recentActivity, setRecentActivity] = useState([])
   const [adminQ, setAdminQ] = useState('')
   const [actionProduct, setActionProduct] = useState(null)
-  const [opsByProduct, setOpsByProduct] = useState({})
   const [tasks, setTasks] = useState([])
   const [newTaskText, setNewTaskText] = useState('')
   const [newTaskProductId, setNewTaskProductId] = useState('')
@@ -172,7 +160,6 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
   const { toast } = useToast()
   const deferredAdminQ = useDeferredValue(adminQ)
 
-  useDebouncedLocalStorage('admin:ops-by-product:v1', opsByProduct)
   useDebouncedLocalStorage('admin:tasks:v1', tasks)
   useDebouncedLocalStorage('admin:sales-by-product:v1', salesByProduct)
   useDebouncedLocalStorage('admin:history-by-product:v1', historyByProduct)
@@ -248,7 +235,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/products', { credentials: 'include' })
+      const res = await fetch('/api/products?scope=admin', { credentials: 'include' })
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
       const data = await res.json()
       setItems(Array.isArray(data) ? data.map((d) => normalizeProduct(d)) : [])
@@ -262,11 +249,9 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
   useEffect(() => {
     if (typeof window === 'undefined') return
     try {
-      const opsRaw = localStorage.getItem('admin:ops-by-product:v1')
       const tasksRaw = localStorage.getItem('admin:tasks:v1')
       const salesRaw = localStorage.getItem('admin:sales-by-product:v1')
       const historyRaw = localStorage.getItem('admin:history-by-product:v1')
-      if (opsRaw) setOpsByProduct(JSON.parse(opsRaw) || {})
       if (tasksRaw) setTasks(Array.isArray(JSON.parse(tasksRaw)) ? JSON.parse(tasksRaw) : [])
       if (salesRaw) setSalesByProduct(JSON.parse(salesRaw) || {})
       if (historyRaw) setHistoryByProduct(JSON.parse(historyRaw) || {})
@@ -430,27 +415,30 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
     }))
   }
 
-  function updateProductOps(productId, partial) {
+  async function setProductStatus(productId, value) {
     if (!productId) return
-    setOpsByProduct((prev) => {
-      const current = prev[productId] || DEFAULT_OPS_STATIC
-      const next = { ...current, ...partial }
-      return { ...prev, [productId]: next }
-    })
-  }
-
-  function setProductStatus(productId, value) {
-    updateProductOps(productId, { status: value })
+    const listing_status = value === 'reserved' ? 'reserved' : 'available'
     const p = items.find((x) => String(x.id) === String(productId))
-    addProductHistory(productId, `Estado cambiado a ${PRODUCT_STATUS_OPTIONS.find((o) => o.value === value)?.label || value}.`)
-    if (p) addRecentActivity('update', `${p.name || p.slug || p.id} · estado ${value}`, productId)
-  }
-
-  function setProductPipeline(productId, value) {
-    updateProductOps(productId, { pipeline: value })
-    const p = items.find((x) => String(x.id) === String(productId))
-    addProductHistory(productId, `Pipeline: ${PIPELINE_OPTIONS.find((o) => o.value === value)?.label || value}.`)
-    if (p) addRecentActivity('update', `${p.name || p.slug || p.id} · pipeline ${value}`, productId)
+    const label = PRODUCT_STATUS_OPTIONS.find((o) => o.value === listing_status)?.label || listing_status
+    try {
+      const res = await fetch('/api/products', {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: productId, listing_status }),
+      })
+      if (!res.ok) {
+        const txt = await res.text().catch(() => '')
+        throw new Error(txt || `${res.status} ${res.statusText}`)
+      }
+      setItems((prev) => prev.map((x) => (String(x.id) === String(productId) ? { ...x, listing_status } : x)))
+      addProductHistory(productId, `Estado: ${label}.`)
+      if (p) addRecentActivity('update', `${p.name || p.slug || p.id} · ${listing_status}`, productId)
+      toast('Estado actualizado', 'success')
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      toast(msg, 'error')
+    }
   }
 
   function addTask() {
@@ -492,7 +480,6 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
       soldAt: Date.now(),
     }
     setSalesByProduct((prev) => ({ ...prev, [productId]: record }))
-    updateProductOps(productId, { status: 'sold', pipeline: 'closed' })
     addProductHistory(productId, `Venta registrada (${record.channel}${record.finalPrice ? ` · ${record.finalPrice}` : ''}).`)
     const p = items.find((x) => String(x.id) === String(productId))
     if (p) addRecentActivity('delete', p.name || p.slug || p.id, productId)
@@ -926,7 +913,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="admin-desk-section-title">Historial por producto</h2>
-              <p className="admin-desk-section-desc">Cambios de estado, pipeline, tareas y ventas.</p>
+              <p className="admin-desk-section-desc">Estado de publicación, tareas y ventas.</p>
             </div>
             <select
               value={historyProductId}
@@ -1112,19 +1099,18 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
           ) : null}
           {listOpen && !loading && items.length > 0 ? (
             <>
-              <div className="mt-4 divide-y divide-white/10 overflow-hidden rounded-xl border border-white/12 bg-[#141a24] py-0">
+              <div className="mt-4 space-y-2.5">
                 {pagedCatalogItems.map((p) => {
-                  const ops = opsByProduct[p.id] || DEFAULT_OPS_STATIC
+                  const listingStatus = p.listing_status === 'reserved' ? 'reserved' : 'available'
                   return (
                     <AdminCatalogRow
                       key={p.id}
                       product={p}
-                      ops={ops}
+                      listingStatus={listingStatus}
                       deletingId={deletingId}
                       onRowEdit={handleRowEdit}
                       onRowDelete={handleRowDelete}
                       onStatusChange={setProductStatus}
-                      onPipelineChange={setProductPipeline}
                       onContextMenu={(e) => { e.preventDefault(); openRowActionMenu(p) }}
                       onTouchStart={() => handleRowTouchStart(p)}
                       onTouchEnd={handleRowTouchEnd}

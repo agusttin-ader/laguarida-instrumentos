@@ -6,11 +6,12 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { InstagramLogo, EnvelopeSimple, WhatsappLogo } from 'phosphor-react'
 import { layoutShellClassName } from '../lib/layoutShell'
+import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
 
 export default function Footer({ compact = false }){
   const pathname = usePathname()
   const isHome = pathname === '/' || pathname === ''
-  const waHref = `https://wa.me/5491154661749?text=${encodeURIComponent('Hola, me interesa La Guarida, me podrias dar informacion?')}`
+  const waHref = buildWaMeHref(WHATSAPP_DEFAULT_WEB_MESSAGE)
   const footerTop = compact ? 'mt-0' : isHome ? 'mt-4 md:mt-8' : 'mt-8 md:mt-12'
 
   return (

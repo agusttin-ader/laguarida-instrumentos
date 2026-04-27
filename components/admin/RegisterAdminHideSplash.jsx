@@ -2,10 +2,6 @@
 
 import { useLayoutEffect } from 'react'
 
-/**
- * Define window.__adminHideSplash sin <script> en el árbol React (React 19 / Next 16).
- * useLayoutEffect corre en el cliente antes del pintado, antes que useEffect de ClientAuth.
- */
 export default function RegisterAdminHideSplash() {
   useLayoutEffect(() => {
     window.__adminHideSplash = function adminHideSplash() {

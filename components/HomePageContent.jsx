@@ -9,9 +9,6 @@ import About from './About'
 import HomeTrustStats from './HomeTrustStats'
 import FaqSection from './FaqSection'
 
-/**
- * Contenido del home: hero + secciones en una sola página (mismo flujo que desktop en móvil).
- */
 export default function HomePageContent({ heroProduct }) {
   return (
     <>
@@ -23,10 +20,6 @@ export default function HomePageContent({ heroProduct }) {
         <div className="relative z-0 col-start-1 row-start-1 min-h-0 min-w-0">
           <HomeHeroDynamic product={heroProduct} />
         </div>
-        {/*
-          Slot móvil: el header se portalea aquí con sticky top-0 para que solo “siga” el scroll
-          hasta el final de esta sección (hero), y luego se vaya con el bloque.
-        */}
         <div
           id="home-top-mobile-header-slot"
           className="pointer-events-none col-start-1 row-start-1 self-start md:hidden [&>*]:pointer-events-auto sticky top-0 z-[var(--z-header)] w-full"

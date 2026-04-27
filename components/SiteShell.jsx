@@ -6,8 +6,8 @@ import { usePathname, useRouter } from 'next/navigation'
 
 const Footer = dynamic(() => import('./Footer'), { ssr: true })
 const PullToRefresh = dynamic(() => import('./PullToRefresh'), { ssr: false })
+const WhatsAppFloatButton = dynamic(() => import('./WhatsAppFloatButton'), { ssr: false })
 
-/** Reserva espacio mientras carga el chunk del header (solo cliente; evita mismatch SSR/bundle). */
 function HeaderLoading() {
   const pathname = usePathname()
   const isHome = pathname === '/' || pathname === ''
@@ -29,13 +29,11 @@ const Header = dynamic(() => import('./Header'), {
   loading: HeaderLoading
 })
 
-/** Renderiza Header y Footer solo fuera de /admin para evitar doble header en login */
 export default function SiteShell({ children }) {
   const pathname = usePathname()
   const router = useRouter()
   const isAdmin = typeof pathname === 'string' && pathname.startsWith('/admin')
   const isHome = pathname === '/' || pathname === ''
-  /** Móvil: header fijo arriba; el contenido debe empezar debajo (mismos valores que HeroMonolith). */
   const mainTopPad = !isHome
     ? 'pt-[calc(58px+max(0.25rem,env(safe-area-inset-top)))] sm:pt-[calc(62px+max(0.25rem,env(safe-area-inset-top)))] md:pt-0'
     : 'pt-0'
@@ -87,11 +85,12 @@ export default function SiteShell({ children }) {
           <PullToRefresh onRefresh={handleRefresh}>
             <main
               key={pathname}
-              className={`animate-page-in min-h-0 pb-[max(1rem,env(safe-area-inset-bottom,0px))] md:pb-0 ${mainTopPad}`}
+              className={`min-h-0 pb-[max(1rem,env(safe-area-inset-bottom,0px))] max-md:pb-[max(5.25rem,calc(4.25rem+env(safe-area-inset-bottom)))] md:pb-0 ${mainTopPad}`}
             >
               {children}
             </main>
             <Footer />
+            <WhatsAppFloatButton />
           </PullToRefresh>
         </>
       ) : (

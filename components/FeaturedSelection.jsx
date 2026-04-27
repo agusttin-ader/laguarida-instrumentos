@@ -75,7 +75,6 @@ export default function FeaturedSelection() {
           filters={{ q }}
           items={featured}
           parentLoading={productsLoading}
-          primaryImageOnly
         />
       </article>
     </>

@@ -7,13 +7,11 @@ import imageService from '../lib/utils/imageService'
 
 const GalleryLightbox = dynamic(() => import('./GalleryLightbox'), { ssr: false })
 
-/** Srcset alineado a layout ancho en 2K / 4K (evita fotos demasiado comprimidas) */
 const GALLERY_MAIN_SIZES =
   '(max-width:1023px) 100vw, (max-width:1279px) 52vw, (max-width:1919px) min(50vw, 960px), min(46vw, 1400px)'
 const GALLERY_THUMB_SIZES =
   '(max-width:1023px) 50vw, (max-width:1279px) 20vw, (max-width:1919px) min(18vw, 440px), min(16vw, 560px)'
 
-// Preload lightbox chunk after gallery is visible so first open is instant
 function usePreloadLightbox() {
   useEffect(() => {
     import('./GalleryLightbox')

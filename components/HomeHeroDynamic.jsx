@@ -13,9 +13,6 @@ const HeroMarketing = dynamic(() => import('./HeroMarketing'), {
   ),
 })
 
-/**
- * Wrapper cliente: `next/dynamic` con `ssr: false` no puede usarse en Server Components (Next 16+).
- */
 export default function HomeHeroDynamic({ product }) {
   return <HeroMarketing product={product} />
 }

@@ -72,47 +72,7 @@
   --dark-cta-hover: #ffe8c4;
 }
 
-/* Home loader: premium minimal spinner for hero readiness */
-@keyframes hero-home-loader-spin {
-  to { transform: rotate(360deg); }
-}
-.hero-home-loader {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 0.75rem;
-  background: linear-gradient(180deg, rgba(0,0,0,0.98), rgba(0,0,0,0.92));
-  z-index: 30;
-}
-.hero-home-loader--overlay {
-  pointer-events: none;
-}
-.hero-home-loader__spinner {
-  width: 42px;
-  height: 42px;
-  border-radius: 999px;
-  border: 2px solid rgba(var(--palette-gold-rgb), 0.24);
-  border-top-color: var(--vintage-gold);
-  animation: hero-home-loader-spin 0.85s linear infinite;
-  box-shadow: 0 0 0 1px rgba(var(--palette-gold-rgb), 0.12), 0 8px 18px rgba(0,0,0,0.28);
-}
-.hero-home-loader__brand {
-  width: min(190px, 56vw);
-  height: auto;
-  opacity: 0.95;
-  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.35));
-}
-.hero-home-loader__text {
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(248, 249, 252, 0.8);
-  font-weight: 600;
-}
-
-/* Hero móvil: indicador “scroll” — movimiento suave tipo alopatagonia.vercel.app */
+/* Hero móvil: indicador scroll (HeroMarketing) */
 @keyframes hero-scroll-hint-bob {
   0%,
   100% {
@@ -276,28 +236,6 @@ body{
   letter-spacing: -0.01em;
 }
 
-/* Hero-specific typography tweaks to keep large titles from overflowing */
-.hero-title { font-size: clamp(1.6rem, 4.6vw, 3rem); line-height: 1.02; font-weight: 900 }
-.hero-subtitle { font-size: 0.95rem }
-.hero-price { font-size: clamp(1.6rem, 4.6vw, 3rem); font-weight: 900; line-height: 1.02 }
-.hero-copy { font-size: 0.95rem; max-width: 40ch }
-
-/* Responsive hero aspect helper
-   - On small screens we reduce the vertical footprint to keep the hero compact
-   - On larger screens the original tall panels are preserved */
-.hero-aspect { padding-top: 120%; }
-@media (min-width: 768px) {
-  .hero-aspect { padding-top: 140%; }
-}
-@media (min-width: 1024px) {
-  .hero-aspect { padding-top: 150%; }
-}
-
-/* Hero title on narrow viewports: readable scale (aligned with mobile h1 target) */
-@media (max-width: 768px) {
-  .hero-title { font-size: clamp(1.75rem, 5.5vw, 2rem) !important; line-height: 1.45 }
-}
-
 .subtitle-compact{
   font-weight: 500;
   font-size: var(--subtitle-size);
@@ -325,51 +263,6 @@ body{
 
 .tight-tracking{ letter-spacing: -0.02em }
 
-/* Minimal CTA buttons */
-.btn-minimal,
-.btn-outline,
-.btn-ghost-dark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.35rem 0.75rem; /* vertical ~6px, horizontal 12px (more compact) */
-  font-size: 0.85rem;
-  font-weight: 600;
-  border-radius: 9999px;
-  /* slightly warm fill to match the soft cream page background */
-  background: #F7F4EE;
-  color: #0f172a;
-  border: 1px solid rgba(15,23,42,0.06);
-  text-transform: none;
-  letter-spacing: 0.03em;
-  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
-  box-shadow: 0 4px 12px rgba(34,24,18,0.06);
-}
-.btn-minimal:hover,
-.btn-outline:hover,
-.btn-ghost-dark:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(34,24,18,0.08);
-  background: #FFF8F0;
-}
-
-/* Keep focus accessibility */
-.btn-minimal:focus,
-.btn-outline:focus,
-.btn-ghost-dark:focus {
-  outline: none;
-  box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
-}
-
-/* Dark theme: keep pill light so it pops on dark backgrounds */
-.dark .btn-minimal,
-.dark .btn-outline,
-.dark .btn-ghost-dark {
-  background: #eef2ff; /* subtle light on dark */
-  color: #0b1220;
-  border-color: rgba(255,255,255,0.08);
-}
-
 .btn-focus{
   outline: none;
 }
@@ -377,145 +270,6 @@ body{
 .btn-focus:focus-visible {
   box-shadow: 0 0 0 2px #d1d5db;
 }
-
-/* Short black CTA used for "Consultar" — compact, high-contrast */
-.btn-elegant{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.45rem 1.05rem; /* slightly longer */
-  font-size: 0.95rem;
-  font-weight: 500;
-  border-radius: 9999px; /* pill */
-  text-transform: none;
-  letter-spacing: 0.02em;
-  transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
-}
-
-/* Light variant: elegant outlined / warm background for secondary actions */
-.btn-elegant--light{
-  background: #F7F4EE;
-  color: #0f172a;
-  border: 1px solid rgba(15,23,42,0.06);
-  box-shadow: 0 6px 18px rgba(34,24,18,0.06);
-  padding: 0.45rem 1.05rem;
-}
-.btn-elegant--light:hover{ transform: translateY(-2px); box-shadow: 0 10px 28px rgba(34,24,18,0.08); }
-
-/* Dark variant: filled elegant CTA for Consultar */
-.btn-elegant--dark{
-  background: #0b0b0b;
-  color: #ffffff;
-  border: 1px solid rgba(0,0,0,0.08);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-  padding: 0.45rem 1.25rem; /* a bit longer */
-}
-.btn-elegant--dark:hover{ transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,0.14); }
-
-/* Keep legacy helper class for compatibility (maps to elegant dark) */
-.btn-dark-short{ display: inline-flex }
-
-/* Informational CTA used in Hero: slightly larger, soft gradient, subtle shadow */
-.btn-info {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 1.1rem;
-  font-size: 0.95rem;
-  font-weight: 700;
-  border-radius: 9999px;
-  background: linear-gradient(180deg,#fffaf6,#fff3ea);
-  color: #0b1220;
-  border: 1px solid rgba(15,23,42,0.06);
-  box-shadow: 0 8px 24px rgba(15,23,42,0.08);
-  transition: transform 180ms cubic-bezier(.2,.9,.2,1), box-shadow 180ms ease, background-color 180ms ease;
-}
-.btn-info:hover{ transform: translateY(-3px); box-shadow: 0 18px 40px rgba(15,23,42,0.10); background: linear-gradient(180deg,#fff7f0,#fff0e4) }
-.dark .btn-info{ background: linear-gradient(180deg,#1c1c1c,#1a1a1a); color: #fff; border-color: rgba(255,255,255,0.06); box-shadow: 0 8px 24px rgba(0,0,0,0.28) }
-
-/* Hero-specific button overrides
-   Ensure hero buttons remain light/visible on darker hero panels and
-   remove any hover that darkens them to the point of losing contrast. */
-.hero .btn-info,
-.hero-right .btn-info,
-.hero .btn-elegant--dark,
-.hero-right .btn-elegant--dark {
-  background: linear-gradient(180deg,#fffaf6,#fff3ea) !important;
-  color: #0b1220 !important;
-  border: 1px solid rgba(15,23,42,0.06) !important;
-  box-shadow: none !important; /* remove all shadows for hero buttons */
-}
-.hero .btn-info:hover,
-.hero-right .btn-info:hover,
-.hero .btn-elegant--dark:hover,
-.hero-right .btn-elegant--dark:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: none !important; /* no shadow on hover */
-  background: linear-gradient(180deg,#fff7f0,#fff0e4) !important;
-  opacity: 0.98 !important;
-}
-
-/* If the hero uses a dark modifier class (e.g. .hero--dark), ensure buttons invert */
-.hero--dark .btn-info,
-.hero--dark .btn-elegant--dark,
-.hero--dark .btn-elegant--light {
-  background: #ffffff !important;
-  color: #0b0d0f !important;
-  border: 1px solid rgba(11,13,15,0.06) !important;
-  box-shadow: 0 6px 12px rgba(11,13,15,0.06) !important;
-}
-
-/* Target the specific hero layout used in `components/Hero.jsx` (container-tight grid)
-   and force light button variants so left/center/right CTAs remain visible. */
-.container-tight.grid .btn-minimal,
-.container-tight.grid .btn-info,
-.container-tight.grid .btn-ghost-dark,
-.container-tight.grid a.btn-ghost-dark,
-.container-tight.grid .btn-elegant--dark,
-.container-tight .btn-minimal,
-.container-tight .btn-info,
-.container-tight .btn-ghost-dark,
-.container-tight a.btn-ghost-dark,
-.container-tight .btn-elegant--dark {
-  background: linear-gradient(180deg,#fffaf6,#fff3ea) !important;
-  color: #0b1220 !important;
-  border: 1px solid rgba(15,23,42,0.06) !important;
-  box-shadow: none !important; /* remove heavy shadow for hero buttons */
-}
-.container-tight.grid .btn-minimal:hover,
-.container-tight.grid .btn-info:hover,
-.container-tight.grid .btn-ghost-dark:hover,
-.container-tight.grid a.btn-ghost-dark:hover,
-.container-tight .btn-minimal:hover,
-.container-tight .btn-info:hover,
-.container-tight .btn-ghost-dark:hover,
-.container-tight a.btn-ghost-dark:hover {
-  /* Elevate slightly like card buttons */
-  transform: translateY(-1px) !important;
-  box-shadow: none !important; /* remove hover shadow */
-  opacity: 1 !important;
-}
-
-/* Left hero panel uses bg-gray-50; when buttons sit on that light surface
-   we want the dark/filled variant (black background, white text) to match cards */
-.container-tight.grid .bg-gray-50 .btn-minimal,
-.container-tight.grid .bg-gray-50 .btn-info,
-.container-tight.grid .bg-gray-50 a.btn-minimal,
-.container-tight.grid .bg-gray-50 button.btn-info {
-  background: linear-gradient(180deg,#17181a 0%, #0b0d0f 100%) !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(0,0,0,0.08) !important;
-  box-shadow: none !important; /* remove shadow for dark hero-left buttons */
-}
-.container-tight.grid .bg-gray-50 .btn-minimal:hover,
-.container-tight.grid .bg-gray-50 .btn-info:hover,
-.container-tight.grid .bg-gray-50 a.btn-minimal:hover,
-.container-tight.grid .bg-gray-50 button.btn-info:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: none !important; /* no hover shadow */
-}
-
-
 
 /* Editorial layout: dark-only, light text by default */
 html, body {
@@ -936,11 +690,6 @@ html, body, #__next, #root, main {
 .dark .card-compact { background: var(--dark-bg-card) !important; }
 .dark .subtle-border { border-color: rgba(255,255,255,0.04) }
 
-/* Buttons adjustments for dark mode */
-.dark .btn-minimal { color: #fff }
-.dark .btn-outline { background: transparent; color: #e6e7ea; border-color: rgba(255,255,255,0.06) }
-.dark .btn-ghost-dark { border-color: rgba(255,255,255,0.08) }
-
 /* Convert common Tailwind background/text utility classes to dark variants when needed */
 .dark .bg-white { background-color: var(--dark-bg-card) !important }
 .dark .bg-gray-50 { background-color: var(--dark-bg-surface) !important }
@@ -1157,16 +906,6 @@ header {
   .header-logo-wrapper .logo-dark {
     transform: scale(3.6);
   }
-}
-
-/* Hero right panel: soft dark gray */
-.hero-right {
-  background-color: var(--dark-bg-surface, #383838) !important;
-  background-image: none !important;
-}
-.dark .hero-right {
-  background-color: var(--dark-bg-card, #353535) !important;
-  background-image: none !important;
 }
 
 @media (min-width: 1200px) and (max-width: 1399px) {
@@ -1429,292 +1168,12 @@ main.legal-page article {
   }
 }
 
-/* Hero slide: crossfade; sin Kenburns continuo (ahorra GPU en cada slide) */
-.hero-slide-image {
-  background-size: cover;
-  background-position: center;
-  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
-  backface-visibility: hidden;
-  transform: translate3d(0,0,0);
-}
-.hero-slide-layer {
-  will-change: auto;
-}
-@keyframes hero-kenburns {
-  from { transform: scale(1.02); }
-  to { transform: scale(1.07); }
-}
-.hero-slide-image-active {
-  animation: none;
-}
-/* Zoom muy suave para hero con object-contain (showroom); evita saltos al borde del marco */
-@keyframes hero-showroom-soft-zoom {
-  from { transform: scale(1); }
-  to { transform: scale(1.045); }
-}
-.hero-desktop-editorial {
-  background-color: var(--dark-bg-surface);
-}
-.hero-center-shell {
-  background-color: var(--dark-bg-surface);
-}
-.hero-showroom-shell {
-  background:
-    radial-gradient(58% 64% at 16% 18%, rgba(var(--palette-gold-rgb), 0.1), transparent 72%),
-    var(--dark-bg-page);
-}
-/* Hero desktop editorial (split cover + texto): sin marco, misma familia visual */
-.hero-editorial-split {
-  background:
-    radial-gradient(52% 56% at 18% 42%, rgba(var(--palette-gold-rgb), 0.07), transparent 70%),
-    var(--dark-bg-page);
-}
-/* Marco: ancho =100% de la columna (50% del hero en lg); alto generoso. */
-.hero-showroom-frame {
-  position: relative;
-  width: 100%;
-  max-width: 100%;
-  height: clamp(720px, 94vh, min(98vh, 1380px));
-  aspect-ratio: auto;
-  border-radius: 0;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: none;
-  background:
-    radial-gradient(70% 90% at 52% 48%, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01) 56%, transparent 82%),
-    linear-gradient(180deg, #1a1d23, #14171d);
-}
-.hero-showroom-image {
-  object-position: center center;
-  padding: clamp(0.05rem, 0.5vw, 0.2rem);
-  transform-origin: center center;
-}
-.hero-showroom-image-idle {
-  filter: none;
-  transform: none;
-  animation: none;
-}
-.hero-showroom-image-active {
-  filter: none;
-  animation: none;
-  will-change: auto;
-}
-.hero-showroom-overlay {
-  background: rgba(9, 11, 16, 0.12);
-}
-.hero-showroom-copy {
-  position: relative;
-}
-.hero-showroom-copy::before {
-  display: none;
-}
-.hero-center-image {
-  object-position: center 34%;
-}
-.hero-mobile-image-polish {
-  filter: none;
-}
-.hero-mobile-image-polish-active {
-  filter: none;
-}
-.hero-center-overlay {
-  background:
-    radial-gradient(58% 62% at 50% 26%, rgba(var(--palette-gold-rgb), 0.2), transparent 76%),
-    linear-gradient(to top, rgba(9, 11, 16, 0.72) 0%, rgba(9, 11, 16, 0.26) 36%, rgba(9, 11, 16, 0.32) 100%);
-}
-.hero-center-copy {
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-.hero-split-copy {
-  position: relative;
-}
-.hero-split-copy::after {
-  content: "";
-  position: absolute;
-  left: -1.4rem;
-  top: 0.1rem;
-  bottom: 0.1rem;
-  width: 2px;
-  border-radius: 999px;
-  background: linear-gradient(to bottom, rgba(var(--palette-gold-rgb), 0.64), rgba(var(--palette-gold-rgb), 0.08));
-}
-.hero-split-visual {
-  isolation: isolate;
-}
-.hero-split-image {
-  object-position: center 30%;
-}
-.hero-split-overlay {
-  background:
-    linear-gradient(100deg, rgba(9, 11, 16, 0.34) 0%, rgba(9, 11, 16, 0.08) 36%, rgba(9, 11, 16, 0.26) 100%),
-    linear-gradient(to top, rgba(9, 11, 16, 0.34), transparent 40%);
-}
-.hero-split-next {
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(14, 17, 23, 0.72);
-  border-radius: 0.85rem;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  padding: 0.45rem 0.65rem;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.26);
-  max-width: min(44ch, 52vw);
-}
-.hero-split-next-label {
-  display: block;
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.68);
-  font-weight: 600;
-}
-.hero-split-next-title {
-  margin-top: 0.12rem;
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.93);
-  line-height: 1.2;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-.hero-editorial-bg {
-  background:
-    linear-gradient(102deg, rgba(11, 13, 18, 0.86) 8%, rgba(11, 13, 18, 0.52) 38%, rgba(11, 13, 18, 0.2) 58%, rgba(11, 13, 18, 0.44) 100%),
-    radial-gradient(58% 64% at 78% 16%, rgba(var(--palette-gold-rgb), 0.18), transparent 74%),
-    linear-gradient(to top, rgba(8, 10, 14, 0.52), transparent 40%);
-}
-.hero-editorial-panel {
-  background: linear-gradient(180deg, rgba(19, 22, 29, 0.88), rgba(19, 22, 29, 0.72));
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 1rem;
-  padding: clamp(1rem, 2vw, 1.45rem);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.32);
-}
-.hero-editorial-next {
-  max-width: min(45ch, 56vw);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.hero-editorial-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.34);
-  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), background-color 260ms ease;
-}
-.hero-editorial-dot.is-active {
-  background: var(--vintage-gold);
-  transform: scale(1.16);
-}
-.hero-side-preview {
-  position: relative;
-  width: 88px;
-  height: 116px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: none;
-  transform: none;
-  transition: opacity 280ms ease;
-}
-.hero-side-preview.is-prev {
-  opacity: 0.55;
-}
-.hero-side-preview.is-next {
-  opacity: 0.72;
-}
-.hero-side-preview-image {
-  transition: none;
-}
-.hero-side-preview-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent 52%);
-}
-@media (max-width: 1279px) {
-  .hero-showroom-frame {
-    height: clamp(660px, 90vh, min(96vh, 1240px));
-    border-radius: 0;
-  }
-  .hero-showroom-image {
-    padding: 0.1rem;
-  }
-  .hero-side-preview {
-    width: 78px;
-    height: 102px;
-  }
-  .hero-center-image {
-    object-position: center 30%;
-  }
-  .hero-split-copy::after {
-    left: -1.15rem;
-  }
-}
-@media (max-width: 1023px) {
-  .hero-side-preview {
-    display: none;
-  }
-}
-@keyframes hero-mobile-cinematic {
-  from { transform: scale(1.03); filter: saturate(0.96); }
-  to { transform: scale(1.09); filter: saturate(1); }
-}
-@media (max-width: 767px) {
-  .hero-slide-image-mobile-active {
-    animation: none;
-  }
-}
-
-.hero-caption {
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 200ms ease-out, transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
-  background-color: rgba(0,0,0,0.36);
-}
-.hero-caption--visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* staggered caption entrance for modern cinematic feel */
-.hero-caption-item {
-  opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 200ms ease-out, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.hero-caption--visible .hero-caption-item {
-  opacity: 1;
-  transform: translateY(0);
-}
-.hero-caption--visible .hero-caption-item--1 { transition-delay: 30ms; }
-.hero-caption--visible .hero-caption-item--2 { transition-delay: 55ms; }
-.hero-caption--visible .hero-caption-item--3 { transition-delay: 80ms; }
-.hero-caption--visible .hero-caption-item--4 { transition-delay: 105ms; }
-.hero-caption--visible .hero-caption-item--5 { transition-delay: 130ms; }
-.hero-caption--visible .hero-caption-item--6 { transition-delay: 155ms; }
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-slide-image, .hero-caption, .hero-caption--visible, .hero-caption-item, .hero-slide-image-active, .hero-slide-image-mobile-active, .hero-showroom-image-active {
-    transition: none !important;
-    transform: none !important;
-    opacity: 1 !important;
-    animation: none !important;
-  }
-}
-
-/* Global interactive pill button style (matches reference) */
-/* Applied to most interactive elements; add .no-custom-btn to opt-out */
-/* Target common interactive elements and any element whose class starts with "btn-" */
+/* Botones tipo píldora por defecto; .no-custom-btn excluye */
 button:not(.no-custom-btn),
 input[type="submit"]:not(.no-custom-btn),
 input[type="button"]:not(.no-custom-btn),
 .btn,
-.ripple-button,
 a.button,
-/* anchors or elements with classes like btn-*, btnSomething */
 [class^="btn-"],
 [class*=" btn-"],
 [class^="btn"],
@@ -1735,18 +1194,12 @@ a.button,
   cursor: pointer;
 }
 
-/* Preserve existing padding/size — don’t override padding or height here */
-
-/* Reduce / remove aggressive hover for global pill buttons so they don't darken
-   or become invisible on dark surfaces. Keep a minimal visual affordance only. */
 button:not(.no-custom-btn):hover,
 input[type="submit"]:not(.no-custom-btn):hover,
 input[type="button"]:not(.no-custom-btn):hover,
 .btn:hover,
-.ripple-button:hover,
 a.button:hover {
-  transform: none; /* no translateY */
-  /* much lighter shadow so the button doesn't appear heavier/darker */
+  transform: none;
   box-shadow: 0 6px 12px rgba(8,10,12,0.08);
   opacity: 0.98;
 }
@@ -1755,24 +1208,20 @@ button:not(.no-custom-btn):active,
 input[type="submit"]:not(.no-custom-btn):active,
 input[type="button"]:not(.no-custom-btn):active,
 .btn:active,
-.ripple-button:active,
 a.button:active {
   transform: translateY(1px);
   box-shadow: 0 6px 12px rgba(8,10,12,0.3), inset 0 -4px 8px rgba(255,255,255,0.02);
 }
 
-/* Focus state for accessibility */
 button:not(.no-custom-btn):focus-visible,
 input[type="submit"]:not(.no-custom-btn):focus-visible,
 input[type="button"]:not(.no-custom-btn):focus-visible,
 .btn:focus-visible,
-.ripple-button:focus-visible,
 a.button:focus-visible {
   outline: none;
   box-shadow: 0 0 0 4px rgba(15,23,42,0.12), 0 10px 22px rgba(8,10,12,0.35);
 }
 
-/* Slightly lighter variant when button uses .btn-light */
 .btn-light,
 button.btn-light,
 input.btn-light {
@@ -1780,13 +1229,22 @@ input.btn-light {
   color: #fff;
 }
 
-/* Allow designers to opt-out for tiny icon buttons where pill would look odd */
 .no-custom-btn { border-radius: 6px !important; box-shadow: none !important }
-/* Permite círculos perfectos para icon buttons específicos (como el corazón de favoritos) */
 .favorite-heart-btn { border-radius: 999px !important; }
 
-/* Invert buttons inside dark contexts (sections, cards, or when `.dark` is present) */
-/* Applies when an ancestor has .dark or element has a dark-specific class like .dark-section or .dark-card */
+.no-custom-btn.whatsapp-float-fab {
+  border-radius: 9999px !important;
+  aspect-ratio: 1 / 1;
+  box-shadow:
+    0 4px 14px rgba(37, 211, 102, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.25) !important;
+}
+.no-custom-btn.whatsapp-float-fab:hover {
+  box-shadow:
+    0 6px 18px rgba(37, 211, 102, 0.5),
+    0 3px 8px rgba(0, 0, 0, 0.28) !important;
+}
+
 .dark button:not(.no-custom-btn),
 .dark input[type="submit"]:not(.no-custom-btn),
 .dark input[type="button"]:not(.no-custom-btn),
@@ -1794,8 +1252,6 @@ input.btn-light {
 .dark [class*=" btn-"],
 .dark a.button,
 .dark .btn,
-.dark .ripple-button,
-.dark .btn-elegant--light,
 .dark-section button:not(.no-custom-btn),
 .dark-section a:not(.no-custom-btn),
 .dark-card button:not(.no-custom-btn),
@@ -1823,20 +1279,6 @@ input.btn-light {
 .card-compact.dark a:active:not(.no-custom-btn) {
   transform: translateY(1px);
   box-shadow: 0 6px 12px rgba(11,13,15,0.06), inset 0 -3px 6px rgba(0,0,0,0.02) !important;
-}
-
-/* Ensure any button variant that normally renders as dark (e.g. .btn-elegant--dark)
-   becomes the light/inverted variant when placed inside a dark card/section. */
-.card-compact.dark .btn-elegant--dark,
-.card-compact.dark button.btn-elegant--dark,
-.card-compact.dark a.btn-elegant--dark,
-.card-compact.dark .btn-elegant--dark:hover,
-.card-compact.dark .btn-elegant--dark:active {
-  background: #ffffff !important;
-  color: #0b0d0f !important;
-  border: 1px solid rgba(11,13,15,0.06) !important;
-  box-shadow: 0 6px 12px rgba(11,13,15,0.06) !important;
-  transform: none !important;
 }
 
 /* Focus visible for accessibility in dark contexts */
@@ -2103,200 +1545,9 @@ button:not(.no-custom-btn):active {
   a:not(.no-custom-btn),
   button:not(.no-custom-btn),
   .card-interactive img,
-  .hero-slide-image,
-  .hero-showroom-image-active,
   .bottom-nav-item {
     animation: none !important;
     transition: none !important;
-    transform: none !important;
-  }
-}
-
-/* ===================== Hero: entrada profesional (imagen + panel + texto) ===================== */
-@keyframes hero-image-in {
-  from { opacity: 0; transform: translateX(-10px) scale(0.99); }
-  to { opacity: 1; transform: translateX(0) scale(1); }
-}
-.hero-image-entrance {
-  animation: hero-image-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* Placeholder de carga del hero: difuminado fuerte para evitar aspecto pixelado */
-.hero-image-entrance .image-skeleton-blur {
-  filter: blur(36px) saturate(0.9) !important;
-}
-
-/* Panel derecho: entra desde la derecha con un ligero retraso (solo en layout de 2 columnas) */
-@keyframes hero-panel-in {
-  from { opacity: 0; transform: translateX(24px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@media (min-width: 1024px) {
-  .hero-panel-entrance {
-    animation: hero-panel-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
-  }
-}
-@media (max-width: 1023px) {
-  .hero-panel-entrance {
-    animation: hero-text-enter 0.32s cubic-bezier(0.22, 1, 0.36, 1) 0.06s both;
-    opacity: 0;
-    transform: translateY(8px);
-  }
-}
-
-/* Texto del hero: subida más notoria con stagger */
-@keyframes hero-text-enter {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.hero-entrance {
-  --hero-delay-1: 40ms;
-  --hero-delay-2: 70ms;
-  --hero-delay-3: 100ms;
-  --hero-delay-4: 130ms;
-  --hero-delay-5: 160ms;
-  --hero-delay-6: 190ms;
-  --hero-delay-7: 220ms;
-  --hero-delay-8: 250ms;
-}
-.hero-entrance > * {
-  opacity: 0;
-  transform: translateY(8px);
-  animation: hero-text-enter 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-.hero-entrance > *:nth-child(1) { animation-delay: var(--hero-delay-1); }
-.hero-entrance > *:nth-child(2) { animation-delay: var(--hero-delay-2); }
-.hero-entrance > *:nth-child(3) { animation-delay: var(--hero-delay-3); }
-.hero-entrance > *:nth-child(4) { animation-delay: var(--hero-delay-4); }
-.hero-entrance > *:nth-child(5) { animation-delay: var(--hero-delay-5); }
-.hero-entrance > *:nth-child(6) { animation-delay: var(--hero-delay-6); }
-.hero-entrance > *:nth-child(7) { animation-delay: var(--hero-delay-7); }
-.hero-entrance > *:nth-child(8) { animation-delay: var(--hero-delay-8); }
-.hero-entrance > *:nth-child(9) { animation-delay: 280ms; }
-.hero-entrance > *:nth-child(10) { animation-delay: 310ms; }
-.hero-entrance > *:nth-child(11) { animation-delay: 340ms; }
-
-/* Slide text swap: smooth and lightweight reveal on each hero change */
-@keyframes hero-copy-swap-in {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.hero-copy-swap {
-  animation: hero-copy-swap-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* Orbes: desactivados por defecto (animación infinita = costo continuo) */
-@keyframes hero-orb-float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(4%, -3%) scale(1.02); }
-}
-.hero-orb-float {
-  animation: none;
-}
-.hero-orb-float:nth-of-type(2) {
-  animation: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-image-entrance,
-  .hero-panel-entrance,
-  .hero-entrance > *,
-  .hero-copy-swap,
-  .hero-orb-float {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    filter: none !important;
-  }
-}
-
-/* Hero desktop: diagonal cut más marcada (solo desde lg) */
-@media (min-width: 1024px) {
-  .hero-desktop-image-cut {
-    overflow: hidden;
-    clip-path: polygon(0 0, 100% 0, 74% 100%, 0 100%);
-  }
-  .hero-desktop-panel-cut {
-    position: relative;
-    border-left: none;
-  }
-  .hero-desktop-panel-cut::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 28%;
-    background: linear-gradient(to bottom, var(--dark-bg-surface, #3d3d3d) 0%, var(--dark-bg-page, #323232) 100%);
-    clip-path: polygon(0 0, 100% 0, 12% 100%, 0 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
-  .hero-desktop-panel-cut > * {
-    position: relative;
-    z-index: 1;
-  }
-}
-
-/* Hero CTA primario: anillo de foco accesible */
-.hero-cta-primary:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--vintage-gold);
-}
-
-/* ===================== Hero mobile (solo mobile) ===================== */
-@media (max-width: 767px) {
-  .hero-mobile-caption-surface {
-    background: linear-gradient(to top, rgba(10, 12, 16, 0.42) 0%, rgba(10, 12, 16, 0.16) 36%, transparent 72%);
-  }
-  /* Sombra de texto para buen contraste sobre la imagen del hero */
-  .hero-mobile-text-shadow {
-    text-shadow: 0 1px 2px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.8), 0 0 24px rgba(0,0,0,0.5);
-  }
-  /* Hero editorial: imagen de fondo a pantalla completa */
-  .hero-mobile-editorial-bg {
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-  /* Altura fija para layout anterior (imagen en marco) por si se reutiliza */
-  .hero-mobile-image-wrap {
-    height: 52vmin;
-    max-height: 340px;
-    min-height: 220px;
-  }
-  @keyframes hero-mobile-caption-in {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .hero-mobile-modern .hero-mobile-caption,
-  .hero-mobile-editorial .hero-mobile-caption {
-    animation: hero-mobile-caption-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.06s both;
-  }
-  .hero-mobile-modern .hero-mobile-badge,
-  .hero-mobile-editorial .hero-mobile-badge {
-    opacity: 0;
-    animation: hero-mobile-caption-in 0.26s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
-  }
-  .hero-mobile-cta:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(255,255,255,0.6);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero-mobile-modern .hero-mobile-caption,
-  .hero-mobile-modern .hero-mobile-badge,
-  .hero-mobile-editorial .hero-mobile-caption,
-  .hero-mobile-editorial .hero-mobile-badge {
-    animation: none !important;
-    opacity: 1 !important;
     transform: none !important;
   }
 }
@@ -2373,8 +1624,9 @@ button:not(.no-custom-btn):active {
 }
 header.header-scrolled {
   background-color: rgba(0, 0, 0, 0.94) !important;
-  backdrop-filter: saturate(140%) blur(6px);
-  -webkit-backdrop-filter: saturate(140%) blur(6px);
+  /* Sin backdrop-filter: menos trabajo de composición al scrollear en GPUs modestas */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 header.header-scrolled .header-logo-wrapper img,
@@ -2887,6 +2139,60 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   line-height: 1.45;
 }
 
+/* Fila catálogo admin: select + acciones (acento tienda) */
+.admin-catalog-row {
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.admin-catalog-row:hover {
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.32);
+}
+.admin-catalog-select {
+  cursor: pointer;
+  min-width: 10rem;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: none;
+  border-radius: 11px;
+  border: 1px solid rgba(var(--palette-gold-rgb), 0.28);
+  background: linear-gradient(180deg, rgba(22, 26, 34, 0.98) 0%, rgba(14, 16, 22, 0.98) 100%);
+  color: #f1f5f9;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.admin-catalog-select:hover {
+  border-color: rgba(var(--palette-gold-rgb), 0.42);
+}
+.admin-catalog-select:focus {
+  outline: none;
+  border-color: rgba(var(--palette-gold-rgb), 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 0 2px rgba(var(--palette-gold-rgb), 0.2);
+}
+.no-custom-btn.admin-catalog-select {
+  border-radius: 11px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+.no-custom-btn.admin-catalog-select:focus {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 0 2px rgba(var(--palette-gold-rgb), 0.2) !important;
+}
+.admin-catalog-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
 @keyframes page-in {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
@@ -2966,124 +2272,3 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   border-radius: 9999px;
   background: var(--vintage-gold);
 }
-
-/* ===================== Hero showroom (minimal, CSS-only motion) ===================== */
-/* Una capa de fondo (radial + linear) + grain en ::after — menos nodos DOM que tres divs full-bleed */
-.hero-showroom-ambient {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    radial-gradient(ellipse 85% 55% at 50% -15%, rgba(var(--palette-gold-rgb), 0.14), transparent 52%),
-    linear-gradient(to bottom, #101010, var(--dark-bg-page), #000000);
-  background-repeat: no-repeat, no-repeat;
-}
-.hero-showroom-ambient::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  pointer-events: none;
-}
-@keyframes hero-showroom-content-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.hero-showroom-content {
-  animation: hero-showroom-content-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-.hero-showroom-frame {
-  animation: hero-showroom-content-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: 0.03s;
-}
-/* Crossfade entre fotos del hero (capa doble) */
-.hero-showroom-slide-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  opacity: 0;
-  transform: scale(1.01);
-  pointer-events: none;
-  transition:
-    opacity 0.38s cubic-bezier(0.33, 1, 0.32, 1),
-    transform 0.38s cubic-bezier(0.33, 1, 0.32, 1);
-}
-.hero-showroom-slide-layer--in {
-  z-index: 2;
-  opacity: 1;
-  transform: scale(1);
-  pointer-events: auto;
-  will-change: auto;
-}
-.hero-showroom-slide-layer--out {
-  z-index: 1;
-  opacity: 0;
-  transform: scale(1.01);
-  pointer-events: none;
-}
-@media (max-width: 768px) {
-  .hero-showroom-slide-layer {
-    transition:
-      opacity 0.32s cubic-bezier(0.33, 1, 0.32, 1),
-      transform 0.32s cubic-bezier(0.33, 1, 0.32, 1);
-  }
-  .hero-showroom-ambient::after {
-    opacity: 0.012;
-  }
-}
-/* Zoom muy suave solo en la capa visible (no compite con el crossfade) */
-@keyframes hero-showroom-kenburns {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.06);
-  }
-}
-.hero-showroom-photo-kenburns {
-  transform-origin: center center;
-  will-change: auto;
-  animation: none;
-}
-.hero-showroom-caption-fade {
-  transition: opacity 0.28s cubic-bezier(0.33, 1, 0.32, 1);
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero-showroom-content,
-  .hero-showroom-frame {
-    animation: none !important;
-    opacity: 1;
-    transform: none;
-  }
-  .hero-showroom-slide-layer {
-    transition: none !important;
-    will-change: auto;
-  }
-  .hero-showroom-slide-layer--in {
-    opacity: 1 !important;
-    transform: none !important;
-    will-change: auto;
-  }
-  .hero-showroom-slide-layer--out {
-    opacity: 0 !important;
-    transform: none !important;
-  }
-  .hero-showroom-photo-kenburns {
-    animation: none !important;
-    transform: none !important;
-    will-change: auto;
-  }
-  .hero-showroom-caption-fade {
-    transition: none !important;
-  }
-}
-

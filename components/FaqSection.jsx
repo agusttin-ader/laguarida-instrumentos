@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Plus, Minus, InstagramLogo, WhatsappLogo, EnvelopeSimple } from 'phosphor-react'
 import { layoutShellClassName } from '../lib/layoutShell'
+import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
 import ScrollReveal from './ScrollReveal'
 
 const FAQ_ITEMS = [
@@ -55,9 +56,7 @@ export default function FaqSection() {
   }
 
   const phone = '+5491154661749'
-  const waNumber = '5491154661749'
-  const waMessage = encodeURIComponent('Hola, me interesa La Guarida, me podrias dar informacion?')
-  const waLink = `https://wa.me/${waNumber}?text=${waMessage}`
+  const waLink = buildWaMeHref(WHATSAPP_DEFAULT_WEB_MESSAGE)
   const mail = 'leonardo_ruberti@hotmail.com'
   const insta = 'https://www.instagram.com/laguaridainstrumentos/'
 

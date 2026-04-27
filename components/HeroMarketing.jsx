@@ -5,21 +5,15 @@ import Link from 'next/link'
 import { CaretDown } from 'phosphor-react'
 import { useEffect, useMemo, useState } from 'react'
 
-/** Variantes optimizadas para balancear carga y calidad por dispositivo. */
 const HERO_PRIMARY_DESKTOP = '/images/hero5-desktop.jpg'
 const HERO_PRIMARY_MOBILE = '/images/hero5-mobile.jpg'
 const HERO_FALLBACK = '/images/hero.PNG'
 
-/** Copy principal del hero — tono poético / refugio. */
 const HEADLINE = 'Tu refugio del buen sonido'
 const SUBHEADLINE = 'Instrumentos con historia y trato cercano.'
 const MOBILE_HEADLINE = 'Tu refugio del buen sonido'
 const MOBILE_SUBHEADLINE = 'Instrumentos con historia y trato cercano.'
 
-/**
- * Hero con imagen optimizada (cover). Indicador inferior tipo alopatagonia.vercel.app (texto + flecha, sin caja).
- * @param {{ product?: { name?: string, category?: string, slug?: string } | null }} props
- */
 export default function HeroMarketing({ product = null }) {
   const [heroSrc, setHeroSrc] = useState(HERO_PRIMARY_DESKTOP)
 
@@ -61,7 +55,6 @@ export default function HeroMarketing({ product = null }) {
         backgroundPosition: 'center 42%',
       }}
     >
-      {/* La capa background evita “hueco” mientras hidrata el cliente (HomeHeroDynamic es ssr:false). */}
       <div className="pointer-events-none absolute inset-0 z-0">
         <Image
           key={heroSrc}
@@ -80,7 +73,6 @@ export default function HeroMarketing({ product = null }) {
         />
       </div>
 
-      {/* Desktop: viñeta hacia el centro-izquierda (copy centrado en altura) */}
       <div
         className="pointer-events-none absolute inset-0 z-[1] hidden md:block"
         style={{
@@ -91,7 +83,6 @@ export default function HeroMarketing({ product = null }) {
         }}
         aria-hidden
       />
-      {/* Mobile: lectura al centro — viñeta suave + refuerzo abajo para el hint Catálogo */}
       <div
         className="pointer-events-none absolute inset-0 z-[1] md:hidden"
         style={{
@@ -137,7 +128,6 @@ export default function HeroMarketing({ product = null }) {
         </div>
       </div>
 
-      {/* Indicador: grid para un mismo eje vertical entre texto y flecha */}
       <Link
         href="/#seleccion-destacada"
         onClick={scrollToCatalog}

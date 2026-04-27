@@ -1,11 +1,7 @@
 "use client"
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef } from 'react'
 
-/**
- * Aparición al entrar en viewport: desktop = fade + slide (ver `.reveal` en globals);
- * móvil &lt; md = sin transición (CSS); `prefers-reduced-motion` = visible al instante.
- */
 const ScrollReveal = React.memo(function ScrollReveal({
   children,
   className = '',
@@ -15,24 +11,23 @@ const ScrollReveal = React.memo(function ScrollReveal({
   onVisible
 }) {
   const ref = useRef(null)
-  const [visible, setVisible] = useState(false)
   const onVisibleRef = useRef(onVisible)
+  const needsObserver = Boolean(onVisible)
 
   useEffect(() => {
     onVisibleRef.current = onVisible
   }, [onVisible])
 
   useLayoutEffect(() => {
-    if (typeof window === 'undefined') return
+    if (!needsObserver || typeof window === 'undefined') return
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    setVisible(true)
     queueMicrotask(() => {
       onVisibleRef.current?.()
     })
-  }, [])
+  }, [needsObserver])
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (!needsObserver || typeof window === 'undefined') return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const el = ref.current
@@ -42,7 +37,6 @@ const ScrollReveal = React.memo(function ScrollReveal({
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setVisible(true)
             onVisibleRef.current?.()
             obs.unobserve(entry.target)
           }
@@ -53,12 +47,16 @@ const ScrollReveal = React.memo(function ScrollReveal({
 
     obs.observe(el)
     return () => obs.disconnect()
-  }, [threshold, rootMargin])
+  }, [needsObserver, threshold, rootMargin])
 
   const style = { '--reveal-delay': `${delay || 0}ms` }
 
   return (
-    <div ref={ref} className={`reveal ${visible ? 'reveal--visible' : ''} ${className}`} style={style}>
+    <div
+      ref={needsObserver ? ref : undefined}
+      className={`reveal reveal--visible ${className}`}
+      style={style}
+    >
       {children}
     </div>
   )

@@ -18,7 +18,7 @@ function isStandaloneDisplay() {
 }
 
 export default function AdminIOSBootSplash({ children }) {
-  const [phase, setPhase] = useState("hidden") // hidden | visible | fading
+  const [phase, setPhase] = useState("hidden")
 
   const shouldRun = useMemo(() => {
     if (typeof window === "undefined") return false

@@ -23,6 +23,7 @@ export default async function sitemap() {
     const { data } = await supabase
       .from('products')
       .select('slug, updated_at')
+      .eq('listing_status', 'available')
       .order('updated_at', { ascending: false })
     if (Array.isArray(data) && data.length) {
       productEntries = data

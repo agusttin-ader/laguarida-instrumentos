@@ -6,7 +6,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import MenuDrawer from './MenuDrawer'
 
-/** Logo principal (horizontal, fondo oscuro / transparente) — `public/images/logo/logo-fondo-oscuro.PNG` */
 const LOGO_SRC = '/images/logo/logo-fondo-oscuro.PNG'
 const SCROLL_THRESHOLD = 72
 
@@ -24,7 +23,6 @@ export default function Header() {
   const isHome = pathname === '/' || pathname === ''
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  /** Home móvil: portal al slot sticky dentro del hero (sigue el scroll solo hasta el final de #home-top). */
   const [homeHeaderSlotEl, setHomeHeaderSlotEl] = useState(null)
 
   useEffect(() => {
@@ -74,7 +72,6 @@ export default function Header() {
     router.push('/')
   }
 
-  /** Mismo espacio arriba y abajo en desktop (logo + nav centrados en la franja). */
   const desktopHeaderPad = 'md:py-4 lg:py-5'
 
   const mobileHeader = (
@@ -139,7 +136,7 @@ export default function Header() {
         : mobileShell}
       <MenuDrawer open={menuOpen} setOpen={setMenuOpen} />
 
-      {/* ——— Desktop: logo alineado a la izquierda; nav a la derecha (evita recorte del scale en el borde) ——— */}
+      {/* Header desktop */}
       <header
         className={`header-desktop hidden md:block ${scrolled ? 'header-scrolled ' : ''}${desktopHeaderPad} md:bg-transparent md:backdrop-blur-0 md:border-0 relative overflow-visible`}
       >
@@ -231,51 +228,69 @@ function AuthIndicator() {
   if (typeof pathname === 'string' && pathname.startsWith('/admin')) return null
 
   return (
-    <div className="hidden md:flex items-center gap-4 text-xs text-gray-300 pt-3 border-t border-white/[0.08]">
-      {(online === true || online === false) && (
-        <div className="flex items-center gap-1.5">
-          <span
-            className={`w-2 h-2 rounded-full ${online ? 'bg-emerald-500' : 'bg-rose-500'}`}
-            aria-hidden
-          />
-          <span className="text-[11px] text-white/80">
-            {online ? 'En línea' : 'Sin conexión'}
+    <div className="hidden md:flex w-full flex-col items-stretch border-t border-white/[0.07] pt-2.5 mt-1">
+      <div className="flex flex-wrap items-center justify-end gap-2.5 text-[11px] text-white/75">
+        <div className="flex max-w-full items-center gap-2 rounded-full border border-white/[0.1] bg-black/25 px-3 py-1 pl-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-sm">
+          {(online === true || online === false) && (
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span
+                className={`h-1.5 w-1.5 rounded-full ring-2 ring-white/10 ${online ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.45)]' : 'bg-rose-400'}`}
+                aria-hidden
+              />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/70">
+                {online ? 'En línea' : 'Sin conexión'}
+              </span>
+            </div>
+          )}
+          {(online === true || online === false) && (
+            <span className="hidden h-3 w-px bg-white/15 sm:block" aria-hidden />
+          )}
+          <span className="min-w-0 truncate font-medium tracking-[0.02em] text-[#e4e7f0]/90 sm:max-w-[min(280px,28vw)]">
+            {auth.email || 'Admin'}
           </span>
         </div>
-      )}
-      <div className="flex items-center gap-1.5">
-        <span className="font-medium text-gray-100 truncate max-w-[220px]">{auth.email || 'Admin'}</span>
-      </div>
-      <a
-        href="/admin/productos/catalogo"
-        className="no-custom-btn inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 bg-white/[0.03] text-[11px] font-medium text-white/90 hover:bg-white/[0.08] transition-colors"
-        aria-label="Ir al administrador (catálogo)"
-      >
-        <svg
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden
+        <a
+          href="/admin/productos/catalogo"
+          className="no-custom-btn inline-flex items-center justify-center gap-2 rounded-full border border-[rgba(var(--palette-gold-rgb),0.42)] bg-[rgba(var(--palette-gold-rgb),0.07)] px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--vintage-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] transition-all duration-300 hover:border-[rgba(var(--palette-gold-rgb),0.62)] hover:bg-[rgba(var(--palette-gold-rgb),0.16)] hover:text-[#fff8e7] hover:shadow-[0_0_20px_rgba(var(--palette-gold-rgb),0.12)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+          aria-label="Ir al administrador (catálogo)"
         >
-          <path
-            d="M5 6.5h14a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 16V8A1.5 1.5 0 0 1 5 6.5Z"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M4 18.5h16"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        <span>Admin</span>
-      </a>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="opacity-90"
+            aria-hidden
+          >
+            <path
+              d="M4 5a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Z"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M13 5a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2V5Z"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M4 16a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3Z"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M13 14a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2v-3Z"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span>Admin</span>
+        </a>
+      </div>
     </div>
   )
 }

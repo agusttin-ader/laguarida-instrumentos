@@ -14,6 +14,7 @@ import ProductSpecsExpandable from '../../../components/ProductSpecsExpandable'
 import { parseNumericPriceForSchema } from '../../../lib/utils/normalizeProduct'
 import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
 import { absoluteUrl, toAbsoluteUrl } from '../../../lib/siteUrl'
+import { buildWaMeHref, whatsAppProductMessage } from '../../../lib/whatsappWeb'
 
 export const revalidate = 300
 
@@ -167,6 +168,7 @@ export default async function GuitarPage({ params }) {
       const { data: allProducts } = await supabase
         .from('products')
         .select(PRODUCT_LIST_COLUMNS)
+        .eq('listing_status', 'available')
         .neq('slug', product.slug)
         .order('created_at', { ascending: false })
         .limit(36)
@@ -224,7 +226,7 @@ export default async function GuitarPage({ params }) {
     )
   }
 
-  const consultHref = `https://wa.me/5491154661749?text=${encodeURIComponent(`Hola, me interesa ${product.name}, me podrias dar mas informacion ?`)}`
+  const consultHref = buildWaMeHref(whatsAppProductMessage(product.name))
   const categoryLabel = [product.brand, product.model].filter(Boolean).join(' · ') || 'Premium guitars'
   const modelValue = product.model || 'N/A'
   const woodValue = Array.isArray(product.wood) ? product.wood.join(', ') : (product.wood || 'N/A')
@@ -380,7 +382,7 @@ export default async function GuitarPage({ params }) {
           <div className="flex overflow-x-auto gap-4 sm:gap-5 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 lg:gap-8 snap-x snap-mandatory scroll-smooth">
             {relatedProducts.map((r, idx) => (
               <div key={r.id || r.slug} className="flex-shrink-0 w-[min(280px,85vw)] sm:w-auto snap-center">
-                <ProductCard item={r} priority={idx < 2} />
+                <ProductCard item={r} priority={idx < 2} galleryDesktopOnly />
               </div>
             ))}
           </div>

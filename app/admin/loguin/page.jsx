@@ -19,10 +19,7 @@ export default function LoguinRedirect(){
             return
           }
         }
-      } catch {
-        // ignore
-      }
-      // not authenticated -> go to proper login page
+      } catch { /* seguir al login */ }
       router.replace('/admin/login')
     })()
 

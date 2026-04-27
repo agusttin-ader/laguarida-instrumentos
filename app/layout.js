@@ -6,13 +6,11 @@ import SiteShell from '../components/SiteShell'
 import ServiceWorkerRegister from '../components/ServiceWorkerRegister'
 import DisableZoomInApp from '../components/DisableZoomInApp'
 import { ToastProvider } from '../components/ToastContext'
-import { HomeHeroImageProvider } from '../context/HomeHeroImageContext'
 import { absoluteUrl, getSiteUrl } from '../lib/siteUrl'
 import { Analytics } from '@vercel/analytics/react'
 
 const siteUrl = getSiteUrl()
 
-// Preconnect to Supabase Storage so first product images load faster
 const supabaseOrigin = process.env.NEXT_PUBLIC_SUPABASE_URL
   ? (() => { try { return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).origin } catch { return null } })()
   : null
@@ -79,9 +77,7 @@ export default function RootLayout({ children }) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
         <DisableZoomInApp />
         <ToastProvider>
-          <HomeHeroImageProvider>
-            <SiteShell>{children}</SiteShell>
-          </HomeHeroImageProvider>
+          <SiteShell>{children}</SiteShell>
           <ServiceWorkerRegister />
           <Analytics />
         </ToastProvider>

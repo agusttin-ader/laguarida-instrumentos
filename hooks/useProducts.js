@@ -26,13 +26,6 @@ function getCached() {
   return null
 }
 
-/**
- * Shared products hook: in-memory cache + single in-flight request deduplication.
- * Use across ProductGrid, HeroMonolith, FavoritosPage to avoid duplicate fetches.
- *
- * @param {{ shuffleCatalog?: boolean, enabled?: boolean }} options
- *   `enabled: false` — no suscripción ni fetch (p. ej. ProductGrid con `items` del padre).
- */
 export function useProducts(options = {}) {
   const { shuffleCatalog = false, enabled = true } = options
   const [products, setProducts] = useState(() => (enabled ? getCached() : []))

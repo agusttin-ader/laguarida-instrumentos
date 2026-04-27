@@ -3,16 +3,13 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ScrollReveal from './ScrollReveal'
 
-/** Actualizar si el contador pasa a venir de API o env. */
 const TRUST_SALES_COUNT = 184
 
 const FOLLOWERS_K = 15.3
 const QUALITY_PCT = 100
 
 const DURATION_MS = 1500
-/** Retraso antes del conteo en desktop para alinear con el fade del ScrollReveal. */
 const REVEAL_TO_COUNT_MS = 160
-/** 1 = actualización cada frame (conteo más legible); subir a 2 si hiciera falta aligerar CPU. */
 const FRAME_STRIDE = 1
 
 function easeOutCubic(t) {
@@ -65,7 +62,6 @@ const StatCard = memo(function StatCard({ label, value, description, className =
   )
 })
 
-/** Doble regla fina para enmarcar el bloque de confianza. */
 function TrustSectionRulesDouble() {
   return (
     <div className="flex w-full flex-col gap-1" aria-hidden>
@@ -75,9 +71,6 @@ function TrustSectionRulesDouble() {
   )
 }
 
-/**
- * Bloque de confianza — mismo ScrollReveal que el resto del home; conteo al hacerse visible.
- */
 export default function HomeTrustStats() {
   const rafRef = useRef(0)
   const countTimeoutRef = useRef(0)

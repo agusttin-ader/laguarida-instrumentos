@@ -91,15 +91,18 @@ export default function ProductShareAndFavorite({ slug, name, url }) {
     toast(fav ? 'Quitar de tu selección' : 'Agregado a tu selección', 'default')
   }, [slug, fav, toggle, toast])
 
+  const iconBtnBase =
+    'no-custom-btn inline-flex items-center justify-center w-12 h-12 rounded-xl border border-white/[0.14] bg-black/45 text-white/[0.9] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition-all duration-200 btn-focus hover:border-[rgba(var(--palette-gold-rgb),0.45)] hover:bg-[rgba(var(--palette-gold-rgb),0.1)] hover:text-[var(--vintage-gold)] hover:shadow-[0_0_28px_rgba(var(--palette-gold-rgb),0.1)] active:scale-[0.97]'
+
   return (
     <div className="flex items-center gap-2">
       <button
         type="button"
         onClick={handleShare}
         aria-label="Compartir producto"
-        className="no-custom-btn inline-flex items-center justify-center w-12 h-12 rounded-lg border border-[#d6dbe6] dark:border-[#3a4358] bg-[#f8f9fc] dark:bg-[#141a26] text-[#1a2030] dark:text-[#eef2ff] hover:bg-[#eef0f5] dark:hover:bg-[#1a2230] hover:border-[var(--vintage-gold)]/30 dark:hover:border-[var(--vintage-gold)]/40 hover:scale-105 active:scale-100 transition-all duration-200 btn-focus"
+        className={iconBtnBase}
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
           <polyline points="16 6 12 2 8 6" />
           <line x1="12" y1="2" x2="12" y2="15" />
@@ -109,10 +112,10 @@ export default function ProductShareAndFavorite({ slug, name, url }) {
         type="button"
         onClick={handleFavorite}
         aria-label={fav ? 'Quitar de tu selección' : 'Agregar a tu selección'}
-        className={`no-custom-btn inline-flex items-center justify-center w-12 h-12 rounded-lg border transition-all duration-200 btn-focus ${
+        className={`${iconBtnBase} ${
           fav
-            ? 'border-[var(--vintage-gold)]/45 bg-[var(--vintage-gold-soft)] text-[var(--vintage-gold)] hover:bg-[var(--vintage-gold-soft-hover)] hover:border-[var(--vintage-gold)]/60 hover:scale-105 active:scale-100'
-            : 'border-[#d6dbe6] dark:border-[#3a4358] bg-[#f8f9fc] dark:bg-[#141a26] text-[#1a2030] dark:text-[#eef2ff] hover:bg-[#eef0f5] dark:hover:bg-[#1a2230] hover:border-[var(--vintage-gold)]/30 dark:hover:border-[var(--vintage-gold)]/40 hover:scale-105 active:scale-100'
+            ? 'border-[rgba(var(--palette-gold-rgb),0.55)] bg-[rgba(var(--palette-gold-rgb),0.14)] text-[var(--vintage-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_20px_rgba(var(--palette-gold-rgb),0.12)] hover:bg-[rgba(var(--palette-gold-rgb),0.22)] hover:border-[rgba(var(--palette-gold-rgb),0.72)] hover:text-[#fff8e7]'
+            : ''
         }`}
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill={fav ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

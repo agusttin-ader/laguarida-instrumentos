@@ -25,7 +25,7 @@ export default function LowCostSection() {
         </h2>
       </ScrollReveal>
 
-      <ProductGrid items={lowCostProducts} parentLoading={loading} primaryImageOnly />
+      <ProductGrid items={lowCostProducts} parentLoading={loading} />
     </section>
   )
 }

@@ -54,7 +54,7 @@ export default function ClientAuth({ children }){
         setSession(data?.session ?? null)
         setUser(data?.session?.user ?? null)
       } catch {
-        // Session init error; state remains null
+        /* sin sesión Supabase en cliente */
       } finally {
         if (mounted) setLoading(false)
       }
@@ -74,7 +74,6 @@ export default function ClientAuth({ children }){
     }
   }, [])
 
-  // Mantener sesión viva: refrescar token cada 50 min (solo se cierra con "Cerrar sesión")
   useEffect(() => {
     if (!user || isLoginPath) return
     const REFRESH_MS = 50 * 60 * 1000
@@ -84,7 +83,6 @@ export default function ClientAuth({ children }){
     return () => clearInterval(id)
   }, [user, isLoginPath])
 
-  // En login: quitar fondo gris para que solo se vea la imagen de fondo del body
   useEffect(() => {
     if (!isLoginPath) return
     document.body.classList.add('admin-login-page')
@@ -113,17 +111,11 @@ export default function ClientAuth({ children }){
   }, [])
 
   useEffect(() => {
-    // only run on client after initial loading
     if (loading) return
 
-    // allow the login page
     const isLogin = pathname === '/admin/login' || pathname === '/admin/login/'
 
     if (!user && !isLogin) {
-      // Double-check session in case of a short race between sign-in and
-      // session restoration. First try client-side session, then fall back
-      // to a server-side check (`/api/auth/me`) which will inspect the
-      // HttpOnly cookie set by the server.
       (async () => {
         try {
           const { data } = await supabase.auth.getSession()
@@ -140,7 +132,6 @@ export default function ClientAuth({ children }){
           if (res.ok) {
             const j = await res.json()
             if (j?.authenticated) {
-              // populate user from server response (no tokens returned)
               setUser({ id: j.user?.id, email: j.user?.email || null })
               setSession(null)
               return
@@ -152,7 +143,6 @@ export default function ClientAuth({ children }){
       })()
     }
 
-    // if already signed in and on login page, redirect to catálogo
     if (user && isLogin) {
       router.push('/admin/productos/catalogo')
     }
@@ -184,7 +174,6 @@ export default function ClientAuth({ children }){
     <AdminAuthContext.Provider value={value}>
       <div>
         {isLoginPath ? (
-          /* Sin header ni footer en login: imagen de fondo a pantalla completa y un solo logo (el del contenido) */
           <div className="fixed inset-0 z-20 flex flex-col overflow-y-auto">
             <div className="flex-1 min-h-0">
               {children}

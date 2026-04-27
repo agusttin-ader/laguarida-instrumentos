@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useRef } from 'react'
+import React, { useState, useMemo, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import normalizeProduct from '../lib/utils/normalizeProduct'
 import imageService from '../lib/utils/imageService'
@@ -8,25 +8,34 @@ import Link from 'next/link'
 import { useFavorites } from './ProductShareAndFavorite'
 import { useToast } from './ToastContext'
 
-// Alineado al grid (1 / 2 / 3 cols + padding del contenedor); evita warning de Next por 100vw en tarjetas más angostas
 const CARD_IMAGE_SIZES =
   '(max-width: 767px) min(100vw, 720px), (max-width: 1023px) min(46vw, 560px), (max-width: 1535px) min(34vw, 520px), (max-width: 1919px) min(30vw, 600px), (max-width: 2559px) min(26vw, 720px), min(24vw, 840px)'
 const MAX_CARD_IMAGES = 3
-/** Desplazamiento mínimo (px) para cambiar de foto al soltar */
 const SWIPE_DISTANCE_THRESHOLD = 48
-/** Velocidad mínima (px/ms) para flick rápido */
 const SWIPE_VELOCITY_THRESHOLD = 0.35
-/** Solo montar la foto actual y la adyacente: evita 2–3 descargas por card al cargar el grid */
 const GALLERY_MOUNT_RADIUS = 1
 
 const ProductCard = React.memo(function ProductCard({
   item,
   priority = false,
   imageFit = 'cover',
-  /** Solo portada (p. ej. grid destacado en home); sin swipe ni mini-galería */
-  primaryImageOnly = false
+  primaryImageOnly = false,
+  galleryDesktopOnly = false
 }) {
   const p = normalizeProduct(item)
+  const [desktopGalleryUnlocked, setDesktopGalleryUnlocked] = useState(() => !galleryDesktopOnly)
+
+  useEffect(() => {
+    if (!galleryDesktopOnly) return
+    const mq = window.matchMedia('(max-width: 767px)')
+    const sync = () => setDesktopGalleryUnlocked(!mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [galleryDesktopOnly])
+
+  const effectivePrimaryOnly = primaryImageOnly || (galleryDesktopOnly && !desktopGalleryUnlocked)
+
   const imageList = useMemo(() => {
     const main = imageService.resolve(p.image_url)
     const resolved = (Array.isArray(p.images) ? p.images : p.image_url ? [p.image_url] : [])
@@ -36,10 +45,14 @@ const ProductCard = React.memo(function ProductCard({
     const list = main ? [main, ...rest] : rest
     const capped = list.slice(0, MAX_CARD_IMAGES)
     const withDisplay = capped.map((u) => imageService.forDisplay(u, 'card') || u)
-    if (primaryImageOnly) return withDisplay.slice(0, 1)
+    if (effectivePrimaryOnly) return withDisplay.slice(0, 1)
     return withDisplay
-  }, [p.images, p.image_url, primaryImageOnly])
+  }, [p.images, p.image_url, effectivePrimaryOnly])
   const [galleryIndex, setGalleryIndex] = useState(0)
+
+  useEffect(() => {
+    setGalleryIndex((i) => Math.max(0, Math.min(i, Math.max(0, imageList.length - 1))))
+  }, [imageList.length])
   const [loadedIndices, setLoadedIndices] = useState(() => new Set())
   const [isHoveringImage, setIsHoveringImage] = useState(false)
   const touchStartX = useRef(0)
@@ -110,7 +123,7 @@ const ProductCard = React.memo(function ProductCard({
 
   const imageBlock = (
     <div
-      className="product-card-mobile-shell relative w-full overflow-hidden bg-[var(--dark-surface-2)] max-[767px]:bg-[#141414] aspect-[4/5] md:aspect-[3/4] touch-pan-y select-none"
+      className={`product-card-mobile-shell relative w-full overflow-hidden bg-[var(--dark-surface-2)] max-[767px]:bg-[#141414] aspect-[4/5] md:aspect-[3/4] select-none ${hasGallery ? 'touch-pan-y' : 'touch-pan-x pan-y'}`}
       onTouchStart={hasGallery ? handleTouchStart : undefined}
       onTouchEnd={hasGallery ? handleTouchEnd : undefined}
       onTouchCancel={hasGallery ? handleTouchEnd : undefined}
@@ -171,7 +184,7 @@ const ProductCard = React.memo(function ProductCard({
               onClick={(e) => handleArrowClick(e, -1)}
               disabled={galleryIndex === 0}
               aria-label="Imagen anterior"
-              className={`no-custom-btn pointer-events-auto absolute left-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white shadow-md backdrop-blur-sm max-[768px]:backdrop-blur-none transition-[opacity,transform,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none md:backdrop-blur-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
+              className={`no-custom-btn pointer-events-auto absolute left-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/58 text-white shadow-md transition-[opacity,transform,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
                 galleryIndex === 0
                   ? 'cursor-default opacity-35 md:opacity-0 md:group-hover/img:opacity-40'
                   : 'opacity-100 md:opacity-0 md:group-hover/img:opacity-100 hover:bg-black/60 md:hover:bg-transparent'
@@ -186,7 +199,7 @@ const ProductCard = React.memo(function ProductCard({
               onClick={(e) => handleArrowClick(e, 1)}
               disabled={galleryIndex === imageList.length - 1}
               aria-label="Siguiente imagen"
-              className={`no-custom-btn pointer-events-auto absolute right-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white shadow-md backdrop-blur-sm max-[768px]:backdrop-blur-none transition-[opacity,transform,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none md:backdrop-blur-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
+              className={`no-custom-btn pointer-events-auto absolute right-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/58 text-white shadow-md transition-[opacity,transform,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
                 galleryIndex === imageList.length - 1
                   ? 'cursor-default opacity-35 md:opacity-0 md:group-hover/img:opacity-40'
                   : 'opacity-100 md:opacity-0 md:group-hover/img:opacity-100 hover:bg-black/60 md:hover:bg-transparent'
@@ -216,7 +229,7 @@ const ProductCard = React.memo(function ProductCard({
         type="button"
         onClick={handleFavoriteClick}
         aria-label={fav ? 'Quitar de tu selección' : 'Agregar a tu selección'}
-        className="no-custom-btn favorite-heart-btn absolute top-2 right-2 z-20 min-w-[44px] min-h-[44px] w-11 h-11 md:w-10 md:h-10 flex items-center justify-center border bg-black/55 border-white/25 text-white/90 hover:bg-black/70 hover:border-white/40 backdrop-blur-sm max-[768px]:backdrop-blur-none transition-all duration-200 touch-manipulation max-[768px]:rounded-md md:rounded-full"
+        className="no-custom-btn favorite-heart-btn absolute top-2 right-2 z-20 min-w-[44px] min-h-[44px] w-11 h-11 md:w-10 md:h-10 flex items-center justify-center border bg-black/62 border-white/25 text-white/90 hover:bg-black/75 hover:border-white/40 transition-all duration-200 touch-manipulation max-[768px]:rounded-md md:rounded-full"
       >
         <svg
           width="18"

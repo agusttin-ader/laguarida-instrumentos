@@ -43,9 +43,6 @@ const productosNavItems = [
   },
 ]
 
-/**
- * Layout dashboard modo oscuro + sidebar (alto contraste).
- */
 export default function AdminDeskShell({
   children,
   user,

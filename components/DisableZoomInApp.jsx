@@ -2,10 +2,6 @@
 
 import { useEffect } from 'react'
 
-/**
- * Solo desactiva zoom en PWA (standalone). En el navegador móvil se mantiene
- * el viewport del layout (userScalable: true) para accesibilidad.
- */
 function isStandalonePWA() {
   if (typeof window === 'undefined') return false
   return (

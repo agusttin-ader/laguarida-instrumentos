@@ -289,6 +289,11 @@ function buildProductPayload(body = {}, partial = false) {
   if ('low_cost' in body) payload.low_cost = low_cost
   if ('year' in body && year !== null) payload.year = year
   if ('weight' in body && weight !== null) payload.weight = weight
+  if ('listing_status' in body) {
+    const ls = String(body.listing_status || '').trim().toLowerCase()
+    if (ls !== 'available' && ls !== 'reserved') return { error: 'listing_status inválido' }
+    payload.listing_status = ls
+  }
 
   if (!partial && !payload.name) return { error: 'Invalid name' }
   if (!partial && !payload.slug) return { error: 'Invalid slug' }
@@ -301,20 +306,25 @@ function buildProductPayload(body = {}, partial = false) {
 
 export async function GET(req) {
   try {
+    const url = new URL(req.url)
+    const adminCatalog = url.searchParams.get('scope') === 'admin'
     const accessToken = await extractAccessToken(req)
+    /** Listado completo (incl. reservados) solo desde el panel, con ?scope=admin y sesión. Si hay cookies de admin pero se pide el catálogo público (home, etc.), se filtra igual. */
+    const showFullCatalog = Boolean(accessToken && adminCatalog)
+
     const supabase = await getSupabaseServerClient(accessToken)
-    const columns = accessToken ? '*' : PRODUCT_LIST_COLUMNS
-    const { data, error } = await supabase
-      .from('products')
-      .select(columns)
-      .order('created_at', { ascending: false })
+    const columns = showFullCatalog ? '*' : PRODUCT_LIST_COLUMNS
+    let query = supabase.from('products').select(columns).order('created_at', { ascending: false })
+    if (!showFullCatalog) {
+      query = query.eq('listing_status', 'available')
+    }
+    const { data, error } = await query
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: error.status || 500 })
     }
 
-    // Listado autenticado (`*`): no cachear en CDN ni compartir entre usuarios.
-    const headers = accessToken
+    const headers = showFullCatalog
       ? { 'Cache-Control': 'private, no-store' }
       : {
           'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600, max-age=120',

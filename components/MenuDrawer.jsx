@@ -4,9 +4,10 @@ import React, { useCallback, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
 
 const LOGO_SRC = '/images/logo/logo-fondo-oscuro.PNG'
-const WA_HREF = 'https://wa.me/5491154661749?text=' + encodeURIComponent('Hola, me interesa La Guarida, me podrias dar informacion?')
+const WA_HREF = buildWaMeHref(WHATSAPP_DEFAULT_WEB_MESSAGE)
 
 function ChevronRight({ className }) {
   return (

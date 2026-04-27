@@ -1,5 +1,4 @@
 "use client"
-/* eslint-disable @typescript-eslint/no-unused-vars, no-unused-vars, no-empty */
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -57,7 +56,6 @@ function parsePriceAndCurrency(rawPrice, rawCurrency) {
 }
 
 async function addRecentActivityClient(type, label, productId = null) {
-  const stamp = Date.now()
   try {
     await fetch('/api/admin/activity', {
       method: 'POST',
@@ -68,9 +66,6 @@ async function addRecentActivityClient(type, label, productId = null) {
   } catch { /* empty */ }
 }
 
-/**
- * @param {{ mode: 'create' | 'edit', editingId?: string | null }} props
- */
 export default function AdminProductForm({ mode, editingId = null }) {
   const router = useRouter()
   const { toast } = useToast()
@@ -170,7 +165,6 @@ export default function AdminProductForm({ mode, editingId = null }) {
     setModalGalleryDragOverIndex(null)
   }
 
-  /** Una sola petición a /api/products: catálogo para duplicados + fila en edición. */
   useEffect(() => {
     let cancelled = false
     async function run() {
@@ -179,7 +173,7 @@ export default function AdminProductForm({ mode, editingId = null }) {
       if (editing) setProductLoading(true)
       setError(null)
       try {
-        const res = await fetch('/api/products', { credentials: 'include' })
+        const res = await fetch('/api/products?scope=admin', { credentials: 'include' })
         if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
         const data = await res.json()
         const list = Array.isArray(data) ? data.map((d) => normalizeProduct(d)) : []

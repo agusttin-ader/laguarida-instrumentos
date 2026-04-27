@@ -2,11 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 
-/**
- * Cuando el admin se abre como PWA (standalone), envuelve el contenido
- * en el shell de app (max-width 480px, bordes redondeados) para que se vea
- * como app instalada. En web normal no envuelve.
- */
 export default function AdminAppShellWrapper({ children }) {
   const [isStandalone, setIsStandalone] = useState(false)
 

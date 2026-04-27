@@ -2,9 +2,6 @@
 
 import React, { useCallback, useRef, useState } from 'react'
 
-/**
- * Envuelve el contenido y permite pull-to-refresh en móvil (arrastrar hacia abajo para recargar).
- */
 export default function PullToRefresh({ children, onRefresh, disabled }) {
   const [pull, setPull] = useState(0)
   const startY = useRef(0)

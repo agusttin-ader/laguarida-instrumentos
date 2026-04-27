@@ -3,10 +3,6 @@ import React, { useState } from "react";
 import NextImage from "next/image";
 import { useEffect } from "react";
 
-// ImageWithSkeleton:
-// - Wraps Next/Image to provide a lightweight skeleton while the image is loading.
-// - Uses `onLoad` to detect when the image has finished loading (onLoadingComplete is deprecated).
-// - Keeps `alt` for accessibility (screen readers) and avoids layout shift via width/height or `fill` usage.
 export default function ImageWithSkeleton({ src, alt, width, height, sizes, quality = 72, priority = false, loading = 'lazy', className = "", style = {}, fill = false, fit, imgClassName = '', imgStyle = {}, onImageLoad, disableClientPreview = true, unoptimized }) {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
@@ -52,7 +48,6 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
     )
   }
 
-  // compute an aspect-ratio placeholder when width/height are provided
   const aspectRatio = (width && height) ? `${width} / ${height}` : undefined
 
   const mergedImgStyle = {

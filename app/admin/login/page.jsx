@@ -4,6 +4,17 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
+const LOGIN_BG_QUOTES = [
+  { q: 'La música es mi religión.', a: 'Jimi Hendrix' },
+  { q: 'El blues es la raíz de todo.', a: 'Muddy Waters' },
+  { q: 'Menos notas, más historia.', a: 'B.B. King' },
+  { q: 'El fraseo importa más que la velocidad.', a: 'David Gilmour' },
+  { q: 'Tocá lo que la canción necesita.', a: 'Keith Richards' },
+  { q: 'El groove manda.', a: 'Derek Trucks' },
+  { q: 'Primero emoción, después técnica.', a: 'Stevie Ray Vaughan' },
+  { q: 'Escuchá más de lo que tocás.', a: 'Neil Young' }
+]
+
 export default function AdminLoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
@@ -35,53 +46,10 @@ export default function AdminLoginPage() {
     return shuffled[0] || null
   }
 
-  const quotes = [
-    { q: 'Music is my religion.', a: 'Jimi Hendrix' },
-    { q: 'Play with feeling, not with speed.', a: 'Eric Clapton' },
-    { q: 'The beautiful thing about learning is nobody can take it away from you.', a: 'B.B. King' },
-    { q: "It's all blues, man.", a: 'Stevie Ray Vaughan' },
-    { q: 'There is always something new to learn.', a: 'Jimmy Page' },
-    { q: "It's not what you play, it's the way you play it.", a: 'Keith Richards' },
-    { q: 'The heart speaks through the guitar.', a: 'Carlos Santana' },
-    { q: 'Tone is not just about gear.', a: 'Jeff Beck' },
-    { q: 'Play from the gut.', a: 'Buddy Guy' },
-    { q: 'Keep it honest.', a: 'Rory Gallagher' },
-    { q: 'Let the note breathe.', a: 'Duane Allman' },
-    { q: 'Dynamics make music sing.', a: 'John Mayer' },
-    { q: 'Emotion first, technique second.', a: 'Slash' },
-    { q: 'Less is often more.', a: 'Mark Knopfler' },
-    { q: 'Make the melody speak.', a: 'David Gilmour' },
-    { q: 'Tell a story with your playing.', a: 'Joe Bonamassa' },
-    { q: "Feel the song, don't show off.", a: 'Gary Moore' },
-    { q: 'Simplicity is a weapon.', a: 'Tony Iommi' },
-    { q: 'Listen more than you play.', a: 'Peter Green' },
-    { q: 'The blues is the root of everything.', a: 'Muddy Waters' },
-    { q: 'Let the silence speak.', a: 'Eric Johnson' },
-    { q: 'Bend with intention.', a: 'Joe Satriani' },
-    { q: 'Find the pocket.', a: 'Steve Vai' },
-    { q: 'Make every note count.', a: 'John Frusciante' },
-    { q: 'Tone follows touch.', a: 'Tom Morello' },
-    { q: 'Play what the song needs.', a: 'Prince' },
-    { q: 'Phrasing is more important than speed.', a: 'George Harrison' },
-    { q: 'Listen, then react.', a: 'Neil Young' },
-    { q: 'A good riff tells a story.', a: 'Angus Young' },
-    { q: 'Groove is king.', a: 'Derek Trucks' },
-    { q: 'Keep the melody honest.', a: 'Warren Haynes' },
-    { q: 'Find the space between notes.', a: 'Peter Frampton' },
-    { q: 'Play less, say more.', a: 'Kenny Burrell' },
-    { q: 'Dynamics are your friend.', a: 'Stephen Stills' },
-    { q: 'Chords can sing too.', a: 'Ry Cooder' },
-    { q: 'Use your ears first.', a: 'Nuno Bettencourt' },
-    { q: 'Practice with purpose.', a: 'Vernon Reid' },
-    { q: 'Stay true to the song.', a: 'St. Vincent' },
-    { q: 'Make it feel human.', a: 'Albert King' },
-    { q: 'Let the music tell the truth.', a: 'John Fogerty' }
-  ]
-
   useEffect(() => {
-    const start = Math.floor(Math.random() * quotes.length)
-    setSelectedPhrase(quotes[start].q)
-    setSelectedAuthor(quotes[start].a)
+    const start = Math.floor(Math.random() * LOGIN_BG_QUOTES.length)
+    setSelectedPhrase(LOGIN_BG_QUOTES[start].q)
+    setSelectedAuthor(LOGIN_BG_QUOTES[start].a)
 
     let cancelled = false
     ;(async () => {
@@ -94,7 +62,7 @@ export default function AdminLoginPage() {
         const picked = await pickFirstRenderableBackground(images)
         if (picked) setBgImage(picked)
       } catch {
-        // keep default fallback
+        /* fondo por defecto */
       }
     })()
 
@@ -116,23 +84,20 @@ export default function AdminLoginPage() {
 
       const json = await res.json()
       if (!res.ok) {
-        setError(json?.error || 'Sign in failed')
+        setError(json?.error || 'No se pudo iniciar sesión')
         setLoading(false)
         return
       }
 
-      // Server sets HttpOnly session cookie; navigate to admin and let the
-      // client auth provider verify the server-side session via /api/auth/me.
       router.push('/admin/productos/catalogo')
     } catch (err) {
-      setError(err?.message || 'An unexpected error occurred')
+      setError(err?.message || 'Error inesperado. Probá de nuevo.')
       setLoading(false)
     }
   }
 
   return (
     <div className="relative min-h-full flex flex-col">
-      {/* Imagen de fondo a pantalla completa (fixed = ocupa todo el viewport, detrás de header/footer) */}
       <div
         className="fixed inset-0 z-0"
         style={{
@@ -142,7 +107,6 @@ export default function AdminLoginPage() {
         }}
         aria-hidden
       />
-      {/* Degradado: negro arriba y abajo, más luz en el centro */}
       <div
         className="fixed inset-0 z-0 pointer-events-none"
         style={{
@@ -151,7 +115,6 @@ export default function AdminLoginPage() {
         aria-hidden
       />
 
-      {/* Contenido centrado en viewport: logo + card de login */}
       <div className="fixed inset-0 z-10 flex flex-col items-center justify-center px-4 py-6">
         <div className="flex justify-center mb-6">
           <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-lg" aria-label="Ir al inicio - La Guarida">
@@ -167,9 +130,7 @@ export default function AdminLoginPage() {
           </Link>
         </div>
         <div className="w-full max-w-md rounded-2xl p-6 sm:p-8 md:p-10 shadow-2xl" style={{
-          background: 'rgba(15,18,28,0.52)',
-          WebkitBackdropFilter: 'blur(12px) saturate(120%)',
-          backdropFilter: 'blur(12px) saturate(120%)',
+          background: 'rgba(15,18,28,0.94)',
           border: '1px solid rgba(255,255,255,0.14)'
         }}>
           <div className="flex flex-col items-start mb-5">

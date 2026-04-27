@@ -13,7 +13,6 @@ export function useToast() {
 const CHAT_INTRO_KEY = 'laguarida-chat-intro-v3'
 const CHAT_INTRO_DELAY_MS = 1200
 
-/** Muestra una sola vez por sesión el aviso del botón de ayuda solo a usuarios no autenticados (visitantes). */
 export function ChatIntroToastTrigger() {
   const { toast } = useToast()
   const fired = useRef(false)
@@ -72,12 +71,12 @@ export function ToastProvider({ children }) {
         {toasts.map(({ id, message, type, exiting }) => (
           <div
             key={id}
-            className={`toast-item pointer-events-auto w-full rounded-2xl px-5 py-4 shadow-xl border backdrop-blur-md ${exiting ? 'toast-exit' : ''} ${
+            className={`toast-item pointer-events-auto w-full rounded-2xl px-5 py-4 shadow-xl border ${exiting ? 'toast-exit' : ''} ${
               type === 'success'
-                ? 'bg-[#0f1628]/95 dark:bg-[#0d1117]/95 text-white border-[var(--vintage-gold)]/40 shadow-[var(--vintage-gold)]/15 flex flex-col items-center justify-center text-center'
+                ? 'bg-[#0f1628] dark:bg-[#0d1117] text-white border-[var(--vintage-gold)]/40 shadow-[var(--vintage-gold)]/15 flex flex-col items-center justify-center text-center'
                 : type === 'error'
-                  ? 'bg-[rgba(185,28,28,0.95)] text-white border-red-400/30 text-center'
-                  : 'bg-[rgba(26,26,28,0.95)] text-white border-white/12 text-center'
+                  ? 'bg-[rgb(185,28,28)] text-white border-red-400/30 text-center'
+                  : 'bg-[rgb(26,26,28)] text-white border-white/12 text-center'
             }`}
             style={
               type === 'success'

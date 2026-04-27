@@ -1,15 +1,8 @@
 import { NextResponse } from 'next/server'
 
-/**
- * Convención `middleware.js` (Next 16 aún resuelve el bundle edge en dev como
- * `[project]/middleware.js`). Tener solo `proxy.js` puede disparar "file not found"
- * en Turbopack; no mezclar ambos archivos. Ver:
- * https://nextjs.org/docs/messages/middleware-to-proxy
- */
 export function middleware(req) {
   const { pathname } = req.nextUrl
 
-  // Sin Server Component `redirect()`: evita Performance.measure / timestamps negativos en dev (Turbopack).
   if (pathname === '/admin' || pathname === '/admin/') {
     return NextResponse.redirect(new URL('/admin/productos/catalogo', req.url))
   }
