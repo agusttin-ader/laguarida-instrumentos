@@ -23,7 +23,10 @@ export default function MobileProductCard({ product }) {
         <Link href={`/guitars/${p.slug || p.id}`} aria-label={`Ir a ${p.name}`} className="block w-full h-full">
           {/* Use ImageWithSkeleton to show a skeleton while Next/Image loads for better perceived performance */}
           <ImageWithSkeleton
-            src={imageService.resolve(p.image_url || (p.images && p.images[0]) || p.image)}
+            src={
+              imageService.forDisplay(p.image_url || (p.images && p.images[0]) || p.image, 'card') ||
+              imageService.resolve(p.image_url || (p.images && p.images[0]) || p.image)
+            }
             alt={p.name}
             width={1200}
             height={900}

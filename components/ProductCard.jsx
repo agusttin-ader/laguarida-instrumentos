@@ -33,8 +33,9 @@ const ProductCard = React.memo(function ProductCard({
     const rest = resolved.filter((url) => url !== main)
     const list = main ? [main, ...rest] : rest
     const capped = list.slice(0, MAX_CARD_IMAGES)
-    if (primaryImageOnly) return capped.slice(0, 1)
-    return capped
+    const withDisplay = capped.map((u) => imageService.forDisplay(u, 'card') || u)
+    if (primaryImageOnly) return withDisplay.slice(0, 1)
+    return withDisplay
   }, [p.images, p.image_url, primaryImageOnly])
   const [galleryIndex, setGalleryIndex] = useState(0)
   const [loadedIndices, setLoadedIndices] = useState(() => new Set())

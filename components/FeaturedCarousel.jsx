@@ -16,7 +16,7 @@ export default function FeaturedCarousel({ items = [] }) {
         <div className="overflow-x-auto no-scrollbar px-4 -mx-4 snap-x snap-mandatory flex gap-4 py-3">
           {items.map((it) => {
             const srcRaw = it.image_url || (it.images && it.images[0]) || ''
-            const src = imageService.resolve(srcRaw)
+            const src = imageService.forDisplay(srcRaw, 'carousel') || imageService.resolve(srcRaw)
             return (
               <article key={it.slug || it.id || src} className="card-interactive snap-center min-w-[80%] sm:min-w-[60%] bg-white dark:bg-neutral-900 rounded-none sm:rounded-xl border border-neutral-200/80 dark:border-white/10 overflow-hidden">
                 <div className="relative w-full h-44 sm:h-56">

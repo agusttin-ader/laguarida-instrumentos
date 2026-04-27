@@ -12,7 +12,9 @@ const PREVIEW_IMAGE_SIZES =
 export default function ProductPreviewCard({ item, priority = false }) {
   const p = normalizeProduct(item)
   const main = imageService.resolve(p.image_url)
-  const src = main || (typeof p.image_url === 'string' ? p.image_url.trim() : '')
+  const src =
+    (main && (imageService.forDisplay(main, 'card') || main)) ||
+    (typeof p.image_url === 'string' ? p.image_url.trim() : '')
   const href = p.slug ? `/guitars/${encodeURIComponent(p.slug)}` : '#'
   const title = p.name || 'Instrumento'
   const [imgLoaded, setImgLoaded] = useState(false)

@@ -90,7 +90,9 @@ export default function HeroMonolith() {
         model: p.model,
         wood: p.wood,
         mics: p.mics,
-        src: imageService.resolve(p.image_url || (p.images && p.images[0]) || ''),
+        src:
+          imageService.forDisplay(p.image_url || (p.images && p.images[0]) || '', 'hero') ||
+          imageService.resolve(p.image_url || (p.images && p.images[0]) || ''),
       }))
       .filter((p) => p.src && !unique.has(p.src) && unique.add(p.src))
     return candidates
@@ -104,7 +106,7 @@ export default function HeroMonolith() {
     model: item?.model,
     wood: item?.wood,
     mics: item?.mics,
-    src: imageSrc,
+    src: imageService.forDisplay(item?.image_url || (item?.images && item.images[0]) || '', 'hero') || imageSrc,
   }]
   const activeItem = slides[activeSlide] || slides[0] || null
   const activeImageSrc = activeItem?.src || imageSrc

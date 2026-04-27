@@ -20,6 +20,13 @@ function usePreloadLightbox() {
   }, [])
 }
 
+function displayMain(url) {
+  return imageService.forDisplay(url, 'galleryMain') || url
+}
+function displayThumb(url) {
+  return imageService.forDisplay(url, 'galleryThumb') || url
+}
+
 export default function ProductGalleryModern({ image_url, images = [], altBase = '' }) {
   usePreloadLightbox()
   const allImages = useMemo(() => {
@@ -62,7 +69,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
           aria-label="Ver imagen principal"
         >
           <ImageWithSkeleton
-            src={mainImage}
+            src={displayMain(mainImage)}
             alt={altBase || 'Imagen del producto'}
             fill
             className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
@@ -84,7 +91,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
               aria-label="Ver imagen 2"
             >
               <ImageWithSkeleton
-                src={sideImages[0]}
+                src={displayThumb(sideImages[0])}
                 alt={altBase ? `${altBase} — imagen 2` : 'Imagen 2'}
                 fill
                 className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
@@ -101,7 +108,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 aria-label="Ver imagen 3"
               >
                 <ImageWithSkeleton
-                  src={sideImages[1]}
+                  src={displayThumb(sideImages[1])}
                   alt={altBase ? `${altBase} — imagen 3` : 'Imagen 3'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
@@ -119,7 +126,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 aria-label="Ver imagen 4"
               >
                 <ImageWithSkeleton
-                  src={sideImages[2]}
+                  src={displayThumb(sideImages[2])}
                   alt={altBase ? `${altBase} — imagen 4` : 'Imagen 4'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
@@ -138,7 +145,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 aria-label="Ver imagen 5"
               >
                 <ImageWithSkeleton
-                  src={sideImages[3]}
+                  src={displayThumb(sideImages[3])}
                   alt={altBase ? `${altBase} — imagen 5` : 'Imagen 5'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
@@ -156,7 +163,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 aria-label="Ver imagen 6"
               >
                 <ImageWithSkeleton
-                  src={sideImages[4]}
+                  src={displayThumb(sideImages[4])}
                   alt={altBase ? `${altBase} — imagen 6` : 'Imagen 6'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
@@ -174,7 +181,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 aria-label="Ver imagen 7"
               >
                 <ImageWithSkeleton
-                  src={sideImages[5]}
+                  src={displayThumb(sideImages[5])}
                   alt={altBase ? `${altBase} — imagen 7` : 'Imagen 7'}
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
@@ -190,7 +197,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
 
       {lightboxOpen && allImages.length > 0 && (
         <GalleryLightbox
-          src={allImages[lightboxIndex]}
+          src={imageService.forDisplay(allImages[lightboxIndex], 'lightbox') || allImages[lightboxIndex]}
           alt={altBase ? `${altBase} — imagen ${lightboxIndex + 1}` : `Imagen ${lightboxIndex + 1}`}
           currentIndex={lightboxIndex}
           total={allImages.length}

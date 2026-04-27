@@ -31,9 +31,10 @@ const nextConfig = {
   },
   images: {
     // Vercel cobra / limita el Image Optimization (`/_next/image`). Sin plan Pro las URLs remotas
-    // pueden responder 402 (OPTIMIZED_IMAGE_REQUEST_PAYMENT_REQUIRED) y las fotos no cargan.
-    // `unoptimized`: el navegador pide la imagen directo (p. ej. Supabase Storage); sigue usando `<Image>` por layout/lazy.
-    unoptimized: true,
+    // pueden responder 402. Por defecto `unoptimized: true` (imagen directa; combiná con
+    // NEXT_PUBLIC_SUPABASE_IMAGE_TRANSFORM=true para pesos más chicos desde Supabase).
+    // Con plan Pro / self-hosted: NEXT_ENABLE_IMAGE_OPTIMIZATION=true para redimensionar vía Next.
+    unoptimized: process.env.NEXT_ENABLE_IMAGE_OPTIMIZATION === 'true' ? false : true,
     // Allowed quality values used across the app (avoid Next.js warnings in dev/prod).
     qualities: [100, 95, 92, 90, 88, 86, 85, 82, 80, 78, 76, 75, 72, 70, 68, 65, 62, 60],
     // Prefer modern formats when available to reduce transfer size
