@@ -259,6 +259,7 @@ export default async function GuitarPage({ params }) {
   const absoluteImage = toAbsoluteUrl(productImageUrl)
 
   const numericPrice = parseNumericPriceForSchema(product.price)
+  const offerCurrency = product.currency === 'ARS' ? 'ARS' : 'USD'
   const aggregateRatingValue = toFiniteNumber(product.aggregate_rating)
   const reviewCountValue = toFiniteNumber(product.review_count)
   const reviewsForSchema = mapReviewsForSchema(product.reviews).slice(0, 5)
@@ -275,7 +276,7 @@ export default async function GuitarPage({ params }) {
       offers: {
         '@type': 'Offer',
         price: numericPrice,
-        priceCurrency: 'USD',
+        priceCurrency: offerCurrency,
         priceValidUntil: getPriceValidUntil(product.price_valid_until),
         availability: 'https://schema.org/InStock',
         url: productUrl

@@ -41,11 +41,16 @@ function generateSlug(text) {
   return s
 }
 
-function parsePriceAndCurrency(rawPrice) {
+function parsePriceAndCurrency(rawPrice, rawCurrency) {
+  if (typeof rawPrice === 'number' && !Number.isNaN(rawPrice)) {
+    const c = rawCurrency === 'ARS' ? 'ARS' : 'USD'
+    return { amount: String(rawPrice), currency: c }
+  }
   const raw = String(rawPrice || '').trim()
-  if (!raw) return { amount: '', currency: 'USD' }
+  if (!raw) return { amount: '', currency: rawCurrency === 'ARS' ? 'ARS' : 'USD' }
   const upper = raw.toUpperCase()
-  const currency = upper.startsWith('ARS') ? 'ARS' : 'USD'
+  const currencyFromText = upper.startsWith('ARS') ? 'ARS' : 'USD'
+  const currency = rawCurrency === 'ARS' || rawCurrency === 'USD' ? rawCurrency : currencyFromText
   const amountMatch = raw.match(/[\d.,]+/)
   const amount = amountMatch ? amountMatch[0].replace(',', '.') : ''
   return { amount, currency }
@@ -119,7 +124,7 @@ export default function AdminProductForm({ mode, editingId = null }) {
   const [galleryExtraOpen, setGalleryExtraOpen] = useState(false)
 
   function populateFromProduct(p) {
-    const parsedPrice = parsePriceAndCurrency(p.price)
+    const parsedPrice = parsePriceAndCurrency(p.price, p.currency)
     setForm({
       name: p.name || '',
       slug: p.slug || '',
@@ -323,7 +328,8 @@ export default function AdminProductForm({ mode, editingId = null }) {
       const payload = {
         name: form.name || undefined,
         slug: genSlug || undefined,
-        price: `${form.currency} ${priceNumber}`,
+        price: priceNumber,
+        currency: form.currency,
         image_url: form.image_url || undefined,
         images: Array.isArray(form.images) && form.images.length ? form.images : undefined,
         description: form.description || undefined,

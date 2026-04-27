@@ -157,6 +157,50 @@ function normalizeSlug(value) {
   return slug
 }
 
+function normalizeCurrencyInput(value) {
+  if (value == null || value === '') return null
+  const s = String(value).trim().toUpperCase()
+  if (s === 'ARS' || s === 'USD') return s
+  return null
+}
+
+/**
+ * Precio numérico para columna `products.price` + `currency` (USD|ARS).
+ * Acepta número, o string tipo "USD 250" / "250" con body.currency.
+ */
+function coercePriceAndCurrency(body) {
+  const curFromBody = normalizeCurrencyInput(body.currency)
+  const raw = body.price
+
+  if (raw == null || (typeof raw === 'string' && raw.trim() === '')) {
+    return { error: 'Invalid price' }
+  }
+
+  let num = null
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    num = raw
+  } else {
+    const s = String(raw).trim()
+    const stripped = s
+      .replace(/^\s*(USD|ARS|U\$S|\$)\s*/i, '')
+      .replace(/\s*(USD|ARS)\s*$/i, '')
+      .trim()
+    const n = parseFloat(stripped.replace(/\s/g, '').replace(',', '.'))
+    if (!Number.isNaN(n) && Number.isFinite(n)) num = n
+  }
+
+  if (num == null) return { error: 'Invalid price' }
+  if (num < 0 || num > 1e11) return { error: 'Invalid price' }
+
+  let currency = curFromBody
+  if (!currency) {
+    const s = String(raw).trim()
+    currency = /^ARS\b/i.test(s) ? 'ARS' : 'USD'
+  }
+
+  return { price: num, currency }
+}
+
 function isLikelyUrl(value) {
   if (!value) return true
   const s = String(value).trim()
@@ -176,7 +220,6 @@ function buildProductPayload(body = {}, partial = false) {
   const slug = normalizeSlug(body.slug)
   const brand = toSafeString(body.brand, MAX_TEXT)
   const model = toSafeString(body.model, MAX_TEXT)
-  const price = toSafeString(body.price, MAX_PRICE)
   const description = toSafeString(body.description, 4000)
   const image_url = toSafeString(body.image_url, 2000)
   const images = toSafeStringArray(body.images, MAX_IMAGES, 2000)
@@ -215,7 +258,16 @@ function buildProductPayload(body = {}, partial = false) {
   if ('slug' in body) payload.slug = slug
   if ('brand' in body) payload.brand = brand
   if ('model' in body) payload.model = model
-  if ('price' in body) payload.price = price
+  if ('price' in body) {
+    const coerced = coercePriceAndCurrency(body)
+    if (coerced.error) {
+      return { error: coerced.error }
+    }
+    payload.price = coerced.price
+    payload.currency = coerced.currency
+  } else if ('currency' in body && normalizeCurrencyInput(body.currency)) {
+    payload.currency = normalizeCurrencyInput(body.currency)
+  }
   if ('description' in body) payload.description = description
   if ('image_url' in body) payload.image_url = image_url
   if ('images' in body) payload.images = images
