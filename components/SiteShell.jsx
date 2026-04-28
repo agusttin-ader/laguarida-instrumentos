@@ -66,7 +66,10 @@ export default function SiteShell({ children }) {
       targetId = sessionStorage.getItem('pending-scroll-target')
       if (targetId) sessionStorage.removeItem('pending-scroll-target')
     } catch { /* empty */ }
-    if (!targetId) return
+    if (!targetId) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+      return
+    }
     requestAnimationFrame(() => {
       if (targetId === 'home-top') {
         window.scrollTo({ top: 0, behavior: 'smooth' })

@@ -8,9 +8,13 @@ export default function PullToRefresh({ children, onRefresh, disabled }) {
   const scrollTop = useRef(0)
   const pullPending = useRef(0)
   const rafRef = useRef(0)
+  const isBlocked = useCallback(() => {
+    if (typeof document === 'undefined') return false
+    return document.body.classList.contains('modal-open') || document.body.classList.contains('menu-open')
+  }, [])
 
   const handleTouchStart = useCallback((e) => {
-    if (disabled) return
+    if (disabled || isBlocked()) return
     startY.current = e.touches[0].clientY
     scrollTop.current = document.documentElement.scrollTop || document.body.scrollTop
     pullPending.current = 0
@@ -18,10 +22,10 @@ export default function PullToRefresh({ children, onRefresh, disabled }) {
       cancelAnimationFrame(rafRef.current)
       rafRef.current = 0
     }
-  }, [disabled])
+  }, [disabled, isBlocked])
 
   const handleTouchMove = useCallback((e) => {
-    if (disabled) return
+    if (disabled || isBlocked()) return
     if (scrollTop.current > 8) return
     const y = e.touches[0].clientY
     const diff = y - startY.current
@@ -32,7 +36,7 @@ export default function PullToRefresh({ children, onRefresh, disabled }) {
       rafRef.current = 0
       setPull(pullPending.current)
     })
-  }, [disabled])
+  }, [disabled, isBlocked])
 
   const handleTouchEnd = useCallback(() => {
     if (rafRef.current) {

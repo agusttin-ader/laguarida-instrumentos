@@ -133,7 +133,7 @@ const ProductCard = React.memo(function ProductCard({
 
   const imageBlock = (
     <div
-      className={`product-card-mobile-shell relative w-full overflow-hidden bg-[var(--dark-surface-2)] max-[767px]:bg-[#141414] aspect-[4/5] md:aspect-[3/4] select-none ${hasGallery ? 'touch-pan-y' : 'touch-pan-x pan-y'}`}
+      className={`product-card-mobile-shell relative w-full overflow-hidden bg-[var(--dark-surface-2)] max-[767px]:bg-[#141414] aspect-[4/5] md:aspect-[3/4] select-none ${hasGallery ? 'touch-pan-y' : 'touch-auto'}`}
       onTouchStart={hasGallery ? handleTouchStart : undefined}
       onTouchEnd={hasGallery ? handleTouchEnd : undefined}
       onTouchCancel={hasGallery ? handleTouchEnd : undefined}
@@ -173,7 +173,7 @@ const ProductCard = React.memo(function ProductCard({
                   decoding="async"
                   onLoad={() => setLoadedIndices((prev) => new Set(prev).add(idx))}
                   onError={() => {}}
-                  className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} max-[768px]:object-contain max-[768px]:object-center transform-gpu [backface-visibility:hidden] transition-opacity duration-[300ms] ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none ${objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover'}`}
+                  className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} max-[767px]:object-contain max-[767px]:object-center transform-gpu [backface-visibility:hidden] transition-opacity duration-[300ms] ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none ${objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover'}`}
                   style={{ objectPosition: 'center' }}
                 />
               </div>
@@ -238,7 +238,7 @@ const ProductCard = React.memo(function ProductCard({
         type="button"
         onClick={handleFavoriteClick}
         aria-label={fav ? 'Quitar de tu selección' : 'Agregar a tu selección'}
-        className="no-custom-btn favorite-heart-btn absolute top-2 right-2 z-20 min-w-[44px] min-h-[44px] w-11 h-11 md:w-10 md:h-10 flex items-center justify-center border bg-black/62 border-white/25 text-white/90 hover:bg-black/75 hover:border-white/40 transition-all duration-200 touch-manipulation max-[768px]:rounded-md md:rounded-full"
+        className="no-custom-btn favorite-heart-btn absolute top-2 right-2 z-20 min-w-[44px] min-h-[44px] w-11 h-11 md:w-10 md:h-10 flex items-center justify-center border bg-black/62 border-white/25 text-white/90 hover:bg-black/75 hover:border-white/40 transition-all duration-200 touch-manipulation max-[767px]:rounded-md md:rounded-full"
       >
         <svg
           width="18"

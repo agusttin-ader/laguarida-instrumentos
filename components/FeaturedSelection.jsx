@@ -147,7 +147,7 @@ export default function FeaturedSelection() {
               </button>
             </div>
             <p className="mt-3 text-center text-[11px] text-[var(--dark-muted)]">
-              Tip: deslizá hacia abajo o tocá fuera para cerrar.
+              Tip: tocá fuera para cerrar.
             </p>
           </div>
         </div>
