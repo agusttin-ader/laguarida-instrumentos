@@ -15,7 +15,7 @@ function HeaderLoading() {
     <>
       {!isHome ? (
         <div
-          className="md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[52px] sm:min-h-[56px] bg-[var(--dark-bg-page)] pointer-events-none"
+          className="md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[60px] sm:min-h-[64px] bg-[var(--dark-bg-page)] pointer-events-none"
           aria-hidden
         />
       ) : null}
@@ -35,7 +35,7 @@ export default function SiteShell({ children }) {
   const isAdmin = typeof pathname === 'string' && pathname.startsWith('/admin')
   const isHome = pathname === '/' || pathname === ''
   const mainTopPad = !isHome
-    ? 'pt-[calc(58px+max(0.25rem,env(safe-area-inset-top)))] sm:pt-[calc(62px+max(0.25rem,env(safe-area-inset-top)))] md:pt-0'
+    ? 'pt-[calc(66px+max(0.25rem,env(safe-area-inset-top)))] sm:pt-[calc(70px+max(0.25rem,env(safe-area-inset-top)))] md:pt-0'
     : 'pt-0'
 
   const handleRefresh = useCallback(() => {

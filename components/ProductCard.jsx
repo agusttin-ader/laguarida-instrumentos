@@ -14,6 +14,7 @@ const MAX_CARD_IMAGES = 3
 const SWIPE_DISTANCE_THRESHOLD = 48
 const SWIPE_VELOCITY_THRESHOLD = 0.35
 const GALLERY_MOUNT_RADIUS = 1
+const MOBILE_TABLET_QUERY = '(max-width: 1023px)'
 
 const ProductCard = React.memo(function ProductCard({
   item,
@@ -24,17 +25,26 @@ const ProductCard = React.memo(function ProductCard({
 }) {
   const p = normalizeProduct(item)
   const [desktopGalleryUnlocked, setDesktopGalleryUnlocked] = useState(() => !galleryDesktopOnly)
+  const [isMobileTablet, setIsMobileTablet] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_TABLET_QUERY)
+    const sync = () => setIsMobileTablet(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
 
   useEffect(() => {
     if (!galleryDesktopOnly) return
-    const mq = window.matchMedia('(max-width: 767px)')
+    const mq = window.matchMedia(MOBILE_TABLET_QUERY)
     const sync = () => setDesktopGalleryUnlocked(!mq.matches)
     sync()
     mq.addEventListener('change', sync)
     return () => mq.removeEventListener('change', sync)
   }, [galleryDesktopOnly])
 
-  const effectivePrimaryOnly = primaryImageOnly || (galleryDesktopOnly && !desktopGalleryUnlocked)
+  const effectivePrimaryOnly = primaryImageOnly || isMobileTablet || (galleryDesktopOnly && !desktopGalleryUnlocked)
 
   const imageList = useMemo(() => {
     const main = imageService.resolve(p.image_url)
@@ -175,9 +185,8 @@ const ProductCard = React.memo(function ProductCard({
           <span className="text-3xl opacity-40">🎸</span>
         </div>
       )}
-      {hasGallery && (
+      {hasGallery && !isMobileTablet && (
         <>
-          {/* Flechas: siempre visibles en móvil (tocables); en desktop al hover */}
           <div className="absolute inset-0 z-10 pointer-events-none">
             <button
               type="button"
@@ -257,22 +266,22 @@ const ProductCard = React.memo(function ProductCard({
       <Link
         href={`/guitars/${p.slug || p.id}`}
         aria-label={`Ir a ${titleText || 'producto'}`}
-        className="no-custom-btn card-product-link group group/img flex flex-col h-full"
+        className="no-custom-btn card-product-link group group/img flex h-full flex-col transition-transform duration-120 ease-out active:scale-[0.99]"
         onClick={handleCardClick}
       >
         {imageBlock}
 
-        <div className="flex min-h-0 flex-1 flex-col gap-0 p-4 max-[767px]:gap-1 max-[767px]:px-4 max-[767px]:pb-4 max-[767px]:pt-4 md:gap-0 md:p-5">
+        <div className="flex min-h-0 flex-1 flex-col gap-1 p-4 max-[767px]:gap-1.5 max-[767px]:px-4 max-[767px]:pb-5 max-[767px]:pt-5 md:gap-0 md:p-5">
           <h3
             id={headingId}
-            className="order-1 min-w-0 text-[1rem] font-semibold tracking-tight text-[var(--dark-text-primary)] md:text-[1.0625rem] max-[767px]:text-base max-[767px]:font-bold max-[767px]:leading-snug max-[767px]:line-clamp-2 md:leading-snug md:line-clamp-2"
+            className="order-1 min-w-0 text-[1rem] font-semibold tracking-tight text-[var(--dark-text-primary)] md:text-[1.0625rem] max-[767px]:text-[1.0625rem] max-[767px]:font-bold max-[767px]:leading-snug max-[767px]:line-clamp-2 md:leading-snug md:line-clamp-2"
           >
             {titleText}
           </h3>
           {specs.length > 0 ? (
             <>
               <p
-                className="order-2 hidden min-h-0 max-[767px]:order-2 max-[767px]:mt-0.5 max-[767px]:block max-[767px]:truncate max-[767px]:text-[11px] max-[767px]:font-medium max-[767px]:uppercase max-[767px]:leading-snug max-[767px]:tracking-wider max-[767px]:text-[var(--dark-muted)]"
+                className="order-2 hidden min-h-0 max-[767px]:order-2 max-[767px]:mt-0.5 max-[767px]:block max-[767px]:truncate max-[767px]:text-xs max-[767px]:font-medium max-[767px]:uppercase max-[767px]:leading-snug max-[767px]:tracking-wider max-[767px]:text-[var(--dark-muted)]"
                 title={[...visibleSpecs, hiddenSpecsCount > 0 ? `+${hiddenSpecsCount}` : null].filter(Boolean).join(' · ')}
               >
                 {[...visibleSpecs, hiddenSpecsCount > 0 ? `+${hiddenSpecsCount}` : null].filter(Boolean).join(' · ')}
@@ -292,7 +301,7 @@ const ProductCard = React.memo(function ProductCard({
             </>
           ) : null}
           {p.price ? (
-            <p className="order-2 mt-1.5 text-sm font-semibold text-[var(--vintage-gold)] max-[767px]:order-3 max-[767px]:mt-1.5 max-[767px]:text-base md:order-2 md:text-base">
+            <p className="price-highlight order-2 mt-1.5 text-sm font-semibold max-[767px]:order-3 max-[767px]:mt-2 max-[767px]:text-[1.0625rem] md:order-2 md:text-base">
               {p.price}
             </p>
           ) : null}

@@ -11,7 +11,7 @@ const SCROLL_THRESHOLD = 72
 
 function HamburgerIcon({ className }) {
   return (
-    <svg className={className} width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg className={className} width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M3 6h18M3 12h18M3 18h18" />
     </svg>
   )
@@ -79,17 +79,17 @@ export default function Header() {
       <header
         id={isHome ? 'header-home-mobile-overlay' : undefined}
         aria-label="Cabecera"
-        className={`header-mobile md:hidden flex items-center justify-between min-h-[52px] sm:min-h-[56px] py-2.5 sm:py-2.5 px-4 sm:px-5 left-0 right-0 top-0 relative ${isHome ? 'header-home-mobile' : ''} ${scrolled ? 'header-scrolled' : ''}`}
+        className={`header-mobile md:hidden flex items-center justify-between min-h-[60px] sm:min-h-[64px] py-3 sm:py-3 px-4 sm:px-5 left-0 right-0 top-0 relative ${isHome ? 'header-home-mobile' : ''} ${scrolled ? 'header-scrolled' : ''}`}
       >
-        <div className="relative z-20 w-12 flex-shrink-0">
+        <div className="relative z-20 w-14 flex-shrink-0">
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
             aria-label="Abrir menú"
-            className="flex items-center justify-center w-12 h-12 -m-0.5 rounded-lg border-0 text-white/95 hover:text-white bg-black/50 hover:bg-black/60 no-custom-btn touch-manipulation transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="flex items-center justify-center w-14 h-14 -m-0.5 rounded-lg border-0 text-white/95 hover:text-white bg-black/50 hover:bg-black/60 no-custom-btn touch-manipulation transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{ WebkitTapHighlightColor: 'transparent', tapHighlightColor: 'transparent' }}
           >
-            <HamburgerIcon className="w-7 h-7" />
+            <HamburgerIcon className="w-8 h-8" />
           </button>
         </div>
         <div className="flex-1 flex items-center justify-center min-w-0 px-1.5">
@@ -106,15 +106,15 @@ export default function Header() {
                 width={1800}
                 height={450}
                 priority
-                className="logo-dark h-[34px] w-auto max-h-[36px] sm:h-[36px] sm:max-h-[38px] object-contain block"
+                className="logo-dark h-[37px] w-auto max-h-[39px] sm:h-[40px] sm:max-h-[42px] object-contain block"
                 style={{ objectFit: 'contain' }}
                 quality={68}
-                sizes="(max-width: 768px) 260px, 160px"
+                sizes="(max-width: 1023px) 280px, 160px"
               />
             </span>
           </a>
         </div>
-        <div className="relative z-20 w-12 flex-shrink-0" aria-hidden />
+        <div className="relative z-20 w-14 flex-shrink-0" aria-hidden />
       </header>
     </>
   )

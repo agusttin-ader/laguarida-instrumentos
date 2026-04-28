@@ -16,7 +16,7 @@ export default function ProductPageCTA({ price, consultHref, productName, childr
   return (
     <div className="product-cta-entrance">
       {showPrice && price != null && (
-        <p className="text-2xl sm:text-[28px] font-bold text-[var(--vintage-gold)] mb-5 sm:mb-6 tracking-tight">{price}</p>
+        <p className="price-highlight text-2xl sm:text-[28px] font-bold mb-5 sm:mb-6 tracking-tight">{price}</p>
       )}
       <div className="flex flex-col max-md:w-full max-md:gap-3 md:flex-row md:flex-wrap md:items-center gap-3">
         <a

@@ -43,6 +43,9 @@
   --vintage-amber-dark: #D4A000;
   --vintage-cream: var(--palette-cream);
   --vintage-muted: #9A6B5A;
+  /* Price accents: default + alternativa */
+  --price-accent: #ffd84d;
+  --price-accent-alt: #ff9f5a;
 
   /* Design tokens: botones y espaciado responsive */
   --btn-h-mobile: 48px;
@@ -300,8 +303,8 @@ body.modal-open .admin-desk-top {
   z-index: -1;
 }
 
-/* Mobile: scroll fluido y feedback táctil suave (≤768px alineado al resto del sitio) */
-@media (max-width: 768px) {
+/* Mobile: scroll fluido y feedback táctil suave (hasta 767px) */
+@media (max-width: 767px) {
   html {
     -webkit-overflow-scrolling: touch;
   }
@@ -350,6 +353,8 @@ html, body, #__next, #root, main {
   --vintage-gold: var(--palette-gold);
   --vintage-gold-soft: rgba(var(--palette-gold-rgb), 0.18);
   --vintage-gold-soft-hover: rgba(var(--palette-gold-rgb), 0.28);
+  --price-accent: #ffd84d;
+  --price-accent-alt: #ff9f5a;
 }
 
 /* Inputs, selects, textareas: ensure readable colors in dark mode */
@@ -685,6 +690,17 @@ html, body, #__next, #root, main {
 .dark .body-copy { color: #e6e7ea }
 .dark .price-large { color: #ffffff }
 
+.price-highlight {
+  color: var(--price-accent);
+  text-shadow: 0 0 14px rgba(255, 216, 77, 0.18);
+}
+
+/* Alternativa rápida: reemplazar price-highlight por price-highlight-alt */
+.price-highlight-alt {
+  color: var(--price-accent-alt);
+  text-shadow: 0 0 14px rgba(255, 159, 90, 0.18);
+}
+
 /* Panels and cards in dark */
 .card-compact { background: var(--card-bg); }
 .dark .card-compact { background: var(--dark-bg-card) !important; }
@@ -717,7 +733,7 @@ header {
   background-color: var(--dark-bg-page);
   transition: background-color 140ms var(--motion-ease), box-shadow 140ms var(--motion-ease);
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   html.dark header.header-home-mobile,
   html.dark header.header-mobile.header-home-mobile,
   body.page-home header.header-mobile {
@@ -982,7 +998,7 @@ section {
   section { padding-top: 2.5rem; padding-bottom: 2.5rem; }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   section {
     padding-top: 2rem;
     padding-bottom: 2rem;
@@ -1095,7 +1111,7 @@ main.legal-page article {
   border-radius: 999px !important;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .card-compact .card-actions {
     flex-direction: column;
     align-items: stretch;
@@ -1659,6 +1675,24 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   transition: transform 160ms var(--motion-ease);
 }
 
+@media (max-width: 1023px) {
+  html {
+    font-size: 17px;
+  }
+  .product-card-mobile-catalog h3 {
+    line-height: 1.34;
+  }
+  .product-card-mobile-catalog p {
+    line-height: 1.42;
+  }
+  .product-card-mobile-catalog a,
+  .product-card-mobile-catalog button,
+  .header-mobile button,
+  .header-mobile a {
+    min-height: 44px;
+  }
+}
+
 /* ===================== Bottom nav item transition ===================== */
 .bottom-nav-item {
   transition: color 120ms var(--motion-ease);
@@ -2197,6 +2231,37 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+@keyframes shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+.related-products-scroll {
+  scroll-padding-left: 1.25rem;
+  scroll-padding-right: 1.25rem;
+}
+
+@media (max-width: 767px) {
+  .related-products-scroll {
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .no-custom-btn,
+  .card-product-link {
+    transition: transform 120ms ease-out, opacity 120ms ease-out, background-color 160ms ease-out;
+  }
+
+  .no-custom-btn:active,
+  .card-product-link:active {
+    transform: scale(0.987);
+  }
+}
+
 .animate-page-in {
   animation: page-in 0.16s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }

@@ -49,9 +49,28 @@ export default function ProductGrid({
 
   if (isLoading) {
     return (
-      <div className="w-full py-10 md:py-14 flex flex-col items-center justify-center gap-3">
-        <div className="app-loading-spinner" aria-hidden />
-        <p className="text-sm text-[var(--dark-muted)]">Cargando productos…</p>
+      <div className="w-full min-w-0">
+        <div className="mb-4 flex items-center gap-2 md:hidden" aria-hidden>
+          <div className="h-2.5 w-24 rounded-full bg-white/10 animate-pulse" />
+          <div className="h-2.5 w-16 rounded-full bg-white/10 animate-pulse" />
+        </div>
+        <div className="grid w-full min-w-0 grid-cols-1 gap-5 max-[767px]:gap-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8" aria-hidden>
+          {Array.from({ length: 6 }).map((_, idx) => (
+            <div key={`skeleton-${idx}`} className="overflow-hidden rounded-2xl md:rounded-3xl border border-white/8 bg-[var(--dark-bg-card)]">
+              <div className="aspect-[4/5] w-full bg-[linear-gradient(110deg,rgba(255,255,255,0.03),rgba(255,255,255,0.07),rgba(255,255,255,0.03))] bg-[length:220%_100%] animate-[shimmer_1.9s_ease-in-out_infinite]" />
+              <div className="p-4 md:p-5">
+                <div className="h-4 w-3/4 rounded bg-white/10 animate-pulse" />
+                <div className="mt-2 h-3 w-2/3 rounded bg-white/10 animate-pulse" />
+                <div className="mt-3.5 h-4 w-1/3 rounded bg-white/15 animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="mt-4 text-sm text-[var(--dark-muted)] md:hidden">Cargando productos…</p>
+        <div className="hidden py-10 md:py-14 md:flex md:flex-col md:items-center md:justify-center md:gap-3">
+          <div className="app-loading-spinner" aria-hidden />
+          <p className="text-sm text-[var(--dark-muted)]">Cargando productos…</p>
+        </div>
       </div>
     )
   }
