@@ -1,12 +1,40 @@
 "use client"
 
 import { useCallback, useEffect, useState } from 'react'
-import shuffleArray from '../lib/utils/shuffle'
 import normalizeProduct from '../lib/utils/normalizeProduct'
 
 const CACHE_TTL_MS = 5 * 60 * 1000 // 5 min — menos requests al API / Supabase entre visitas
 let cache = { data: null, timestamp: 0 }
 let inFlight = null
+
+function getWeekKey(now = new Date()) {
+  const yearStart = new Date(Date.UTC(now.getUTCFullYear(), 0, 1))
+  const current = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+  const dayOfYear = Math.floor((current - yearStart) / 86400000) + 1
+  const week = Math.ceil(dayOfYear / 7)
+  return `${now.getUTCFullYear()}-W${week}`
+}
+
+function stableHash(input) {
+  let hash = 2166136261
+  for (let i = 0; i < input.length; i += 1) {
+    hash ^= input.charCodeAt(i)
+    hash = Math.imul(hash, 16777619)
+  }
+  return hash >>> 0
+}
+
+function weeklyRotateCatalog(list) {
+  const weekKey = getWeekKey()
+  return [...list]
+    .map((item, idx) => ({
+      item,
+      score: stableHash(`${weekKey}:${item?.slug || item?.id || idx}`),
+      idx,
+    }))
+    .sort((a, b) => a.score - b.score || a.idx - b.idx)
+    .map((entry) => entry.item)
+}
 
 async function fetchProducts() {
   const res = await fetch('/api/products', { cache: 'default' })
@@ -41,7 +69,7 @@ export function useProducts(options = {}) {
     try {
       const data = await fetchProducts()
       cache = { data, timestamp: Date.now() }
-      const list = shuffleCatalog ? shuffleArray([...data]) : data
+      const list = shuffleCatalog ? weeklyRotateCatalog(data) : data
       setProducts(list)
       return list
     } catch (err) {
@@ -59,7 +87,7 @@ export function useProducts(options = {}) {
 
     const cached = getCached()
     if (cached !== null) {
-      setProducts(shuffleCatalog ? shuffleArray([...cached]) : cached)
+      setProducts(shuffleCatalog ? weeklyRotateCatalog(cached) : cached)
       setLoading(false)
       setError(null)
       return
@@ -76,7 +104,7 @@ export function useProducts(options = {}) {
         if (cancelled) return
         cache = { data: normalized, timestamp: Date.now() }
         inFlight = null
-        const list = shuffleCatalog ? shuffleArray([...normalized]) : normalized
+        const list = shuffleCatalog ? weeklyRotateCatalog(normalized) : normalized
         setProducts(list)
         setLoading(false)
         setError(null)
