@@ -15,7 +15,7 @@ function HeaderLoading() {
     <>
       {!isHome ? (
         <div
-          className="md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[60px] sm:min-h-[64px] bg-[var(--dark-bg-page)] pointer-events-none"
+          className="md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[68px] sm:min-h-[72px] bg-[var(--dark-bg-page)] pointer-events-none"
           aria-hidden
         />
       ) : null}

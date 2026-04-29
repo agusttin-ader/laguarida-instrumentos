@@ -8,9 +8,9 @@ import imageService from '../lib/utils/imageService'
 const GalleryLightbox = dynamic(() => import('./GalleryLightbox'), { ssr: false })
 
 const GALLERY_MAIN_SIZES =
-  '(max-width:1023px) 100vw, (max-width:1279px) 52vw, (max-width:1919px) min(50vw, 960px), min(46vw, 1400px)'
+  '(max-width:1023px) 100vw, (max-width:1279px) 54vw, (max-width:1919px) min(52vw, 1180px), (max-width:2559px) min(50vw, 1680px), min(48vw, 2100px)'
 const GALLERY_THUMB_SIZES =
-  '(max-width:1023px) 50vw, (max-width:1279px) 20vw, (max-width:1919px) min(18vw, 440px), min(16vw, 560px)'
+  '(max-width:1023px) 50vw, (max-width:1279px) 22vw, (max-width:1919px) min(20vw, 560px), (max-width:2559px) min(18vw, 760px), min(17vw, 920px)'
 
 function usePreloadLightbox() {
   useEffect(() => {
@@ -58,12 +58,12 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
 
   return (
     <>
-      <div className="w-full grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-2 sm:gap-3 md:gap-4 min-h-[380px] lg:min-h-[580px] min-[1920px]:lg:min-h-[640px] min-[2560px]:lg:min-h-[720px]">
+      <div className="w-full grid grid-cols-1 lg:grid-cols-[1.18fr_0.82fr] gap-2 sm:gap-3 md:gap-4 lg:gap-5 min-h-[400px] sm:min-h-[420px] lg:min-h-[640px] min-[1920px]:lg:min-h-[800px] min-[2560px]:lg:min-h-[960px]">
         {/* Imagen principal: grande a la izquierda */}
         <button
           type="button"
           onClick={() => openLightbox(0)}
-          className="no-custom-btn group relative w-full aspect-[4/5] lg:aspect-auto lg:min-h-[580px] min-[1920px]:lg:min-h-[640px] min-[2560px]:lg:min-h-[720px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
+          className="no-custom-btn group relative w-full aspect-[4/5] lg:aspect-auto lg:min-h-[640px] min-[1920px]:lg:min-h-[800px] min-[2560px]:lg:min-h-[960px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
           aria-label="Ver imagen principal"
         >
           <ImageWithSkeleton
@@ -72,7 +72,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
             fill
             className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
             sizes={GALLERY_MAIN_SIZES}
-            quality={65}
+            quality={72}
             priority
             disableClientPreview
           />
@@ -80,12 +80,12 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
 
         {/* Columna derecha: grid asimétrico + 2 filas abajo para igualar altura con la principal */}
         {sideImages.length > 0 && (
-          <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 grid-rows-[1fr_1fr_1fr_1fr] min-h-[380px] lg:min-h-[580px] min-[1920px]:lg:min-h-[640px] min-[2560px]:lg:min-h-[720px]">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-5 grid-rows-[1fr_1fr_1fr_1fr] min-h-[400px] sm:min-h-[420px] lg:min-h-[640px] min-[1920px]:lg:min-h-[800px] min-[2560px]:lg:min-h-[960px]">
             {/* Arriba: imagen alta (span 2 rows) + dos chicas — simétrico */}
             <button
               type="button"
               onClick={() => openLightbox(1)}
-              className="no-custom-btn group relative row-span-2 min-h-[160px] sm:min-h-[220px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
+              className="no-custom-btn group relative row-span-2 min-h-[170px] sm:min-h-[240px] lg:min-h-[280px] min-[1920px]:min-h-[320px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
               aria-label="Ver imagen 2"
             >
               <ImageWithSkeleton
@@ -94,7 +94,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 fill
                 className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                 sizes={GALLERY_THUMB_SIZES}
-                quality={62}
+                quality={68}
                 disableClientPreview
               />
             </button>
@@ -111,7 +111,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={62}
+                  quality={68}
                   disableClientPreview
                 />
               </button>
@@ -129,7 +129,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={62}
+                  quality={68}
                   disableClientPreview
                 />
               </button>
@@ -148,7 +148,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={62}
+                  quality={68}
                   disableClientPreview
                 />
               </button>
@@ -166,7 +166,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={62}
+                  quality={68}
                   disableClientPreview
                 />
               </button>
@@ -184,7 +184,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={62}
+                  quality={68}
                   disableClientPreview
                 />
               </button>

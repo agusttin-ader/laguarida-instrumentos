@@ -7,7 +7,7 @@ const INITIAL_VISIBLE = 3
 function SpecItem({ spec, className = '', style }) {
   return (
     <li
-      className={`text-[13px] leading-snug text-[var(--dark-text-secondary)] ${className}`.trim()}
+      className={`text-[14px] sm:text-[15px] lg:text-base xl:text-lg min-[1920px]:text-[1.125rem] min-[2560px]:text-[1.2rem] leading-snug text-[var(--dark-text-secondary)] ${className}`.trim()}
       style={style}
     >
       <span className="text-[var(--dark-muted)]">{spec.label}</span>{' '}
@@ -32,7 +32,7 @@ export default function ProductSpecsExpandable({ specs = [] }) {
     <>
       {/* Solo móvil: lista con expand/collapse */}
       <div className="md:hidden mb-6">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--dark-text-secondary)] mb-3">Ficha técnica</p>
+        <p className="text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.18em] text-[var(--dark-text-secondary)] mb-3">Ficha técnica</p>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5">
           {specs.slice(0, INITIAL_VISIBLE).map((spec, idx) => (
             <SpecItem key={idx} spec={spec} />
@@ -86,7 +86,7 @@ export default function ProductSpecsExpandable({ specs = [] }) {
 
       {/* Solo desktop: todas las specs, sin flecha */}
       <div className="hidden md:block mb-6">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--dark-text-secondary)] mb-3">Ficha técnica</p>
+        <p className="text-[12px] sm:text-[13px] md:text-sm lg:text-[15px] xl:text-base font-semibold uppercase tracking-[0.18em] text-[var(--dark-text-secondary)] mb-3">Ficha técnica</p>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5">
           {specs.map((spec, idx) => (
             <SpecItem key={idx} spec={spec} />

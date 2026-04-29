@@ -295,23 +295,23 @@ export default async function GuitarPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen product-detail-page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* Sección galería: 100% ancho — breadcrumb, título a la izquierda, galería moderna */}
       <section className="bg-[var(--dark-surface-2)] -mx-4 sm:-mx-5 md:-mx-6 lg:-mx-8 px-4 sm:px-5 md:px-6 lg:px-8 pt-4 sm:pt-6 pb-8 sm:pb-10 rounded-b-[24px] md:rounded-b-[32px] w-full">
         <nav aria-label="Breadcrumb" className="container-tight w-full mb-4 md:mb-6">
-          <ol className="flex flex-wrap items-center gap-1.5 text-[12px] sm:text-[13px] text-[var(--dark-muted)]">
+          <ol className="product-detail-breadcrumb flex flex-wrap items-center gap-1.5 text-[13px] sm:text-[14px] md:text-[15px] xl:text-base text-[var(--dark-muted)]">
             <li><a href="/" className="hover:text-[var(--dark-text-primary)] transition-colors">Inicio</a></li>
             <li aria-hidden className="opacity-50">/</li>
             <li><a href="/#seleccion-destacada" className="hover:text-[var(--dark-text-primary)] transition-colors">Selección destacada</a></li>
             <li aria-hidden className="opacity-50">/</li>
-            <li className="text-[var(--dark-text-secondary)] truncate max-w-[140px] sm:max-w-[220px]" aria-current="page">{product.name}</li>
+            <li className="text-[var(--dark-text-secondary)] truncate max-w-[160px] sm:max-w-[280px] lg:max-w-[min(100%,28rem)] xl:max-w-[min(100%,40rem)]" aria-current="page">{product.name}</li>
           </ol>
         </nav>
         <div className="container-tight w-full">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--dark-muted)] mb-2">{categoryLabel}</p>
-          <h1 className="text-[2rem] sm:text-[2.35rem] md:text-[2.6rem] leading-[1.08] font-bold text-[var(--dark-text-primary)] tracking-tight mb-6 text-left">
+          <p className="product-detail-kicker text-[11px] sm:text-xs md:text-[13px] xl:text-sm font-semibold uppercase tracking-[0.22em] text-[var(--dark-muted)] mb-2">{categoryLabel}</p>
+          <h1 className="product-detail-title leading-[1.08] font-bold text-[var(--dark-text-primary)] tracking-tight mb-6 text-left">
             {product.name}
           </h1>
           <ProductGalleryModern
@@ -327,8 +327,8 @@ export default async function GuitarPage({ params }) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Columna izquierda: descripción */}
           <div>
-            <h2 className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.18em] text-[var(--dark-text-secondary)] mb-3">Descripción</h2>
-            <p className="text-[15px] sm:text-base leading-[1.75] text-[var(--dark-text-secondary)]">
+            <h2 className="product-detail-desc-label text-[12px] sm:text-[13px] md:text-sm font-semibold uppercase tracking-[0.18em] text-[var(--dark-text-secondary)] mb-3">Descripción</h2>
+            <p className="product-detail-body text-[16px] sm:text-[17px] md:text-lg lg:text-xl xl:text-[1.35rem] min-[1920px]:text-[1.45rem] min-[2560px]:text-[1.55rem] leading-[1.75] text-[var(--dark-text-secondary)]">
               {descriptionText || 'Instrumento seleccionado y revisado profesionalmente, ideal para estudio y escenario.'}
             </p>
           </div>
@@ -336,7 +336,7 @@ export default async function GuitarPage({ params }) {
           {/* Columna derecha: precio, ficha técnica y botones */}
           <div className="lg:pl-0">
             {product.price && (
-              <p className="price-highlight text-2xl sm:text-[28px] font-bold mb-6 tracking-tight">{product.price}</p>
+              <p className="price-highlight product-detail-price text-2xl sm:text-[30px] md:text-[32px] lg:text-[34px] xl:text-[2.5rem] min-[1920px]:text-[2.85rem] min-[2560px]:text-[3.1rem] font-bold mb-6 tracking-tight">{product.price}</p>
             )}
 
             {hasFicha && (

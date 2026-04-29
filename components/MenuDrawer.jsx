@@ -11,7 +11,7 @@ const WA_HREF = buildWaMeHref(WHATSAPP_DEFAULT_WEB_MESSAGE)
 
 function ChevronRight({ className }) {
   return (
-    <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg className={className} width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M9 18l6-6-6-6" />
     </svg>
   )
@@ -56,7 +56,7 @@ export default function MenuDrawer({ open, setOpen }) {
   }
 
   const rowClass =
-    'no-custom-btn flex w-full min-h-[52px] items-center justify-between gap-4 py-6 pl-5 pr-4 text-left text-[1.125rem] sm:text-[1.25rem] font-bold leading-normal tracking-tight text-[var(--dark-text-primary)] border-b border-white/[0.08] transition-colors hover:bg-white/[0.04] active:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--vintage-gold)]/45'
+    'no-custom-btn flex w-full min-h-[56px] items-center justify-between gap-4 py-7 pl-6 pr-5 text-left text-[1.2rem] sm:text-[1.35rem] font-bold leading-normal tracking-tight text-[var(--dark-text-primary)] border-b border-white/[0.08] transition-colors hover:bg-white/[0.04] active:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--vintage-gold)]/45'
 
   return (
     <div className={`fixed inset-0 z-[var(--z-menu-drawer)] md:hidden ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>
@@ -72,17 +72,17 @@ export default function MenuDrawer({ open, setOpen }) {
         className={`menu-drawer-panel fixed inset-0 z-10 flex h-full w-full max-w-none flex-col bg-[var(--dark-bg-page)] transition-transform duration-[260ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${open ? 'translate-x-0' : '-translate-x-full'}`}
         aria-label="Menú principal"
       >
-        <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-4">
-          <Link href="/" onClick={handleHome} className="relative block min-w-0 max-w-[min(220px,calc(100vw-5rem))] py-1" aria-label="Ir al inicio">
+        <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-5 sm:px-6 pt-[max(1rem,env(safe-area-inset-top))] pb-5">
+          <Link href="/" onClick={handleHome} className="relative block min-w-0 max-w-[min(260px,calc(100vw-5.5rem))] py-1" aria-label="Ir al inicio">
             <Image
               src={LOGO_SRC}
               alt="La Guarida"
               width={1800}
               height={450}
-              className="h-8 w-auto max-h-9 object-contain object-left"
+              className="h-10 sm:h-11 w-auto max-h-[2.85rem] object-contain object-left"
               style={{ objectFit: 'contain' }}
               quality={68}
-              sizes="200px"
+              sizes="260px"
               priority
             />
           </Link>
@@ -90,9 +90,9 @@ export default function MenuDrawer({ open, setOpen }) {
             type="button"
             onClick={close}
             aria-label="Cerrar menú"
-            className="no-custom-btn flex h-11 w-11 shrink-0 items-center justify-center text-white/90 hover:text-white"
+            className="no-custom-btn flex h-12 w-12 shrink-0 items-center justify-center text-white/90 hover:text-white"
           >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <path d="M6 6l12 12M6 18L18 6" />
             </svg>
           </button>
@@ -145,7 +145,7 @@ export default function MenuDrawer({ open, setOpen }) {
               className={`${rowClass} border-b-0`}
             >
               <span className="inline-flex items-center gap-3">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0 text-[var(--vintage-gold)]">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0 text-[var(--vintage-gold)]">
                   <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" />
                   <path d="M9.36 8.9c.1-.22.18-.23.34-.24h.28c.1 0 .24.04.3.17.12.26.4 1 .44 1.08.04.08.06.18 0 .28-.06.1-.1.16-.2.24-.1.08-.2.18-.28.24-.1.1-.2.2-.08.4.12.2.54.9 1.16 1.44.8.7 1.46.9 1.66 1 .2.1.32.08.44-.04.12-.12.5-.58.64-.78.14-.2.28-.16.46-.1.2.08 1.2.56 1.4.66.2.1.34.14.38.22.04.08.04.5-.12.98-.16.48-.92.92-1.26.98-.34.06-.76.1-1.24-.06-.3-.1-.68-.22-1.18-.44-2.08-.9-3.44-3.02-3.54-3.16-.1-.14-.84-1.12-.84-2.14 0-1.02.54-1.52.74-1.72Z" fill="currentColor" />
                 </svg>

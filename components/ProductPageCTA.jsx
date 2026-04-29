@@ -25,9 +25,9 @@ export default function ProductPageCTA({ price, consultHref, productName, childr
           rel="noopener noreferrer"
           aria-label={`Consultar por WhatsApp sobre ${productName || 'este producto'}`}
           onClick={handleWhatsAppClick}
-          className="no-custom-btn inline-flex w-full max-md:min-h-[48px] md:w-auto items-center justify-center gap-2.5 min-h-[48px] py-3.5 px-6 sm:px-8 rounded-full bg-[#25D366] text-white font-medium text-[15px] md:text-sm tracking-tight shadow-[0_2px_12px_rgba(37,211,102,0.35)] transition-all duration-200 hover:bg-[#20bd5a] hover:shadow-[0_4px_18px_rgba(37,211,102,0.45)] active:scale-[0.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-card)]"
+          className="no-custom-btn inline-flex w-full max-md:min-h-[52px] md:w-auto items-center justify-center gap-2.5 min-h-[48px] py-3.5 px-6 sm:px-8 rounded-full bg-[#25D366] text-white font-medium text-[16px] sm:text-[17px] md:text-[15px] lg:text-base xl:text-lg min-[1920px]:text-[1.125rem] tracking-tight shadow-[0_2px_12px_rgba(37,211,102,0.35)] transition-all duration-200 hover:bg-[#20bd5a] hover:shadow-[0_4px_18px_rgba(37,211,102,0.45)] active:scale-[0.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-card)]"
         >
-          <WhatsAppGlyph className="h-[22px] w-[22px] shrink-0" />
+          <WhatsAppGlyph className="h-[24px] w-[24px] sm:h-[26px] sm:w-[26px] shrink-0" />
           <span>Consultar por WhatsApp</span>
         </a>
         {children}

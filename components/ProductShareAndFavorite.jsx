@@ -92,7 +92,7 @@ export default function ProductShareAndFavorite({ slug, name, url }) {
   }, [slug, fav, toggle, toast])
 
   const iconBtnBase =
-    'no-custom-btn inline-flex items-center justify-center w-12 h-12 rounded-xl border border-white/[0.14] bg-black/45 text-white/[0.9] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition-all duration-200 btn-focus hover:border-[rgba(var(--palette-gold-rgb),0.45)] hover:bg-[rgba(var(--palette-gold-rgb),0.1)] hover:text-[var(--vintage-gold)] hover:shadow-[0_0_28px_rgba(var(--palette-gold-rgb),0.1)] active:scale-[0.97]'
+    'no-custom-btn inline-flex items-center justify-center w-14 h-14 sm:w-[3.75rem] sm:h-[3.75rem] rounded-xl border border-white/[0.14] bg-black/45 text-white/[0.9] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition-all duration-200 btn-focus hover:border-[rgba(var(--palette-gold-rgb),0.45)] hover:bg-[rgba(var(--palette-gold-rgb),0.1)] hover:text-[var(--vintage-gold)] hover:shadow-[0_0_28px_rgba(var(--palette-gold-rgb),0.1)] active:scale-[0.97]'
 
   return (
     <div className="flex items-center gap-2">
@@ -102,7 +102,7 @@ export default function ProductShareAndFavorite({ slug, name, url }) {
         aria-label="Compartir producto"
         className={iconBtnBase}
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
           <polyline points="16 6 12 2 8 6" />
           <line x1="12" y1="2" x2="12" y2="15" />
@@ -118,7 +118,7 @@ export default function ProductShareAndFavorite({ slug, name, url }) {
             : ''
         }`}
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill={fav ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill={fav ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <path d="M20.8 7.6c0 5.8-8.8 11.4-8.8 11.4S3.2 13.4 3.2 7.6C3.2 5 5 3.2 7.6 3.2c1.7 0 3.3.9 4.4 2.3 1.1-1.4 2.7-2.3 4.4-2.3 2.6 0 4.4 1.8 4.4 4.4z" />
         </svg>
       </button>

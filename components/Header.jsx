@@ -11,7 +11,7 @@ const SCROLL_THRESHOLD = 72
 
 function HamburgerIcon({ className }) {
   return (
-    <svg className={className} width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg className={className} width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M3 6h18M3 12h18M3 18h18" />
     </svg>
   )
@@ -59,7 +59,7 @@ export default function Header() {
   }, [isHome, pathname])
 
   const navLinkClass =
-    "relative inline-flex items-center py-1 px-0.5 text-[12px] font-semibold uppercase tracking-[0.14em] whitespace-nowrap text-[#e4e7f0]/85 hover:text-[#fffaf0] transition-colors duration-300 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[var(--vintage-gold)] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
+    "relative inline-flex items-center py-1 px-0.5 text-[12px] lg:text-[13px] xl:text-sm font-semibold uppercase tracking-[0.14em] whitespace-nowrap text-[#e4e7f0]/85 hover:text-[#fffaf0] transition-colors duration-300 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[var(--vintage-gold)] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
 
   function handleSectionNav(e, sectionId) {
     e.preventDefault()
@@ -79,42 +79,42 @@ export default function Header() {
       <header
         id={isHome ? 'header-home-mobile-overlay' : undefined}
         aria-label="Cabecera"
-        className={`header-mobile md:hidden flex items-center justify-between min-h-[60px] sm:min-h-[64px] py-3 sm:py-3 px-4 sm:px-5 left-0 right-0 top-0 relative ${isHome ? 'header-home-mobile' : ''} ${scrolled ? 'header-scrolled' : ''}`}
+        className={`header-mobile md:hidden flex items-center justify-between min-h-[68px] sm:min-h-[72px] py-3.5 sm:py-4 px-4 sm:px-5 left-0 right-0 top-0 relative ${isHome ? 'header-home-mobile' : ''} ${scrolled ? 'header-scrolled' : ''}`}
       >
-        <div className="relative z-20 w-14 flex-shrink-0">
+        <div className="relative z-20 w-16 flex-shrink-0">
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
             aria-label="Abrir menú"
-            className="flex items-center justify-center w-14 h-14 -m-0.5 rounded-lg border-0 text-white/95 hover:text-white bg-black/50 hover:bg-black/60 no-custom-btn touch-manipulation transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="flex items-center justify-center w-16 h-16 -m-1 rounded-xl border-0 text-white/95 hover:text-white bg-black/50 hover:bg-black/60 no-custom-btn touch-manipulation transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{ WebkitTapHighlightColor: 'transparent', tapHighlightColor: 'transparent' }}
           >
-            <HamburgerIcon className="w-8 h-8" />
+            <HamburgerIcon className="w-10 h-10" />
           </button>
         </div>
-        <div className="flex-1 flex items-center justify-center min-w-0 px-1.5">
+        <div className="flex-1 flex items-center justify-center min-w-0 px-2">
           <a
             href="/"
             aria-label="Ir al inicio"
             className="z-10 inline-flex justify-center items-center min-w-0 max-w-full overflow-visible pointer-events-auto leading-none"
             onClick={isHome ? (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) } : undefined}
           >
-            <span className="relative header-logo-wrapper inline-flex max-w-[min(280px,calc(100vw-8.5rem))] items-center justify-center leading-none">
+            <span className="relative header-logo-wrapper inline-flex max-w-[min(300px,calc(100vw-10rem))] items-center justify-center leading-none">
               <Image
                 src={LOGO_SRC}
                 alt="La Guarida logo"
                 width={1800}
                 height={450}
                 priority
-                className="logo-dark h-[37px] w-auto max-h-[39px] sm:h-[40px] sm:max-h-[42px] object-contain block"
+                className="logo-dark h-[42px] w-auto max-h-[44px] sm:h-[46px] sm:max-h-[48px] object-contain block"
                 style={{ objectFit: 'contain' }}
                 quality={68}
-                sizes="(max-width: 1023px) 280px, 160px"
+                sizes="(max-width: 1023px) 300px, 160px"
               />
             </span>
           </a>
         </div>
-        <div className="relative z-20 w-14 flex-shrink-0" aria-hidden />
+        <div className="relative z-20 w-16 flex-shrink-0" aria-hidden />
       </header>
     </>
   )
@@ -154,9 +154,9 @@ export default function Header() {
                 height={450}
                 priority
                 style={{ objectFit: 'contain', display: 'block', height: 'auto' }}
-                className="logo-dark h-[18px] md:h-[20px] w-auto max-w-full object-contain object-left block"
+                className="logo-dark h-[18px] md:h-[20px] lg:h-[22px] xl:h-[24px] min-[1920px]:h-[26px] w-auto max-w-full object-contain object-left block"
                 quality={68}
-                sizes="(min-width: 768px) 220px, 120px"
+                sizes="(min-width: 768px) 260px, 120px"
               />
             </div>
           </a>
