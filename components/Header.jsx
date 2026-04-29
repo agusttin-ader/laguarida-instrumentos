@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import MenuDrawer from './MenuDrawer'
+import { scrollToHomeSectionById } from '../lib/homeSectionScroll'
 
 const LOGO_SRC = '/images/logo/logo-fondo-oscuro.PNG'
 const SCROLL_THRESHOLD = 72
@@ -27,8 +28,15 @@ export default function Header() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return
+    let ticking = false
     function onScroll() {
-      setScrolled(window.scrollY > SCROLL_THRESHOLD)
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        ticking = false
+        const next = window.scrollY > SCROLL_THRESHOLD
+        setScrolled((prev) => (prev === next ? prev : next))
+      })
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -64,8 +72,12 @@ export default function Header() {
   function handleSectionNav(e, sectionId) {
     e.preventDefault()
     if (isHome) {
-      const el = document.getElementById(sectionId)
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      if (scrollToHomeSectionById(sectionId, { behavior: 'smooth' })) {
+        try {
+          const path = `${window.location.pathname}${window.location.search || ''}#${sectionId}`
+          window.history.replaceState(window.history.state, '', path)
+        } catch { /* empty */ }
+      }
       return
     }
     try { sessionStorage.setItem('pending-scroll-target', sectionId) } catch { /* empty */ }
@@ -170,6 +182,8 @@ export default function Header() {
               <a href="/#seleccion-destacada" onClick={(e) => handleSectionNav(e, 'seleccion-destacada')} className={navLinkClass}>Selección destacada</a>
               <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
               <a href="/#low-cost" onClick={(e) => handleSectionNav(e, 'low-cost')} className={navLinkClass}>Low cost</a>
+              <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
+              <a href="/#faq-section" title="Preguntas frecuentes" onClick={(e) => handleSectionNav(e, 'faq-section')} className={navLinkClass}>FAQ</a>
               <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
               <a href="/favoritos" className={navLinkClass}>Favoritos</a>
             </div>

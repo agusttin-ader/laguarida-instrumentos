@@ -92,10 +92,10 @@ export default function ProductShareAndFavorite({ slug, name, url }) {
   }, [slug, fav, toggle, toast])
 
   const iconBtnBase =
-    'no-custom-btn inline-flex items-center justify-center w-14 h-14 sm:w-[3.75rem] sm:h-[3.75rem] rounded-xl border border-white/[0.14] bg-black/45 text-white/[0.9] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition-all duration-200 btn-focus hover:border-[rgba(var(--palette-gold-rgb),0.45)] hover:bg-[rgba(var(--palette-gold-rgb),0.1)] hover:text-[var(--vintage-gold)] hover:shadow-[0_0_28px_rgba(var(--palette-gold-rgb),0.1)] active:scale-[0.97]'
+    'no-custom-btn inline-flex items-center justify-center w-12 h-12 sm:w-[3.75rem] sm:h-[3.75rem] rounded-xl border border-white/[0.14] bg-black/45 text-white/[0.9] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition-all duration-200 btn-focus hover:border-[rgba(var(--palette-gold-rgb),0.45)] hover:bg-[rgba(var(--palette-gold-rgb),0.1)] hover:text-[var(--vintage-gold)] hover:shadow-[0_0_28px_rgba(var(--palette-gold-rgb),0.1)] active:scale-[0.97]'
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5 sm:gap-2">
       <button
         type="button"
         onClick={handleShare}

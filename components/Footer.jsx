@@ -11,12 +11,19 @@ import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
 export default function Footer({ compact = false }){
   const pathname = usePathname()
   const isHome = pathname === '/' || pathname === ''
+  const isProductPage = typeof pathname === 'string' && /^\/guitars\/[^/]+$/u.test(pathname)
   const waHref = buildWaMeHref(WHATSAPP_DEFAULT_WEB_MESSAGE)
-  const footerTop = compact ? 'mt-0' : isHome ? 'mt-4 md:mt-8' : 'mt-8 md:mt-12'
+  const footerTop = compact
+    ? 'mt-0'
+    : isHome
+      ? 'mt-1 md:mt-8'
+      : isProductPage
+        ? 'mt-3 md:mt-10'
+        : 'mt-8 md:mt-12'
 
   return (
     <footer className={`${footerTop} bg-transparent dark:bg-transparent border-0 overflow-x-hidden`}>
-      <div className={`${layoutShellClassName} px-4 sm:px-6 lg:px-8 ${compact ? 'py-4 md:py-3' : 'py-6 sm:py-8'}`}>
+      <div className={`${layoutShellClassName} px-4 sm:px-6 lg:px-8 ${compact ? 'py-4 md:py-3' : isProductPage ? 'py-4 sm:py-7' : isHome ? 'py-4 sm:py-8' : 'py-6 sm:py-8'}`}>
         {!compact && <div className="mb-4 sm:mb-5 h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent" aria-hidden />}
         <div className={`grid grid-cols-1 md:grid-cols-3 items-center ${compact ? 'gap-3 md:gap-2' : 'gap-4 sm:gap-6'}`}>
           <div className="text-center md:text-left md:justify-self-start">

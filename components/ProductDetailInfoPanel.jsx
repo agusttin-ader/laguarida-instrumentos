@@ -107,27 +107,39 @@ export default function ProductDetailInfoPanel({ highlights = [], specs = [], ch
         </button>
       </div>
 
-      <div
-        id={panelDescId}
-        role="tabpanel"
-        aria-labelledby={tabDescId}
-        hidden={tab !== 'description'}
-        className="product-detail-info-panel__panel pt-2.5 sm:pt-3"
-      >
-        {children}
-      </div>
-      <div
-        id={panelSpecId}
-        role="tabpanel"
-        aria-labelledby={tabSpecId}
-        hidden={tab !== 'specs'}
-        className="product-detail-info-panel__panel pt-2.5 sm:pt-3"
-      >
-        <ul className="m-0 grid grid-cols-1 gap-x-6 gap-y-1 p-0 sm:grid-cols-2">
-          {specList.map((spec, idx) => (
-            <SpecRow key={`${spec.label}-${idx}`} spec={spec} />
-          ))}
-        </ul>
+      <div className="product-detail-info-panel__panels overflow-hidden pt-2.5 sm:pt-3">
+        <div
+          className={`flex w-[200%] transform-gpu transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none motion-reduce:duration-0 ${
+            tab === 'description' ? 'translate-x-0' : '-translate-x-1/2'
+          }`}
+        >
+          <div
+            id={panelDescId}
+            role="tabpanel"
+            aria-labelledby={tabDescId}
+            aria-hidden={tab !== 'description'}
+            className={`product-detail-info-panel__panel w-1/2 shrink-0 pr-1 sm:pr-2 ${
+              tab !== 'description' ? 'pointer-events-none select-none' : ''
+            }`}
+          >
+            {children}
+          </div>
+          <div
+            id={panelSpecId}
+            role="tabpanel"
+            aria-labelledby={tabSpecId}
+            aria-hidden={tab !== 'specs'}
+            className={`product-detail-info-panel__panel w-1/2 shrink-0 pl-1 sm:pl-2 ${
+              tab !== 'specs' ? 'pointer-events-none select-none' : ''
+            }`}
+          >
+            <ul className="m-0 grid grid-cols-1 gap-x-6 gap-y-1 p-0 sm:grid-cols-2">
+              {specList.map((spec, idx) => (
+                <SpecRow key={`${spec.label}-${idx}`} spec={spec} />
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   )

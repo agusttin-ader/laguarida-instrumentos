@@ -346,20 +346,13 @@ html, body, #__next, #root, main {
 }
 
 /* Dark theme overrides applied when `dark` class is on <html> */
+/* Sin background-attachment: fixed: en móvil/desktop repinta todo el viewport en cada scroll y provoca tirones. */
 .dark html,
 .dark body {
   background-color: var(--dark-bg-page) !important;
-  background-image: radial-gradient(ellipse 100% 70% at 50% -25%, rgba(var(--palette-gold-rgb), 0.09) 0%, transparent 42%),
-    radial-gradient(ellipse 70% 45% at 100% 0%, rgba(var(--palette-orange-rgb), 0.06) 0%, transparent 38%),
-    radial-gradient(ellipse 55% 40% at 0% 100%, rgba(var(--palette-flame-rgb), 0.05) 0%, transparent 35%);
-  background-attachment: fixed;
+  background-image: radial-gradient(ellipse 100% 55% at 50% -20%, rgba(var(--palette-gold-rgb), 0.07) 0%, transparent 45%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(var(--palette-flame-rgb), 0.04) 0%, transparent 40%);
   color: #ffffff;
-}
-@media (prefers-reduced-motion: reduce) {
-  .dark html,
-  .dark body {
-    background-attachment: scroll;
-  }
 }
 
 /* Dark theme: misma paleta (tokens alineados con :root) */
@@ -725,14 +718,12 @@ html, body, #__next, #root, main {
 .price-highlight {
   color: var(--palette-gold);
   text-shadow: var(--vivid-glow-gold), 0 0 40px rgba(var(--palette-orange-rgb), 0.35);
-  filter: saturate(1.12);
 }
 
 /* Alternativa rápida: reemplazar price-highlight por price-highlight-alt */
 .price-highlight-alt {
   color: var(--palette-orange);
   text-shadow: 0 0 18px rgba(var(--palette-orange-rgb), 0.55), 0 0 32px rgba(var(--palette-flame-rgb), 0.3);
-  filter: saturate(1.1);
 }
 
 /* Panels and cards in dark */
@@ -781,6 +772,22 @@ header {
   .page-home #home-top {
     background-color: transparent !important;
     background-image: none !important;
+  }
+}
+
+/* Home: anclas del menú / hash — alinear el inicio de sección al viewport (scroll-margin + scrollIntoView) */
+#seleccion-destacada,
+#low-cost,
+#about-section,
+#faq-section {
+  scroll-margin-top: max(1rem, env(safe-area-inset-top, 0px));
+}
+@media (min-width: 768px) {
+  #seleccion-destacada,
+  #low-cost,
+  #about-section,
+  #faq-section {
+    scroll-margin-top: 1.5rem;
   }
 }
 
@@ -1034,8 +1041,8 @@ section {
 
 @media (max-width: 767px) {
   section {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
   }
 }
 
@@ -1766,9 +1773,7 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 }
 
 @media (max-width: 1023px) {
-  html {
-    font-size: 17px;
-  }
+  html { font-size: 17px; }
   .product-card-mobile-catalog h3 {
     line-height: 1.34;
   }
@@ -1780,6 +1785,64 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   .header-mobile button,
   .header-mobile a {
     min-height: 44px;
+  }
+}
+
+/* iPhone 15 tuning (mobile only): tighter rhythm and balanced sizing */
+@media (max-width: 767px) {
+  html {
+    font-size: 16px;
+  }
+  .container-tight {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .section-title-premium {
+    font-size: clamp(0.84rem, 3vw, 0.95rem);
+    letter-spacing: 0.14em;
+  }
+  .search-pill {
+    padding: 0.5rem 0.8rem;
+  }
+  .search-pill .search-input {
+    font-size: 0.95rem !important;
+    line-height: 1.4;
+  }
+  .product-card-mobile-catalog h3 {
+    font-size: 1rem !important;
+    line-height: 1.32;
+  }
+  .product-card-mobile-catalog .price-highlight {
+    font-size: 1rem !important;
+    line-height: 1.2;
+  }
+  .hero-home .hero-scroll-hint {
+    bottom: max(4.9rem, env(safe-area-inset-bottom, 0px)) !important;
+  }
+  .product-detail-page .container-tight {
+    padding-left: 0.95rem;
+    padding-right: 0.95rem;
+  }
+  .product-detail-page .product-detail-title {
+    margin-bottom: 1.1rem !important;
+  }
+  .product-detail-page .product-detail-price {
+    font-size: clamp(1.55rem, 7.2vw, 1.92rem) !important;
+    line-height: 1.1 !important;
+  }
+  .product-detail-page .product-detail-info-panel {
+    row-gap: 0.65rem !important;
+  }
+  .product-detail-page .product-detail-info-panel__panel {
+    padding-top: 0.45rem !important;
+  }
+  #faq-section .section-title-minimal {
+    font-size: clamp(1.35rem, 5.4vw, 1.62rem) !important;
+    line-height: 1.18;
+  }
+  #faq-section .section-kicker-minimal {
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
   }
 }
 
@@ -1864,6 +1927,34 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 
   .card-interactive .md\:hidden span {
     color: #111319;
+  }
+
+  /* Ultra fluida extrema (home mobile): prioriza scroll sobre efectos visuales */
+  body.page-home #seleccion-destacada .card-interactive,
+  body.page-home #low-cost .card-interactive,
+  body.page-home #seleccion-destacada .card-interactive:hover,
+  body.page-home #low-cost .card-interactive:hover,
+  body.page-home #seleccion-destacada .card-interactive:active,
+  body.page-home #low-cost .card-interactive:active {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  body.page-home #seleccion-destacada .img-reveal,
+  body.page-home #low-cost .img-reveal,
+  body.page-home #seleccion-destacada .img-reveal.img-loaded,
+  body.page-home #low-cost .img-reveal.img-loaded {
+    transition: none !important;
+    animation: none !important;
+    opacity: 1 !important;
+  }
+  body.page-home #seleccion-destacada .filter-grid-updating,
+  body.page-home #low-cost .filter-grid-updating,
+  body.page-home #seleccion-destacada .search-pill-filtering,
+  body.page-home #low-cost .search-pill-filtering {
+    animation: none !important;
   }
 
   /* CTA "Ver más" en cards mobile: contraste fijo en dark/light */

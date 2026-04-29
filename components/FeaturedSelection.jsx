@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import ProductGrid from './ProductGrid'
-import ScrollReveal from './ScrollReveal'
 import { useProducts } from '../hooks/useProducts'
 
 export default function FeaturedSelection() {
@@ -23,7 +22,7 @@ export default function FeaturedSelection() {
 
   return (
     <>
-      <ScrollReveal className="mb-3 w-full min-w-0 sm:mb-4 md:mb-5" threshold={0.1} rootMargin="0px 0px -6% 0px">
+      <div className="mb-3 w-full min-w-0 sm:mb-4 md:mb-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4 md:gap-6">
           <div className="min-w-0">
             <h2
@@ -68,13 +67,14 @@ export default function FeaturedSelection() {
             </div>
           </div>
         </div>
-      </ScrollReveal>
+      </div>
 
       <article className={isFiltering ? 'filter-grid-updating' : ''}>
         <ProductGrid
           filters={{ q }}
           items={featured}
           parentLoading={productsLoading}
+          primaryImageOnly
         />
       </article>
     </>

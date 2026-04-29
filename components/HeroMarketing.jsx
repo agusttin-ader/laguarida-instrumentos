@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { CaretDown } from 'phosphor-react'
 import { useEffect, useMemo, useState } from 'react'
+import { scrollToHomeSectionById } from '../lib/homeSectionScroll'
 
 const HERO_PRIMARY_DESKTOP = '/images/hero5-desktop.jpg'
 const HERO_PRIMARY_MOBILE = '/images/hero5-mobile.jpg'
@@ -39,10 +40,12 @@ export default function HeroMarketing({ product = null }) {
 
   function scrollToCatalog(e) {
     if (typeof document === 'undefined') return
-    const el = document.getElementById('seleccion-destacada')
-    if (el) {
+    if (scrollToHomeSectionById('seleccion-destacada', { behavior: 'smooth' })) {
       e.preventDefault()
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      try {
+        const path = `${window.location.pathname}${window.location.search || ''}#seleccion-destacada`
+        window.history.replaceState(window.history.state, '', path)
+      } catch { /* empty */ }
     }
   }
 
@@ -94,7 +97,7 @@ export default function HeroMarketing({ product = null }) {
         aria-hidden
       />
 
-      <div className="relative z-[2] flex min-h-[100dvh] w-full flex-col justify-center px-5 pt-[max(0.75rem,env(safe-area-inset-top,0px))] pb-[max(6.5rem,env(safe-area-inset-bottom,0px))] md:min-h-[100dvh] md:px-[8%] md:pb-16 md:pt-8">
+      <div className="relative z-[2] flex min-h-[100dvh] w-full flex-col justify-center px-5 pt-[max(0.75rem,env(safe-area-inset-top,0px))] pb-[max(5.2rem,env(safe-area-inset-bottom,0px))] md:min-h-[100dvh] md:px-[8%] md:pb-16 md:pt-8">
         <div className="mx-auto w-full max-w-md text-center md:mx-0 md:max-w-[min(100%,28rem)] md:text-left sm:max-w-[min(100%,32rem)] lg:max-w-xl">
           <p className="mb-4 flex flex-col items-center gap-3 md:items-start">
             <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--palette-gold)] drop-shadow-[0_0_12px_rgba(242,174,48,0.75)] sm:text-xs">

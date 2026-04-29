@@ -21,8 +21,8 @@ export default function FavoritosPage() {
   const softGridEnter = useSoftEnterAfterSlowLoad(favoritesGridLoading, 420)
 
   return (
-    <div className="container-tight pt-10 sm:pt-14 pb-8 md:pb-12">
-      <header className="mb-6 md:mb-8">
+    <div className="container-tight pt-8 sm:pt-14 pb-7 md:pb-12">
+      <header className="mb-5 md:mb-8">
         <p className="text-xs uppercase tracking-[0.22em] text-[var(--dark-muted)] mb-1">Tu selección</p>
         <h1 className="text-2xl md:text-3xl font-bold text-[var(--dark-text-primary)]">
           Favoritos
@@ -40,7 +40,7 @@ export default function FavoritosPage() {
           <p className="text-sm text-[var(--dark-muted)]">Cargando productos…</p>
         </div>
       ) : products.length === 0 ? (
-        <div className="rounded-2xl border border-[var(--dark-border)] bg-[var(--dark-bg-card)] p-10 text-center">
+        <div className="rounded-2xl border border-[var(--dark-border)] bg-[var(--dark-bg-card)] p-7 sm:p-10 text-center">
           <span className="text-4xl opacity-50" aria-hidden>🎸</span>
           <p className="mt-4 text-white/80 font-medium">Nada en tu selección</p>
           <p className="mt-2 text-sm text-white/55">Guardá productos con el corazón en la ficha de cada uno.</p>

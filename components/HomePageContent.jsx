@@ -27,7 +27,7 @@ export default function HomePageContent({ heroProduct }) {
       </section>
 
       <div
-        className={`${layoutShellClassName} px-4 sm:px-5 md:px-8 lg:px-10 pt-0 sm:pt-2 md:pt-4 pb-6 sm:pb-6 md:pb-8 min-[1920px]:px-12 min-[2560px]:px-14 max-[767px]:pb-8`}
+        className={`${layoutShellClassName} px-4 sm:px-5 md:px-8 lg:px-10 pt-0 sm:pt-2 md:pt-4 pb-4 sm:pb-6 md:pb-8 min-[1920px]:px-12 min-[2560px]:px-14 max-[767px]:pb-3`}
       >
         <p className="sr-only">
           La Guarida es una tienda especializada en guitarras, bajos y accesorios. Ofrecemos instrumentos
@@ -36,7 +36,7 @@ export default function HomePageContent({ heroProduct }) {
 
         <section
           id="seleccion-destacada"
-          className="mt-8 min-w-0 w-full pt-0 sm:mt-8 sm:pt-3 md:mt-10 md:pt-5 max-[767px]:mt-10"
+          className="mt-8 min-w-0 w-full pt-0 sm:mt-8 sm:pt-3 md:mt-10 md:pt-5 max-[767px]:mt-8"
           aria-labelledby="seleccion-heading"
         >
           <FeaturedSelection />
@@ -44,7 +44,7 @@ export default function HomePageContent({ heroProduct }) {
 
         <LowCostSection />
 
-        <section className="mt-8 sm:mt-10 md:mt-12 !pt-3 !pb-0 md:!pt-5 md:!pb-1 max-[767px]:mt-10">
+        <section className="mt-8 sm:mt-10 md:mt-12 !pt-3 !pb-0 md:!pt-5 md:!pb-1 max-[767px]:mt-8">
           <About />
         </section>
 

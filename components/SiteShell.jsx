@@ -3,6 +3,7 @@
 import { useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { usePathname, useRouter } from 'next/navigation'
+import { getHashSectionId, scrollToHomeSectionByIdWhenReady } from '../lib/homeSectionScroll'
 
 const Footer = dynamic(() => import('./Footer'), { ssr: true })
 const PullToRefresh = dynamic(() => import('./PullToRefresh'), { ssr: false })
@@ -49,7 +50,6 @@ export default function SiteShell({ children }) {
     try {
       if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual'
     } catch { /* empty */ }
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   }, [])
 
   useEffect(() => {
@@ -62,24 +62,48 @@ export default function SiteShell({ children }) {
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    if (pathname !== '/') return
+    if (pathname !== '/' && pathname !== '') return
+
     let targetId = null
     try {
       targetId = sessionStorage.getItem('pending-scroll-target')
       if (targetId) sessionStorage.removeItem('pending-scroll-target')
     } catch { /* empty */ }
-    if (!targetId) {
+
+    const hashId = getHashSectionId()
+    const id = targetId || hashId
+
+    if (!id) {
       window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
       return
     }
-    requestAnimationFrame(() => {
-      if (targetId === 'home-top') {
+
+    if (id === 'home-top') {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      })
+      return
+    }
+
+    scrollToHomeSectionByIdWhenReady(id, { behavior: 'smooth' })
+  }, [pathname])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (pathname !== '/' && pathname !== '') return
+
+    function onHashChange() {
+      const id = getHashSectionId()
+      if (!id) return
+      if (id === 'home-top') {
         window.scrollTo({ top: 0, behavior: 'smooth' })
         return
       }
-      const el = document.getElementById(targetId)
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    })
+      scrollToHomeSectionByIdWhenReady(id, { behavior: 'smooth' })
+    }
+
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
   }, [pathname])
 
   return (
@@ -90,7 +114,7 @@ export default function SiteShell({ children }) {
           <PullToRefresh onRefresh={handleRefresh}>
             <main
               key={pathname}
-              className={`min-h-0 pb-[max(1rem,env(safe-area-inset-bottom,0px))] max-md:pb-[max(5.25rem,calc(4.25rem+env(safe-area-inset-bottom)))] md:pb-0 ${mainTopPad}`}
+              className={`min-h-0 w-full min-w-0 pb-[max(1rem,env(safe-area-inset-bottom,0px))] max-md:pb-[max(5.25rem,calc(4.25rem+env(safe-area-inset-bottom)))] md:pb-0 ${mainTopPad}`}
             >
               {children}
             </main>

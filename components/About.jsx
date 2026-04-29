@@ -7,7 +7,7 @@ export default function About(){
   return (
     <section id="about-section" className="mt-0">
       <div
-        className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 pt-5 sm:pt-7 md:pt-9 lg:pt-10 pb-0 sm:pb-1 md:pb-2 lg:pb-2`}
+        className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 pt-4 sm:pt-7 md:pt-9 lg:pt-10 pb-0 sm:pb-1 md:pb-2 lg:pb-2`}
       >
         <ScrollReveal threshold={0.08} rootMargin="0px 0px -8% 0px">
           <div className="w-full">

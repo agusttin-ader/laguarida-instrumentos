@@ -67,15 +67,15 @@ export default function FaqSection() {
       aria-labelledby="faq-heading"
     >
       <div
-        className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 pt-4 sm:pt-5 md:pt-7 lg:pt-8 pb-4 sm:pb-6 md:pb-7 lg:pb-8`}
+        className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 pt-3 sm:pt-5 md:pt-7 lg:pt-8 pb-3 sm:pb-6 md:pb-7 lg:pb-8`}
       >
         <ScrollReveal threshold={0.06} rootMargin="0px 0px -8% 0px">
           <p className="section-kicker-minimal section-underline-ocre text-gray-700 dark:text-white/70 mb-2 sm:mb-3">Preguntas frecuentes</p>
-          <h2 id="faq-heading" className="section-title-minimal text-[var(--dark-text-primary)] text-2xl sm:text-3xl md:text-[2.5rem] mb-4 sm:mb-6 md:mb-8">
+          <h2 id="faq-heading" className="section-title-minimal text-[var(--dark-text-primary)] text-2xl sm:text-3xl md:text-[2.5rem] mb-3 sm:mb-6 md:mb-8">
             Envíos, pagos, permutas y más
           </h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-10 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-10 items-start">
           <div className="lg:col-span-2 space-y-2 order-1">
             {FAQ_ITEMS.map((item) => {
               const isOpen = openId === item.id

@@ -98,7 +98,7 @@ export default function ProductGrid({
             className="home-grid-product-cell min-w-0 w-full [content-visibility:auto] [contain-intrinsic-size:auto_28rem]"
             style={{ '--grid-cell-i': idx }}
           >
-            <ProductCard item={item} priority={idx < 6} primaryImageOnly={primaryImageOnly} />
+            <ProductCard item={item} priority={idx < 2} primaryImageOnly={primaryImageOnly} />
           </div>
         ))}
       </div>

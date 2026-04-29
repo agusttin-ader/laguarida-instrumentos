@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
+import { scrollToHomeSectionById } from '../lib/homeSectionScroll'
 
 const LOGO_SRC = '/images/logo/logo-fondo-oscuro.PNG'
 const WA_HREF = buildWaMeHref(WHATSAPP_DEFAULT_WEB_MESSAGE)
@@ -47,8 +48,12 @@ export default function MenuDrawer({ open, setOpen }) {
     e.preventDefault()
     close()
     if (isHome) {
-      const el = document.getElementById(sectionId)
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      if (scrollToHomeSectionById(sectionId, { behavior: 'smooth' })) {
+        try {
+          const path = `${window.location.pathname}${window.location.search || ''}#${sectionId}`
+          window.history.replaceState(window.history.state, '', path)
+        } catch { /* empty */ }
+      }
       return
     }
     try { sessionStorage.setItem('pending-scroll-target', sectionId) } catch { /* empty */ }
@@ -56,7 +61,7 @@ export default function MenuDrawer({ open, setOpen }) {
   }
 
   const rowClass =
-    'no-custom-btn flex w-full min-h-[56px] items-center justify-between gap-4 py-7 pl-6 pr-5 text-left text-[1.2rem] sm:text-[1.35rem] font-bold leading-normal tracking-tight text-[var(--dark-text-primary)] border-b border-white/[0.08] transition-colors hover:bg-white/[0.04] active:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--vintage-gold)]/45'
+    'no-custom-btn flex w-full min-h-[52px] items-center justify-between gap-4 py-4.5 pl-6 pr-5 text-left text-[1.06rem] sm:text-[1.22rem] font-bold leading-normal tracking-tight text-[var(--dark-text-primary)] border-b border-white/[0.08] transition-colors hover:bg-white/[0.04] active:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--vintage-gold)]/45'
 
   return (
     <div className={`fixed inset-0 z-[var(--z-menu-drawer)] md:hidden ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>

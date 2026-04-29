@@ -66,6 +66,7 @@ const ProductCard = React.memo(function ProductCard({
   const [loadedIndices, setLoadedIndices] = useState(() => new Set())
   const [isHoveringImage, setIsHoveringImage] = useState(false)
   const touchStartX = useRef(0)
+  const touchStartY = useRef(0)
   const touchStartTime = useRef(0)
   const didSwipe = useRef(false)
   const currentImageReady = loadedIndices.has(galleryIndex)
@@ -86,13 +87,19 @@ const ProductCard = React.memo(function ProductCard({
   function handleTouchStart(e) {
     if (!e.touches[0]) return
     touchStartX.current = e.touches[0].clientX
+    touchStartY.current = e.touches[0].clientY
     touchStartTime.current = typeof performance !== 'undefined' ? performance.now() : Date.now()
     didSwipe.current = false
   }
   function handleTouchEnd(e) {
     if (!hasGallery || !e.changedTouches[0]) return
     const x = e.changedTouches[0].clientX
+    const y = e.changedTouches[0].clientY
     const dx = x - touchStartX.current
+    const dy = y - touchStartY.current
+    // Keep vertical scroll fluid: only treat gesture as swipe
+    // when horizontal intent is clear.
+    if (Math.abs(dy) > Math.abs(dx) || Math.abs(dy) > 32) return
     const now = typeof performance !== 'undefined' ? performance.now() : Date.now()
     const dt = Math.max(now - touchStartTime.current, 1)
     const velocity = Math.abs(dx) / dt

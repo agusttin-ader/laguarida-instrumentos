@@ -20,7 +20,7 @@ export default function WhatsAppFloatButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Escribinos por WhatsApp"
-      className="no-custom-btn whatsapp-float-fab fixed z-[var(--z-mobile-fab)] flex size-14 shrink-0 items-center justify-center rounded-full bg-[#25D366] p-0 text-white transition-transform duration-200 hover:scale-105 hover:bg-[#20bd5a] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-page)] right-[max(1rem,env(safe-area-inset-right))] bottom-[max(1rem,env(safe-area-inset-bottom))] md:right-6 md:bottom-6"
+      className="no-custom-btn whatsapp-float-fab fixed z-[var(--z-mobile-fab)] flex size-14 shrink-0 items-center justify-center rounded-full bg-[#25D366] p-0 text-white transition-transform duration-200 hover:scale-105 hover:bg-[#20bd5a] active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-page)] right-[max(1rem,env(safe-area-inset-right))] bottom-[max(1.125rem,calc(0.5rem+env(safe-area-inset-bottom,0px)))] md:right-6 md:bottom-6"
     >
       <WhatsAppGlyph className="h-7 w-7" />
     </a>

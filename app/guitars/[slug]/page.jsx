@@ -452,11 +452,11 @@ export default async function GuitarPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen product-detail-page">
+    <div className="product-detail-page min-h-screen w-full min-w-0">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* Sección galería: 100% ancho — breadcrumb, título a la izquierda, galería moderna */}
-      <section className="bg-[var(--dark-surface-2)] -mx-4 sm:-mx-5 md:-mx-6 lg:-mx-8 px-4 sm:px-5 md:px-6 lg:px-8 pt-4 sm:pt-6 pb-8 sm:pb-10 rounded-b-[24px] md:rounded-b-[32px] w-full">
+      <section className="w-full min-w-0 bg-[var(--dark-surface-2)] px-4 pt-4 pb-8 max-lg:mx-0 sm:px-5 sm:pt-6 sm:pb-10 md:px-6 lg:-mx-8 lg:px-8 lg:pb-10 rounded-b-[24px] md:rounded-b-[32px]">
         <nav aria-label="Breadcrumb" className="container-tight w-full mb-4 md:mb-6">
           <ol className="product-detail-breadcrumb flex flex-wrap items-center gap-1.5 text-[13px] sm:text-[14px] md:text-[15px] xl:text-base text-[var(--dark-muted)]">
             <li><a href="/" className="hover:text-[var(--dark-text-primary)] transition-colors">Inicio</a></li>
@@ -480,8 +480,8 @@ export default async function GuitarPage({ params }) {
       </section>
 
       {/* Móvil: precio y acciones primero. Desktop lg+: dos columnas — panel (izq) | compra sticky (der). */}
-      <section className="container-tight w-full pt-8 sm:pt-10 md:pt-12 pb-10 md:pb-16">
-        <div className="grid w-full grid-cols-1 gap-8 sm:gap-10 md:gap-12 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
+      <section className="container-tight w-full pt-6 sm:pt-10 md:pt-12 pb-7 sm:pb-10 md:pb-16">
+        <div className="grid w-full grid-cols-1 gap-6 sm:gap-10 md:gap-12 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
           <div className="order-2 min-w-0 lg:order-1">
             <ProductDetailInfoPanel highlights={product.highlights} specs={hasFicha ? productSpecRows : []}>
               <div className="product-detail-desc-stack">
@@ -532,7 +532,7 @@ export default async function GuitarPage({ params }) {
       </section>
 
       {relatedProducts && relatedProducts.length > 0 && (
-        <section className="container-tight mt-10 sm:mt-12 md:mt-16 pb-10 md:pb-16" aria-labelledby="related-heading">
+        <section className="container-tight mt-6 sm:mt-12 md:mt-16 pb-4 sm:pb-10 md:pb-16" aria-labelledby="related-heading">
           <h2 id="related-heading" className="section-title-premium section-underline-ocre text-[var(--dark-text-primary)] mb-4 sm:mb-6">También te recomendamos</h2>
           <div className="related-products-scroll flex overflow-x-auto gap-4 sm:gap-5 pb-2 -mx-4 px-5 sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 lg:gap-8 snap-x snap-mandatory scroll-smooth">
             {relatedProducts.map((r, idx) => (

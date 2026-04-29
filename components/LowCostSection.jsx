@@ -2,7 +2,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import ProductGrid from './ProductGrid'
-import ScrollReveal from './ScrollReveal'
 import { useProducts } from '../hooks/useProducts'
 
 export default function LowCostSection() {
@@ -27,8 +26,8 @@ export default function LowCostSection() {
   if (!loading && !lowCostProducts.length) return null
 
   return (
-    <section id="low-cost" className="mt-8 sm:mt-10 md:mt-12 max-[767px]:mt-10" aria-labelledby="low-cost-heading">
-      <ScrollReveal className="mb-3 sm:mb-4 md:mb-5" threshold={0.1} rootMargin="0px 0px -6% 0px">
+    <section id="low-cost" className="mt-8 sm:mt-10 md:mt-12" aria-labelledby="low-cost-heading">
+      <div className="mb-3 sm:mb-4 md:mb-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4 md:gap-6">
           <h2
             id="low-cost-heading"
@@ -53,10 +52,10 @@ export default function LowCostSection() {
             </div>
           </div>
         </div>
-      </ScrollReveal>
+      </div>
 
       <article className={isFiltering ? 'filter-grid-updating' : ''}>
-        <ProductGrid items={lowCostProducts} parentLoading={loading} filters={{ q }} />
+        <ProductGrid items={lowCostProducts} parentLoading={loading} filters={{ q }} primaryImageOnly />
       </article>
     </section>
   )

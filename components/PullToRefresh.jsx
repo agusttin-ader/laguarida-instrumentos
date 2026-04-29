@@ -57,7 +57,7 @@ export default function PullToRefresh({ children, onRefresh, disabled }) {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchEnd}
-      className="relative"
+      className="relative w-full min-w-0 touch-pan-y"
     >
       {pull > 0 && (
         <div

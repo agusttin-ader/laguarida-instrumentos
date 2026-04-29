@@ -46,7 +46,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
     if (!el || !allImages.length) return
     const first = el.children[0]
     if (!first) return
-    const gap = 8
+    const gap = 0
     const slideW = first.getBoundingClientRect().width + gap
     if (slideW <= gap) return
     const idx = Math.round(el.scrollLeft / slideW)
@@ -94,34 +94,38 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
 
   return (
     <>
-      {/* Móvil: carrusel horizontal con snap (debajo de lg). Menos scroll que el mosaico de miniaturas. */}
+      {/* Móvil: carrusel horizontal con snap (debajo de lg). Cada slide ocupa el ancho del carrusel; la tarjeta va centrada dentro. */}
       <div className="w-full space-y-2 lg:hidden">
         <div
           ref={carouselRef}
           role="region"
           aria-roledescription="Carrusel"
           aria-label="Fotos del producto. Deslizá para ver más."
-          className="flex w-full touch-pan-x overflow-x-auto scroll-smooth snap-x snap-mandatory gap-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex w-full touch-auto overflow-x-auto scroll-smooth snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {allImages.map((src, i) => (
-            <button
+            <div
               key={`${src}-${i}`}
-              type="button"
-              onClick={() => openLightbox(i)}
-              className="no-custom-btn group relative min-h-0 min-w-full shrink-0 snap-center aspect-[4/5] rounded-xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
-              aria-label={altBase ? `${altBase} — foto ${i + 1} de ${allImages.length}` : `Foto ${i + 1} de ${allImages.length}`}
+              className="flex min-h-0 min-w-full shrink-0 snap-center justify-center px-0.5"
             >
-              <ImageWithSkeleton
-                src={i === 0 ? displayMain(src) : displayThumb(src)}
-                alt={altBase ? `${altBase} — imagen ${i + 1}` : `Imagen ${i + 1}`}
-                fill
-                className="object-cover transition-transform duration-300 ease-out group-active:scale-[1.02]"
-                sizes={MOBILE_CAROUSEL_SIZES}
-                quality={i === 0 ? 72 : 68}
-                priority={i === 0}
-                disableClientPreview
-              />
-            </button>
+              <button
+                type="button"
+                onClick={() => openLightbox(i)}
+                className="no-custom-btn group relative aspect-[4/5] w-full max-w-[min(26rem,calc(100vw-1.25rem))] shrink-0 overflow-hidden rounded-xl bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
+                aria-label={altBase ? `${altBase} — foto ${i + 1} de ${allImages.length}` : `Foto ${i + 1} de ${allImages.length}`}
+              >
+                <ImageWithSkeleton
+                  src={i === 0 ? displayMain(src) : displayThumb(src)}
+                  alt={altBase ? `${altBase} — imagen ${i + 1}` : `Imagen ${i + 1}`}
+                  fill
+                  imgClassName="object-cover object-center transition-transform duration-300 ease-out group-active:scale-[1.02]"
+                  sizes={MOBILE_CAROUSEL_SIZES}
+                  quality={i === 0 ? 72 : 68}
+                  priority={i === 0}
+                  disableClientPreview
+                />
+              </button>
+            </div>
           ))}
         </div>
         {allImages.length > 1 ? (
