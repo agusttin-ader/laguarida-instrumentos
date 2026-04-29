@@ -84,6 +84,7 @@ export default function AdminProductForm({ mode, editingId = null }) {
     currency: 'USD',
     image_url: '',
     description: '',
+    highlights: '',
     mics: '',
     wood: '',
     model: '',
@@ -127,6 +128,7 @@ export default function AdminProductForm({ mode, editingId = null }) {
       currency: parsedPrice.currency,
       image_url: p.image_url || '',
       description: p.description || '',
+      highlights: Array.isArray(p.highlights) ? p.highlights.join('\n') : '',
       mics: p.mics || '',
       wood: p.wood || '',
       model: p.model || '',
@@ -200,7 +202,7 @@ export default function AdminProductForm({ mode, editingId = null }) {
   useEffect(() => {
     if (mode !== 'create') return
     let nextForm = {
-      name: '', slug: '', price: '', image_url: '', description: '', mics: '', wood: '', model: '',
+      name: '', slug: '', price: '', image_url: '', description: '', highlights: '', mics: '', wood: '', model: '',
       currency: 'USD',
       images: [], low_cost: false,
       scale_length: '', neck_profile: '', fingerboard_radius: '', fingerboard_material: '',
@@ -327,6 +329,11 @@ export default function AdminProductForm({ mode, editingId = null }) {
         image_url: form.image_url || undefined,
         images: Array.isArray(form.images) && form.images.length ? form.images : undefined,
         description: form.description || undefined,
+        highlights: String(form.highlights || '')
+          .split(/\n/)
+          .map((l) => l.trim())
+          .filter(Boolean)
+          .slice(0, 8),
         mics: form.mics || undefined,
         wood: form.wood || undefined,
         model: form.model || undefined,
@@ -604,8 +611,19 @@ export default function AdminProductForm({ mode, editingId = null }) {
                 </div>
               </div>
               <div>
+                <label className="mb-1.5 block text-sm font-medium text-slate-200">Destacados (opcional)</label>
+                <textarea
+                  name="highlights"
+                  value={form.highlights}
+                  onChange={handleModalChange}
+                  className="admin-desk-input"
+                  rows="3"
+                  placeholder="Un punto por línea (máx. 8). Aparecen arriba de la descripción en la ficha."
+                />
+              </div>
+              <div>
                 <label className="mb-1.5 block text-sm font-medium text-slate-200">Descripción</label>
-                <textarea name="description" value={form.description} onChange={handleModalChange} className="admin-desk-input" rows="4" placeholder="Opcional en alta; recomendado para la ficha pública." />
+                <textarea name="description" value={form.description} onChange={handleModalChange} className="admin-desk-input" rows="6" placeholder="Texto plano o Markdown opcional: ## Título, **negrita**, listas con - , enlaces [texto](url)." />
               </div>
               <div className="flex items-center gap-2 pt-0.5">
                 <input type="checkbox" id="product-form-low-cost" name="low_cost" checked={Boolean(form.low_cost)} onChange={handleModalChange} className="rounded border-white/25 bg-white/5 text-indigo-400 focus:ring-indigo-400" />

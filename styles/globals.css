@@ -17,35 +17,43 @@
   --z-toast: 9999;
   --z-menu-drawer: 10000;
   /* Mobile-first design tokens */
-  /* Paleta Adobe (guitarra): crema, rojo, tinta, chocolate, oro */
-  --palette-cream: #FFF0DA;
-  --palette-red: #ED0003;
-  --palette-ink: #120703;
-  --palette-brown: #6C3B2A;
-  --palette-gold: #FFC308;
-  --palette-gold-rgb: 255, 195, 8;
+  /* Paleta Adobe Color (Fender concept): arena, oro, naranja, bermellón, carbón */
+  --palette-sand: #D9C58B;
+  --palette-sand-rgb: 217, 197, 139;
+  --palette-gold: #F2AE30;
+  --palette-gold-rgb: 242, 174, 48;
+  --palette-orange: #F28729;
+  --palette-orange-rgb: 242, 135, 41;
+  --palette-flame: #F23C13;
+  --palette-flame-rgb: 242, 60, 19;
+  --palette-ink: #0D0D0D;
+  --palette-ink-rgb: 13, 13, 13;
+  /* Neutros derivados (legibles sobre oscuro / superficies claras) */
+  --palette-cream: #f5ecd8;
+  --palette-brown: #6c5344;
+  --palette-red: var(--palette-flame);
 
   --color-black: var(--palette-ink);
   --color-white: var(--palette-cream);
-  --color-accent: var(--palette-red);
-  --color-orange: var(--palette-gold);
-  --color-surface: #F7EBD8;
-  --shadow-soft: 0 6px 18px rgba(18, 7, 3, 0.07);
-  --shadow-hover: 0 14px 32px rgba(18, 7, 3, 0.1);
-  --card-bg: #F2E6D4;
+  --color-accent: var(--palette-flame);
+  --color-orange: var(--palette-orange);
+  --color-surface: #ebe3d4;
+  --shadow-soft: 0 6px 18px rgba(var(--palette-ink-rgb), 0.12);
+  --shadow-hover: 0 14px 32px rgba(var(--palette-ink-rgb), 0.18);
+  --card-bg: #ebe3d4;
   --auth-bg: var(--color-white); /* login/admin small header background */
 
-  /* Vintage / acentos (oro de la paleta) */
+  /* Vintage / acentos (alineados a oro + naranja de la paleta) */
   --vintage-gold: var(--palette-gold);
   --vintage-gold-soft: rgba(var(--palette-gold-rgb), 0.15);
-  --vintage-gold-soft-hover: rgba(var(--palette-gold-rgb), 0.24);
+  --vintage-gold-soft-hover: rgba(var(--palette-gold-rgb), 0.26);
   --vintage-amber: var(--palette-gold);
-  --vintage-amber-dark: #D4A000;
+  --vintage-amber-dark: #c48a1f;
   --vintage-cream: var(--palette-cream);
-  --vintage-muted: #9A6B5A;
-  /* Price accents: default + alternativa */
-  --price-accent: #ffd84d;
-  --price-accent-alt: #ff9f5a;
+  --vintage-muted: #a8987a;
+  /* Price accents: oro + naranja */
+  --price-accent: var(--palette-gold);
+  --price-accent-alt: var(--palette-orange);
 
   /* Design tokens: botones y espaciado responsive */
   --btn-h-mobile: 48px;
@@ -58,21 +66,32 @@
   --content-gap-mobile: 0.75rem;
   --content-gap-desktop: 1rem;
 
-  /* Oscuros cálidos (derivados de --palette-ink) */
-  --dark-bg-page: #120703;
-  --dark-bg-surface: #1c0f0a;
-  --dark-bg-card: #261812;
-  --dark-bg-elevated: #2d1e16;
-  --dark-surface-2: #140a06;
-  --dark-text-primary: #fff8f0;
-  --dark-text-secondary: #f0e6dc;
-  --dark-muted: #c4a99a;
-  --dark-border: rgba(255, 240, 218, 0.14);
-  --dark-ring: rgba(var(--palette-gold-rgb), 0.28);
+  /* Oscuros cálidos (base #0D0D0D + elevaciones cálidas) */
+  --dark-bg-page: #0d0d0d;
+  --dark-bg-surface: #151413;
+  --dark-bg-card: #1c1a18;
+  --dark-bg-elevated: #242220;
+  --dark-surface-2: #121211;
+  --dark-text-primary: #f7f3eb;
+  --dark-text-secondary: #e8e0d4;
+  --dark-muted: #b0a08c;
+  --dark-border: rgba(var(--palette-sand-rgb), 0.14);
+  --dark-ring: rgba(var(--palette-gold-rgb), 0.32);
   /* CTAs: fondo claro para contraste sobre oscuro */
   --dark-cta-bg: var(--palette-cream);
   --dark-cta-text: var(--palette-ink);
-  --dark-cta-hover: #ffe8c4;
+  --dark-cta-hover: #efe4cf;
+
+  /* Acentos vivos (gradiente + brillos — paleta Adobe) */
+  --vivid-gradient: linear-gradient(105deg, #f2ae30 0%, #f28729 52%, #f23c13 100%);
+  --vivid-gradient-soft: linear-gradient(
+    135deg,
+    rgba(var(--palette-gold-rgb), 0.45) 0%,
+    rgba(var(--palette-orange-rgb), 0.22) 48%,
+    rgba(var(--palette-flame-rgb), 0.14) 100%
+  );
+  --vivid-glow-gold: 0 0 20px rgba(var(--palette-gold-rgb), 0.55);
+  --vivid-glow-mixed: 0 4px 28px rgba(var(--palette-orange-rgb), 0.35), 0 0 24px rgba(var(--palette-gold-rgb), 0.3);
 }
 
 /* Hero móvil: indicador scroll (HeroMarketing) */
@@ -330,31 +349,41 @@ html, body, #__next, #root, main {
 .dark html,
 .dark body {
   background-color: var(--dark-bg-page) !important;
+  background-image: radial-gradient(ellipse 100% 70% at 50% -25%, rgba(var(--palette-gold-rgb), 0.09) 0%, transparent 42%),
+    radial-gradient(ellipse 70% 45% at 100% 0%, rgba(var(--palette-orange-rgb), 0.06) 0%, transparent 38%),
+    radial-gradient(ellipse 55% 40% at 0% 100%, rgba(var(--palette-flame-rgb), 0.05) 0%, transparent 35%);
+  background-attachment: fixed;
   color: #ffffff;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dark html,
+  .dark body {
+    background-attachment: scroll;
+  }
 }
 
 /* Dark theme: misma paleta (tokens alineados con :root) */
 :root.dark,
 .dark {
-  --dark-bg-page: #120703;
-  --dark-bg-surface: #1c0f0a;
-  --dark-bg-card: #261812;
-  --dark-bg-elevated: #2d1e16;
-  --dark-surface-2: #140a06;
-  --dark-text-primary: #fff8f0;
-  --dark-text-secondary: #f0e6dc;
-  --dark-muted: #c4a99a;
-  --dark-border: rgba(255, 240, 218, 0.14);
-  --dark-ring: rgba(var(--palette-gold-rgb), 0.28);
+  --dark-bg-page: #0d0d0d;
+  --dark-bg-surface: #151413;
+  --dark-bg-card: #1c1a18;
+  --dark-bg-elevated: #242220;
+  --dark-surface-2: #121211;
+  --dark-text-primary: #f7f3eb;
+  --dark-text-secondary: #e8e0d4;
+  --dark-muted: #b0a08c;
+  --dark-border: rgba(var(--palette-sand-rgb), 0.14);
+  --dark-ring: rgba(var(--palette-gold-rgb), 0.32);
   --dark-cta-bg: var(--palette-cream);
   --dark-cta-text: var(--palette-ink);
-  --dark-cta-hover: #ffe8c4;
+  --dark-cta-hover: #efe4cf;
   --auth-bg: var(--dark-bg-page);
   --vintage-gold: var(--palette-gold);
   --vintage-gold-soft: rgba(var(--palette-gold-rgb), 0.18);
-  --vintage-gold-soft-hover: rgba(var(--palette-gold-rgb), 0.28);
-  --price-accent: #ffd84d;
-  --price-accent-alt: #ff9f5a;
+  --vintage-gold-soft-hover: rgba(var(--palette-gold-rgb), 0.3);
+  --price-accent: var(--palette-gold);
+  --price-accent-alt: var(--palette-orange);
 }
 
 /* Inputs, selects, textareas: ensure readable colors in dark mode */
@@ -550,17 +579,20 @@ html, body, #__next, #root, main {
 }
 .dark .search-pill { color: var(--dark-text-primary) }
 .dark .search-pill:hover {
-  border-color: rgba(255,255,255,0.1);
-  box-shadow: inset 4px 4px 12px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.04);
+  border-color: rgba(var(--palette-sand-rgb), 0.35);
+  box-shadow: inset 4px 4px 12px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.04),
+    0 0 20px rgba(var(--palette-gold-rgb), 0.12);
 }
 .dark .search-pill:focus-within {
-  border-color: rgba(var(--palette-gold-rgb), 0.4);
-  box-shadow: inset 4px 4px 12px rgba(0,0,0,0.35), 0 0 0 1px rgba(var(--palette-gold-rgb), 0.2);
+  border-color: rgba(var(--palette-gold-rgb), 0.65);
+  box-shadow: inset 4px 4px 12px rgba(0,0,0,0.35), 0 0 0 1px rgba(var(--palette-orange-rgb), 0.35),
+    0 0 24px rgba(var(--palette-gold-rgb), 0.22);
 }
 .dark .search-pill-filtering {
   animation: none;
-  border-color: rgba(var(--palette-gold-rgb), 0.4);
-  box-shadow: inset 4px 4px 12px rgba(0,0,0,0.35), 0 0 0 2px rgba(var(--palette-gold-rgb), 0.35);
+  border-color: rgba(var(--palette-orange-rgb), 0.55);
+  box-shadow: inset 4px 4px 12px rgba(0,0,0,0.35), 0 0 0 2px rgba(var(--palette-gold-rgb), 0.45),
+    0 0 28px rgba(var(--palette-flame-rgb), 0.2);
 }
 .dark .search-pill .search-icon { color: rgba(255,255,255,0.6); }
 .dark .search-pill:focus-within .search-icon { color: var(--vintage-gold); }
@@ -691,14 +723,16 @@ html, body, #__next, #root, main {
 .dark .price-large { color: #ffffff }
 
 .price-highlight {
-  color: var(--price-accent);
-  text-shadow: 0 0 14px rgba(255, 216, 77, 0.18);
+  color: var(--palette-gold);
+  text-shadow: var(--vivid-glow-gold), 0 0 40px rgba(var(--palette-orange-rgb), 0.35);
+  filter: saturate(1.12);
 }
 
 /* Alternativa rápida: reemplazar price-highlight por price-highlight-alt */
 .price-highlight-alt {
-  color: var(--price-accent-alt);
-  text-shadow: 0 0 14px rgba(255, 159, 90, 0.18);
+  color: var(--palette-orange);
+  text-shadow: 0 0 18px rgba(var(--palette-orange-rgb), 0.55), 0 0 32px rgba(var(--palette-flame-rgb), 0.3);
+  filter: saturate(1.1);
 }
 
 /* Panels and cards in dark */
@@ -841,13 +875,13 @@ header {
 }
 
 .footer-credit {
-  color: rgba(255, 248, 240, 0.62);
-  letter-spacing: 0.08em;
-  line-height: 1.4;
+  color: rgba(196, 169, 154, 0.38);
+  line-height: 1.45;
 }
-.footer-credit-name {
-  color: rgba(var(--palette-gold-rgb), 0.92);
-  font-weight: 600;
+@media (min-width: 640px) {
+  .footer-credit {
+    color: rgba(196, 169, 154, 0.42);
+  }
 }
 
 /* Scale logo visually without affecting header layout (uses transform only) */
@@ -1081,6 +1115,20 @@ main.legal-page article {
   main .product-detail-page h2.section-title-premium {
     font-size: clamp(1.15rem, 0.85vw, 1.55rem);
   }
+}
+
+/* Ficha producto: descripción (plana + markdown + entradilla) en la misma tipografía que el sitio. */
+.product-detail-body,
+.product-detail-md-root,
+.product-detail-desc-lead {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', sans-serif;
+  font-feature-settings: 'kern' 1, 'liga' 1;
+}
+
+/* Código en markdown: mono (única excepción). */
+.product-detail-md-root :is(code, pre, kbd) {
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 /* Card layout: ensure consistent height and spacing for product cards */
@@ -2374,8 +2422,9 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 56px;
-  height: 2px;
+  width: 72px;
+  height: 3px;
   border-radius: 9999px;
-  background: var(--vintage-gold);
+  background: var(--vivid-gradient);
+  box-shadow: 0 0 14px rgba(var(--palette-gold-rgb), 0.55), 0 0 22px rgba(var(--palette-flame-rgb), 0.25);
 }

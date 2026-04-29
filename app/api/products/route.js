@@ -1,6 +1,7 @@
 export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getSupabaseServerClient, getSupabaseAdminClient } from '../../../lib/supabase/server'
 import { PRODUCT_LIST_COLUMNS } from '../../../lib/data/productColumns'
 import { cookies } from 'next/headers'
@@ -11,6 +12,8 @@ const MAX_NAME = 140
 const MAX_SLUG = 180
 const MAX_PRICE = 120
 const MAX_IMAGES = 12
+const MAX_HIGHLIGHTS = 8
+const MAX_HIGHLIGHT_ITEM = 220
 const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'products'
 
 /**
@@ -123,6 +126,14 @@ async function extractAccessToken(req) {
   return null
 }
 
+function revalidateProductPublicPaths(slug) {
+  if (!slug || typeof slug !== 'string') return
+  const s = slug.trim()
+  if (!s) return
+  revalidatePath(`/guitars/${s}`)
+  revalidatePath('/')
+}
+
 function assertSameOrigin(req) {
   const origin = req.headers.get('origin')
   const host = req.headers.get('host')
@@ -221,6 +232,7 @@ function buildProductPayload(body = {}, partial = false) {
   const brand = toSafeString(body.brand, MAX_TEXT)
   const model = toSafeString(body.model, MAX_TEXT)
   const description = toSafeString(body.description, 4000)
+  const highlights = toSafeStringArray(body.highlights, MAX_HIGHLIGHTS, MAX_HIGHLIGHT_ITEM)
   const image_url = toSafeString(body.image_url, 2000)
   const images = toSafeStringArray(body.images, MAX_IMAGES, 2000)
   const wood = Array.isArray(body.wood) ? toSafeStringArray(body.wood, 8, MAX_TEXT) : toSafeString(body.wood, MAX_TEXT)
@@ -269,6 +281,7 @@ function buildProductPayload(body = {}, partial = false) {
     payload.currency = normalizeCurrencyInput(body.currency)
   }
   if ('description' in body) payload.description = description
+  if ('highlights' in body) payload.highlights = highlights.length ? highlights : null
   if ('image_url' in body) payload.image_url = image_url
   if ('images' in body) payload.images = images
   if ('wood' in body) payload.wood = wood
@@ -363,6 +376,9 @@ export async function POST(req) {
       return NextResponse.json({ error: error.message }, { status: error.status || 500 })
     }
 
+    const row = Array.isArray(data) ? data[0] : null
+    if (row?.slug) revalidateProductPublicPaths(row.slug)
+
     return NextResponse.json(data, { status: 201 })
   } catch (err) {
     return NextResponse.json({ error: err.message || String(err) }, { status: 500 })
@@ -401,6 +417,9 @@ export async function PATCH(req) {
       return NextResponse.json({ error: error.message }, { status: error.status || 500 })
     }
 
+    const row = Array.isArray(data) ? data[0] : null
+    if (row?.slug) revalidateProductPublicPaths(row.slug)
+
     return NextResponse.json(data, { status: 200 })
   } catch (err) {
     return NextResponse.json({ error: err.message || String(err) }, { status: 500 })
@@ -436,7 +455,7 @@ export async function DELETE(req) {
     const idTrim = id.trim()
     const { data: existing, error: fetchErr } = await supabase
       .from('products')
-      .select('id, image_url, images')
+      .select('id, slug, image_url, images')
       .eq('id', idTrim)
       .maybeSingle()
 
@@ -452,6 +471,8 @@ export async function DELETE(req) {
     if (delErr) {
       return NextResponse.json({ error: delErr.message }, { status: delErr.status || 500 })
     }
+
+    if (existing?.slug) revalidateProductPublicPaths(existing.slug)
 
     const storage = await removeProductFilesFromStorage([existing])
 

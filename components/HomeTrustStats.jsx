@@ -65,8 +65,8 @@ const StatCard = memo(function StatCard({ label, value, description, className =
 function TrustSectionRulesDouble() {
   return (
     <div className="flex w-full flex-col gap-1" aria-hidden>
-      <div className="h-px w-full shrink-0 bg-[#FFC308]/70" />
-      <div className="h-px w-full shrink-0 bg-[#FFC308]/40" />
+      <div className="h-px w-full shrink-0 bg-[var(--vintage-gold)]/70" />
+      <div className="h-px w-full shrink-0 bg-[var(--vintage-gold)]/40" />
     </div>
   )
 }

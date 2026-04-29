@@ -34,6 +34,8 @@ export default function SiteShell({ children }) {
   const router = useRouter()
   const isAdmin = typeof pathname === 'string' && pathname.startsWith('/admin')
   const isHome = pathname === '/' || pathname === ''
+  const isGuitarProductPage =
+    typeof pathname === 'string' && /^\/guitars\/[^/]+$/u.test(pathname)
   const mainTopPad = !isHome
     ? 'pt-[calc(66px+max(0.25rem,env(safe-area-inset-top)))] sm:pt-[calc(70px+max(0.25rem,env(safe-area-inset-top)))] md:pt-0'
     : 'pt-0'
@@ -93,7 +95,7 @@ export default function SiteShell({ children }) {
               {children}
             </main>
             <Footer />
-            <WhatsAppFloatButton />
+            {!isGuitarProductPage ? <WhatsAppFloatButton /> : null}
           </PullToRefresh>
         </>
       ) : (

@@ -10,13 +10,18 @@ import ProductCard from '../../../components/ProductCard'
 import imageService from '../../../lib/utils/imageService'
 import ProductShareAndFavorite from '../../../components/ProductShareAndFavorite'
 import ProductPageCTA from '../../../components/ProductPageCTA'
-import ProductSpecsExpandable from '../../../components/ProductSpecsExpandable'
+import ProductDetailInfoPanel from '../../../components/ProductDetailInfoPanel'
+import ProductMobileStickyCTA from '../../../components/ProductMobileStickyCTA'
 import { parseNumericPriceForSchema } from '../../../lib/utils/normalizeProduct'
 import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
 import { absoluteUrl, toAbsoluteUrl } from '../../../lib/siteUrl'
 import { buildWaMeHref, whatsAppProductMessage } from '../../../lib/whatsappWeb'
+import { descriptionLooksLikeMarkdown, markdownToPlainText } from '../../../lib/utils/descriptionMarkdown'
+import ProductDescriptionMarkdown from '../../../components/ProductDescriptionMarkdown'
+import { unstable_noStore as noStore } from 'next/cache'
 
-export const revalidate = 300
+/** Ficha siempre dinámica: evita HTML viejo tras editar en admin (antes ~5 min con ISR). */
+export const dynamic = 'force-dynamic'
 
 /** URLs absolutas de Storage en el servidor (SUPABASE_URL disponible aquí). */
 function resolveGalleryImageRef(ref) {
@@ -68,8 +73,118 @@ function mapReviewsForSchema(reviews = []) {
     .filter(Boolean)
 }
 
+const DESCRIPTION_FALLBACK =
+  'Instrumento seleccionado y revisado profesionalmente, ideal para estudio y escenario.'
+
+function normalizeDescriptionBlock(block) {
+  return String(block)
+    .replace(/\n/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+/**
+ * Texto largo en un solo párrafo → varios párrafos agrupando frases (tras . ! ? …).
+ * Así se nota el cambio aunque en el admin no haya líneas en blanco.
+ */
+function chunkLongBlockIntoParagraphs(block, minChars = 240) {
+  const normalized = normalizeDescriptionBlock(block)
+  if (normalized.length < minChars) return [normalized]
+
+  const sentences = normalized
+    .split(/(?<=[.!?…])\s+/u)
+    .map((x) => x.trim())
+    .filter(Boolean)
+  if (sentences.length < 3) return [normalized]
+
+  const out = []
+  let buf = []
+  let len = 0
+  const flush = () => {
+    if (buf.length) {
+      out.push(buf.join(' '))
+      buf = []
+      len = 0
+    }
+  }
+  for (const sent of sentences) {
+    buf.push(sent)
+    len += sent.length + 1
+    if (buf.length >= 2 && len >= 340) flush()
+    else if (buf.length >= 3) flush()
+  }
+  flush()
+  return out.length >= 2 ? out : [normalized]
+}
+
+/** Párrafos: líneas en blanco, <br>, líneas sueltas; bloques largos → frases. */
+function splitDescriptionParagraphs(raw) {
+  let s = String(raw ?? '')
+    .replace(/\r\n/g, '\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>\s*/gi, '\n\n')
+    .replace(/<p[^>]*>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .trim()
+  if (!s) return []
+
+  let blocks = s
+    .split(/\n\s*\n+/)
+    .map(normalizeDescriptionBlock)
+    .filter(Boolean)
+
+  // Solo saltos simples (sin línea vacía): cada línea como párrafo si parece intencional
+  if (blocks.length === 1 && s.includes('\n') && !/\n\s*\n/.test(s)) {
+    const lines = s.split(/\n/).map((l) => l.trim()).filter(Boolean)
+    if (lines.length >= 2 && lines.every((l) => l.length >= 12)) {
+      blocks = lines.map(normalizeDescriptionBlock).filter(Boolean)
+    }
+  }
+
+  const expanded = []
+  for (const b of blocks) {
+    expanded.push(...chunkLongBlockIntoParagraphs(b))
+  }
+  return expanded
+}
+
+/**
+ * Opción “lead + cuerpo”: 1–2 primeras frases del primer bloque más destacadas; el resto igual que antes.
+ */
+function extractDescriptionLeadAndBody(paragraphs) {
+  const safe = Array.isArray(paragraphs) ? paragraphs.map((p) => String(p).trim()).filter(Boolean) : []
+  if (!safe.length) return { lead: null, bodyParagraphs: [] }
+
+  const first = safe[0]
+  const sentences = first
+    .split(/(?<=[.!?…])\s+/u)
+    .map((x) => x.trim())
+    .filter(Boolean)
+
+  if (sentences.length <= 1) {
+    return {
+      lead: first,
+      bodyParagraphs: safe.slice(1),
+    }
+  }
+
+  let nLead = 1
+  if (sentences[0].length < 52 && sentences.length >= 2) nLead = 2
+
+  const lead = sentences.slice(0, nLead).join(' ')
+  const tailFirst = sentences.slice(nLead).join(' ')
+
+  const bodyParagraphs = []
+  if (tailFirst) {
+    bodyParagraphs.push(...chunkLongBlockIntoParagraphs(tailFirst, 240))
+  }
+  bodyParagraphs.push(...safe.slice(1))
+  return { lead, bodyParagraphs }
+}
+
 // Generate page metadata dynamically based on the product data
 export async function generateMetadata({ params }) {
+  noStore()
   const resolvedParams = await params
   const { slug } = resolvedParams || {}
   let product = null
@@ -100,7 +215,15 @@ export async function generateMetadata({ params }) {
   }
 
   const title = product && product.name ? `${product.name} | La Guarida Instrumentos` : 'La Guarida — Instrumentos'
-  const description = product ? `${(product.brand || '').toString()} ${(product.model || '').toString()} — ${String(product.description || '').slice(0, 150)}`.trim() : 'Tienda de instrumentos musicales en Argentina — guitarras, bajos, amplificadores y accesorios.'
+  const rawDescMeta = product ? String(product.description || '').trim() : ''
+  const metaSnippet = rawDescMeta
+    ? (descriptionLooksLikeMarkdown(rawDescMeta)
+        ? markdownToPlainText(rawDescMeta, 150)
+        : rawDescMeta.slice(0, 150))
+    : ''
+  const description = product
+    ? `${(product.brand || '').toString()} ${(product.model || '').toString()} — ${metaSnippet}`.trim()
+    : 'Tienda de instrumentos musicales en Argentina — guitarras, bajos, amplificadores y accesorios.'
   const imageUrl = product ? imageService.resolve(product.image_url || (product.images && product.images[0])) : null
   const ogImage = toAbsoluteUrl(imageUrl)
 
@@ -126,6 +249,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function GuitarPage({ params }) {
+  noStore()
   const resolvedParams = await params
   const { slug } = resolvedParams ?? {}
 
@@ -147,13 +271,13 @@ export default async function GuitarPage({ params }) {
         const priceMatch = raw.match(/\*\*Price:\*\*\s*(.+)/i)
         const body = raw.replace(/^#.+$/m, '').replace(/\*\*Model:\*\*.+$/im, '').replace(/\*\*Price:\*\*.+$/im, '').trim()
 
-        product = {
+        product = normalizeProduct({
           slug,
           name: titleMatch ? titleMatch[1].trim() : (modelMatch ? modelMatch[1].trim() : slug),
           model: modelMatch ? modelMatch[1].trim() : '',
           price: priceMatch ? priceMatch[1].trim() : null,
-          description: body
-        }
+          description: body,
+        })
       }
     } catch {
       product = null
@@ -251,7 +375,38 @@ export default async function GuitarPage({ params }) {
     product.year ||
     product.weight
   )
+  const productSpecRows = [
+    { label: 'Modelo', value: modelValue },
+    { label: 'Madera del cuerpo', value: woodValue },
+    { label: 'Micrófonos', value: micsValue },
+    { label: 'Escala', value: product.scale_length },
+    { label: 'Perfil de mástil', value: product.neck_profile },
+    { label: 'Radio del diapasón', value: product.fingerboard_radius },
+    { label: 'Madera del diapasón', value: product.fingerboard_material },
+    { label: 'Construcción del mástil', value: product.neck_construction },
+    { label: 'Ancho de cejuela', value: product.nut_width },
+    { label: 'Trastes', value: product.frets },
+    { label: 'Puente', value: product.bridge },
+    { label: 'Clavijas', value: product.tuners },
+    { label: 'Terminación del hardware', value: product.hardware_finish },
+    { label: 'Controles', value: product.controls },
+    { label: 'Conmutación', value: product.switching },
+    { label: 'Origen', value: product.origin },
+    { label: 'Año', value: product.year },
+    { label: 'Peso (kg aprox.)', value: product.weight ? `${product.weight}` : null },
+  ].filter((spec) => spec.value && String(spec.value).trim() !== '')
   const descriptionText = String(product.description || '').trim()
+  const descriptionUseMarkdown = descriptionLooksLikeMarkdown(descriptionText)
+  let descriptionLead = null
+  let descriptionBodyParagraphs = []
+  if (!descriptionUseMarkdown) {
+    const descriptionParagraphs = splitDescriptionParagraphs(product.description)
+    const descriptionBlocks =
+      descriptionParagraphs.length > 0 ? descriptionParagraphs : [DESCRIPTION_FALLBACK]
+    const extracted = extractDescriptionLeadAndBody(descriptionBlocks)
+    descriptionLead = extracted.lead
+    descriptionBodyParagraphs = extracted.bodyParagraphs
+  }
   const productUrl = absoluteUrl(`/guitars/${slug}`)
   const galleryImageUrl = resolveGalleryImageRef(product.image_url) || ''
   const galleryImages = Array.isArray(product.images)
@@ -269,7 +424,9 @@ export default async function GuitarPage({ params }) {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.name,
-    description: descriptionText || `${product.name} — La Guarida Instrumentos`,
+    description:
+      (descriptionUseMarkdown ? markdownToPlainText(descriptionText) : descriptionText) ||
+      `${product.name} — La Guarida Instrumentos`,
     url: productUrl,
     ...(product.brand && { brand: { '@type': 'Brand', name: product.brand } }),
     ...(product.sku && { sku: product.sku }),
@@ -322,46 +479,44 @@ export default async function GuitarPage({ params }) {
         </div>
       </section>
 
-      {/* Dos columnas: Descripción (izq) | Precio, ficha y botones (der) */}
+      {/* Móvil: precio y acciones primero. Desktop lg+: dos columnas — panel (izq) | compra sticky (der). */}
       <section className="container-tight w-full pt-8 sm:pt-10 md:pt-12 pb-10 md:pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-          {/* Columna izquierda: descripción */}
-          <div>
-            <h2 className="product-detail-desc-label text-[12px] sm:text-[13px] md:text-sm font-semibold uppercase tracking-[0.18em] text-[var(--dark-text-secondary)] mb-3">Descripción</h2>
-            <p className="product-detail-body text-[16px] sm:text-[17px] md:text-lg lg:text-xl xl:text-[1.35rem] min-[1920px]:text-[1.45rem] min-[2560px]:text-[1.55rem] leading-[1.75] text-[var(--dark-text-secondary)]">
-              {descriptionText || 'Instrumento seleccionado y revisado profesionalmente, ideal para estudio y escenario.'}
-            </p>
+        <div className="grid w-full grid-cols-1 gap-8 sm:gap-10 md:gap-12 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
+          <div className="order-2 min-w-0 lg:order-1">
+            <ProductDetailInfoPanel highlights={product.highlights} specs={hasFicha ? productSpecRows : []}>
+              <div className="product-detail-desc-stack">
+                {descriptionUseMarkdown ? (
+                  <ProductDescriptionMarkdown>
+                    {descriptionText || DESCRIPTION_FALLBACK}
+                  </ProductDescriptionMarkdown>
+                ) : (
+                  <>
+                    {descriptionLead ? (
+                      <p className="product-detail-desc-lead m-0 mb-2 sm:mb-2.5 text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px] xl:text-[1.125rem] min-[1920px]:text-[1.2rem] min-[2560px]:text-[1.28rem] font-medium leading-[1.48] sm:leading-[1.5] tracking-tight text-[var(--dark-text-primary)]">
+                        {descriptionLead}
+                      </p>
+                    ) : null}
+                    {descriptionBodyParagraphs.length > 0 ? (
+                      <div className="product-detail-body space-y-2 sm:space-y-2 text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px] xl:text-[1.125rem] min-[1920px]:text-[1.2rem] min-[2560px]:text-[1.28rem] leading-[1.48] sm:leading-[1.5] text-[var(--dark-text-secondary)]">
+                        {descriptionBodyParagraphs.map((para, idx) => (
+                          <p key={idx} className="m-0">
+                            {para}
+                          </p>
+                        ))}
+                      </div>
+                    ) : null}
+                  </>
+                )}
+              </div>
+            </ProductDetailInfoPanel>
           </div>
 
-          {/* Columna derecha: precio, ficha técnica y botones */}
-          <div className="lg:pl-0">
+          <div
+            id="pdp-primary-cta"
+            className="order-1 min-w-0 space-y-5 sm:space-y-6 scroll-mt-28 lg:order-2 lg:sticky lg:top-24 lg:self-start"
+          >
             {product.price && (
-              <p className="price-highlight product-detail-price text-2xl sm:text-[30px] md:text-[32px] lg:text-[34px] xl:text-[2.5rem] min-[1920px]:text-[2.85rem] min-[2560px]:text-[3.1rem] font-bold mb-6 tracking-tight">{product.price}</p>
-            )}
-
-            {hasFicha && (
-              <ProductSpecsExpandable
-                specs={[
-                  { label: 'Modelo', value: modelValue },
-                  { label: 'Madera del cuerpo', value: woodValue },
-                  { label: 'Micrófonos', value: micsValue },
-                  { label: 'Escala', value: product.scale_length },
-                  { label: 'Perfil de mástil', value: product.neck_profile },
-                  { label: 'Radio del diapasón', value: product.fingerboard_radius },
-                  { label: 'Madera del diapasón', value: product.fingerboard_material },
-                  { label: 'Construcción del mástil', value: product.neck_construction },
-                  { label: 'Ancho de cejuela', value: product.nut_width },
-                  { label: 'Trastes', value: product.frets },
-                  { label: 'Puente', value: product.bridge },
-                  { label: 'Clavijas', value: product.tuners },
-                  { label: 'Terminación del hardware', value: product.hardware_finish },
-                  { label: 'Controles', value: product.controls },
-                  { label: 'Conmutación', value: product.switching },
-                  { label: 'Origen', value: product.origin },
-                  { label: 'Año', value: product.year },
-                  { label: 'Peso (kg aprox.)', value: product.weight ? `${product.weight}` : null },
-                ].filter(spec => spec.value && String(spec.value).trim() !== '')}
-              />
+              <p className="price-highlight product-detail-price text-2xl sm:text-[30px] md:text-[32px] lg:text-[34px] xl:text-[2.5rem] min-[1920px]:text-[2.85rem] min-[2560px]:text-[3.1rem] font-bold tracking-tight">{product.price}</p>
             )}
 
             <ProductPageCTA
@@ -388,6 +543,8 @@ export default async function GuitarPage({ params }) {
           </div>
         </section>
       )}
+
+      <ProductMobileStickyCTA price={product.price} consultHref={consultHref} productName={product.name} />
     </div>
   )
 }

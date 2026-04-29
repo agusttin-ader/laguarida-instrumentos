@@ -10,11 +10,13 @@ module.exports = {
       colors: {
         neutralbg: '#F7F7F8',
         brand: {
-          cream: '#FFF0DA',
-          red: '#ED0003',
-          ink: '#120703',
-          brown: '#6C3B2A',
-          gold: '#FFC308'
+          sand: '#D9C58B',
+          gold: '#F2AE30',
+          orange: '#F28729',
+          flame: '#F23C13',
+          ink: '#0D0D0D',
+          cream: '#f5ecd8',
+          brown: '#6c5344'
         }
       },
       fontFamily: {

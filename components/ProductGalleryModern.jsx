@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import ImageWithSkeleton from './ImageWithSkeleton'
 import imageService from '../lib/utils/imageService'
@@ -11,6 +11,7 @@ const GALLERY_MAIN_SIZES =
   '(max-width:1023px) 100vw, (max-width:1279px) 54vw, (max-width:1919px) min(52vw, 1180px), (max-width:2559px) min(50vw, 1680px), min(48vw, 2100px)'
 const GALLERY_THUMB_SIZES =
   '(max-width:1023px) 50vw, (max-width:1279px) 22vw, (max-width:1919px) min(20vw, 560px), (max-width:2559px) min(18vw, 760px), min(17vw, 920px)'
+const MOBILE_CAROUSEL_SIZES = '(max-width:1023px) 100vw, 100vw'
 
 function usePreloadLightbox() {
   useEffect(() => {
@@ -27,6 +28,9 @@ function displayThumb(url) {
 
 export default function ProductGalleryModern({ image_url, images = [], altBase = '' }) {
   usePreloadLightbox()
+  const carouselRef = useRef(null)
+  const [snapIndex, setSnapIndex] = useState(0)
+
   const allImages = useMemo(() => {
     const main = imageService.resolve(image_url)
     const fromArray = (Array.isArray(images) ? images : image_url ? [image_url] : [])
@@ -37,11 +41,43 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
     return list
   }, [image_url, images])
 
+  const updateSnapIndex = useCallback(() => {
+    const el = carouselRef.current
+    if (!el || !allImages.length) return
+    const first = el.children[0]
+    if (!first) return
+    const gap = 8
+    const slideW = first.getBoundingClientRect().width + gap
+    if (slideW <= gap) return
+    const idx = Math.round(el.scrollLeft / slideW)
+    setSnapIndex(Math.min(Math.max(0, idx), allImages.length - 1))
+  }, [allImages.length])
+
+  useEffect(() => {
+    const el = carouselRef.current
+    if (!el) return
+    const handler = () => updateSnapIndex()
+    el.addEventListener('scroll', handler, { passive: true })
+    el.addEventListener('scrollend', handler)
+    window.addEventListener('resize', handler)
+    return () => {
+      el.removeEventListener('scroll', handler)
+      el.removeEventListener('scrollend', handler)
+      window.removeEventListener('resize', handler)
+    }
+  }, [updateSnapIndex])
+
+  const scrollToSlide = useCallback((i) => {
+    const el = carouselRef.current
+    if (!el || !el.children[i]) return
+    el.children[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' })
+  }, [])
+
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
 
   const mainImage = allImages[0] || null
-  const sideImages = allImages.slice(1) // columna derecha: arriba 1 alta + 2 chicas; abajo 1 vertical (unida) + 2 chicas
+  const sideImages = allImages.slice(1)
 
   function openLightbox(index) {
     setLightboxIndex(index)
@@ -58,8 +94,66 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
 
   return (
     <>
-      <div className="w-full grid grid-cols-1 lg:grid-cols-[1.18fr_0.82fr] gap-2 sm:gap-3 md:gap-4 lg:gap-5 min-h-[400px] sm:min-h-[420px] lg:min-h-[640px] min-[1920px]:lg:min-h-[800px] min-[2560px]:lg:min-h-[960px]">
-        {/* Imagen principal: grande a la izquierda */}
+      {/* Móvil: carrusel horizontal con snap (debajo de lg). Menos scroll que el mosaico de miniaturas. */}
+      <div className="w-full space-y-2 lg:hidden">
+        <div
+          ref={carouselRef}
+          role="region"
+          aria-roledescription="Carrusel"
+          aria-label="Fotos del producto. Deslizá para ver más."
+          className="flex w-full touch-pan-x overflow-x-auto scroll-smooth snap-x snap-mandatory gap-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {allImages.map((src, i) => (
+            <button
+              key={`${src}-${i}`}
+              type="button"
+              onClick={() => openLightbox(i)}
+              className="no-custom-btn group relative min-h-0 min-w-full shrink-0 snap-center aspect-[4/5] rounded-xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
+              aria-label={altBase ? `${altBase} — foto ${i + 1} de ${allImages.length}` : `Foto ${i + 1} de ${allImages.length}`}
+            >
+              <ImageWithSkeleton
+                src={i === 0 ? displayMain(src) : displayThumb(src)}
+                alt={altBase ? `${altBase} — imagen ${i + 1}` : `Imagen ${i + 1}`}
+                fill
+                className="object-cover transition-transform duration-300 ease-out group-active:scale-[1.02]"
+                sizes={MOBILE_CAROUSEL_SIZES}
+                quality={i === 0 ? 72 : 68}
+                priority={i === 0}
+                disableClientPreview
+              />
+            </button>
+          ))}
+        </div>
+        {allImages.length > 1 ? (
+          <div className="flex items-center justify-center gap-3 px-0.5">
+            <span className="sr-only">
+              Foto {snapIndex + 1} de {allImages.length}
+            </span>
+            <div className="flex items-center gap-1.5" role="group" aria-label="Ir a una foto">
+              {allImages.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-current={i === snapIndex ? 'true' : undefined}
+                  aria-label={`Foto ${i + 1}`}
+                  onClick={() => scrollToSlide(i)}
+                  className={`no-custom-btn h-2 rounded-full transition-[width,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)] ${
+                    i === snapIndex
+                      ? 'w-6 bg-[var(--vintage-gold)]'
+                      : 'w-2 bg-white/25 hover:bg-white/40'
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-[11px] tabular-nums text-[var(--dark-muted)]" aria-hidden>
+              {snapIndex + 1}/{allImages.length}
+            </span>
+          </div>
+        ) : null}
+      </div>
+
+      {/* Desktop (lg+): layout asimétrico existente */}
+      <div className="hidden w-full min-h-[400px] sm:min-h-[420px] lg:grid lg:min-h-[640px] lg:grid-cols-[1.18fr_0.82fr] min-[1920px]:lg:min-h-[800px] min-[2560px]:lg:min-h-[960px] gap-2 sm:gap-3 md:gap-4 lg:gap-5">
         <button
           type="button"
           onClick={() => openLightbox(0)}
@@ -78,10 +172,8 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
           />
         </button>
 
-        {/* Columna derecha: grid asimétrico + 2 filas abajo para igualar altura con la principal */}
         {sideImages.length > 0 && (
           <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-5 grid-rows-[1fr_1fr_1fr_1fr] min-h-[400px] sm:min-h-[420px] lg:min-h-[640px] min-[1920px]:lg:min-h-[800px] min-[2560px]:lg:min-h-[960px]">
-            {/* Arriba: imagen alta (span 2 rows) + dos chicas — simétrico */}
             <button
               type="button"
               onClick={() => openLightbox(1)}
@@ -134,7 +226,6 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 />
               </button>
             )}
-            {/* Abajo: dos chicas a la izquierda + contenedor vertical a la derecha */}
             {sideImages[3] && (
               <button
                 type="button"

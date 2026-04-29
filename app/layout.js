@@ -41,7 +41,7 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
-  themeColor: '#000000'
+  themeColor: '#0D0D0D'
 }
 
 export default function RootLayout({ children }) {
@@ -63,7 +63,10 @@ export default function RootLayout({ children }) {
   }
 
   return (
-    <html lang="es" className={`dark ${GeistSans.variable} ${GeistMono.variable}`}>
+    <html
+      lang="es"
+      className={`dark ${GeistSans.variable} ${GeistMono.variable}`}
+    >
       <head>
         {supabaseOrigin && <link rel="preconnect" href={supabaseOrigin} />}
         {supabaseOrigin && <link rel="dns-prefetch" href={supabaseOrigin} />}

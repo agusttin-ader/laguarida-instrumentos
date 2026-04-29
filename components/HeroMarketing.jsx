@@ -48,7 +48,7 @@ export default function HeroMarketing({ product = null }) {
 
   return (
     <div
-      className="hero-home relative isolate min-h-[100dvh] w-full max-md:min-h-0 overflow-hidden bg-[#0a0a0a]"
+      className="hero-home relative isolate min-h-[100dvh] w-full max-md:min-h-0 overflow-hidden bg-[var(--dark-bg-page)]"
       style={{
         backgroundImage: `url(${heroSrc})`,
         backgroundSize: 'cover',
@@ -78,6 +78,8 @@ export default function HeroMarketing({ product = null }) {
         style={{
           background: `
             radial-gradient(ellipse 90% 75% at 18% 48%, rgba(0,0,0,0.58) 0%, transparent 58%),
+            radial-gradient(ellipse 55% 50% at 22% 42%, rgba(242, 174, 48, 0.14) 0%, transparent 52%),
+            radial-gradient(ellipse 40% 45% at 85% 30%, rgba(242, 135, 41, 0.1) 0%, transparent 50%),
             linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 45%, rgba(0,0,0,0.35) 100%)
           `,
         }}
@@ -87,7 +89,7 @@ export default function HeroMarketing({ product = null }) {
         className="pointer-events-none absolute inset-0 z-[1] md:hidden"
         style={{
           background:
-            'radial-gradient(ellipse 100% 70% at 50% 42%, rgba(0,0,0,0.45) 0%, transparent 55%), linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 45%), linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 35%)',
+            'radial-gradient(ellipse 100% 70% at 50% 42%, rgba(0,0,0,0.45) 0%, transparent 55%), radial-gradient(ellipse 85% 55% at 50% 38%, rgba(242, 174, 48, 0.12) 0%, transparent 50%), linear-gradient(to bottom, rgba(242, 60, 19, 0.08) 0%, transparent 28%), linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 45%), linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 35%)',
         }}
         aria-hidden
       />
@@ -95,10 +97,14 @@ export default function HeroMarketing({ product = null }) {
       <div className="relative z-[2] flex min-h-[100dvh] w-full flex-col justify-center px-5 pt-[max(0.75rem,env(safe-area-inset-top,0px))] pb-[max(6.5rem,env(safe-area-inset-bottom,0px))] md:min-h-[100dvh] md:px-[8%] md:pb-16 md:pt-8">
         <div className="mx-auto w-full max-w-md text-center md:mx-0 md:max-w-[min(100%,28rem)] md:text-left sm:max-w-[min(100%,32rem)] lg:max-w-xl">
           <p className="mb-4 flex flex-col items-center gap-3 md:items-start">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--vintage-gold)] sm:text-xs">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--palette-gold)] drop-shadow-[0_0_12px_rgba(242,174,48,0.75)] sm:text-xs">
               {kicker}
             </span>
-            <span className="h-px w-10 max-md:mx-auto bg-[var(--vintage-gold)]/90 md:self-start" aria-hidden />
+            <span
+              className="h-0.5 w-12 max-md:mx-auto rounded-full md:self-start shadow-[0_0_14px_rgba(242,174,48,0.65)]"
+              style={{ background: 'linear-gradient(90deg, #f2ae30, #f28729, #f23c13)' }}
+              aria-hidden
+            />
           </p>
           <h1
             id="home-hero"
@@ -119,7 +125,7 @@ export default function HeroMarketing({ product = null }) {
             <div className="mt-7 flex w-full max-w-md max-md:mx-auto sm:mt-9 md:mx-0 md:mt-9">
               <Link
                 href={productHref}
-                className="no-custom-btn inline-flex min-h-[48px] w-full shrink-0 items-center justify-center rounded-3xl border border-white/18 bg-white/[0.06] px-7 py-3 text-[15px] font-semibold text-white transition-[transform,background-color,border-color] duration-200 hover:border-[var(--vintage-gold)]/40 hover:bg-white/[0.1] hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 max-md:max-w-sm max-md:self-center md:w-auto"
+                className="no-custom-btn inline-flex min-h-[48px] w-full shrink-0 items-center justify-center rounded-3xl border-2 border-[var(--palette-gold)] bg-gradient-to-br from-[rgba(242,174,48,0.35)] via-[rgba(242,135,41,0.18)] to-[rgba(242,60,19,0.12)] px-7 py-3 text-[15px] font-semibold text-white shadow-[0_4px_28px_rgba(242,174,48,0.35)] transition-[transform,box-shadow,border-color] duration-200 hover:border-[var(--palette-orange)] hover:shadow-[0_6px_36px_rgba(242,135,41,0.45)] hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--palette-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-black/60 max-md:max-w-sm max-md:self-center md:w-auto"
               >
                 Ver esta pieza
               </Link>
@@ -131,15 +137,15 @@ export default function HeroMarketing({ product = null }) {
       <Link
         href="/#seleccion-destacada"
         onClick={scrollToCatalog}
-        className="hero-scroll-hint no-custom-btn absolute left-1/2 z-[3] grid max-w-[calc(100vw-2rem)] -translate-x-1/2 grid-cols-1 justify-items-center gap-2 text-white transition-opacity duration-200 hover:opacity-95 active:opacity-85 max-md:bottom-[max(5.5rem,env(safe-area-inset-bottom,0px))] md:bottom-10"
+        className="hero-scroll-hint no-custom-btn absolute left-1/2 z-[3] grid max-w-[calc(100vw-2rem)] -translate-x-1/2 grid-cols-1 justify-items-center gap-2 text-[var(--palette-gold)] transition-opacity duration-200 hover:opacity-95 active:opacity-85 max-md:bottom-[max(5.5rem,env(safe-area-inset-bottom,0px))] md:bottom-10"
         aria-label="Ir al catálogo"
       >
-        <span className="col-span-1 text-center text-[13px] font-medium uppercase leading-none tracking-[0.3em] [text-shadow:0_1px_14px_rgba(0,0,0,0.75),0_0_1px_rgba(0,0,0,0.8)] [padding-inline:0.15em] sm:text-[14px] md:text-[15px] md:tracking-[0.28em]">
+        <span className="col-span-1 text-center text-[13px] font-medium uppercase leading-none tracking-[0.3em] [text-shadow:0_0_18px_rgba(242,174,48,0.85),0_2px_14px_rgba(0,0,0,0.65)] [padding-inline:0.15em] sm:text-[14px] md:text-[15px] md:tracking-[0.28em]">
           Catálogo
         </span>
-        <span className="hero-scroll-hint__chevron col-span-1 flex w-full justify-center text-white">
+        <span className="hero-scroll-hint__chevron col-span-1 flex w-full justify-center text-[var(--palette-gold)]">
           <CaretDown
-            className="relative left-[0.5px] h-6 w-6 opacity-90 [filter:drop-shadow(0_2px_10px_rgba(0,0,0,0.65))]"
+            className="relative left-[0.5px] h-6 w-6 opacity-95 [filter:drop-shadow(0_0_10px_rgba(242,174,48,0.9))]"
             weight="regular"
             aria-hidden
           />
