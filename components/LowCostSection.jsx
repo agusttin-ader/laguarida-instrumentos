@@ -55,7 +55,7 @@ export default function LowCostSection() {
       </div>
 
       <article className={isFiltering ? 'filter-grid-updating' : ''}>
-        <ProductGrid items={lowCostProducts} parentLoading={loading} filters={{ q }} primaryImageOnly />
+        <ProductGrid items={lowCostProducts} parentLoading={loading} filters={{ q }} />
       </article>
     </section>
   )

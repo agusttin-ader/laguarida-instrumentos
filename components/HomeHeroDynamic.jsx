@@ -6,7 +6,7 @@ const HeroMarketing = dynamic(() => import('./HeroMarketing'), {
   ssr: false,
   loading: () => (
     <div
-      className="min-h-[100dvh] max-[767px]:min-h-[min(82dvh,85vh)] w-full bg-[#0a0a0a] bg-cover bg-[center_42%] bg-no-repeat bg-[url('/images/hero5-mobile.jpg')] md:bg-[url('/images/hero5-desktop.jpg')] md:bg-center"
+      className="min-h-[100dvh] max-[767px]:min-h-[min(82dvh,85vh)] w-full bg-[radial-gradient(ellipse_at_center,rgba(242,174,48,0.12)_0%,rgba(10,10,10,1)_58%)]"
       aria-busy="true"
       aria-label="Cargando inicio"
     />

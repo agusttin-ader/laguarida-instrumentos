@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
 import { scrollToHomeSectionById } from '../lib/homeSectionScroll'
 
-const LOGO_SRC = '/images/logo/logo-fondo-oscuro.PNG'
+const LOGO_SRC = '/images/optimized/logo-fondo-oscuro.webp'
 const WA_HREF = buildWaMeHref(WHATSAPP_DEFAULT_WEB_MESSAGE)
 
 function ChevronRight({ className }) {
@@ -88,7 +88,7 @@ export default function MenuDrawer({ open, setOpen }) {
               style={{ objectFit: 'contain' }}
               quality={68}
               sizes="260px"
-              priority
+              loading="lazy"
             />
           </Link>
           <button
@@ -131,12 +131,6 @@ export default function MenuDrawer({ open, setOpen }) {
           <li>
             <a href="/#about-section" onClick={(e) => handleSection(e, 'about-section')} className={rowClass}>
               <span>Sobre nosotros</span>
-              <ChevronRight className="shrink-0 text-white/35" />
-            </a>
-          </li>
-          <li>
-            <a href="/#faq-section" onClick={(e) => handleSection(e, 'faq-section')} className={rowClass}>
-              <span>Preguntas frecuentes</span>
               <ChevronRight className="shrink-0 text-white/35" />
             </a>
           </li>

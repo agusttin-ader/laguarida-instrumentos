@@ -8,8 +8,7 @@ import { useSoftEnterAfterSlowLoad } from '../hooks/useSoftEnterAfterSlowLoad'
 export default function ProductGrid({
   filters = {},
   items: itemsProp,
-  parentLoading = false,
-  primaryImageOnly = false
+  parentLoading = false
 }) {
   const fetchSelf = itemsProp === undefined
   const { products, loading, error } = useProducts({ shuffleCatalog: true, enabled: fetchSelf })
@@ -98,7 +97,7 @@ export default function ProductGrid({
             className="home-grid-product-cell min-w-0 w-full [content-visibility:auto] [contain-intrinsic-size:auto_28rem]"
             style={{ '--grid-cell-i': idx }}
           >
-            <ProductCard item={item} priority={idx < 2} primaryImageOnly={primaryImageOnly} />
+            <ProductCard item={item} priority={idx === 0} />
           </div>
         ))}
       </div>

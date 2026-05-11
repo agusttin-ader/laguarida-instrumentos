@@ -7,7 +7,7 @@ import Image from 'next/image'
 import MenuDrawer from './MenuDrawer'
 import { scrollToHomeSectionById } from '../lib/homeSectionScroll'
 
-const LOGO_SRC = '/images/logo/logo-fondo-oscuro.PNG'
+const LOGO_SRC = '/images/optimized/logo-fondo-oscuro.webp'
 const SCROLL_THRESHOLD = 72
 
 function HamburgerIcon({ className }) {
@@ -117,7 +117,7 @@ export default function Header() {
                 alt="La Guarida logo"
                 width={1800}
                 height={450}
-                priority
+                fetchPriority="low"
                 className="logo-dark h-[42px] w-auto max-h-[44px] sm:h-[46px] sm:max-h-[48px] object-contain block"
                 style={{ objectFit: 'contain' }}
                 quality={68}
@@ -164,7 +164,7 @@ export default function Header() {
                 alt="La Guarida logo"
                 width={1800}
                 height={450}
-                priority
+                fetchPriority="low"
                 style={{ objectFit: 'contain', display: 'block', height: 'auto' }}
                 className="logo-dark h-[18px] md:h-[20px] lg:h-[22px] xl:h-[24px] min-[1920px]:h-[26px] w-auto max-w-full object-contain object-left block"
                 quality={68}
@@ -182,8 +182,6 @@ export default function Header() {
               <a href="/#seleccion-destacada" onClick={(e) => handleSectionNav(e, 'seleccion-destacada')} className={navLinkClass}>Selección destacada</a>
               <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
               <a href="/#low-cost" onClick={(e) => handleSectionNav(e, 'low-cost')} className={navLinkClass}>Low cost</a>
-              <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
-              <a href="/#faq-section" title="Preguntas frecuentes" onClick={(e) => handleSectionNav(e, 'faq-section')} className={navLinkClass}>FAQ</a>
               <span className="h-[12px] w-px bg-white/18 flex-shrink-0" aria-hidden />
               <a href="/favoritos" className={navLinkClass}>Favoritos</a>
             </div>

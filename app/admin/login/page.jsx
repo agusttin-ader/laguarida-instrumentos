@@ -119,7 +119,7 @@ export default function AdminLoginPage() {
         <div className="flex justify-center mb-6">
           <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-lg" aria-label="Ir al inicio - La Guarida">
             <img
-              src="/images/logo/logo-fondo-oscuro.PNG"
+              src="/images/optimized/logo-fondo-oscuro.webp"
               alt="La Guarida"
               width={240}
               height={160}

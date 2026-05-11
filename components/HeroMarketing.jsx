@@ -3,12 +3,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { CaretDown } from 'phosphor-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { scrollToHomeSectionById } from '../lib/homeSectionScroll'
 
-const HERO_PRIMARY_DESKTOP = '/images/hero5-desktop.jpg'
-const HERO_PRIMARY_MOBILE = '/images/hero5-mobile.jpg'
-const HERO_FALLBACK = '/images/hero.PNG'
+const HERO_PRIMARY_DESKTOP = '/images/optimized/hero5-desktop-pil.jpg'
+const HERO_PRIMARY_MOBILE = '/images/optimized/hero5-mobile-pil.jpg'
+const HERO_FALLBACK = '/images/optimized/hero5-mobile-pil.jpg'
+const MOBILE_QUERY = '(max-width: 767px)'
 
 const HEADLINE = 'Tu refugio del buen sonido'
 const SUBHEADLINE = 'Instrumentos con historia y trato cercano.'
@@ -16,11 +17,14 @@ const MOBILE_HEADLINE = 'Tu refugio del buen sonido'
 const MOBILE_SUBHEADLINE = 'Instrumentos con historia y trato cercano.'
 
 export default function HeroMarketing({ product = null }) {
-  const [heroSrc, setHeroSrc] = useState(HERO_PRIMARY_DESKTOP)
+  const [heroSrc, setHeroSrc] = useState(() => {
+    if (typeof window === 'undefined') return HERO_PRIMARY_DESKTOP
+    return window.matchMedia(MOBILE_QUERY).matches ? HERO_PRIMARY_MOBILE : HERO_PRIMARY_DESKTOP
+  })
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const mq = window.matchMedia('(max-width: 767px)')
+    const mq = window.matchMedia(MOBILE_QUERY)
     const syncSrc = () => setHeroSrc(mq.matches ? HERO_PRIMARY_MOBILE : HERO_PRIMARY_DESKTOP)
     syncSrc()
     mq.addEventListener('change', syncSrc)
@@ -32,11 +36,8 @@ export default function HeroMarketing({ product = null }) {
       ? String(product.category).trim()
       : 'La Guarida'
 
-  const productHref = useMemo(() => {
-    const slug = product?.slug && String(product.slug).trim()
-    if (slug) return `/guitars/${encodeURIComponent(slug)}`
-    return null
-  }, [product?.slug])
+  const slug = product?.slug && String(product.slug).trim()
+  const productHref = slug ? `/guitars/${encodeURIComponent(slug)}` : null
 
   function scrollToCatalog(e) {
     if (typeof document === 'undefined') return
@@ -50,14 +51,7 @@ export default function HeroMarketing({ product = null }) {
   }
 
   return (
-    <div
-      className="hero-home relative isolate min-h-[100dvh] w-full max-md:min-h-0 overflow-hidden bg-[var(--dark-bg-page)]"
-      style={{
-        backgroundImage: `url(${heroSrc})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center 42%',
-      }}
-    >
+    <div className="hero-home relative isolate min-h-[100dvh] w-full max-md:min-h-0 overflow-hidden bg-[var(--dark-bg-page)]">
       <div className="pointer-events-none absolute inset-0 z-0">
         <Image
           key={heroSrc}
@@ -66,7 +60,7 @@ export default function HeroMarketing({ product = null }) {
           fill
           priority
           fetchPriority="high"
-          quality={64}
+          quality={60}
           sizes="100vw"
           unoptimized
           className="object-cover object-[center_42%] md:object-center"

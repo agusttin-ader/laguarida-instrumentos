@@ -1,13 +1,15 @@
 "use client"
 
 import React from 'react'
+import dynamic from 'next/dynamic'
 import { layoutShellClassName } from '../lib/layoutShell'
 import HomeHeroDynamic from './HomeHeroDynamic'
 import FeaturedSelection from './FeaturedSelection'
 import LowCostSection from './LowCostSection'
 import About from './About'
-import HomeTrustStats from './HomeTrustStats'
 import FaqSection from './FaqSection'
+
+const HomeTrustStats = dynamic(() => import('./HomeTrustStats'))
 
 export default function HomePageContent({ heroProduct }) {
   return (

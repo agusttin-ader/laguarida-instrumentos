@@ -13,23 +13,29 @@ const CARD_IMAGE_SIZES =
 const MAX_CARD_IMAGES = 3
 const SWIPE_DISTANCE_THRESHOLD = 48
 const SWIPE_VELOCITY_THRESHOLD = 0.35
-const GALLERY_MOUNT_RADIUS = 1
-const MOBILE_TABLET_QUERY = '(max-width: 1023px)'
+const GALLERY_MOUNT_RADIUS = 0
+const MOBILE_ONLY_QUERY = '(max-width: 767px)'
+
+function getInitialMediaMatch(query) {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia(query).matches
+}
 
 const ProductCard = React.memo(function ProductCard({
   item,
   priority = false,
   imageFit = 'cover',
-  primaryImageOnly = false,
   galleryDesktopOnly = false
 }) {
   const p = normalizeProduct(item)
-  const [desktopGalleryUnlocked, setDesktopGalleryUnlocked] = useState(() => !galleryDesktopOnly)
-  const [isMobileTablet, setIsMobileTablet] = useState(false)
+  const [desktopGalleryUnlocked, setDesktopGalleryUnlocked] = useState(() =>
+    galleryDesktopOnly ? !getInitialMediaMatch(MOBILE_ONLY_QUERY) : true
+  )
+  const [isMobile, setIsMobile] = useState(() => getInitialMediaMatch(MOBILE_ONLY_QUERY))
 
   useEffect(() => {
-    const mq = window.matchMedia(MOBILE_TABLET_QUERY)
-    const sync = () => setIsMobileTablet(mq.matches)
+    const mq = window.matchMedia(MOBILE_ONLY_QUERY)
+    const sync = () => setIsMobile(mq.matches)
     sync()
     mq.addEventListener('change', sync)
     return () => mq.removeEventListener('change', sync)
@@ -37,14 +43,14 @@ const ProductCard = React.memo(function ProductCard({
 
   useEffect(() => {
     if (!galleryDesktopOnly) return
-    const mq = window.matchMedia(MOBILE_TABLET_QUERY)
+    const mq = window.matchMedia(MOBILE_ONLY_QUERY)
     const sync = () => setDesktopGalleryUnlocked(!mq.matches)
     sync()
     mq.addEventListener('change', sync)
     return () => mq.removeEventListener('change', sync)
   }, [galleryDesktopOnly])
 
-  const effectivePrimaryOnly = primaryImageOnly || isMobileTablet || (galleryDesktopOnly && !desktopGalleryUnlocked)
+  const effectivePrimaryOnly = isMobile || (galleryDesktopOnly && !desktopGalleryUnlocked)
 
   const imageList = useMemo(() => {
     const main = imageService.resolve(p.image_url)
@@ -176,7 +182,7 @@ const ProductCard = React.memo(function ProductCard({
                   quality={68}
                   priority={Boolean(priority && isMainSlot && isActive)}
                   loading={eager ? 'eager' : 'lazy'}
-                  fetchPriority={eager ? 'high' : isActive ? 'auto' : 'low'}
+                  fetchPriority={eager ? 'high' : 'low'}
                   decoding="async"
                   onLoad={() => setLoadedIndices((prev) => new Set(prev).add(idx))}
                   onError={() => {}}
@@ -192,7 +198,7 @@ const ProductCard = React.memo(function ProductCard({
           <span className="text-3xl opacity-40">🎸</span>
         </div>
       )}
-      {hasGallery && !isMobileTablet && (
+      {hasGallery && !isMobile && (
         <>
           <div className="absolute inset-0 z-10 pointer-events-none">
             <button
