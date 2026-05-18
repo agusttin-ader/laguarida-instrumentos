@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { getSupabaseServerClient } from '../lib/supabase/server'
+import { getBackupProducts } from '../lib/data/localProductsBackup'
 import { absoluteUrl } from '../lib/siteUrl'
 
 export const revalidate = 3600
@@ -37,6 +38,20 @@ export default async function sitemap() {
     }
   } catch {
     /* empty */
+  }
+
+  if (!productEntries.length) {
+    const backup = getBackupProducts({ includeReserved: false })
+    if (backup.length) {
+      productEntries = backup
+        .filter((p) => p?.slug)
+        .map((p) => ({
+          url: absoluteUrl(`/guitars/${p.slug}`),
+          lastModified: p.updated_at ? new Date(p.updated_at) : new Date(),
+          changeFrequency: 'weekly',
+          priority: 0.8,
+        }))
+    }
   }
 
   if (!productEntries.length) {

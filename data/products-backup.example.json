@@ -1,0 +1,18 @@
+[
+  {
+    "id": "uuid-opcional",
+    "slug": "fender-stratocaster-1978",
+    "name": "Fender Stratocaster 1978",
+    "brand": "Fender",
+    "model": "Stratocaster",
+    "price": 2500,
+    "currency": "USD",
+    "description": "Descripcion del producto",
+    "highlights": ["Original", "Excelente estado"],
+    "listing_status": "available",
+    "image_url": "principal.jpg",
+    "images": ["principal.jpg", "detalle-1.jpg", "detalle-2.jpg"],
+    "created_at": "2026-05-18T00:00:00.000Z",
+    "updated_at": "2026-05-18T00:00:00.000Z"
+  }
+]

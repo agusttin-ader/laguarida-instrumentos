@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getSupabaseServerClient, getSupabaseAdminClient } from '../../../lib/supabase/server'
 import { PRODUCT_LIST_COLUMNS } from '../../../lib/data/productColumns'
+import { getBackupProducts } from '../../../lib/data/localProductsBackup'
 import { cookies } from 'next/headers'
 import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
 
@@ -334,6 +335,15 @@ export async function GET(req) {
     const { data, error } = await query
 
     if (error) {
+      const fallback = getBackupProducts({ includeReserved: showFullCatalog })
+      if (fallback.length) {
+        const headers = showFullCatalog
+          ? { 'Cache-Control': 'private, no-store' }
+          : {
+              'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=300, max-age=60',
+            }
+        return NextResponse.json(fallback, { status: 200, headers })
+      }
       return NextResponse.json({ error: error.message }, { status: error.status || 500 })
     }
 
@@ -343,6 +353,12 @@ export async function GET(req) {
           'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600, max-age=120',
         }
     const payload = Array.isArray(data) ? data.map(withResolvedImageUrls) : data
+    if (Array.isArray(payload) && payload.length === 0) {
+      const fallback = getBackupProducts({ includeReserved: showFullCatalog })
+      if (fallback.length) {
+        return NextResponse.json(fallback, { status: 200, headers })
+      }
+    }
     return NextResponse.json(payload, { status: 200, headers })
   } catch (err) {
     return NextResponse.json({ error: err.message || String(err) }, { status: 500 })
