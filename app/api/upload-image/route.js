@@ -5,10 +5,16 @@ export const runtime = 'nodejs'
 import { NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '../../../lib/supabase/server'
 import { cookies } from 'next/headers'
+import sharp from 'sharp'
+import { createHash } from 'crypto'
 const BUCKET = 'products'
 
 function sanitizeFilename(name){
   return name.replace(/[^a-zA-Z0-9._-]/g, '-')
+}
+
+function filenameWithoutExtension(name = '') {
+  return name.replace(/\.[a-z0-9]+$/i, '')
 }
 
 export async function POST(req){
@@ -95,16 +101,50 @@ export async function POST(req){
     }
 
     const filenameRaw = file.name || 'upload'
-    const safeName = sanitizeFilename(filenameRaw)
-    const uniqueName = `${Date.now()}-${Math.floor(Math.random()*9000+1000)}-${safeName}`
+    const safeBaseName = sanitizeFilename(filenameWithoutExtension(filenameRaw) || 'upload')
 
     const arrayBuffer = await file.arrayBuffer()
-    // Use Node Buffer when available (server Node runtime); fall back to Uint8Array
-    const buffer = (typeof Buffer !== 'undefined') ? Buffer.from(arrayBuffer) : new Uint8Array(arrayBuffer)
+    const originalBuffer = Buffer.from(arrayBuffer)
 
-    const { data: uploadData, error: uploadError } = await supabase.storage.from(BUCKET).upload(uniqueName, buffer, {
-      contentType: file.type || 'application/octet-stream',
-      cacheControl: '3600',
+    let uploadBuffer = originalBuffer
+    let uploadMime = file.type || 'application/octet-stream'
+    let uploadExt = (file.type === 'image/png') ? 'png' : (file.type === 'image/webp' ? 'webp' : 'jpg')
+
+    try {
+      const base = sharp(originalBuffer, { failOn: 'none' }).rotate().resize({
+        width: 1920,
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      const metadata = await base.metadata()
+      const hasAlpha = Boolean(metadata.hasAlpha)
+
+      if (file.type === 'image/webp') {
+        uploadBuffer = await base.webp({ quality: 78, effort: 6 }).toBuffer()
+        uploadMime = 'image/webp'
+        uploadExt = 'webp'
+      } else if (file.type === 'image/png' || hasAlpha) {
+        uploadBuffer = await base.webp({ quality: 78, effort: 6 }).toBuffer()
+        uploadMime = 'image/webp'
+        uploadExt = 'webp'
+      } else {
+        uploadBuffer = await base.jpeg({ quality: 80, mozjpeg: true, chromaSubsampling: '4:2:0' }).toBuffer()
+        uploadMime = 'image/jpeg'
+        uploadExt = 'jpg'
+      }
+    } catch {
+      // Keep original as a safe fallback if optimization fails unexpectedly.
+      uploadBuffer = originalBuffer
+      uploadMime = file.type || 'application/octet-stream'
+      uploadExt = (file.type || '').includes('png') ? 'png' : ((file.type || '').includes('webp') ? 'webp' : 'jpg')
+    }
+
+    const hash = createHash('sha1').update(uploadBuffer).digest('hex').slice(0, 12)
+    const uniqueName = `${Date.now()}-${hash}-${safeBaseName}.${uploadExt}`
+
+    const { data: uploadData, error: uploadError } = await supabase.storage.from(BUCKET).upload(uniqueName, uploadBuffer, {
+      contentType: uploadMime,
+      cacheControl: '31536000',
       upsert: false,
     })
 

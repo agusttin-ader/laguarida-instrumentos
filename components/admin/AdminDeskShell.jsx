@@ -95,7 +95,7 @@ export default function AdminDeskShell({
         <div className="flex min-h-16 items-center gap-2 border-b border-white/10 px-5 pt-[max(0px,env(safe-area-inset-top,0px))] md:pt-0">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl">
             <img
-              src="/images/logo/og-pick-icon.PNG"
+              src="/images/icons/icon-192.png"
               alt=""
               width={36}
               height={36}

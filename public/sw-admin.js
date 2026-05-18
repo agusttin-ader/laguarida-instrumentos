@@ -60,7 +60,7 @@ self.addEventListener('push', event => {
     self.registration.showNotification(payload.title || 'La Guarida', {
       body: payload.body || 'Un visitante escribió en el chat.',
       tag: 'laguarida-chat',
-      icon: '/images/logo/og-pick-icon.PNG',
+      icon: '/images/icons/icon-192.png',
       data: { url: '/admin' }
     })
   )

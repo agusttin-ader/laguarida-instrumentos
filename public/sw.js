@@ -1,4 +1,4 @@
-const CACHE_NAME = 'laguarida-pwa-v1'
+const CACHE_NAME = 'laguarida-pwa-v2'
 const OFFLINE_URL = '/offline.html'
 const URLS_TO_CACHE = [
   '/',
@@ -26,16 +26,19 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const { request } = event
   if (request.method !== 'GET') return
-  const isLocalhost = request.url.startsWith('http://localhost') || request.url.startsWith('http://127.0.0.1')
-  if (isLocalhost) {
-    event.respondWith(fetch(request))
-    return
-  }
+
+  const url = new URL(request.url)
+  if (url.origin !== self.location.origin) return
+  if (url.pathname.startsWith('/_next/image')) return
+  if (url.pathname.startsWith('/api/')) return
+
   event.respondWith(
     fetch(request)
       .then(response => {
-        const resClone = response.clone()
-        caches.open(CACHE_NAME).then(cache => cache.put(request, resClone))
+        if (response.ok) {
+          const resClone = response.clone()
+          caches.open(CACHE_NAME).then(cache => cache.put(request, resClone)).catch(() => {})
+        }
         return response
       })
       .catch(() => {
@@ -58,7 +61,7 @@ self.addEventListener('push', event => {
     self.registration.showNotification(payload.title || 'La Guarida', {
       body: payload.body || 'Un visitante escribió en el chat.',
       tag: 'laguarida-chat',
-      icon: '/images/logo/og-pick-icon.PNG',
+      icon: '/images/icons/icon-192.png',
       data: { url: '/admin' }
     })
   )

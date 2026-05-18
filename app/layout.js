@@ -21,18 +21,18 @@ export const metadata = {
   metadataBase: new URL(siteUrl),
   robots: { index: true, follow: true },
   openGraph: {
-    images: ['/images/logo/og-pick-icon.PNG'],
+    images: ['/images/icons/og-image.png'],
     type: 'website',
     siteName: 'La Guarida'
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['/images/logo/og-pick-icon.PNG']
+    images: ['/images/icons/og-image.png']
   },
   icons: {
-    icon: '/images/logo/og-pick-icon.PNG',
-    shortcut: '/images/logo/og-pick-icon.PNG',
-    apple: '/images/logo/og-pick-icon.PNG'
+    icon: '/images/icons/icon-192.png',
+    shortcut: '/images/icons/icon-192.png',
+    apple: '/images/icons/apple-touch-icon.png'
   }
 }
 
@@ -51,8 +51,8 @@ export default function RootLayout({ children }) {
     name: 'La Guarida',
     description: 'Tienda de guitarras e instrumentos musicales en Argentina. Catálogo curado, asesoramiento profesional y atención personalizada.',
     url: siteUrl,
-    logo: absoluteUrl('/images/logo/og-pick-icon.PNG'),
-    image: absoluteUrl('/images/logo/og-pick-icon.PNG'),
+    logo: absoluteUrl('/images/icons/icon-512.png'),
+    image: absoluteUrl('/images/icons/og-image.png'),
     address: { '@type': 'PostalAddress', addressCountry: 'AR' },
     contactPoint: {
       '@type': 'ContactPoint',
@@ -74,7 +74,7 @@ export default function RootLayout({ children }) {
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <link rel="apple-touch-icon" href="/images/logo/og-pick-icon.PNG" />
+        <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" />
       </head>
       <body className={`min-h-screen ${GeistSans.className}`}>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
