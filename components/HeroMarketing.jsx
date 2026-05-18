@@ -2,9 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { CaretDown } from 'phosphor-react'
 import { useEffect, useState } from 'react'
-import { scrollToHomeSectionById } from '../lib/homeSectionScroll'
 
 const HERO_PRIMARY_DESKTOP = '/images/optimized/hero5-desktop-pil.jpg'
 const HERO_PRIMARY_MOBILE = '/images/optimized/hero5-mobile-pil.jpg'
@@ -38,17 +36,6 @@ export default function HeroMarketing({ product = null }) {
 
   const slug = product?.slug && String(product.slug).trim()
   const productHref = slug ? `/guitars/${encodeURIComponent(slug)}` : null
-
-  function scrollToCatalog(e) {
-    if (typeof document === 'undefined') return
-    if (scrollToHomeSectionById('seleccion-destacada', { behavior: 'smooth' })) {
-      e.preventDefault()
-      try {
-        const path = `${window.location.pathname}${window.location.search || ''}#seleccion-destacada`
-        window.history.replaceState(window.history.state, '', path)
-      } catch { /* empty */ }
-    }
-  }
 
   return (
     <div className="hero-home relative isolate min-h-[100dvh] w-full max-md:min-h-0 overflow-hidden bg-[var(--dark-bg-page)]">
@@ -131,23 +118,6 @@ export default function HeroMarketing({ product = null }) {
         </div>
       </div>
 
-      <Link
-        href="/#seleccion-destacada"
-        onClick={scrollToCatalog}
-        className="hero-scroll-hint no-custom-btn absolute left-1/2 z-[3] grid max-w-[calc(100vw-2rem)] -translate-x-1/2 grid-cols-1 justify-items-center gap-2 text-[var(--palette-gold)] transition-opacity duration-200 hover:opacity-95 active:opacity-85 max-md:bottom-[max(5.5rem,env(safe-area-inset-bottom,0px))] md:bottom-10"
-        aria-label="Ir al catálogo"
-      >
-        <span className="col-span-1 text-center text-[13px] font-medium uppercase leading-none tracking-[0.3em] [text-shadow:0_0_18px_rgba(242,174,48,0.85),0_2px_14px_rgba(0,0,0,0.65)] [padding-inline:0.15em] sm:text-[14px] md:text-[15px] md:tracking-[0.28em]">
-          Catálogo
-        </span>
-        <span className="hero-scroll-hint__chevron col-span-1 flex w-full justify-center text-[var(--palette-gold)]">
-          <CaretDown
-            className="relative left-[0.5px] h-6 w-6 opacity-95 [filter:drop-shadow(0_0_10px_rgba(242,174,48,0.9))]"
-            weight="regular"
-            aria-hidden
-          />
-        </span>
-      </Link>
     </div>
   )
 }

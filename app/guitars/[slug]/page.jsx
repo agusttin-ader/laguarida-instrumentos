@@ -6,6 +6,8 @@ import normalizeProduct from '../../../lib/utils/normalizeProduct'
 import { fetchProductRowBySlug } from '../../../lib/data/fetchProductBySlug'
 import { PRODUCT_LIST_COLUMNS } from '../../../lib/data/productColumns'
 import { getSupabaseServerClient } from '../../../lib/supabase/server'
+import { SUPABASE_BLOCKED } from '../../../lib/supabase/mode'
+import { getBackupProducts } from '../../../lib/data/localProductsBackup'
 import ProductCard from '../../../components/ProductCard'
 import imageService from '../../../lib/utils/imageService'
 import ProductShareAndFavorite from '../../../components/ProductShareAndFavorite'
@@ -288,14 +290,19 @@ export default async function GuitarPage({ params }) {
   let relatedProducts = []
   try {
     if (product) {
-      const supabase = getSupabaseServerClient()
-      const { data: allProducts } = await supabase
-        .from('products')
-        .select(PRODUCT_LIST_COLUMNS)
-        .eq('listing_status', 'available')
-        .neq('slug', product.slug)
-        .order('created_at', { ascending: false })
-        .limit(36)
+      let allProducts = getBackupProducts({ includeReserved: false })
+        .filter((p) => p.slug !== product.slug)
+      if (!SUPABASE_BLOCKED) {
+        const supabase = getSupabaseServerClient()
+        const { data } = await supabase
+          .from('products')
+          .select(PRODUCT_LIST_COLUMNS)
+          .eq('listing_status', 'available')
+          .neq('slug', product.slug)
+          .order('created_at', { ascending: false })
+          .limit(36)
+        if (Array.isArray(data)) allProducts = data
+      }
       // Build a normalized set of words from brand, model and name (remove diacritics)
       const normalizeText = (s = '') => String(s || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
       const wordsSource = `${product.brand || ''} ${product.model || ''} ${product.name || ''}`

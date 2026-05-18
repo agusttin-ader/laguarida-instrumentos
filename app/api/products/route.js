@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { getSupabaseServerClient, getSupabaseAdminClient } from '../../../lib/supabase/server'
 import { PRODUCT_LIST_COLUMNS } from '../../../lib/data/productColumns'
 import { getBackupProducts } from '../../../lib/data/localProductsBackup'
+import { SUPABASE_BLOCKED } from '../../../lib/supabase/mode'
 import { cookies } from 'next/headers'
 import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
 
@@ -325,6 +326,14 @@ export async function GET(req) {
     const accessToken = await extractAccessToken(req)
     /** Listado completo (incl. reservados) solo desde el panel, con ?scope=admin y sesión. Si hay cookies de admin pero se pide el catálogo público (home, etc.), se filtra igual. */
     const showFullCatalog = Boolean(accessToken && adminCatalog)
+    if (SUPABASE_BLOCKED) {
+      const headers = showFullCatalog
+        ? { 'Cache-Control': 'private, no-store' }
+        : {
+            'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=300, max-age=60',
+          }
+      return NextResponse.json(getBackupProducts({ includeReserved: showFullCatalog }), { status: 200, headers })
+    }
 
     const supabase = await getSupabaseServerClient(accessToken)
     const columns = showFullCatalog ? '*' : PRODUCT_LIST_COLUMNS
@@ -367,6 +376,9 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
+    if (SUPABASE_BLOCKED) {
+      return NextResponse.json({ error: 'Admin mutaciones deshabilitadas temporalmente' }, { status: 503 })
+    }
     if (!assertSameOrigin(req)) {
       return NextResponse.json({ error: 'Invalid origin' }, { status: 403 })
     }
@@ -403,6 +415,9 @@ export async function POST(req) {
 
 export async function PATCH(req) {
   try {
+    if (SUPABASE_BLOCKED) {
+      return NextResponse.json({ error: 'Admin mutaciones deshabilitadas temporalmente' }, { status: 503 })
+    }
     if (!assertSameOrigin(req)) {
       return NextResponse.json({ error: 'Invalid origin' }, { status: 403 })
     }
@@ -444,6 +459,9 @@ export async function PATCH(req) {
 
 export async function DELETE(req) {
   try {
+    if (SUPABASE_BLOCKED) {
+      return NextResponse.json({ error: 'Admin mutaciones deshabilitadas temporalmente' }, { status: 503 })
+    }
     if (!assertSameOrigin(req)) {
       return NextResponse.json({ error: 'Invalid origin' }, { status: 403 })
     }

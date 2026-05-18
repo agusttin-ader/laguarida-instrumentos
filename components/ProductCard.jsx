@@ -9,11 +9,11 @@ import { useFavorites } from './ProductShareAndFavorite'
 import { useToast } from './ToastContext'
 
 const CARD_IMAGE_SIZES =
-  '(max-width: 767px) min(100vw, 720px), (max-width: 1023px) min(46vw, 560px), (max-width: 1535px) min(34vw, 520px), (max-width: 1919px) min(30vw, 600px), (max-width: 2559px) min(26vw, 720px), min(24vw, 840px)'
+  '(max-width: 767px) 92vw, (max-width: 1023px) 46vw, (max-width: 1535px) 31vw, (max-width: 1919px) 28vw, 24vw'
 const MAX_CARD_IMAGES = 3
 const SWIPE_DISTANCE_THRESHOLD = 48
 const SWIPE_VELOCITY_THRESHOLD = 0.35
-const GALLERY_MOUNT_RADIUS = 0
+const GALLERY_MOUNT_RADIUS = 1
 const MOBILE_ONLY_QUERY = '(max-width: 767px)'
 
 function getInitialMediaMatch(query) {
@@ -66,6 +66,10 @@ const ProductCard = React.memo(function ProductCard({
   }, [p.images, p.image_url, effectivePrimaryOnly])
   const [galleryIndex, setGalleryIndex] = useState(0)
 
+  function goToIndex(nextIndex) {
+    setGalleryIndex(() => Math.max(0, Math.min(imageList.length - 1, nextIndex)))
+  }
+
   useEffect(() => {
     setGalleryIndex((i) => Math.max(0, Math.min(i, Math.max(0, imageList.length - 1))))
   }, [imageList.length])
@@ -114,21 +118,21 @@ const ProductCard = React.memo(function ProductCard({
     if (!farEnough && !strongFlick) return
     if (dx < 0 && galleryIndex < imageList.length - 1) {
       didSwipe.current = true
-      setGalleryIndex((i) => i + 1)
+      goToIndex(galleryIndex + 1)
     } else if (dx > 0 && galleryIndex > 0) {
       didSwipe.current = true
-      setGalleryIndex((i) => i - 1)
+      goToIndex(galleryIndex - 1)
     }
   }
   function handleGalleryDotClick(e, index) {
     e.preventDefault()
     e.stopPropagation()
-    setGalleryIndex(index)
+    goToIndex(index ?? galleryIndex)
   }
   function handleArrowClick(e, delta) {
     e.preventDefault()
     e.stopPropagation()
-    setGalleryIndex((prev) => Math.max(0, Math.min(imageList.length - 1, prev + delta)))
+    goToIndex(galleryIndex + delta)
   }
   function handleCardClick(e) {
     if (didSwipe.current) {
@@ -167,9 +171,10 @@ const ProductCard = React.memo(function ProductCard({
             return (
               <div
                 key={idx}
-                className="absolute inset-0 transition-opacity duration-[360ms] ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none"
+                className="absolute inset-0 transition-[opacity,transform] duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
                 style={{
                   opacity: isActive ? 1 : 0,
+                  transform: `translateX(${(idx - galleryIndex) * 100}%) scale(${isActive ? 1 : 0.995})`,
                   pointerEvents: isActive ? 'auto' : 'none',
                   zIndex: isActive ? 1 : 0,
                 }}
@@ -179,14 +184,14 @@ const ProductCard = React.memo(function ProductCard({
                   alt={idx === 0 ? (titleText || 'Imagen del producto') : `Imagen ${idx + 1} de ${titleText || 'producto'}`}
                   fill
                   sizes={CARD_IMAGE_SIZES}
-                  quality={68}
+                  quality={76}
                   priority={Boolean(priority && isMainSlot && isActive)}
                   loading={eager ? 'eager' : 'lazy'}
                   fetchPriority={eager ? 'high' : 'low'}
                   decoding="async"
                   onLoad={() => setLoadedIndices((prev) => new Set(prev).add(idx))}
                   onError={() => {}}
-                  className={`img-reveal ${loadedIndices.has(idx) ? 'img-loaded' : ''} max-[767px]:object-contain max-[767px]:object-center transform-gpu [backface-visibility:hidden] transition-opacity duration-[300ms] ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none ${objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover'}`}
+                  className={`img-reveal card-image-animated ${loadedIndices.has(idx) ? 'img-loaded' : ''} max-[767px]:object-contain max-[767px]:object-center transform-gpu [backface-visibility:hidden] transition-opacity duration-[300ms] ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none ${objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover'}`}
                   style={{ objectPosition: 'center' }}
                 />
               </div>

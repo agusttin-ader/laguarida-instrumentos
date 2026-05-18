@@ -8,10 +8,11 @@ import DisableZoomInApp from '../components/DisableZoomInApp'
 import { ToastProvider } from '../components/ToastContext'
 import { absoluteUrl, getSiteUrl } from '../lib/siteUrl'
 import { Analytics } from '@vercel/analytics/react'
+import { SUPABASE_BLOCKED } from '../lib/supabase/mode'
 
 const siteUrl = getSiteUrl()
 
-const supabaseOrigin = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseOrigin = !SUPABASE_BLOCKED && process.env.NEXT_PUBLIC_SUPABASE_URL
   ? (() => { try { return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).origin } catch { return null } })()
   : null
 

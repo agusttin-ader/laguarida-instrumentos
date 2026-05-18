@@ -1603,22 +1603,24 @@ main > section:nth-of-type(4) { animation-delay: 60ms; }
 .list-panel {
   contain: layout style paint;
   transition:
+    transform var(--motion-base) var(--motion-ease),
     box-shadow var(--motion-base) var(--motion-ease),
     border-color var(--motion-base) var(--motion-ease);
 }
 .card-interactive:hover {
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16);
   border-color: rgba(255, 255, 255, 0.12);
 }
 .card-interactive:active {
-  transform: none;
+  transform: translateY(-1px) scale(0.998);
 }
 /* Catálogo editorial: casi sin sombra; el hover global añade una muy suave */
 .card-editorial.card-interactive {
   box-shadow: none !important;
 }
 .card-editorial.card-interactive:hover {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18) !important;
 }
 .admin-card:hover,
 .list-panel:hover {
@@ -1643,11 +1645,12 @@ button:not(.no-custom-btn):active {
   transform: none;
 }
 
-.card-interactive:not(.card-editorial) img {
-  transition: none;
+.card-image-animated {
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
-.card-interactive:not(.card-editorial):hover img {
-  transform: none;
+.card-interactive:hover .card-image-animated {
+  transform: scale(1.028);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1892,6 +1895,7 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     box-shadow: none;
   }
   .card-interactive:hover {
+    transform: none;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
   .card-editorial.card-interactive:hover {
