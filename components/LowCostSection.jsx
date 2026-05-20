@@ -2,16 +2,11 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import ProductGrid from './ProductGrid'
-import { useProducts } from '../hooks/useProducts'
 
-export default function LowCostSection() {
+export default function LowCostSection({ items = [], loading = false }) {
   const [q, setQ] = useState('')
   const [isFiltering, setIsFiltering] = useState(false)
-  const { products, loading } = useProducts({ shuffleCatalog: false })
-  const lowCostProducts = useMemo(
-    () => (Array.isArray(products) ? products.filter((p) => p.low_cost === true) : []),
-    [products]
-  )
+  const lowCostProducts = useMemo(() => (Array.isArray(items) ? items : []), [items])
 
   useEffect(() => {
     if (!q) {

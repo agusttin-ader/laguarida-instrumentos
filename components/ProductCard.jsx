@@ -10,7 +10,6 @@ import { useToast } from './ToastContext'
 
 const CARD_IMAGE_SIZES =
   '(max-width: 767px) 92vw, (max-width: 1023px) 46vw, (max-width: 1535px) 31vw, (max-width: 1919px) 28vw, 24vw'
-const MAX_CARD_IMAGES = 3
 const SWIPE_DISTANCE_THRESHOLD = 48
 const SWIPE_VELOCITY_THRESHOLD = 0.35
 const GALLERY_MOUNT_RADIUS = 1
@@ -25,32 +24,30 @@ const ProductCard = React.memo(function ProductCard({
   item,
   priority = false,
   imageFit = 'cover',
-  galleryDesktopOnly = false
+  galleryDesktopOnly = false,
+  maxGalleryImages = 3
 }) {
   const p = normalizeProduct(item)
+  const catalogSingleImage = maxGalleryImages <= 1
   const [desktopGalleryUnlocked, setDesktopGalleryUnlocked] = useState(() =>
-    galleryDesktopOnly ? !getInitialMediaMatch(MOBILE_ONLY_QUERY) : true
+    catalogSingleImage || !galleryDesktopOnly ? false : !getInitialMediaMatch(MOBILE_ONLY_QUERY)
   )
   const [isMobile, setIsMobile] = useState(() => getInitialMediaMatch(MOBILE_ONLY_QUERY))
 
   useEffect(() => {
+    if (catalogSingleImage) return
     const mq = window.matchMedia(MOBILE_ONLY_QUERY)
-    const sync = () => setIsMobile(mq.matches)
+    const sync = () => {
+      setIsMobile(mq.matches)
+      if (galleryDesktopOnly) setDesktopGalleryUnlocked(!mq.matches)
+    }
     sync()
     mq.addEventListener('change', sync)
     return () => mq.removeEventListener('change', sync)
-  }, [])
+  }, [catalogSingleImage, galleryDesktopOnly])
 
-  useEffect(() => {
-    if (!galleryDesktopOnly) return
-    const mq = window.matchMedia(MOBILE_ONLY_QUERY)
-    const sync = () => setDesktopGalleryUnlocked(!mq.matches)
-    sync()
-    mq.addEventListener('change', sync)
-    return () => mq.removeEventListener('change', sync)
-  }, [galleryDesktopOnly])
-
-  const effectivePrimaryOnly = isMobile || (galleryDesktopOnly && !desktopGalleryUnlocked)
+  const effectivePrimaryOnly =
+    catalogSingleImage || isMobile || (galleryDesktopOnly && !desktopGalleryUnlocked)
 
   const imageList = useMemo(() => {
     const main = imageService.resolve(p.image_url)
@@ -59,27 +56,19 @@ const ProductCard = React.memo(function ProductCard({
       .filter(Boolean)
     const rest = resolved.filter((url) => url !== main)
     const list = main ? [main, ...rest] : rest
-    const capped = list.slice(0, MAX_CARD_IMAGES)
+    const capped = list.slice(0, Math.max(1, maxGalleryImages))
     const withDisplay = capped.map((u) => imageService.forDisplay(u, 'card') || u)
     if (effectivePrimaryOnly) return withDisplay.slice(0, 1)
     return withDisplay
-  }, [p.images, p.image_url, effectivePrimaryOnly])
+  }, [p.images, p.image_url, effectivePrimaryOnly, maxGalleryImages])
+
   const [galleryIndex, setGalleryIndex] = useState(0)
-
-  function goToIndex(nextIndex) {
-    setGalleryIndex(() => Math.max(0, Math.min(imageList.length - 1, nextIndex)))
-  }
-
-  useEffect(() => {
-    setGalleryIndex((i) => Math.max(0, Math.min(i, Math.max(0, imageList.length - 1))))
-  }, [imageList.length])
-  const [loadedIndices, setLoadedIndices] = useState(() => new Set())
-  const [isHoveringImage, setIsHoveringImage] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const touchStartTime = useRef(0)
   const didSwipe = useRef(false)
-  const currentImageReady = loadedIndices.has(galleryIndex)
+
   const titleText = p.name || ''
   const headingId = `product-title-${p.slug || p.id}`
   const specs = []
@@ -89,10 +78,20 @@ const ProductCard = React.memo(function ProductCard({
   const visibleSpecs = specs.slice(0, 2)
   const hiddenSpecsCount = Math.max(0, specs.length - visibleSpecs.length)
   const objectFit = imageFit === 'contain' ? 'contain' : 'cover'
-  const hasGallery = imageList.length > 1
+  const hasGallery = !catalogSingleImage && imageList.length > 1
   const { toast } = useToast()
   const { isFavorite, toggle } = useFavorites()
   const fav = isFavorite(p.slug)
+  const primarySrc = imageList[0]
+
+  function goToIndex(nextIndex) {
+    setGalleryIndex(() => Math.max(0, Math.min(imageList.length - 1, nextIndex)))
+  }
+
+  useEffect(() => {
+    setGalleryIndex((i) => Math.max(0, Math.min(i, Math.max(0, imageList.length - 1))))
+    setImageLoaded(false)
+  }, [imageList.length, primarySrc])
 
   function handleTouchStart(e) {
     if (!e.touches[0]) return
@@ -107,8 +106,6 @@ const ProductCard = React.memo(function ProductCard({
     const y = e.changedTouches[0].clientY
     const dx = x - touchStartX.current
     const dy = y - touchStartY.current
-    // Keep vertical scroll fluid: only treat gesture as swipe
-    // when horizontal intent is clear.
     if (Math.abs(dy) > Math.abs(dx) || Math.abs(dy) > 32) return
     const now = typeof performance !== 'undefined' ? performance.now() : Date.now()
     const dt = Math.max(now - touchStartTime.current, 1)
@@ -154,56 +151,77 @@ const ProductCard = React.memo(function ProductCard({
       onTouchStart={hasGallery ? handleTouchStart : undefined}
       onTouchEnd={hasGallery ? handleTouchEnd : undefined}
       onTouchCancel={hasGallery ? handleTouchEnd : undefined}
-      onMouseEnter={() => setIsHoveringImage(true)}
-      onMouseLeave={() => setIsHoveringImage(false)}
     >
-      {imageList.length > 0 ? (
+      {primarySrc ? (
         <>
-          <div
-            className={`absolute inset-0 z-0 bg-[var(--dark-surface-2)] transition-opacity duration-200 ${currentImageReady ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-            aria-hidden
-          />
-          {imageList.map((src, idx) => {
-            if (Math.abs(idx - galleryIndex) > GALLERY_MOUNT_RADIUS) return null
-            const isActive = idx === galleryIndex
-            const isMainSlot = idx === 0
-            const eager = Boolean(priority && isMainSlot && isActive)
-            return (
-              <div
-                key={idx}
-                className="absolute inset-0 transition-[opacity,transform] duration-[380ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
-                style={{
-                  opacity: isActive ? 1 : 0,
-                  transform: `translateX(${(idx - galleryIndex) * 100}%) scale(${isActive ? 1 : 0.995})`,
-                  pointerEvents: isActive ? 'auto' : 'none',
-                  zIndex: isActive ? 1 : 0,
-                }}
-              >
-                <Image
-                  src={src}
-                  alt={idx === 0 ? (titleText || 'Imagen del producto') : `Imagen ${idx + 1} de ${titleText || 'producto'}`}
-                  fill
-                  sizes={CARD_IMAGE_SIZES}
-                  quality={76}
-                  priority={Boolean(priority && isMainSlot && isActive)}
-                  loading={eager ? 'eager' : 'lazy'}
-                  fetchPriority={eager ? 'high' : 'low'}
-                  decoding="async"
-                  onLoad={() => setLoadedIndices((prev) => new Set(prev).add(idx))}
-                  onError={() => {}}
-                  className={`img-reveal card-image-animated ${loadedIndices.has(idx) ? 'img-loaded' : ''} max-[767px]:object-contain max-[767px]:object-center transform-gpu [backface-visibility:hidden] transition-opacity duration-[300ms] ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none ${objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover'}`}
-                  style={{ objectPosition: 'center' }}
-                />
-              </div>
-            )
-          })}
+          {!imageLoaded ? (
+            <div
+              className="absolute inset-0 z-0 bg-[var(--dark-surface-2)]"
+              aria-hidden
+            />
+          ) : null}
+          {catalogSingleImage ? (
+            <Image
+              src={primarySrc}
+              alt={titleText || 'Imagen del producto'}
+              fill
+              sizes={CARD_IMAGE_SIZES}
+              quality={65}
+              unoptimized={imageService.shouldBypassNextOptimization(primarySrc)}
+              priority={priority}
+              loading={priority ? 'eager' : 'lazy'}
+              fetchPriority={priority ? 'high' : 'low'}
+              decoding="async"
+              onLoad={() => setImageLoaded(true)}
+              onError={() => {}}
+              className={`img-reveal max-[767px]:object-contain max-[767px]:object-center ${imageLoaded ? 'img-loaded' : ''} ${objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover'}`}
+              style={{ objectPosition: 'center' }}
+            />
+          ) : (
+            imageList.map((src, idx) => {
+              if (Math.abs(idx - galleryIndex) > GALLERY_MOUNT_RADIUS) return null
+              const isActive = idx === galleryIndex
+              const isMainSlot = idx === 0
+              const eager = Boolean(priority && isMainSlot && isActive)
+              return (
+                <div
+                  key={idx}
+                  className="absolute inset-0 transition-opacity duration-200 ease-out motion-reduce:transition-none"
+                  style={{
+                    opacity: isActive ? 1 : 0,
+                    pointerEvents: isActive ? 'auto' : 'none',
+                    zIndex: isActive ? 1 : 0,
+                  }}
+                >
+                  <Image
+                    src={src}
+                    alt={idx === 0 ? (titleText || 'Imagen del producto') : `Imagen ${idx + 1} de ${titleText || 'producto'}`}
+                    fill
+                    sizes={CARD_IMAGE_SIZES}
+                    quality={65}
+                    unoptimized={imageService.shouldBypassNextOptimization(src)}
+                    priority={Boolean(priority && isMainSlot && isActive)}
+                    loading={eager ? 'eager' : 'lazy'}
+                    fetchPriority={eager ? 'high' : 'low'}
+                    decoding="async"
+                    onLoad={() => {
+                      if (isActive) setImageLoaded(true)
+                    }}
+                    onError={() => {}}
+                    className={`img-reveal ${imageLoaded && isActive ? 'img-loaded' : ''} max-[767px]:object-contain max-[767px]:object-center ${objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover'}`}
+                    style={{ objectPosition: 'center' }}
+                  />
+                </div>
+              )
+            })
+          )}
         </>
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-[var(--dark-surface-2)] animate-pulse">
           <span className="text-3xl opacity-40">🎸</span>
         </div>
       )}
-      {hasGallery && !isMobile && (
+      {hasGallery && !isMobile ? (
         <>
           <div className="absolute inset-0 z-10 pointer-events-none">
             <button
@@ -211,7 +229,7 @@ const ProductCard = React.memo(function ProductCard({
               onClick={(e) => handleArrowClick(e, -1)}
               disabled={galleryIndex === 0}
               aria-label="Imagen anterior"
-              className={`no-custom-btn pointer-events-auto absolute left-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/58 text-white shadow-md transition-[opacity,transform,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
+              className={`no-custom-btn pointer-events-auto absolute left-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/58 text-white shadow-md transition-opacity duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
                 galleryIndex === 0
                   ? 'cursor-default opacity-35 md:opacity-0 md:group-hover/img:opacity-40'
                   : 'opacity-100 md:opacity-0 md:group-hover/img:opacity-100 hover:bg-black/60 md:hover:bg-transparent'
@@ -226,7 +244,7 @@ const ProductCard = React.memo(function ProductCard({
               onClick={(e) => handleArrowClick(e, 1)}
               disabled={galleryIndex === imageList.length - 1}
               aria-label="Siguiente imagen"
-              className={`no-custom-btn pointer-events-auto absolute right-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/58 text-white shadow-md transition-[opacity,transform,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
+              className={`no-custom-btn pointer-events-auto absolute right-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/58 text-white shadow-md transition-opacity duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
                 galleryIndex === imageList.length - 1
                   ? 'cursor-default opacity-35 md:opacity-0 md:group-hover/img:opacity-40'
                   : 'opacity-100 md:opacity-0 md:group-hover/img:opacity-100 hover:bg-black/60 md:hover:bg-transparent'
@@ -250,8 +268,7 @@ const ProductCard = React.memo(function ProductCard({
             ))}
           </div>
         </>
-      )}
-      {/* Favorito: corazón arriba a la derecha — área táctil ≥44px en móvil */}
+      ) : null}
       <button
         type="button"
         onClick={handleFavoriteClick}
@@ -279,7 +296,7 @@ const ProductCard = React.memo(function ProductCard({
   return (
     <article
       aria-labelledby={headingId}
-      className={`card-interactive card-editorial card-mobile-no-motion product-card-mobile-catalog w-full min-w-0 max-w-full overflow-hidden rounded-2xl border-0 bg-[var(--dark-bg-card)] md:rounded-3xl ${isHoveringImage ? 'card-hovering-image' : ''}`}
+      className="card-interactive card-editorial card-mobile-no-motion product-card-mobile-catalog w-full min-w-0 max-w-full overflow-hidden rounded-2xl border-0 bg-[var(--dark-bg-card)] md:rounded-3xl"
     >
       <Link
         href={`/guitars/${p.slug || p.id}`}
@@ -336,4 +353,3 @@ const ProductCard = React.memo(function ProductCard({
 })
 
 export default ProductCard
- 

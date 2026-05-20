@@ -6,6 +6,7 @@ import SiteShell from '../components/SiteShell'
 import ServiceWorkerRegister from '../components/ServiceWorkerRegister'
 import DisableZoomInApp from '../components/DisableZoomInApp'
 import { ToastProvider } from '../components/ToastContext'
+import { FavoritesProvider } from '../components/ProductShareAndFavorite'
 import { absoluteUrl, getSiteUrl } from '../lib/siteUrl'
 import { Analytics } from '@vercel/analytics/react'
 import { SUPABASE_BLOCKED } from '../lib/supabase/mode'
@@ -81,9 +82,11 @@ export default function RootLayout({ children }) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
         <DisableZoomInApp />
         <ToastProvider>
-          <SiteShell>{children}</SiteShell>
-          <ServiceWorkerRegister />
-          <Analytics />
+          <FavoritesProvider>
+            <SiteShell>{children}</SiteShell>
+            <ServiceWorkerRegister />
+            <Analytics />
+          </FavoritesProvider>
         </ToastProvider>
       </body>
     </html>

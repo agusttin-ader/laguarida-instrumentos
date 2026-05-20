@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import Image from 'next/image'
 
 export default function GalleryLightbox({
   src,
@@ -76,15 +77,19 @@ export default function GalleryLightbox({
       />
 
       {/* Imagen: 100% del alto, animación al cambiar */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center">
-        <img
-          key={src}
-          src={src}
-          alt={alt}
-          className="h-full w-auto max-w-full object-contain lightbox-image-in"
-          draggable={false}
-          loading="eager"
-        />
+      <div className="absolute inset-0 z-10 flex items-center justify-center p-2 sm:p-4">
+        <div key={src} className="relative h-full w-full max-h-full max-w-full lightbox-image-in">
+          <Image
+            src={src}
+            alt={alt}
+            fill
+            sizes="100vw"
+            quality={78}
+            priority
+            draggable={false}
+            className="object-contain"
+          />
+        </div>
       </div>
 
       {/* Cerrar: esquina superior derecha */}

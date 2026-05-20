@@ -58,7 +58,7 @@ export default function FavoritosPage() {
               className="home-grid-product-cell min-w-0 [content-visibility:auto] [contain-intrinsic-size:auto_28rem]"
               style={{ '--grid-cell-i': idx }}
             >
-              <ProductCard item={item} priority={idx < 4} />
+              <ProductCard item={item} priority={idx === 0} maxGalleryImages={1} />
             </div>
           ))}
         </div>

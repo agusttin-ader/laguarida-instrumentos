@@ -3,19 +3,18 @@
 import React, { useMemo } from 'react'
 import ProductCard from './ProductCard'
 import { useProducts } from '../hooks/useProducts'
-import { useSoftEnterAfterSlowLoad } from '../hooks/useSoftEnterAfterSlowLoad'
 
 export default function ProductGrid({
   filters = {},
   items: itemsProp,
-  parentLoading = false
+  parentLoading = false,
+  maxGalleryImages = 1
 }) {
   const fetchSelf = itemsProp === undefined
   const { products, loading, error } = useProducts({ shuffleCatalog: true, enabled: fetchSelf })
   const items = fetchSelf ? products : itemsProp
   const isLoading = fetchSelf ? loading : parentLoading
   const hasError = fetchSelf ? error : null
-  const softGridEnter = useSoftEnterAfterSlowLoad(isLoading, 420)
 
   const filteredItems = useMemo(() => {
     if (!items.length) return []
@@ -88,16 +87,17 @@ export default function ProductGrid({
         <div className="mb-6 p-4 rounded bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200">Error al cargar productos: {hasError}</div>
       ) : null}
 
-      <div
-        className={`grid w-full min-w-0 grid-cols-1 gap-5 max-[767px]:gap-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8${softGridEnter ? ' product-grid--slow-enter' : ''}`}
-      >
+      <div className="grid w-full min-w-0 grid-cols-1 gap-5 max-[767px]:gap-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
         {filteredItems.map((item, idx) => (
           <div
             key={`${item.id ?? item.slug ?? idx}-${filters.q || ''}`}
             className="home-grid-product-cell min-w-0 w-full [content-visibility:auto] [contain-intrinsic-size:auto_28rem]"
-            style={{ '--grid-cell-i': idx }}
           >
-            <ProductCard item={item} priority={idx < 2} />
+            <ProductCard
+              item={item}
+              priority={idx === 0}
+              maxGalleryImages={maxGalleryImages}
+            />
           </div>
         ))}
       </div>

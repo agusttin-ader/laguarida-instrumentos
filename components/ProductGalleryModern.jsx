@@ -8,9 +8,9 @@ import imageService from '../lib/utils/imageService'
 const GalleryLightbox = dynamic(() => import('./GalleryLightbox'), { ssr: false })
 
 const GALLERY_MAIN_SIZES =
-  '(max-width:1023px) 100vw, (max-width:1279px) 54vw, (max-width:1919px) min(52vw, 1180px), (max-width:2559px) min(50vw, 1680px), min(48vw, 2100px)'
+  '(max-width:1023px) 100vw, (max-width:1279px) 54vw, (max-width:1919px) min(52vw, 960px), (max-width:2559px) min(50vw, 1200px), min(48vw, 1440px)'
 const GALLERY_THUMB_SIZES =
-  '(max-width:1023px) 50vw, (max-width:1279px) 22vw, (max-width:1919px) min(20vw, 560px), (max-width:2559px) min(18vw, 760px), min(17vw, 920px)'
+  '(max-width:1023px) 50vw, (max-width:1279px) 22vw, (max-width:1919px) min(20vw, 420px), (max-width:2559px) min(18vw, 520px), min(17vw, 640px)'
 const MOBILE_CAROUSEL_SIZES = '(max-width:1023px) 100vw, 100vw'
 
 function usePreloadLightbox() {
@@ -120,7 +120,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   imgClassName="object-cover object-center transition-transform duration-300 ease-out group-active:scale-[1.02]"
                   sizes={MOBILE_CAROUSEL_SIZES}
-                  quality={i === 0 ? 72 : 68}
+                  quality={i === 0 ? 74 : 62}
                   priority={i === 0}
                   disableClientPreview
                 />
@@ -170,7 +170,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
             fill
             className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
             sizes={GALLERY_MAIN_SIZES}
-            quality={72}
+            quality={74}
             priority
             disableClientPreview
           />
@@ -190,7 +190,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 fill
                 className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                 sizes={GALLERY_THUMB_SIZES}
-                quality={68}
+                quality={62}
                 disableClientPreview
               />
             </button>
@@ -207,7 +207,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={68}
+                  quality={62}
                   disableClientPreview
                 />
               </button>
@@ -225,7 +225,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={68}
+                  quality={62}
                   disableClientPreview
                 />
               </button>
@@ -243,7 +243,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={68}
+                  quality={62}
                   disableClientPreview
                 />
               </button>
@@ -261,7 +261,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={68}
+                  quality={62}
                   disableClientPreview
                 />
               </button>
@@ -279,7 +279,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={68}
+                  quality={62}
                   disableClientPreview
                 />
               </button>

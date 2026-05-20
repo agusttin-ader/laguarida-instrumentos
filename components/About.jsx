@@ -1,15 +1,12 @@
 "use client"
 import React from 'react'
 import { layoutShellClassName } from '../lib/layoutShell'
-import ScrollReveal from './ScrollReveal'
-
 export default function About(){
   return (
     <section id="about-section" className="mt-0">
       <div
         className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 pt-4 sm:pt-7 md:pt-9 lg:pt-10 pb-0 sm:pb-1 md:pb-2 lg:pb-2`}
       >
-        <ScrollReveal threshold={0.08} rootMargin="0px 0px -8% 0px">
           <div className="w-full">
             <p className="section-kicker-minimal section-underline-ocre text-gray-700 dark:text-white/70 mb-2 sm:mb-3">Sobre La Guarida</p>
             <h2 className="section-title-minimal text-[var(--dark-text-primary)] text-2xl sm:text-3xl md:text-[3.2rem] mb-3 md:mb-4 tracking-tight">Una tienda, una historia</h2>
@@ -49,7 +46,6 @@ export default function About(){
               <span className="inline-flex items-center rounded-full border border-gray-300/70 dark:border-white/15 px-3 py-1.5 sm:px-3.5 text-[11px] sm:text-[12px] font-medium tracking-[0.01em] text-gray-700 dark:text-gray-200 bg-white/70 dark:bg-white/5">Atención personalizada</span>
             </div>
           </div>
-        </ScrollReveal>
       </div>
     </section>
   )

@@ -1,13 +1,14 @@
 "use client"
 
-import React, { createContext, useCallback, useContext, useEffect, useRef, useMemo, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 
 const ToastContext = createContext(null)
 
+/** Solo la función `toast` (estable): no re-renderiza el árbol cuando aparece un mensaje. */
 export function useToast() {
-  const ctx = useContext(ToastContext)
-  if (!ctx) return { toast: () => {}, toasts: [] }
-  return ctx
+  const toast = useContext(ToastContext)
+  if (!toast) return { toast: () => {} }
+  return { toast }
 }
 
 const CHAT_INTRO_KEY = 'laguarida-chat-intro-v3'
@@ -59,10 +60,8 @@ export function ToastProvider({ children }) {
     return () => clearTimeout(t)
   }, [])
 
-  const value = useMemo(() => ({ toast, toasts }), [toast, toasts])
-
   return (
-    <ToastContext.Provider value={value}>
+    <ToastContext.Provider value={toast}>
       {children}
       <div
         className="fixed top-1/2 left-1/2 z-[var(--z-toast)] -translate-x-1/2 -translate-y-1/2 w-full max-w-[min(90vw,22rem)] flex flex-col items-center gap-2 pointer-events-none px-4"

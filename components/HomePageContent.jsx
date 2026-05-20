@@ -1,8 +1,9 @@
 "use client"
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import { layoutShellClassName } from '../lib/layoutShell'
+import { useProducts, weeklyRotateCatalog } from '../hooks/useProducts'
 import HomeHeroDynamic from './HomeHeroDynamic'
 import FeaturedSelection from './FeaturedSelection'
 import LowCostSection from './LowCostSection'
@@ -12,6 +13,15 @@ import FaqSection from './FaqSection'
 const HomeTrustStats = dynamic(() => import('./HomeTrustStats'))
 
 export default function HomePageContent({ heroProduct }) {
+  const { products, loading } = useProducts({ shuffleCatalog: false })
+  const featuredItems = useMemo(
+    () => weeklyRotateCatalog(products.filter((p) => p.low_cost !== true)),
+    [products]
+  )
+  const lowCostItems = useMemo(
+    () => products.filter((p) => p.low_cost === true),
+    [products]
+  )
   return (
     <>
       <section
@@ -41,10 +51,10 @@ export default function HomePageContent({ heroProduct }) {
           className="mt-8 min-w-0 w-full pt-0 sm:mt-8 sm:pt-3 md:mt-10 md:pt-5 max-[767px]:mt-8"
           aria-labelledby="seleccion-heading"
         >
-          <FeaturedSelection />
+          <FeaturedSelection items={featuredItems} loading={loading} />
         </section>
 
-        <LowCostSection />
+        <LowCostSection items={lowCostItems} loading={loading} />
 
         <section className="mt-8 sm:mt-10 md:mt-12 !pt-3 !pb-0 md:!pt-5 md:!pb-1 max-[767px]:mt-8">
           <About />

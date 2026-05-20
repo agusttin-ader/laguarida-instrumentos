@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import NextImage from "next/image";
 import { useEffect } from "react";
+import { shouldBypassNextOptimization } from "../lib/utils/imageService";
 
 export default function ImageWithSkeleton({ src, alt, width, height, sizes, quality = 72, priority = false, loading = 'lazy', className = "", style = {}, fill = false, fit, imgClassName = '', imgStyle = {}, onImageLoad, disableClientPreview = true, unoptimized }) {
   const [loaded, setLoaded] = useState(false);
@@ -57,9 +58,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
     ...imgStyle
   }
   const srcStr = typeof src === 'string' ? src.trim() : ''
-  const isSupabaseObject =
-    srcStr.includes('supabase.co') && srcStr.includes('/storage/v1/object/')
-  const useUnoptimized = Boolean(unoptimized) || isSupabaseObject
+  const useUnoptimized = Boolean(unoptimized) || shouldBypassNextOptimization(srcStr)
 
   return (
     <div

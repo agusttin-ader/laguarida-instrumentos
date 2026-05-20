@@ -24,7 +24,7 @@ function stableHash(input) {
   return hash >>> 0
 }
 
-function weeklyRotateCatalog(list) {
+export function weeklyRotateCatalog(list) {
   const weekKey = getWeekKey()
   return [...list]
     .map((item, idx) => ({

@@ -1,7 +1,9 @@
 "use client"
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useToast } from './ToastContext'
+
+const FavoritesContext = createContext(null)
 
 const FAVORITES_KEY = 'laguarida-favorites'
 
@@ -22,7 +24,7 @@ function setStoredSlugs(slugs) {
   } catch { /* ignore */ }
 }
 
-export function useFavorites() {
+export function FavoritesProvider({ children }) {
   const [slugs, setSlugs] = useState([])
 
   useEffect(() => {
@@ -43,7 +45,29 @@ export function useFavorites() {
   }, [])
 
   const isFavorite = useCallback((slug) => slugs.includes(slug), [slugs])
+  const value = useMemo(() => ({ slugs, toggle, isFavorite }), [slugs, toggle, isFavorite])
 
+  return <FavoritesContext.Provider value={value}>{children}</FavoritesContext.Provider>
+}
+
+export function useFavorites() {
+  const ctx = useContext(FavoritesContext)
+  if (ctx) return ctx
+
+  const [slugs, setSlugs] = useState([])
+  useEffect(() => {
+    setSlugs(getStoredSlugs())
+  }, [])
+  const toggle = useCallback((slug) => {
+    if (!slug) return
+    const next = getStoredSlugs()
+    const idx = next.indexOf(slug)
+    if (idx >= 0) next.splice(idx, 1)
+    else next.push(slug)
+    setStoredSlugs(next)
+    setSlugs([...next])
+  }, [])
+  const isFavorite = useCallback((s) => slugs.includes(s), [slugs])
   return { slugs, toggle, isFavorite }
 }
 

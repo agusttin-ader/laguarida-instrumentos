@@ -31,7 +31,8 @@ npm run test:e2e     # pruebas E2E (requiere test:e2e:install antes)
 **Rendimiento / fluidez ya contemplados en el proyecto**
 
 - `reactStrictMode: true` y `removeConsole` en producción (`next.config.js`).
-- Imágenes: AVIF/WebP, calidades declaradas, `preconnect`/`dns-prefetch` a Supabase en `app/layout.js`.
+- Imágenes: AVIF/WebP y calidades por contexto (cards, galería, lightbox). Con catálogo local (`SUPABASE_BLOCKED` en `lib/supabase/mode.js`), Next optimiza automáticamente los archivos en `public/images/` vía `/_next/image` (no hace falta Supabase).
+- Cuando vuelva Supabase remoto: `NEXT_PUBLIC_SUPABASE_IMAGE_TRANSFORM=true` o `NEXT_ENABLE_IMAGE_OPTIMIZATION=true` (plan Vercel Pro).
 - Animaciones y `prefers-reduced-motion` en CSS donde aplica.
 
 ## Notas

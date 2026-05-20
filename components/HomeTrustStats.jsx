@@ -116,7 +116,11 @@ export default function HomeTrustStats() {
   }, [])
 
   const onReveal = useCallback(() => {
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const instant =
+      typeof window !== 'undefined' &&
+      (window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+        window.matchMedia('(max-width: 767px)').matches)
+    if (instant) {
       setDisplay({
         k: FOLLOWERS_K,
         sales: TRUST_SALES_COUNT,
@@ -124,7 +128,7 @@ export default function HomeTrustStats() {
       })
       return
     }
-    const countDelay = window.matchMedia('(min-width: 768px)').matches ? REVEAL_TO_COUNT_MS : 0
+    const countDelay = REVEAL_TO_COUNT_MS
     countTimeoutRef.current = window.setTimeout(() => {
       if (!cancelledRef.current) runCountUp()
     }, countDelay)

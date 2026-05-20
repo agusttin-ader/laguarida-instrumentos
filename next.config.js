@@ -1,5 +1,15 @@
 /** @type {import('next').NextConfig} */
 
+const { SUPABASE_BLOCKED } = require('./lib/supabase/mode')
+
+/** Catálogo en /public → Next redimensiona sin URLs remotas (evita 402 de Vercel). */
+function imagesUnoptimized() {
+  if (process.env.NEXT_ENABLE_IMAGE_OPTIMIZATION === 'true') return false
+  if (process.env.NEXT_ENABLE_IMAGE_OPTIMIZATION === 'false') return true
+  if (SUPABASE_BLOCKED) return false
+  return true
+}
+
 function supabaseRemotePatternsFromEnv() {
   const rawUrls = [process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_URL].filter(Boolean)
   const seen = new Set()
@@ -30,13 +40,12 @@ const nextConfig = {
     optimizePackageImports: ['phosphor-react'],
   },
   images: {
-    // Vercel cobra / limita el Image Optimization (`/_next/image`). Sin plan Pro las URLs remotas
-    // pueden responder 402. Por defecto `unoptimized: true` (imagen directa; combiná con
-    // NEXT_PUBLIC_SUPABASE_IMAGE_TRANSFORM=true para pesos más chicos desde Supabase).
-    // Con plan Pro / self-hosted: NEXT_ENABLE_IMAGE_OPTIMIZATION=true para redimensionar vía Next.
-    unoptimized: process.env.NEXT_ENABLE_IMAGE_OPTIMIZATION === 'true' ? false : true,
+    // Local (SUPABASE_BLOCKED): optimización ON para /images/* vía `/_next/image`.
+    // Supabase remoto: OFF por defecto (402 en Vercel free); usar NEXT_PUBLIC_SUPABASE_IMAGE_TRANSFORM
+    // o NEXT_ENABLE_IMAGE_OPTIMIZATION=true con plan Pro.
+    unoptimized: imagesUnoptimized(),
     // Allowed quality values used across the app (avoid Next.js warnings in dev/prod).
-    qualities: [100, 95, 92, 90, 88, 86, 85, 82, 80, 78, 76, 75, 72, 70, 68, 65, 62, 60],
+    qualities: [100, 95, 92, 90, 88, 86, 85, 82, 80, 78, 76, 75, 74, 72, 70, 68, 65, 62, 60, 58],
     // Prefer modern formats when available to reduce transfer size
     formats: ['image/avif', 'image/webp'],
     // Host explícito desde env (build/deploy) + comodín para cualquier proyecto *.supabase.co

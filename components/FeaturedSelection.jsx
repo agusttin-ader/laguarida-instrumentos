@@ -2,13 +2,11 @@
 
 import React, { useEffect, useState } from 'react'
 import ProductGrid from './ProductGrid'
-import { useProducts } from '../hooks/useProducts'
 
-export default function FeaturedSelection() {
+export default function FeaturedSelection({ items = [], loading = false }) {
   const [q, setQ] = useState('')
   const [isFiltering, setIsFiltering] = useState(false)
-  const { products, loading: productsLoading } = useProducts({ shuffleCatalog: true })
-  const featured = Array.isArray(products) ? products.filter((p) => p.low_cost !== true) : []
+  const featured = Array.isArray(items) ? items : []
 
   useEffect(() => {
     if (!q) {
@@ -73,7 +71,7 @@ export default function FeaturedSelection() {
         <ProductGrid
           filters={{ q }}
           items={featured}
-          parentLoading={productsLoading}
+          parentLoading={loading}
         />
       </article>
     </>
