@@ -89,7 +89,15 @@ export default function AdminLoginPage() {
         return
       }
 
-      router.push('/admin/productos/catalogo')
+      const meRes = await fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
+      const me = meRes.ok ? await meRes.json() : null
+      if (!me?.authenticated) {
+        setError('Sesión iniciada pero no se pudo validar. Recargá la página e intentá de nuevo.')
+        setLoading(false)
+        return
+      }
+
+      router.replace('/admin/productos/catalogo')
     } catch (err) {
       setError(err?.message || 'Error inesperado. Probá de nuevo.')
       setLoading(false)
