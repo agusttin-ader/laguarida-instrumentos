@@ -1,54 +1,9 @@
 [
   {
-    "id": "0102be95-8a2e-451a-9701-a15cc14ec0ec",
-    "name": "Paul Reed Smith Silver Sky.",
-    "slug": "paul-reed-smith-silver-sky",
-    "price": 1350.0,
-    "currency": "USD",
-    "image_url": "hero.jpg",
-    "images": [
-      "back.jpg",
-      "front-case-open-2.jpg",
-      "front-case-open.jpg",
-      "front-pick-2.jpg",
-      "front-pick-3.jpg",
-      "front-pick-4.jpg",
-      "front-pick-5.jpg",
-      "front-pick-6.jpg",
-      "front-pick-7.jpg",
-      "front-pick.jpg",
-      "hero.jpg",
-      "pala-back.jpg",
-      "pala-front-1.jpg",
-      "pala-front.jpg",
-      "trastes-2.jpg",
-      "trastes-3.jpg",
-      "trastes.jpg"
-    ],
-    "description": "Hoy damos paso a la Signature de John Mayer de PRS de la línea SE. Este modelo cuenta con un cuerpo de Poplar en acabado en poli color Dragón Fruit, mástil de Arce con un perfil denominado 635 JM y una trastera de Arce, con un radio de 8,5’ de 22 trastes jumbo, y escala clásica de Strat 25,5”. En su electrónica posee 3 pickups PRS 635 JM “S”, junto a una selectora de 5 posiciones y controles de volumen con tono 1 y 2. En su Hardware nos encontramos con un puente estilo vintage de 2 pivotes con selletas individuales y clavijas Vintage Style . La guitarra modelo 2023, se encuentra en perfecto estado minty y la misma cuenta con su Gigbag de fábrica , palanca tremolo y accesorios de ajuste.",
-    "created_at": "2026-02-17 16:55:04.532013",
-    "mics": "SSS",
-    "wood": "Poplar",
-    "model": "Stratocaster",
-    "scale_length": "25,5\"",
-    "neck_profile": "635 JM",
-    "fingerboard_radius": "8,5'",
-    "fingerboard_material": "Arce",
-    "frets": "22 Jumbo",
-    "bridge": "Vintage 2 puntos",
-    "tuners": "Vintage Style",
-    "controls": "Selector 5 posiciones",
-    "year": 2023,
-    "origin": "China",
-    "low_cost": false,
-    "listing_status": "available",
-    "highlights": []
-  },
-  {
     "id": "0226c476-bd34-40fc-9a57-d2b0194b0a65",
     "name": "Fender Custom Shop Strat 67' Relic.",
     "slug": "fender-custom-shop-strat-67-relic",
-    "price": 5500.0,
+    "price": 5500,
     "currency": "USD",
     "image_url": "1773546027018-9238-92fc974e-2760-483e-8930-5a719f4f015a.jpeg",
     "images": [
@@ -88,7 +43,7 @@
     "id": "1785b58c-898e-4df7-b9a8-e13b901b6134",
     "name": "RGX Stratocaster ST 570.",
     "slug": "rgx-stratocaster-st-570",
-    "price": 300000.0,
+    "price": 300000,
     "currency": "ARS",
     "image_url": "1776983115439-9187-8dc9702f-c75f-43df-a9c7-8057fe986f1b.jpeg",
     "images": [
@@ -125,7 +80,7 @@
     "id": "2c0b9670-c02a-4659-84c1-90bc82693d11",
     "name": "Paul Reed Smith Custom 24 25th Aniversario. (10-Top)",
     "slug": "paul-reed-smith-custom-24-25th-aniversario-10-top",
-    "price": 6900.0,
+    "price": 6900,
     "currency": "USD",
     "image_url": "1773543503437-3947-fed7014f-447e-442d-b91a-4760e3a33532.jpeg",
     "images": [
@@ -165,7 +120,7 @@
     "id": "3e22a8e0-f245-4adb-89b7-43a9052a09eb",
     "name": "Fender American Vintage 59'",
     "slug": "fender-american-vintage-59",
-    "price": 2990.0,
+    "price": 2990,
     "currency": "USD",
     "image_url": "hero.jpg",
     "images": [
@@ -214,7 +169,7 @@
     "id": "4681a903-b929-4037-96a2-9cb69f4fdd3a",
     "name": "Paul Reed Smith Custom 24",
     "slug": "paul-reed-smith-custom-24",
-    "price": 4300.0,
+    "price": 4300,
     "currency": "USD",
     "image_url": "1773544821732-7145-6c4db2c1-fe86-4a8e-8a6d-25ec686f32af.jpeg",
     "images": [
@@ -254,7 +209,7 @@
     "id": "60e6f343-d4cf-4d31-9505-0720eb511cb4",
     "name": "Taylor 214 CE",
     "slug": "taylor-214-ce",
-    "price": 1350.0,
+    "price": 1350,
     "currency": "USD",
     "image_url": "1778453572699-7390-15d08dc2-2a8d-46f3-b3a3-761b78a9f3e9.jpeg",
     "images": [
@@ -292,7 +247,7 @@
     "id": "9ae2abf2-cf63-47d4-b273-b9d59473df00",
     "name": "Fender Stratocaster Custom Shop 64’.",
     "slug": "fender-stratocaster-custom-shop-64",
-    "price": 4300.0,
+    "price": 4300,
     "currency": "USD",
     "image_url": "1773545566637-6159-a4cc856f-8b28-40e0-a38c-51a445d79dcc.jpeg",
     "images": [
@@ -332,7 +287,7 @@
     "id": "9f1850f6-2c36-423d-9fa7-530d8203f15d",
     "name": "Fender American Vintage ll 65’",
     "slug": "fender-american-vintage-ll-65",
-    "price": 3300.0,
+    "price": 3300,
     "currency": "USD",
     "image_url": "01456703-a995-4fbe-9994-615d16794341.JPG",
     "images": [
@@ -392,7 +347,7 @@
     "id": "acd6f7bb-a84a-48e7-8463-bd7daedb9514",
     "name": "Fender Telecaster Am Original 60’.",
     "slug": "fender-telecaster-am-original-60",
-    "price": 3000.0,
+    "price": 3000,
     "currency": "USD",
     "image_url": "09df1a83-c9c3-49e7-85de-329867b18079.JPG",
     "images": [
@@ -436,7 +391,7 @@
     "id": "bffd79b4-2de6-4344-b44a-e3a65f176ed3",
     "name": "Fender Stratocaster Std MIM",
     "slug": "fender-stratocaster-std-mim",
-    "price": 1050.0,
+    "price": 1050,
     "currency": "USD",
     "image_url": "1778452984933-4241-a0cf1937-a89c-4b42-a416-8976acb73ea9.jpeg",
     "images": [
@@ -476,7 +431,7 @@
     "id": "c3e38b58-1d1c-4d02-9b3f-21cbf894fe57",
     "name": "Fender Telecaster Am Deluxe.",
     "slug": "fender-telecaster-am-deluxe",
-    "price": 2500.0,
+    "price": 2500,
     "currency": "USD",
     "image_url": "hero.jpg",
     "images": [
@@ -515,7 +470,7 @@
     "id": "c47b02c7-7828-4d7d-9cbd-7f579cef5939",
     "name": "Gibson Les Paul Traditional Pro III 2017.",
     "slug": "gibson-les-paul-traditional-pro-iii-2017",
-    "price": 3000.0,
+    "price": 3000,
     "currency": "USD",
     "image_url": "1778007634173-7616-28287126-cb87-4986-95d4-d9690949454d.jpeg",
     "images": [
@@ -549,14 +504,14 @@
     "year": 2016,
     "origin": "USA",
     "low_cost": false,
-    "listing_status": "available",
+    "listing_status": "reserved",
     "highlights": []
   },
   {
     "id": "cdb0dceb-b646-48de-95ab-a4bc42ae92fa",
     "name": "Ibánez RG 350 EXZ.",
     "slug": "ibanez-rg-350-exz",
-    "price": 650.0,
+    "price": 650,
     "currency": "USD",
     "image_url": "hero.jpg",
     "images": [
