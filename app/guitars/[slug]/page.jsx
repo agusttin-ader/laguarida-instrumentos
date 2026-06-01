@@ -1,13 +1,8 @@
 import React from 'react'
-import fs from 'fs/promises'
-import path from 'path'
 import ProductGalleryModern from '../../../components/ProductGalleryModern'
 import normalizeProduct from '../../../lib/utils/normalizeProduct'
 import { fetchProductRowBySlug } from '../../../lib/data/fetchProductBySlug'
-import { PRODUCT_LIST_COLUMNS } from '../../../lib/data/productColumns'
-import { getSupabaseServerClient } from '../../../lib/supabase/server'
-import { SUPABASE_BLOCKED } from '../../../lib/supabase/mode'
-import { getBackupProducts } from '../../../lib/data/localProductsBackup'
+import { getPublicCatalogRows } from '../../../lib/data/publicCatalog'
 import ProductCard from '../../../components/ProductCard'
 import imageService from '../../../lib/utils/imageService'
 import ProductShareAndFavorite from '../../../components/ProductShareAndFavorite'
@@ -20,10 +15,9 @@ import { absoluteUrl, toAbsoluteUrl } from '../../../lib/siteUrl'
 import { buildWaMeHref, whatsAppProductMessage } from '../../../lib/whatsappWeb'
 import { descriptionLooksLikeMarkdown, markdownToPlainText } from '../../../lib/utils/descriptionMarkdown'
 import ProductDescriptionMarkdown from '../../../components/ProductDescriptionMarkdown'
-import { unstable_noStore as noStore } from 'next/cache'
 
-/** Ficha siempre dinámica: evita HTML viejo tras editar en admin (antes ~5 min con ISR). */
-export const dynamic = 'force-dynamic'
+/** ISR: menos llamadas a Supabase; tras guardar en admin se invalida con revalidatePath/revalidateTag. */
+export const revalidate = 300
 
 /** URLs absolutas de Storage en el servidor (SUPABASE_URL disponible aquí). */
 function resolveGalleryImageRef(ref) {
@@ -186,34 +180,12 @@ function extractDescriptionLeadAndBody(paragraphs) {
 
 // Generate page metadata dynamically based on the product data
 export async function generateMetadata({ params }) {
-  noStore()
   const resolvedParams = await params
   const { slug } = resolvedParams || {}
   let product = null
   if (slug) {
     const row = await fetchProductRowBySlug(slug)
     if (row) product = normalizeProduct(row)
-  }
-
-  // local markdown fallback
-  if (!product && slug) {
-    try {
-      const filePath = path.join(process.cwd(), 'data', 'guitars', `${slug}.md`)
-      const raw = await fs.readFile(filePath, 'utf8')
-      const titleMatch = raw.match(/^#\s+(.+)$/m)
-      const modelMatch = raw.match(/\*\*Model:\*\*\s*(.+)/i)
-      const priceMatch = raw.match(/\*\*Price:\*\*\s*(.+)/i)
-      const body = raw.replace(/^#.+$/m, '').replace(/\*\*Model:\*\*.+$/im, '').replace(/\*\*Price:\*\*.+$/im, '').trim()
-      product = {
-        slug,
-        name: titleMatch ? titleMatch[1].trim() : (modelMatch ? modelMatch[1].trim() : slug),
-        model: modelMatch ? modelMatch[1].trim() : '',
-        price: priceMatch ? priceMatch[1].trim() : null,
-        description: body
-      }
-    } catch {
-      product = null
-    }
   }
 
   const title = product && product.name ? `${product.name} | La Guarida Instrumentos` : 'La Guarida — Instrumentos'
@@ -251,7 +223,6 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function GuitarPage({ params }) {
-  noStore()
   const resolvedParams = await params
   const { slug } = resolvedParams ?? {}
 
@@ -261,48 +232,11 @@ export default async function GuitarPage({ params }) {
     if (row) product = normalizeProduct(row)
   }
 
-  // Fallback: try to load local markdown data if Supabase has no product
-  if (!product) {
-    try {
-      if (slug) {
-        const filePath = path.join(process.cwd(), 'data', 'guitars', `${slug}.md`)
-        const raw = await fs.readFile(filePath, 'utf8')
-        // Simple parsing: title (# ), **Model:**, **Price:**, rest as description
-        const titleMatch = raw.match(/^#\s+(.+)$/m)
-        const modelMatch = raw.match(/\*\*Model:\*\*\s*(.+)/i)
-        const priceMatch = raw.match(/\*\*Price:\*\*\s*(.+)/i)
-        const body = raw.replace(/^#.+$/m, '').replace(/\*\*Model:\*\*.+$/im, '').replace(/\*\*Price:\*\*.+$/im, '').trim()
-
-        product = normalizeProduct({
-          slug,
-          name: titleMatch ? titleMatch[1].trim() : (modelMatch ? modelMatch[1].trim() : slug),
-          model: modelMatch ? modelMatch[1].trim() : '',
-          price: priceMatch ? priceMatch[1].trim() : null,
-          description: body,
-        })
-      }
-    } catch {
-      product = null
-    }
-  }
-
-  // Fetch related products: we'll load a batch and filter by shared words
   let relatedProducts = []
   try {
     if (product) {
-      let allProducts = getBackupProducts({ includeReserved: false })
+      const allProducts = (await getPublicCatalogRows({ includeReserved: false }))
         .filter((p) => p.slug !== product.slug)
-      if (!SUPABASE_BLOCKED) {
-        const supabase = getSupabaseServerClient()
-        const { data } = await supabase
-          .from('products')
-          .select(PRODUCT_LIST_COLUMNS)
-          .eq('listing_status', 'available')
-          .neq('slug', product.slug)
-          .order('created_at', { ascending: false })
-          .limit(36)
-        if (Array.isArray(data)) allProducts = data
-      }
       // Build a normalized set of words from brand, model and name (remove diacritics)
       const normalizeText = (s = '') => String(s || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
       const wordsSource = `${product.brand || ''} ${product.model || ''} ${product.name || ''}`

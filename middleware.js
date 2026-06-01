@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server'
-import { SUPABASE_BLOCKED } from './lib/supabase/mode'
+import { isSupabaseFullyBlocked } from './lib/supabase/mode'
 
 export function middleware(req) {
   const { pathname } = req.nextUrl
 
-  // Contingency mode: admin locked temporarily (same switch as lib/supabase/mode.js).
-  if (SUPABASE_BLOCKED && pathname.startsWith('/admin')) {
+  if (isSupabaseFullyBlocked() && pathname.startsWith('/admin')) {
     return NextResponse.redirect(new URL('/', req.url))
   }
 
@@ -13,5 +12,5 @@ export function middleware(req) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*']
+  matcher: ['/admin/:path*'],
 }

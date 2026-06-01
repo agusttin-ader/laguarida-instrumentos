@@ -1,6 +1,8 @@
 # Backup local de productos
 
-Cuando Supabase no responde, la app usa `data/products-backup.json`.
+En desarrollo (por defecto) y en contingencia, la app usa `data/products-backup.json`.
+
+Actualizar desde Supabase: `npm run sync:catalog` (ver [docs/GUIA-CATALOGO.md](../docs/GUIA-CATALOGO.md)).
 
 ## Formato
 

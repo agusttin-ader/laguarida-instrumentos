@@ -11,7 +11,8 @@
     "verify": "npm run lint:strict && npm run build",
     "test:e2e": "playwright test",
     "test:e2e:install": "playwright install",
-    "cleanup:supabase": "node scripts/cleanup-supabase-from-site.mjs"
+    "cleanup:supabase": "node scripts/cleanup-supabase-from-site.mjs",
+    "sync:catalog": "node scripts/sync-catalog-backup.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",

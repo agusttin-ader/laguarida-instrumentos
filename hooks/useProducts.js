@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import normalizeProduct from '../lib/utils/normalizeProduct'
 
-const CACHE_TTL_MS = 5 * 60 * 1000 // 5 min — menos requests al API / Supabase entre visitas
+const CACHE_TTL_MS = 10 * 60 * 1000 // 10 min — menos requests al API / Supabase entre visitas
 let cache = { data: null, timestamp: 0 }
 let inFlight = null
 

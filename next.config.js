@@ -1,12 +1,12 @@
 /** @type {import('next').NextConfig} */
 
-const { SUPABASE_BLOCKED } = require('./lib/supabase/mode')
+const { useLocalCatalog } = require('./lib/supabase/mode')
 
 /** Catálogo en /public → Next redimensiona sin URLs remotas (evita 402 de Vercel). */
 function imagesUnoptimized() {
   if (process.env.NEXT_ENABLE_IMAGE_OPTIMIZATION === 'true') return false
   if (process.env.NEXT_ENABLE_IMAGE_OPTIMIZATION === 'false') return true
-  if (SUPABASE_BLOCKED) return false
+  if (useLocalCatalog()) return false
   return true
 }
 

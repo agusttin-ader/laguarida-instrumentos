@@ -1,11 +1,10 @@
 export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { getSupabaseServerClient, getSupabaseAdminClient } from '../../../lib/supabase/server'
-import { PRODUCT_LIST_COLUMNS } from '../../../lib/data/productColumns'
-import { getBackupProducts } from '../../../lib/data/localProductsBackup'
-import { SUPABASE_BLOCKED } from '../../../lib/supabase/mode'
+import { getPublicCatalogRows, getAdminCatalogFromSupabase } from '../../../lib/data/publicCatalog'
+import { isSupabaseAdminEnabled } from '../../../lib/supabase/mode'
 import { cookies } from 'next/headers'
 import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
 
@@ -80,20 +79,6 @@ async function removeProductFilesFromStorage(deletedRows) {
   }
 }
 
-/** Asegura URLs absolutas de Storage (evita rutas /storage/... rotas en el cliente). */
-function withResolvedImageUrls(row) {
-  if (!row || typeof row !== 'object') return row
-  const p = { ...row }
-  if (p.image_url) {
-    const r = resolveImageUrl(p.image_url)
-    if (r) p.image_url = r
-  }
-  if (Array.isArray(p.images)) {
-    p.images = p.images.map((u) => resolveImageUrl(u) || u).filter(Boolean)
-  }
-  return p
-}
-
 // helper to extract sb-access-token from cookie store or raw header
 async function extractAccessToken(req) {
   try {
@@ -132,6 +117,7 @@ function revalidateProductPublicPaths(slug) {
   if (!slug || typeof slug !== 'string') return
   const s = slug.trim()
   if (!s) return
+  revalidateTag('catalog')
   revalidatePath(`/guitars/${s}`)
   revalidatePath('/')
 }
@@ -324,51 +310,23 @@ export async function GET(req) {
     const url = new URL(req.url)
     const adminCatalog = url.searchParams.get('scope') === 'admin'
     const accessToken = await extractAccessToken(req)
-    /** Listado completo (incl. reservados) solo desde el panel, con ?scope=admin y sesión. Si hay cookies de admin pero se pide el catálogo público (home, etc.), se filtra igual. */
     const showFullCatalog = Boolean(accessToken && adminCatalog)
-    if (SUPABASE_BLOCKED) {
-      const headers = showFullCatalog
-        ? { 'Cache-Control': 'private, no-store' }
-        : {
-            'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=300, max-age=60',
-          }
-      return NextResponse.json(getBackupProducts({ includeReserved: showFullCatalog }), { status: 200, headers })
+
+    const privateHeaders = { 'Cache-Control': 'private, no-store' }
+    const publicHeaders = {
+      'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600, max-age=120',
     }
 
-    const supabase = await getSupabaseServerClient(accessToken)
-    const columns = showFullCatalog ? '*' : PRODUCT_LIST_COLUMNS
-    let query = supabase.from('products').select(columns).order('created_at', { ascending: false })
-    if (!showFullCatalog) {
-      query = query.eq('listing_status', 'available')
-    }
-    const { data, error } = await query
-
-    if (error) {
-      const fallback = getBackupProducts({ includeReserved: showFullCatalog })
-      if (fallback.length) {
-        const headers = showFullCatalog
-          ? { 'Cache-Control': 'private, no-store' }
-          : {
-              'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=300, max-age=60',
-            }
-        return NextResponse.json(fallback, { status: 200, headers })
+    if (showFullCatalog) {
+      if (!isSupabaseAdminEnabled()) {
+        return NextResponse.json({ error: 'Admin deshabilitado' }, { status: 503 })
       }
-      return NextResponse.json({ error: error.message }, { status: error.status || 500 })
+      const payload = await getAdminCatalogFromSupabase()
+      return NextResponse.json(payload, { status: 200, headers: privateHeaders })
     }
 
-    const headers = showFullCatalog
-      ? { 'Cache-Control': 'private, no-store' }
-      : {
-          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600, max-age=120',
-        }
-    const payload = Array.isArray(data) ? data.map(withResolvedImageUrls) : data
-    if (Array.isArray(payload) && payload.length === 0) {
-      const fallback = getBackupProducts({ includeReserved: showFullCatalog })
-      if (fallback.length) {
-        return NextResponse.json(fallback, { status: 200, headers })
-      }
-    }
-    return NextResponse.json(payload, { status: 200, headers })
+    const payload = await getPublicCatalogRows({ includeReserved: false })
+    return NextResponse.json(payload, { status: 200, headers: publicHeaders })
   } catch (err) {
     return NextResponse.json({ error: err.message || String(err) }, { status: 500 })
   }
@@ -376,7 +334,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    if (SUPABASE_BLOCKED) {
+    if (!isSupabaseAdminEnabled()) {
       return NextResponse.json({ error: 'Admin mutaciones deshabilitadas temporalmente' }, { status: 503 })
     }
     if (!assertSameOrigin(req)) {
@@ -415,7 +373,7 @@ export async function POST(req) {
 
 export async function PATCH(req) {
   try {
-    if (SUPABASE_BLOCKED) {
+    if (!isSupabaseAdminEnabled()) {
       return NextResponse.json({ error: 'Admin mutaciones deshabilitadas temporalmente' }, { status: 503 })
     }
     if (!assertSameOrigin(req)) {
@@ -459,7 +417,7 @@ export async function PATCH(req) {
 
 export async function DELETE(req) {
   try {
-    if (SUPABASE_BLOCKED) {
+    if (!isSupabaseAdminEnabled()) {
       return NextResponse.json({ error: 'Admin mutaciones deshabilitadas temporalmente' }, { status: 503 })
     }
     if (!assertSameOrigin(req)) {
