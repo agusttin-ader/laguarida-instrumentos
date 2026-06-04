@@ -1,0 +1,17 @@
+Producto: Fender Am Professional Classic 2025.
+Carpeta: public/images/products/fender-am-professional-classic-2025/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1780522671682-dc44f1e90efd-d76a7094-dbfd-48bc-94cd-4d8e37d34fa2.jpg
+2. 1780522695594-6bd449f65a31-d260e8f8-ef4c-49fa-b9cb-3fb004e39311.jpg
+3. 1780522699142-98f5c6c71d98-21794b63-4731-4919-a261-c36452bc3fd9.jpg
+4. 1780522702441-68daf17077bc-7b4b007a-8900-48f0-bb90-105706f813c7.jpg
+5. 1780522705578-a6b313c43de2-b1988509-06e9-40d9-bbe1-4a96c939720b.jpg
+6. 1780522709450-8fa764166f86-53212948-a590-401c-941c-34968fb1c649.jpg
+7. 1780522712003-e7ae11593dfb-4fb77e8e-de22-4744-974d-94b84db48c60.jpg
+8. 1780522715692-2a32691f0cb6-5e2ec2d9-857b-4dd9-8e2f-9f9437bf1029.jpg
+9. 1780522719374-5c58426262b0-47c12b53-d0c3-4b7f-93fb-0d50e1071954.jpg
+10. 1780522722411-dcacc791e02b-283cb62b-a8c9-4cc4-a95a-dddc96c02000.jpg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

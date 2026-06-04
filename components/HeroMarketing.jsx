@@ -1,7 +1,6 @@
 'use client'
 
 import Image from 'next/image'
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 const HERO_PRIMARY_DESKTOP = '/images/optimized/hero5-desktop-pil.jpg'
@@ -14,7 +13,7 @@ const SUBHEADLINE = 'Instrumentos con historia y trato cercano.'
 const MOBILE_HEADLINE = 'Tu refugio del buen sonido'
 const MOBILE_SUBHEADLINE = 'Instrumentos con historia y trato cercano.'
 
-export default function HeroMarketing({ product = null }) {
+export default function HeroMarketing() {
   const [heroSrc, setHeroSrc] = useState(() => {
     if (typeof window === 'undefined') return HERO_PRIMARY_DESKTOP
     return window.matchMedia(MOBILE_QUERY).matches ? HERO_PRIMARY_MOBILE : HERO_PRIMARY_DESKTOP
@@ -28,14 +27,6 @@ export default function HeroMarketing({ product = null }) {
     mq.addEventListener('change', syncSrc)
     return () => mq.removeEventListener('change', syncSrc)
   }, [])
-
-  const kicker =
-    product?.category && String(product.category).trim()
-      ? String(product.category).trim()
-      : 'La Guarida'
-
-  const slug = product?.slug && String(product.slug).trim()
-  const productHref = slug ? `/guitars/${encodeURIComponent(slug)}` : null
 
   return (
     <div className="hero-home relative isolate min-h-[100dvh] w-full max-md:min-h-0 overflow-hidden bg-[var(--dark-bg-page)]">
@@ -82,7 +73,7 @@ export default function HeroMarketing({ product = null }) {
         <div className="mx-auto w-full max-w-md text-center md:mx-0 md:max-w-[min(100%,28rem)] md:text-left sm:max-w-[min(100%,32rem)] lg:max-w-xl">
           <p className="mb-4 flex flex-col items-center gap-3 md:items-start">
             <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--palette-gold)] drop-shadow-[0_0_12px_rgba(242,174,48,0.75)] sm:text-xs">
-              {kicker}
+              La Guarida
             </span>
             <span
               className="h-0.5 w-12 max-md:mx-auto rounded-full md:self-start shadow-[0_0_14px_rgba(242,174,48,0.65)]"
@@ -105,16 +96,6 @@ export default function HeroMarketing({ product = null }) {
               {MOBILE_SUBHEADLINE}
             </span>
           </p>
-          {productHref ? (
-            <div className="mt-7 flex w-full max-w-md max-md:mx-auto sm:mt-9 md:mx-0 md:mt-9">
-              <Link
-                href={productHref}
-                className="no-custom-btn inline-flex min-h-[48px] w-full shrink-0 items-center justify-center rounded-3xl border-2 border-[var(--palette-gold)] bg-gradient-to-br from-[rgba(242,174,48,0.35)] via-[rgba(242,135,41,0.18)] to-[rgba(242,60,19,0.12)] px-7 py-3 text-[15px] font-semibold text-white shadow-[0_4px_28px_rgba(242,174,48,0.35)] transition-[transform,box-shadow,border-color] duration-200 hover:border-[var(--palette-orange)] hover:shadow-[0_6px_36px_rgba(242,135,41,0.45)] hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--palette-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-black/60 max-md:max-w-sm max-md:self-center md:w-auto"
-              >
-                Ver esta pieza
-              </Link>
-            </div>
-          ) : null}
         </div>
       </div>
 

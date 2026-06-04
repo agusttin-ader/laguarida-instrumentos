@@ -1,0 +1,20 @@
+Producto: Gibson Les Paul Traditional Pro III 2017.
+Carpeta: public/images/products/gibson-les-paul-traditional-pro-iii-2017/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1778007634173-7616-28287126-cb87-4986-95d4-d9690949454d.jpeg
+2. 1778008282478-6760-7e094f5e-80a4-4129-9e45-0c8ecbe03874.jpeg
+3. 1778008284843-4712-877ffdaa-c2ee-4b4b-91cd-b243671f5ad2.jpeg
+4. 1778008287159-4479-68056131-02e0-49be-8a25-abc726d11e80.jpeg
+5. 1778008289070-1907-16b9b6ca-a350-424f-8a0a-d43df7482deb.jpeg
+6. 1778008291452-2406-2de2f7a7-15ef-4c18-bdde-8daa1d78696e.jpeg
+7. 1778008293906-6281-c5f87d7f-81fa-46bc-b9f1-3e75a422520e.jpeg
+8. 1778008296170-9913-ba32e1bd-8934-4f02-a48a-5a71731cfc44.jpeg
+9. 1778008298606-2095-76916477-4b56-4061-adba-7c40c8d9cfb2.jpeg
+10. 1778008301227-4821-206fcde4-dd21-41a1-9795-1179b9d5c08d.jpeg
+11. 1778008303289-1162-6fd5dbc5-64bd-4934-b85b-77af8381cb2d.jpeg
+12. 1778008305301-5110-7c480025-f4d3-4501-a6b7-c01ab59d26d6.jpeg
+13. 1778008307491-9100-19175214-23c9-44c7-bb16-878c7d60515f.jpeg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

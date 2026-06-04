@@ -31,7 +31,7 @@ npm run test:e2e     # pruebas E2E (requiere test:e2e:install antes)
 **Rendimiento / fluidez ya contemplados en el proyecto**
 
 - `reactStrictMode: true` y `removeConsole` en producción (`next.config.js`).
-- Catálogo: en desarrollo usa `data/products-backup.json` por defecto; en producción Supabase con caché. Ver [docs/GUIA-CATALOGO.md](docs/GUIA-CATALOGO.md).
+- Catálogo: tienda pública (local y producción) usa `data/products-backup.json`; admin usa Supabase. Ver [docs/GUIA-CATALOGO.md](docs/GUIA-CATALOGO.md).
 - Imágenes: con catálogo local, Next optimiza `public/images/` vía `/_next/image`.
 - Cuando vuelva Supabase remoto: `NEXT_PUBLIC_SUPABASE_IMAGE_TRANSFORM=true` o `NEXT_ENABLE_IMAGE_OPTIMIZATION=true` (plan Vercel Pro).
 - Animaciones y `prefers-reduced-motion` en CSS donde aplica.

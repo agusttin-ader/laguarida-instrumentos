@@ -1,0 +1,15 @@
+Producto: Gibson SG Standard 2011.
+Carpeta: public/images/products/gibson-sg-standard-2011/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1780602860223-6c19dd88affb-4e857118-a21f-4cf0-aad8-2f52a91a643b.jpg
+2. 1780602892202-1353ae2d9ed5-7ec81c8a-9fe5-4a5f-acef-571391823e79.jpg
+3. 1780602894994-a6a807f1a327-e1a87df6-33a5-4315-9545-3d3570d31aa6.jpg
+4. 1780602898208-5dabbd3134ea-661c651f-8858-4dc6-b38c-e3ec7f26a7a1.jpg
+5. 1780602900690-2918b7e376de-81b9e34d-b676-4865-8162-86786dd9bbb6.jpg
+6. 1780602904476-8f41a2d3092d-dccb52f8-1bdd-4f89-8caf-c9687d7ee23b.jpg
+7. 1780602907418-3104ce3eaf1a-c768ddb1-51b2-4aed-bb23-504c651494e0.jpg
+8. 1780602911365-0796e87a2da8-4441c2cd-1852-4a9e-b6f2-6e3d9a5e4120.jpg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

@@ -1,0 +1,16 @@
+Producto: Fender Stratocaster Player Series HSH 2018.
+Carpeta: public/images/products/fender-stratocaster-player-series-hsh-2018/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1780604240380-c69631ca461d-8d6c9645-4ab6-4d89-86de-ba0c9dc218d4.jpg
+2. 1780604269041-a2d75f54eb75-4f9e8b44-3f86-4895-ab86-eac8fdb98b3d.jpg
+3. 1780604272032-4d0c4a1563e0-5ce1855c-c5c1-4ee4-be20-40e2b8152dbd.jpg
+4. 1780604275540-89bfb3499930-c9100c3d-4163-486d-b383-6325f058a856.jpg
+5. 1780604278291-4c2d3061828a-4a766d98-d24d-44c1-97e7-1c625bd5c2af.jpg
+6. 1780604282291-340510caaaa6-5eaefa29-0199-4c47-b65c-6a833214537a.jpg
+7. 1780604285590-c80f776b2008-e9ed2721-733e-4e89-8133-33588b79d7a7.jpg
+8. 1780604288985-82bfa48c794a-768d2fd9-d5d4-4793-85d0-aebfc01548e6.jpg
+9. 1780604292420-a6d7c03e8b0f-f91c90df-e1ce-405f-abba-7ac28314afd4.jpg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

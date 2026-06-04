@@ -1,0 +1,20 @@
+Producto: Fender Custom Shop Strat 67' Relic.
+Carpeta: public/images/products/fender-custom-shop-strat-67-relic/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1773546027018-9238-92fc974e-2760-483e-8930-5a719f4f015a.jpeg
+2. 1773546056325-9540-cdf6f483-1890-4257-9327-219a1696ebcb.jpeg
+3. 1773546058390-8537-52087d06-a270-4ee9-ad1f-c823009c828d.jpeg
+4. 1773546060242-2598-726e60ca-5ef7-49cb-9c34-c780248dfb26.jpeg
+5. 1773546062033-3557-e462cb4d-ded2-4fed-9702-2359b5ab7574.jpeg
+6. 1773546064960-3616-6bb32f7e-5049-4aa6-affc-582a08959df6.jpeg
+7. 1773546066685-7053-6920b209-affe-4ba1-8db4-5e3ae236689c.jpeg
+8. 1773546068409-1211-13a4b742-53a6-433a-8378-cd260327ab85.jpeg
+9. 1773546070276-1189-c98ca23d-c6c9-4b4f-a264-b99e62feeb5f.jpeg
+10. 1773546072358-5189-22f392de-61af-41bb-96dc-7793d1b881fa.jpeg
+11. 1773546074873-9420-c45f64cc-4a8f-48f2-b539-04c258d8c2ab.jpeg
+12. 1773546076431-7149-d0218e78-f89d-4ad2-b7b7-eafa40cdc469.jpeg
+13. 1773546078204-6932-9a3160bb-4cc4-4f9b-9466-ad70364ea28e.jpeg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

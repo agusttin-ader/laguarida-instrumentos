@@ -12,7 +12,8 @@
     "test:e2e": "playwright test",
     "test:e2e:install": "playwright install",
     "cleanup:supabase": "node scripts/cleanup-supabase-from-site.mjs",
-    "sync:catalog": "node scripts/sync-catalog-backup.mjs"
+    "sync:catalog": "node scripts/sync-catalog-backup.mjs",
+    "init:product-images": "node scripts/sync-catalog-backup.mjs --skip-download"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",

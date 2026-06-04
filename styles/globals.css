@@ -94,26 +94,6 @@
   --vivid-glow-mixed: 0 4px 28px rgba(var(--palette-orange-rgb), 0.35), 0 0 24px rgba(var(--palette-gold-rgb), 0.3);
 }
 
-/* Hero móvil: indicador scroll (HeroMarketing) */
-@keyframes hero-scroll-hint-bob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(7px);
-  }
-}
-.hero-scroll-hint__chevron {
-  animation: hero-scroll-hint-bob 1.85s ease-in-out infinite;
-  will-change: transform;
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero-scroll-hint__chevron {
-    animation: none;
-  }
-}
-
 /* Botones CTA: altura proporcional (mobile más compacto, desktop estándar) */
 .btn-cta-height {
   min-height: var(--btn-h-mobile);
@@ -1842,9 +1822,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   .product-card-mobile-catalog .price-highlight {
     font-size: 1rem !important;
     line-height: 1.2;
-  }
-  .hero-home .hero-scroll-hint {
-    bottom: max(4.9rem, env(safe-area-inset-bottom, 0px)) !important;
   }
   .product-detail-page .container-tight {
     padding-left: 0.95rem;

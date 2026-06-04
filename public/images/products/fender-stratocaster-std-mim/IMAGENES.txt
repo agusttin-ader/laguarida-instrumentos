@@ -1,0 +1,20 @@
+Producto: Fender Stratocaster Std MIM
+Carpeta: public/images/products/fender-stratocaster-std-mim/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1778452984933-4241-a0cf1937-a89c-4b42-a416-8976acb73ea9.jpeg
+2. 1778453159010-7198-6c063663-ed18-4b6f-9940-36327052525c.jpeg
+3. 1778453161173-8825-59aac4e9-df3c-4878-954c-d47dfee6ccf0.jpeg
+4. 1778453163336-4226-7adfc73f-bc6a-4d06-9336-dd30b8ed37e3.jpeg
+5. 1778453165500-7814-79066ba3-2283-42c2-9555-d9395d0a9fee.jpeg
+6. 1778453167376-2765-c2c0453e-938e-470f-b23f-743cb933afee.jpeg
+7. 1778453169265-6533-3ef43719-9f12-42a4-a114-1214033a21d8.jpeg
+8. 1778453171616-9672-814fe5f7-d07b-421f-8021-b095617f976a.jpeg
+9. 1778453173756-5573-96bbf8a5-6ffe-4edf-aa7e-5f63ff2f42f1.jpeg
+10. 1778453176051-8214-7dc07975-15f4-4bb8-ae84-6a4fcd91294b.jpeg
+11. 1778453178699-4692-67010cd7-9939-4c0c-b22b-e251600a6fec.jpeg
+12. 1778453181589-9681-31880770-cbe5-4c80-a61f-934d71806e6b.jpeg
+13. 1778453184133-8492-217d4a30-aaae-4ea4-9973-3ac672953654.jpeg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

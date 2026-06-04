@@ -1,0 +1,20 @@
+Producto: Fender Telecaster Am Deluxe.
+Carpeta: public/images/products/fender-telecaster-am-deluxe/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1771348487798-8995-hero.jpg
+2. 1771348489101-4759-back-open-case-2.jpg
+3. 1771348489671-2578-back-open-case.jpg
+4. 1771348490256-2205-front-case-open-2.jpg
+5. 1771348490981-6931-front-case-open.jpg
+6. 1771348491604-6219-front-case.jpg
+7. 1771348492242-2305-front-pick-2.jpg
+8. 1771348492830-6609-front-pick-3.jpg
+9. 1771348493446-9337-front-pick-4.jpg
+10. 1771348493992-9929-front-pick.jpg
+11. 1771348494554-6555-pala-back.jpg
+12. 1771348495073-7286-pala-front.jpg
+13. 1771348495857-8905-trastes-2.jpg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

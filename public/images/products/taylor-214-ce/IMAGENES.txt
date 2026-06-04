@@ -1,0 +1,20 @@
+Producto: Taylor 214 CE
+Carpeta: public/images/products/taylor-214-ce/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1778453572699-7390-15d08dc2-2a8d-46f3-b3a3-761b78a9f3e9.jpeg
+2. 1778453679424-5058-8be9a039-b0cb-4572-93c5-4b38b4bb44e3.jpeg
+3. 1778453681723-5146-5539db8e-77e1-4607-b09d-6a0f3d002cf8.jpeg
+4. 1778453684216-3299-4d28941c-d588-4d2d-aa1f-aad14d6bdab4.jpeg
+5. 1778453686398-9387-d5e202c5-de55-4483-a1b4-3be7dca18914.jpeg
+6. 1778453689194-8857-7d6c4785-7c2c-480b-adf6-13ccb28f9d0a.jpeg
+7. 1778453692523-4026-00bbace8-bbfa-4b3e-a6e7-dd30ffc76257.jpeg
+8. 1778453694945-5698-3c9487ec-13ef-4e8a-b1e0-83c9a422fa74.jpeg
+9. 1778453697486-9559-15a51cda-6db3-43b2-ad6c-f9a326c179ba.jpeg
+10. 1778453700219-8255-fd3a4f88-d2d1-4df9-acad-cf915928bd5b.jpeg
+11. 1778453702537-4987-11da6128-9302-413c-b66f-2085041ce0b5.jpeg
+12. 1778453705640-1081-9ed4094c-6e56-45d1-86a4-872d2fffdf37.jpeg
+13. 1778453708436-8037-d303f033-16cb-41bb-a7d4-f890e5d27d2c.jpeg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

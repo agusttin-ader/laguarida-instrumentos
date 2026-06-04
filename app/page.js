@@ -1,5 +1,4 @@
 import HomePageContent from '../components/HomePageContent'
-import { fetchHeroProduct } from '../lib/data/fetchHeroProduct'
 import { absoluteUrl } from '../lib/siteUrl'
 
 export const revalidate = 600
@@ -13,8 +12,6 @@ export const metadata = {
   }
 }
 
-export default async function Page() {
-  const heroProduct = await fetchHeroProduct()
-
-  return <HomePageContent heroProduct={heroProduct} />
+export default function Page() {
+  return <HomePageContent />
 }

@@ -1,0 +1,20 @@
+Producto: Ibánez RG 350 EXZ.
+Carpeta: public/images/products/ibanez-rg-350-exz/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1771347818642-9767-hero.jpg
+2. 1771347819625-3552-back-2.jpg
+3. 1771347820685-4113-back.jpg
+4. 1771347821226-5740-front-case-2.jpg
+5. 1771347821936-9361-front-case-3.jpg
+6. 1771347822558-9853-front-case-open-2.jpg
+7. 1771347823376-3549-front-case-open.jpg
+8. 1771347823931-3611-front-case.jpg
+9. 1771347824893-3810-front-pick-2.jpg
+10. 1771347825807-5604-front-pick-3.jpg
+11. 1771347826588-3629-front-pick-4.jpg
+12. 1771347827264-9387-front-pick-5.jpg
+13. 1771347827921-9849-front-pick-6.jpg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

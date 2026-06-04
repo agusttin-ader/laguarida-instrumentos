@@ -1,0 +1,20 @@
+Producto: Paul Reed Smith Custom 24
+Carpeta: public/images/products/paul-reed-smith-custom-24/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1773544821732-7145-6c4db2c1-fe86-4a8e-8a6d-25ec686f32af.jpeg
+2. 1773544877556-5957-6b4421ac-b873-4a8c-8c8b-1e58eb1ad126.jpeg
+3. 1773544880251-5568-5c52dee0-2b04-4ca6-bc83-d21fb5192b80.jpeg
+4. 1773544882842-5374-aa7d1f27-ec73-4c03-995e-8d8e9d9d549f.jpeg
+5. 1773544884736-1154-ed208ea3-f112-4e7a-bf3a-1f34ecd18cb7.jpeg
+6. 1773544886556-1317-d0db12f5-6364-4d34-a3ae-1dfc34268808.jpeg
+7. 1773544888272-3250-4988eb3d-c06e-4f2d-869e-6767d5dab03d.jpeg
+8. 1773544890180-4575-d4b263a1-a285-4317-b68b-4b2e27d13f34.jpeg
+9. 1773544892227-2518-42a875be-ff53-4a09-b5dd-4ba51426fb17.jpeg
+10. 1773544894129-2264-287df1a1-854d-458c-bd84-bc31875b0c12.jpeg
+11. 1773544896293-9976-2fc334c8-c07f-4c5e-92b8-ecdaf8f7b23d.jpeg
+12. 1773544897960-2273-d7b795e1-f48f-47d9-8de4-60cd748c7c65.jpeg
+13. 1773544900578-4563-c6198f41-d58f-4a6a-99c0-648d0d31dfea.jpeg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

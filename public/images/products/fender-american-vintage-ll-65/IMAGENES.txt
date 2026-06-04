@@ -1,0 +1,20 @@
+Producto: Fender American Vintage ll 65’
+Carpeta: public/images/products/fender-american-vintage-ll-65/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1777154265517-5554-WhatsApp-Image-2026-04-24-at-12.58.14--1-.jpeg
+2. 1777154322167-4863-WhatsApp-Image-2026-04-24-at-12.58.12.jpeg
+3. 1777154323940-7418-WhatsApp-Image-2026-04-24-at-12.58.13.jpeg
+4. 1777154327050-4659-WhatsApp-Image-2026-04-24-at-12.58.04.jpeg
+5. 1777154330819-1062-WhatsApp-Image-2026-04-24-at-12.58.06.jpeg
+6. 1777154333006-8405-WhatsApp-Image-2026-04-24-at-12.58.07--1-.jpeg
+7. 1777154335373-1916-WhatsApp-Image-2026-04-24-at-12.58.07--2-.jpeg
+8. 1777154337663-1604-WhatsApp-Image-2026-04-24-at-12.58.09.jpeg
+9. 1777154339999-7666-WhatsApp-Image-2026-04-24-at-12.58.08.jpeg
+10. 1777154345569-4387-WhatsApp-Image-2026-04-24-at-12.58.08--1-.jpeg
+11. 1777154348047-1114-WhatsApp-Image-2026-04-24-at-12.58.10--1-.jpeg
+12. 1777154350451-2027-WhatsApp-Image-2026-04-24-at-12.58.11.jpeg
+13. 1777154352664-4123-WhatsApp-Image-2026-04-24-at-12.58.11--1-.jpeg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

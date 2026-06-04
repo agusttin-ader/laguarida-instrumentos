@@ -1,0 +1,20 @@
+Producto: Paul Reed Smith Custom 24 25th Aniversario. (10-Top)
+Carpeta: public/images/products/paul-reed-smith-custom-24-25th-aniversario-10-top/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1773543503437-3947-fed7014f-447e-442d-b91a-4760e3a33532.jpeg
+2. 1773543575365-8546-6581941f-ce90-4f25-b4a6-fd369894126d.jpeg
+3. 1773543579630-9516-5788ee8e-2558-41bd-8fc3-cd59c5574251.jpeg
+4. 1773543582319-5600-7cae9ce8-3f5c-4162-a383-0b94c3f76240.jpeg
+5. 1773543584140-1841-093bae33-6ae0-4170-9a74-fc131fc0ea99.jpeg
+6. 1773543586294-6895-46a2561f-b5e7-4688-822d-9ce3c6923047.jpeg
+7. 1773543588715-5704-85999bcb-4a84-4b0c-939e-e5d3b74215ed.jpeg
+8. 1773543590452-7540-918aa651-026a-4689-b0e4-a69a47b710c3.jpeg
+9. 1773543592054-5263-a3d93e7c-17dc-47ff-945c-e82d3848fd96.jpeg
+10. 1773543593946-9737-e7dde519-2534-474d-b478-f0c6eb4bda32.jpeg
+11. 1773543596145-8483-fadababe-277a-4691-926f-1528969e355d.jpeg
+12. 1773543598014-9435-fb6b0245-124d-4189-a52b-5a3896683025.jpeg
+13. 1773543599736-6148-9ddd84fe-c897-4c10-aa04-7502eacaaac0.jpeg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

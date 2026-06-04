@@ -4,7 +4,7 @@ import React, { useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import { layoutShellClassName } from '../lib/layoutShell'
 import { useProducts, weeklyRotateCatalog } from '../hooks/useProducts'
-import HomeHeroDynamic from './HomeHeroDynamic'
+import HeroMarketing from './HeroMarketing'
 import FeaturedSelection from './FeaturedSelection'
 import LowCostSection from './LowCostSection'
 import About from './About'
@@ -12,7 +12,7 @@ import FaqSection from './FaqSection'
 
 const HomeTrustStats = dynamic(() => import('./HomeTrustStats'))
 
-export default function HomePageContent({ heroProduct }) {
+export default function HomePageContent() {
   const { products, loading } = useProducts({ shuffleCatalog: false })
   const featuredItems = useMemo(
     () => weeklyRotateCatalog(products.filter((p) => p.low_cost !== true)),
@@ -30,7 +30,7 @@ export default function HomePageContent({ heroProduct }) {
         className="home-hero-section relative z-0 grid w-full grid-cols-1 !pt-0 !pb-0 bg-[var(--dark-bg-page)] md:mt-0 max-[767px]:mt-0 min-h-[100dvh] max-[767px]:!min-h-0"
       >
         <div className="relative z-0 col-start-1 row-start-1 min-h-0 min-w-0">
-          <HomeHeroDynamic product={heroProduct} />
+          <HeroMarketing />
         </div>
         <div
           id="home-top-mobile-header-slot"

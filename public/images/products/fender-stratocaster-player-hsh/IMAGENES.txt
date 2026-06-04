@@ -1,0 +1,18 @@
+Producto: Fender Stratocaster Player HSH
+Carpeta: public/images/products/fender-stratocaster-player-hsh/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1780530851180-c162d374090e-IMG_5609.jpg
+2. 1780530890278-c162d374090e-IMG_5609.jpg
+3. 1780530894099-48cd1e0c0fc8-IMG_5613.jpg
+4. 1780530897801-cff38cf02e73-IMG_5612.jpg
+5. 1780530901924-a6762b2c017e-IMG_5619.jpg
+6. 1780530905541-2f3a073b1715-IMG_5622.jpg
+7. 1780530909153-d1245afe96fe-IMG_5634.jpg
+8. 1780530913112-6443d6c3e9ab-IMG_5637.jpg
+9. 1780530917216-8afc392b6b21-IMG_5630.jpg
+10. 1780530920842-e42507afe741-IMG_5631.jpg
+11. 1780530924782-e9f2cfd3cf27-IMG_5640.jpg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

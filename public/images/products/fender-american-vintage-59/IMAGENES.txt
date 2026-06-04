@@ -1,0 +1,20 @@
+Producto: Fender American Vintage 59'
+Carpeta: public/images/products/fender-american-vintage-59/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1771288727832-5825-front-case-paper.jpg
+2. 1771288729015-4781-back-case-2.jpg
+3. 1771288729540-5503-back-case.jpg
+4. 1771288730029-4591-back-close.jpg
+5. 1771288730441-1202-back.jpg
+6. 1771288730802-4563-diapason.jpg
+7. 1771288731259-4997-front-case-2.jpg
+8. 1771288731670-7772-front-case.jpg
+9. 1771288732073-7222-front-open-case-2.jpg
+10. 1771288732697-4889-front-open-case.jpg
+11. 1771288733215-3561-front-open-case3.jpg
+12. 1771288733820-4492-front-pick-2.jpg
+13. 1771288734228-1295-front-pick-3.jpg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

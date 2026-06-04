@@ -1,0 +1,19 @@
+Producto: Fender Stratocaster Player II
+Carpeta: public/images/products/fender-stratocaster-player-ii/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1780530684241-8babf1c7aaf4-IMG_5643.jpg
+2. 1780530715831-8babf1c7aaf4-IMG_5643.jpg
+3. 1780530719811-1183213cc164-IMG_5646.jpg
+4. 1780530723454-69e87d0c46e7-IMG_5645.jpg
+5. 1780530726937-fe8d15ce24df-IMG_5648.jpg
+6. 1780530731684-ec9fb7f5d451-IMG_5652.jpg
+7. 1780530734594-d1373d367201-IMG_5655.jpg
+8. 1780530737968-bbdbb383cd3b-IMG_5657.jpg
+9. 1780530741200-4aed633c11f4-IMG_5658.jpg
+10. 1780530744902-82cf7af103a1-IMG_5661.jpg
+11. 1780530747901-659a232eb667-IMG_5667.jpg
+12. 1780530751756-986138689bb9-IMG_5673.jpg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

@@ -1,0 +1,20 @@
+Producto: Fender Telecaster Am Original 60’.
+Carpeta: public/images/products/fender-telecaster-am-original-60/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1777153379337-2543-WhatsApp-Image-2026-04-23-at-15.24.48.jpeg
+2. 1777153517109-4515-WhatsApp-Image-2026-04-23-at-15.24.45--1-.jpeg
+3. 1777153519529-8483-WhatsApp-Image-2026-04-23-at-15.24.47--1-.jpeg
+4. 1777153522760-1410-WhatsApp-Image-2026-04-23-at-15.24.40.jpeg
+5. 1777153525350-6042-WhatsApp-Image-2026-04-23-at-15.24.41.jpeg
+6. 1777153528299-3997-WhatsApp-Image-2026-04-23-at-15.24.42.jpeg
+7. 1777153530377-8825-WhatsApp-Image-2026-04-23-at-15.24.43--1-.jpeg
+8. 1777153532362-2556-WhatsApp-Image-2026-04-23-at-15.24.43.jpeg
+9. 1777153534052-2730-WhatsApp-Image-2026-04-23-at-15.24.46--2-.jpeg
+10. 1777153536190-2198-WhatsApp-Image-2026-04-23-at-15.24.46--1-.jpeg
+11. 1777153538314-2791-WhatsApp-Image-2026-04-23-at-15.24.45.jpeg
+12. 1777153539996-1595-WhatsApp-Image-2026-04-23-at-15.24.44.jpeg
+13. 1777153542029-5813-WhatsApp-Image-2026-04-23-at-15.24.46.jpeg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.
