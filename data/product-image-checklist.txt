@@ -19,19 +19,6 @@
   public/images/products/gibson-sg-standard-2011/1780602907418-3104ce3eaf1a-c768ddb1-51b2-4aed-bb23-504c651494e0.jpg
   public/images/products/gibson-sg-standard-2011/1780602911365-0796e87a2da8-4441c2cd-1852-4a9e-b6f2-6e3d9a5e4120.jpg
 
-[fender-stratocaster-player-hsh]
-  public/images/products/fender-stratocaster-player-hsh/1780530851180-c162d374090e-IMG_5609.jpg
-  public/images/products/fender-stratocaster-player-hsh/1780530890278-c162d374090e-IMG_5609.jpg
-  public/images/products/fender-stratocaster-player-hsh/1780530894099-48cd1e0c0fc8-IMG_5613.jpg
-  public/images/products/fender-stratocaster-player-hsh/1780530897801-cff38cf02e73-IMG_5612.jpg
-  public/images/products/fender-stratocaster-player-hsh/1780530901924-a6762b2c017e-IMG_5619.jpg
-  public/images/products/fender-stratocaster-player-hsh/1780530905541-2f3a073b1715-IMG_5622.jpg
-  public/images/products/fender-stratocaster-player-hsh/1780530909153-d1245afe96fe-IMG_5634.jpg
-  public/images/products/fender-stratocaster-player-hsh/1780530913112-6443d6c3e9ab-IMG_5637.jpg
-  public/images/products/fender-stratocaster-player-hsh/1780530917216-8afc392b6b21-IMG_5630.jpg
-  public/images/products/fender-stratocaster-player-hsh/1780530920842-e42507afe741-IMG_5631.jpg
-  public/images/products/fender-stratocaster-player-hsh/1780530924782-e9f2cfd3cf27-IMG_5640.jpg
-
 [fender-stratocaster-player-ii]
   public/images/products/fender-stratocaster-player-ii/1780530684241-8babf1c7aaf4-IMG_5643.jpg
   public/images/products/fender-stratocaster-player-ii/1780530715831-8babf1c7aaf4-IMG_5643.jpg
@@ -45,18 +32,6 @@
   public/images/products/fender-stratocaster-player-ii/1780530744902-82cf7af103a1-IMG_5661.jpg
   public/images/products/fender-stratocaster-player-ii/1780530747901-659a232eb667-IMG_5667.jpg
   public/images/products/fender-stratocaster-player-ii/1780530751756-986138689bb9-IMG_5673.jpg
-
-[fender-am-professional-classic-2025]
-  public/images/products/fender-am-professional-classic-2025/1780522671682-dc44f1e90efd-d76a7094-dbfd-48bc-94cd-4d8e37d34fa2.jpg
-  public/images/products/fender-am-professional-classic-2025/1780522695594-6bd449f65a31-d260e8f8-ef4c-49fa-b9cb-3fb004e39311.jpg
-  public/images/products/fender-am-professional-classic-2025/1780522699142-98f5c6c71d98-21794b63-4731-4919-a261-c36452bc3fd9.jpg
-  public/images/products/fender-am-professional-classic-2025/1780522702441-68daf17077bc-7b4b007a-8900-48f0-bb90-105706f813c7.jpg
-  public/images/products/fender-am-professional-classic-2025/1780522705578-a6b313c43de2-b1988509-06e9-40d9-bbe1-4a96c939720b.jpg
-  public/images/products/fender-am-professional-classic-2025/1780522709450-8fa764166f86-53212948-a590-401c-941c-34968fb1c649.jpg
-  public/images/products/fender-am-professional-classic-2025/1780522712003-e7ae11593dfb-4fb77e8e-de22-4744-974d-94b84db48c60.jpg
-  public/images/products/fender-am-professional-classic-2025/1780522715692-2a32691f0cb6-5e2ec2d9-857b-4dd9-8e2f-9f9437bf1029.jpg
-  public/images/products/fender-am-professional-classic-2025/1780522719374-5c58426262b0-47c12b53-d0c3-4b7f-93fb-0d50e1071954.jpg
-  public/images/products/fender-am-professional-classic-2025/1780522722411-dcacc791e02b-283cb62b-a8c9-4cc4-a95a-dddc96c02000.jpg
 
 [taylor-214-ce]
   public/images/products/taylor-214-ce/1778453572699-7390-15d08dc2-2a8d-46f3-b3a3-761b78a9f3e9.jpeg
@@ -88,21 +63,6 @@
   public/images/products/fender-stratocaster-std-mim/1778453181589-9681-31880770-cbe5-4c80-a61f-934d71806e6b.jpeg
   public/images/products/fender-stratocaster-std-mim/1778453184133-8492-217d4a30-aaae-4ea4-9973-3ac672953654.jpeg
 
-[gibson-les-paul-traditional-pro-iii-2017]
-  public/images/products/gibson-les-paul-traditional-pro-iii-2017/1778007634173-7616-28287126-cb87-4986-95d4-d9690949454d.jpeg
-  public/images/products/gibson-les-paul-traditional-pro-iii-2017/1778008282478-6760-7e094f5e-80a4-4129-9e45-0c8ecbe03874.jpeg
-  public/images/products/gibson-les-paul-traditional-pro-iii-2017/1778008284843-4712-877ffdaa-c2ee-4b4b-91cd-b243671f5ad2.jpeg
-  public/images/products/gibson-les-paul-traditional-pro-iii-2017/1778008287159-4479-68056131-02e0-49be-8a25-abc726d11e80.jpeg
-  public/images/products/gibson-les-paul-traditional-pro-iii-2017/1778008289070-1907-16b9b6ca-a350-424f-8a0a-d43df7482deb.jpeg
-  public/images/products/gibson-les-paul-traditional-pro-iii-2017/1778008291452-2406-2de2f7a7-15ef-4c18-bdde-8daa1d78696e.jpeg
-  public/images/products/gibson-les-paul-traditional-pro-iii-2017/1778008293906-6281-c5f87d7f-81fa-46bc-b9f1-3e75a422520e.jpeg
-  public/images/products/gibson-les-paul-traditional-pro-iii-2017/1778008296170-9913-ba32e1bd-8934-4f02-a48a-5a71731cfc44.jpeg
-  public/images/products/gibson-les-paul-traditional-pro-iii-2017/1778008298606-2095-76916477-4b56-4061-adba-7c40c8d9cfb2.jpeg
-  public/images/products/gibson-les-paul-traditional-pro-iii-2017/1778008301227-4821-206fcde4-dd21-41a1-9795-1179b9d5c08d.jpeg
-  public/images/products/gibson-les-paul-traditional-pro-iii-2017/1778008303289-1162-6fd5dbc5-64bd-4934-b85b-77af8381cb2d.jpeg
-  public/images/products/gibson-les-paul-traditional-pro-iii-2017/1778008305301-5110-7c480025-f4d3-4501-a6b7-c01ab59d26d6.jpeg
-  public/images/products/gibson-les-paul-traditional-pro-iii-2017/1778008307491-9100-19175214-23c9-44c7-bb16-878c7d60515f.jpeg
-
 [fender-american-vintage-ll-65]
   public/images/products/fender-american-vintage-ll-65/1777154265517-5554-WhatsApp-Image-2026-04-24-at-12.58.14--1-.jpeg
   public/images/products/fender-american-vintage-ll-65/1777154322167-4863-WhatsApp-Image-2026-04-24-at-12.58.12.jpeg
@@ -132,21 +92,6 @@
   public/images/products/fender-telecaster-am-original-60/1777153538314-2791-WhatsApp-Image-2026-04-23-at-15.24.45.jpeg
   public/images/products/fender-telecaster-am-original-60/1777153539996-1595-WhatsApp-Image-2026-04-23-at-15.24.44.jpeg
   public/images/products/fender-telecaster-am-original-60/1777153542029-5813-WhatsApp-Image-2026-04-23-at-15.24.46.jpeg
-
-[rgx-stratocaster-st-570]
-  public/images/products/rgx-stratocaster-st-570/1776983115439-9187-8dc9702f-c75f-43df-a9c7-8057fe986f1b.jpeg
-  public/images/products/rgx-stratocaster-st-570/1776983155168-3470-13c14f08-b8d9-481b-868f-ce02f53c48dc.jpeg
-  public/images/products/rgx-stratocaster-st-570/1776983160836-7677-14cedc78-c832-450c-bf75-67463bfc929c.jpeg
-  public/images/products/rgx-stratocaster-st-570/1776983179109-2939-a89b105d-12f6-48db-9d68-52aab9d9341a.jpeg
-  public/images/products/rgx-stratocaster-st-570/1776983190336-9087-c9c02be5-4b79-48a3-a0c1-41e9b9e03118.jpeg
-  public/images/products/rgx-stratocaster-st-570/1776983194773-3754-eca4ee29-0e6b-4aff-a988-92d162850047.jpeg
-  public/images/products/rgx-stratocaster-st-570/1776983199049-7567-748bdf6a-b11b-4840-9ecb-a1e012b5d357.jpeg
-  public/images/products/rgx-stratocaster-st-570/1776983202231-3726-9dde906d-6b03-49c2-a2d1-7757df70e84b.jpeg
-  public/images/products/rgx-stratocaster-st-570/1776983204625-5363-94f9a8a4-b948-4591-9880-80731d7ce9b6.jpeg
-  public/images/products/rgx-stratocaster-st-570/1776983207315-4238-d7997a6a-27f1-4a48-9d84-36f23c8d6b97.jpeg
-  public/images/products/rgx-stratocaster-st-570/1776983209848-5379-b6634f71-1a38-480f-8054-74806cff8d64.jpeg
-  public/images/products/rgx-stratocaster-st-570/1776983212805-2521-4d563748-6516-4a3d-9584-0ca1474d74f7.jpeg
-  public/images/products/rgx-stratocaster-st-570/1776983215607-5240-40299c3a-28b5-4f65-8a02-3551a736f060.jpeg
 
 [fender-custom-shop-strat-67-relic]
   public/images/products/fender-custom-shop-strat-67-relic/1773546027018-9238-92fc974e-2760-483e-8930-5a719f4f015a.jpeg
