@@ -12,6 +12,24 @@ const GALLERY_MAIN_SIZES =
 const GALLERY_THUMB_SIZES =
   '(max-width:1023px) 50vw, (max-width:1279px) 22vw, (max-width:1919px) min(20vw, 420px), (max-width:2559px) min(18vw, 520px), min(17vw, 640px)'
 const MOBILE_CAROUSEL_SIZES = '(max-width:1023px) 100vw, 100vw'
+const GALLERY_MOBILE_QUERY = '(max-width: 1023px)'
+
+function useGalleryIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return window.matchMedia(GALLERY_MOBILE_QUERY).matches
+  })
+
+  useEffect(() => {
+    const mq = window.matchMedia(GALLERY_MOBILE_QUERY)
+    const sync = () => setIsMobile(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+
+  return isMobile
+}
 
 function usePreloadLightbox() {
   useEffect(() => {
@@ -28,6 +46,7 @@ function displayThumb(url) {
 
 export default function ProductGalleryModern({ image_url, images = [], altBase = '' }) {
   usePreloadLightbox()
+  const isMobileGallery = useGalleryIsMobile()
   const carouselRef = useRef(null)
   const [snapIndex, setSnapIndex] = useState(0)
 
@@ -121,7 +140,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   imgClassName="object-cover object-center transition-transform duration-300 ease-out group-active:scale-[1.02]"
                   sizes={MOBILE_CAROUSEL_SIZES}
                   quality={i === 0 ? 74 : 62}
-                  priority={i === 0}
+                  priority={isMobileGallery && i === 0}
                   disableClientPreview
                 />
               </button>
@@ -171,7 +190,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
             className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
             sizes={GALLERY_MAIN_SIZES}
             quality={74}
-            priority
+            priority={!isMobileGallery}
             disableClientPreview
           />
         </button>

@@ -9,6 +9,12 @@ import { scrollToHomeSectionById } from '../lib/homeSectionScroll'
 
 const LOGO_SRC = '/images/optimized/logo-fondo-oscuro.webp'
 const SCROLL_THRESHOLD = 72
+const DESKTOP_HEADER_QUERY = '(min-width: 768px)'
+
+function getInitialDesktopHeader() {
+  if (typeof window === 'undefined') return true
+  return window.matchMedia(DESKTOP_HEADER_QUERY).matches
+}
 
 function HamburgerIcon({ className }) {
   return (
@@ -25,6 +31,16 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [homeHeaderSlotEl, setHomeHeaderSlotEl] = useState(null)
+  const [isDesktopHeader, setIsDesktopHeader] = useState(getInitialDesktopHeader)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mq = window.matchMedia(DESKTOP_HEADER_QUERY)
+    const sync = () => setIsDesktopHeader(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -117,7 +133,8 @@ export default function Header() {
                 alt="La Guarida logo"
                 width={1800}
                 height={450}
-                fetchPriority="low"
+                priority={isHome && !isDesktopHeader}
+                fetchPriority={isHome && !isDesktopHeader ? 'high' : 'low'}
                 className="logo-dark h-[42px] w-auto max-h-[44px] sm:h-[46px] sm:max-h-[48px] object-contain block"
                 style={{ objectFit: 'contain' }}
                 quality={68}
@@ -164,7 +181,8 @@ export default function Header() {
                 alt="La Guarida logo"
                 width={1800}
                 height={450}
-                fetchPriority="low"
+                priority={isHome && isDesktopHeader}
+                fetchPriority={isHome && isDesktopHeader ? 'high' : 'low'}
                 style={{ objectFit: 'contain', display: 'block', height: 'auto' }}
                 className="logo-dark h-[18px] md:h-[20px] lg:h-[22px] xl:h-[24px] min-[1920px]:h-[26px] w-auto max-w-full object-contain object-left block"
                 quality={68}

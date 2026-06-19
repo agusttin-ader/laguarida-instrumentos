@@ -8,7 +8,8 @@ export default function ProductGrid({
   filters = {},
   items: itemsProp,
   parentLoading = false,
-  maxGalleryImages = 1
+  maxGalleryImages = 1,
+  priorityFirstCard = false
 }) {
   const fetchSelf = itemsProp === undefined
   const { products, loading, error } = useProducts({ shuffleCatalog: true, enabled: fetchSelf })
@@ -95,7 +96,7 @@ export default function ProductGrid({
           >
             <ProductCard
               item={item}
-              priority={idx === 0}
+              priority={priorityFirstCard && idx === 0}
               maxGalleryImages={maxGalleryImages}
             />
           </div>

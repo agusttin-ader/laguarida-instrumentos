@@ -478,7 +478,7 @@ export default async function GuitarPage({ params }) {
           <div className="related-products-scroll flex overflow-x-auto gap-4 sm:gap-5 pb-2 -mx-4 px-5 sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 lg:gap-8 snap-x snap-mandatory scroll-smooth">
             {relatedProducts.map((r, idx) => (
               <div key={r.id || r.slug} className="flex-shrink-0 w-[min(280px,84vw)] sm:w-auto snap-center">
-                <ProductCard item={r} priority={idx < 2} galleryDesktopOnly />
+                <ProductCard item={r} galleryDesktopOnly />
               </div>
             ))}
           </div>

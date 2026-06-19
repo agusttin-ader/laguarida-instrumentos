@@ -72,6 +72,7 @@ export default function FeaturedSelection({ items = [], loading = false }) {
           filters={{ q }}
           items={featured}
           parentLoading={loading}
+          priorityFirstCard
         />
       </article>
     </>

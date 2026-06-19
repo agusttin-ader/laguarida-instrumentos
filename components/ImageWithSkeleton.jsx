@@ -70,7 +70,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
         ...style
       }}
     >
-      {!loaded && !errored && (
+      {!loaded && !errored && !priority && (
         <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 animate-pulse image-skeleton-blur" aria-hidden="true" style={blurDataURL ? { backgroundImage: `url(${blurDataURL})`, backgroundSize: 'cover', filter: 'blur(24px) saturate(0.95)' } : {}} />
       )}
 
@@ -92,7 +92,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
           priority={priority}
           fill={fill}
           decoding="async"
-          className={`${(fit === 'contain' || (style && style.objectFit === 'contain')) ? 'object-contain' : 'object-cover'} ${loaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-[300ms] ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none ${imgClassName}`}
+          className={`${(fit === 'contain' || (style && style.objectFit === 'contain')) ? 'object-contain' : 'object-cover'} ${priority || loaded ? 'opacity-100' : 'opacity-0'} ${priority ? '' : 'transition-opacity duration-[300ms] ease-[cubic-bezier(0.33,1,0.32,1)] motion-reduce:transition-none'} ${imgClassName}`}
           onLoad={(e) => {
             setLoaded(true);
             try {

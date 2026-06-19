@@ -85,7 +85,7 @@ export default function GalleryLightbox({
             fill
             sizes="100vw"
             quality={78}
-            priority
+            loading="eager"
             draggable={false}
             className="object-contain"
           />
