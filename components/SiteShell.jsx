@@ -16,11 +16,11 @@ function HeaderLoading() {
     <>
       {!isHome ? (
         <div
-          className="md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[68px] sm:min-h-[72px] bg-[var(--dark-bg-page)] pointer-events-none"
+          className="md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[60px] sm:min-h-[62px] border-b border-[rgba(var(--palette-gold-rgb),0.32)] bg-[var(--dark-bg-card)] pointer-events-none"
           aria-hidden
         />
       ) : null}
-      <div className="hidden md:block w-full min-h-[88px] lg:min-h-[96px] shrink-0" aria-hidden />
+      <div className="hidden md:block w-full h-[var(--site-header-h,68px)] shrink-0" aria-hidden />
     </>
   )
 }
@@ -38,7 +38,7 @@ export default function SiteShell({ children }) {
   const isGuitarProductPage =
     typeof pathname === 'string' && /^\/guitars\/[^/]+$/u.test(pathname)
   const mainTopPad = !isHome
-    ? 'pt-[calc(66px+max(0.25rem,env(safe-area-inset-top)))] sm:pt-[calc(70px+max(0.25rem,env(safe-area-inset-top)))] md:pt-0'
+    ? 'pt-[calc(60px+max(0.2rem,env(safe-area-inset-top)))] sm:pt-[calc(62px+max(0.2rem,env(safe-area-inset-top)))] md:pt-0'
     : 'pt-0'
 
   const handleRefresh = useCallback(() => {

@@ -1,11 +1,15 @@
 "use client"
 import React from 'react'
 import { layoutShellClassName } from '../lib/layoutShell'
-export default function About(){
+export default function About({ compactTop = false }) {
+  const topPadding = compactTop
+    ? 'pt-0 sm:pt-1 md:pt-2'
+    : 'pt-4 sm:pt-7 md:pt-9 lg:pt-10'
+
   return (
     <section id="about-section" className="mt-0">
       <div
-        className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 pt-4 sm:pt-7 md:pt-9 lg:pt-10 pb-0 sm:pb-1 md:pb-2 lg:pb-2`}
+        className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 ${topPadding} pb-0 sm:pb-1 md:pb-2 lg:pb-2`}
       >
           <div className="w-full">
             <p className="section-kicker-minimal section-underline-ocre text-gray-700 dark:text-white/70 mb-2 sm:mb-3">Sobre La Guarida</p>

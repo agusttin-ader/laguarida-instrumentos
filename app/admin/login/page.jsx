@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { SITE_LOGO_SRC } from '../../../lib/branding/logo'
 
 const LOGIN_BG_QUOTES = [
   { q: 'La música es mi religión.', a: 'Jimi Hendrix' },
@@ -127,7 +128,7 @@ export default function AdminLoginPage() {
         <div className="flex justify-center mb-6">
           <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-lg" aria-label="Ir al inicio - La Guarida">
             <img
-              src="/images/optimized/logo-fondo-oscuro.webp"
+              src={SITE_LOGO_SRC}
               alt="La Guarida"
               width={240}
               height={160}

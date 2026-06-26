@@ -8,6 +8,7 @@ import imageService from '../../../lib/utils/imageService'
 import ProductShareAndFavorite from '../../../components/ProductShareAndFavorite'
 import ProductPageCTA from '../../../components/ProductPageCTA'
 import ProductDetailInfoPanel from '../../../components/ProductDetailInfoPanel'
+import ProductDetailSpecSheet from '../../../components/ProductDetailSpecSheet'
 import ProductMobileStickyCTA from '../../../components/ProductMobileStickyCTA'
 import { parseNumericPriceForSchema } from '../../../lib/utils/normalizeProduct'
 import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
@@ -279,13 +280,13 @@ export default async function GuitarPage({ params }) {
           <ol className="flex flex-wrap items-center gap-1.5 text-sm text-[var(--dark-muted)]">
             <li><a href="/" className="hover:text-[var(--dark-text-primary)] transition-colors">Inicio</a></li>
             <li aria-hidden>/</li>
-            <li><a href="/#seleccion-destacada" className="hover:text-[var(--dark-text-primary)] transition-colors">Selección destacada</a></li>
+            <li><a href="/catalogo" className="hover:text-[var(--dark-text-primary)] transition-colors">Catálogo</a></li>
           </ol>
         </nav>
         <div className="rounded-2xl border border-[var(--dark-border)] bg-[var(--dark-bg-card)] p-8 md:p-10 text-center">
           <h1 className="text-xl font-semibold text-[var(--dark-text-primary)]">Producto no encontrado</h1>
           <p className="mt-2 text-sm text-[var(--dark-muted)]">No encontramos ese instrumento. Revisá el catálogo o contactanos por WhatsApp.</p>
-          <a href="/#seleccion-destacada" className="no-custom-btn mt-6 inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] text-[var(--dark-text-primary)] font-medium text-sm hover:bg-white/5 transition-colors">Ver selección destacada</a>
+          <a href="/catalogo" className="no-custom-btn mt-6 inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] text-[var(--dark-text-primary)] font-medium text-sm hover:bg-white/5 transition-colors">Ver catálogo</a>
         </div>
       </div>
     )
@@ -402,7 +403,7 @@ export default async function GuitarPage({ params }) {
           <ol className="product-detail-breadcrumb flex flex-wrap items-center gap-1.5 text-[13px] sm:text-[14px] md:text-[15px] xl:text-base text-[var(--dark-muted)]">
             <li><a href="/" className="hover:text-[var(--dark-text-primary)] transition-colors">Inicio</a></li>
             <li aria-hidden className="opacity-50">/</li>
-            <li><a href="/#seleccion-destacada" className="hover:text-[var(--dark-text-primary)] transition-colors">Selección destacada</a></li>
+            <li><a href="/catalogo" className="hover:text-[var(--dark-text-primary)] transition-colors">Catálogo</a></li>
             <li aria-hidden className="opacity-50">/</li>
             <li className="text-[var(--dark-text-secondary)] truncate max-w-[160px] sm:max-w-[280px] lg:max-w-[min(100%,28rem)] xl:max-w-[min(100%,40rem)]" aria-current="page">{product.name}</li>
           </ol>
@@ -424,7 +425,7 @@ export default async function GuitarPage({ params }) {
       <section className="container-tight w-full pt-6 sm:pt-10 md:pt-12 pb-7 sm:pb-10 md:pb-16">
         <div className="grid w-full grid-cols-1 gap-6 sm:gap-10 md:gap-12 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
           <div className="order-2 min-w-0 lg:order-1">
-            <ProductDetailInfoPanel highlights={product.highlights} specs={hasFicha ? productSpecRows : []}>
+            <ProductDetailInfoPanel highlights={product.highlights}>
               <div className="product-detail-desc-stack">
                 {descriptionUseMarkdown ? (
                   <ProductDescriptionMarkdown>
@@ -468,6 +469,8 @@ export default async function GuitarPage({ params }) {
             >
               <ProductShareAndFavorite slug={slug} name={product.name} url={productUrl} />
             </ProductPageCTA>
+
+            {hasFicha ? <ProductDetailSpecSheet specs={productSpecRows} /> : null}
           </div>
         </div>
       </section>
@@ -478,7 +481,7 @@ export default async function GuitarPage({ params }) {
           <div className="related-products-scroll flex overflow-x-auto gap-4 sm:gap-5 pb-2 -mx-4 px-5 sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 lg:gap-8 snap-x snap-mandatory scroll-smooth">
             {relatedProducts.map((r, idx) => (
               <div key={r.id || r.slug} className="flex-shrink-0 w-[min(280px,84vw)] sm:w-auto snap-center">
-                <ProductCard item={r} galleryDesktopOnly />
+                <ProductCard item={r} maxGalleryImages={1} />
               </div>
             ))}
           </div>

@@ -1,12 +1,12 @@
 "use client"
 
 import React from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { InstagramLogo, EnvelopeSimple, WhatsappLogo } from 'phosphor-react'
 import { layoutShellClassName } from '../lib/layoutShell'
 import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
+import { SITE_LOGO_SRC } from '../lib/branding/logo'
 
 export default function Footer({ compact = false }){
   const pathname = usePathname()
@@ -52,9 +52,19 @@ export default function Footer({ compact = false }){
           </nav>
 
           <div className="flex items-center justify-center md:justify-self-end">
-            <div className={`footer-logo-wrapper relative ${compact ? 'w-[130px] h-6 md:w-[130px] md:h-6' : 'w-[140px] h-6 md:w-[200px] md:h-8'}`}>
-              <Image src="/images/optimized/logo-fondo-oscuro.webp" alt="La Guarida" fill className={compact ? 'scale-[1.28] md:scale-[1.34]' : 'scale-[1.5] md:scale-[1.6]'} style={{ objectFit: 'contain' }} quality={68} sizes="(min-width:768px) 200px, 140px" loading="lazy" />
-            </div>
+            <img
+              src={SITE_LOGO_SRC}
+              alt="La Guarida"
+              width={746}
+              height={194}
+              loading="lazy"
+              decoding="async"
+              className={`logo-dark block w-auto object-contain bg-transparent ${
+                compact
+                  ? 'h-[16px] md:h-[18px] max-w-[130px]'
+                  : 'h-[18px] md:h-[19px] lg:h-[21px] xl:h-[22px] max-w-[200px] lg:max-w-[220px]'
+              }`}
+            />
           </div>
         </div>
         {!compact && (

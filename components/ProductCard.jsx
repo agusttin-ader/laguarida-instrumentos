@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useRef, useEffect } from 'react'
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import normalizeProduct from '../lib/utils/normalizeProduct'
 import imageService from '../lib/utils/imageService'
@@ -83,6 +83,24 @@ const ProductCard = React.memo(function ProductCard({
   const { isFavorite, toggle } = useFavorites()
   const fav = isFavorite(p.slug)
   const primarySrc = imageList[0]
+  const useRevealFade = priority
+
+  const handleImageReady = useCallback(() => {
+    setImageLoaded(true)
+  }, [])
+
+  function cardImageClassName(isActive = true) {
+    const reveal = useRevealFade ? 'img-reveal' : ''
+    const loaded = useRevealFade && imageLoaded && isActive ? 'img-loaded' : ''
+    return [
+      reveal,
+      loaded,
+      'max-[767px]:object-contain max-[767px]:object-center',
+      objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover',
+    ]
+      .filter(Boolean)
+      .join(' ')
+  }
 
   function goToIndex(nextIndex) {
     setGalleryIndex(() => Math.max(0, Math.min(imageList.length - 1, nextIndex)))
@@ -147,14 +165,14 @@ const ProductCard = React.memo(function ProductCard({
 
   const imageBlock = (
     <div
-      className={`product-card-mobile-shell relative w-full overflow-hidden bg-[var(--dark-surface-2)] max-[767px]:bg-[#141414] aspect-[4/5] md:aspect-[3/4] select-none ${hasGallery ? 'touch-pan-y' : 'touch-auto'}`}
+      className={`product-card-mobile-shell relative w-full overflow-hidden bg-[var(--dark-surface-2)] aspect-[4/5] md:aspect-[3/4] select-none ${hasGallery ? 'touch-pan-y' : 'touch-auto'}`}
       onTouchStart={hasGallery ? handleTouchStart : undefined}
       onTouchEnd={hasGallery ? handleTouchEnd : undefined}
       onTouchCancel={hasGallery ? handleTouchEnd : undefined}
     >
       {primarySrc ? (
         <>
-          {!imageLoaded ? (
+          {useRevealFade && !imageLoaded ? (
             <div
               className="absolute inset-0 z-0 bg-[var(--dark-surface-2)]"
               aria-hidden
@@ -172,9 +190,9 @@ const ProductCard = React.memo(function ProductCard({
               loading={priority ? 'eager' : 'lazy'}
               fetchPriority={priority ? 'high' : 'low'}
               decoding="async"
-              onLoad={() => setImageLoaded(true)}
+              onLoad={handleImageReady}
               onError={() => {}}
-              className={`img-reveal max-[767px]:object-contain max-[767px]:object-center ${imageLoaded ? 'img-loaded' : ''} ${objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover'}`}
+              className={cardImageClassName()}
               style={{ objectPosition: 'center' }}
             />
           ) : (
@@ -205,10 +223,10 @@ const ProductCard = React.memo(function ProductCard({
                     fetchPriority={eager ? 'high' : 'low'}
                     decoding="async"
                     onLoad={() => {
-                      if (isActive) setImageLoaded(true)
+                      if (isActive) handleImageReady()
                     }}
                     onError={() => {}}
-                    className={`img-reveal ${imageLoaded && isActive ? 'img-loaded' : ''} max-[767px]:object-contain max-[767px]:object-center ${objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover'}`}
+                    className={cardImageClassName(isActive)}
                     style={{ objectPosition: 'center' }}
                   />
                 </div>
@@ -296,51 +314,51 @@ const ProductCard = React.memo(function ProductCard({
   return (
     <article
       aria-labelledby={headingId}
-      className="card-interactive card-editorial card-mobile-no-motion product-card-mobile-catalog w-full min-w-0 max-w-full overflow-hidden rounded-2xl border-0 bg-[var(--dark-bg-card)] md:rounded-3xl"
+      className="card-interactive card-editorial card-mobile-no-motion product-card-mobile-catalog flex h-full w-full min-w-0 max-w-full flex-col overflow-hidden rounded-2xl border-0 bg-[var(--dark-bg-card)] md:rounded-3xl"
     >
       <Link
         href={`/guitars/${p.slug || p.id}`}
         aria-label={`Ir a ${titleText || 'producto'}`}
-        className="no-custom-btn card-product-link group group/img flex h-full flex-col transition-transform duration-120 ease-out active:scale-[0.99]"
+        className="no-custom-btn card-product-link group group/img flex h-full min-h-0 flex-1 flex-col transition-transform duration-120 ease-out active:scale-[0.99]"
         onClick={handleCardClick}
       >
         {imageBlock}
 
-        <div className="flex min-h-0 flex-1 flex-col gap-1 p-4 max-[767px]:gap-1.5 max-[767px]:px-4 max-[767px]:pb-5 max-[767px]:pt-5 md:gap-0 md:p-5">
+        <div className="product-card-body flex min-h-[9.5rem] flex-1 flex-col p-4 max-[767px]:gap-1.5 max-[767px]:px-4 max-[767px]:pb-5 max-[767px]:pt-5 md:min-h-[10.25rem] md:gap-0 md:p-5">
           <h3
             id={headingId}
-            className="order-1 min-w-0 text-[1rem] font-semibold tracking-tight text-[var(--dark-text-primary)] md:text-[1.0625rem] max-[767px]:text-[1.0625rem] max-[767px]:font-bold max-[767px]:leading-snug max-[767px]:line-clamp-2 md:leading-snug md:line-clamp-2"
+            className="order-1 min-h-[2.875rem] min-w-0 text-[1rem] font-semibold tracking-tight text-[var(--dark-text-primary)] line-clamp-2 md:min-h-[2.75rem] md:text-[1.0625rem] max-[767px]:text-[1.0625rem] max-[767px]:font-bold max-[767px]:leading-snug md:leading-snug"
           >
             {titleText}
           </h3>
-          {specs.length > 0 ? (
-            <>
+          <div className="order-2 mt-1 min-h-[1.25rem] max-[767px]:block md:hidden">
+            {specs.length > 0 ? (
               <p
-                className="order-2 hidden min-h-0 max-[767px]:order-2 max-[767px]:mt-0.5 max-[767px]:block max-[767px]:truncate max-[767px]:text-xs max-[767px]:font-medium max-[767px]:uppercase max-[767px]:leading-snug max-[767px]:tracking-wider max-[767px]:text-[var(--dark-muted)]"
+                className="truncate text-xs font-medium uppercase leading-snug tracking-wider text-[var(--dark-muted)]"
                 title={[...visibleSpecs, hiddenSpecsCount > 0 ? `+${hiddenSpecsCount}` : null].filter(Boolean).join(' · ')}
               >
                 {[...visibleSpecs, hiddenSpecsCount > 0 ? `+${hiddenSpecsCount}` : null].filter(Boolean).join(' · ')}
               </p>
-              <div className="order-3 mt-2.5 flex flex-wrap gap-1.5 max-[767px]:mt-1 max-[767px]:hidden md:order-3">
-                {visibleSpecs.map((s, i) => (
-                  <span key={i} className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[var(--dark-muted)] md:text-[11px]">
-                    {s}
-                  </span>
-                ))}
-                {hiddenSpecsCount > 0 && (
-                  <span className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[var(--dark-muted)] md:text-[11px]">
-                    +{hiddenSpecsCount}
-                  </span>
-                )}
-              </div>
-            </>
-          ) : null}
-          {p.price ? (
-            <p className="price-highlight order-2 mt-1.5 text-sm font-semibold max-[767px]:order-3 max-[767px]:mt-2 max-[767px]:text-[1.0625rem] md:order-2 md:text-base">
-              {p.price}
-            </p>
-          ) : null}
-          <span className="order-4 mt-3 hidden items-center gap-1.5 text-xs font-medium text-[var(--dark-text-secondary)] max-[767px]:mt-0 md:mt-4 md:inline-flex">
+            ) : null}
+          </div>
+          <div className="order-3 mt-2.5 hidden min-h-[1.75rem] flex-wrap gap-1.5 md:flex max-[767px]:hidden">
+            {visibleSpecs.map((s, i) => (
+              <span key={i} className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[var(--dark-muted)] md:text-[11px]">
+                {s}
+              </span>
+            ))}
+            {hiddenSpecsCount > 0 && (
+              <span className="rounded-md bg-white/[0.06] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-[var(--dark-muted)] md:text-[11px]">
+                +{hiddenSpecsCount}
+              </span>
+            )}
+          </div>
+          <p
+            className={`price-highlight order-2 mt-1.5 min-h-[1.375rem] text-sm font-semibold max-[767px]:order-3 max-[767px]:mt-2 max-[767px]:text-[1.0625rem] md:order-2 md:text-base ${p.price ? '' : 'invisible'}`}
+          >
+            {p.price || '—'}
+          </p>
+          <span className="order-4 mt-auto hidden items-center gap-1.5 pt-3 text-xs font-medium text-[var(--dark-text-secondary)] max-[767px]:hidden md:inline-flex">
             Ver producto
             <svg className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

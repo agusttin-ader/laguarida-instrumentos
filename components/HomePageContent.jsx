@@ -1,63 +1,50 @@
 "use client"
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import dynamic from 'next/dynamic'
 import { layoutShellClassName } from '../lib/layoutShell'
-import { useProducts, weeklyRotateCatalog } from '../hooks/useProducts'
 import HeroMarketing from './HeroMarketing'
 import FeaturedSelection from './FeaturedSelection'
-import LowCostSection from './LowCostSection'
 import About from './About'
 import FaqSection from './FaqSection'
 
 const HomeTrustStats = dynamic(() => import('./HomeTrustStats'))
 
-export default function HomePageContent() {
-  const { products, loading } = useProducts({ shuffleCatalog: false })
-  const featuredItems = useMemo(
-    () => weeklyRotateCatalog(products.filter((p) => p.low_cost !== true)),
-    [products]
-  )
-  const lowCostItems = useMemo(
-    () => products.filter((p) => p.low_cost === true),
-    [products]
-  )
+export default function HomePageContent({ heroSlides = [], featuredProducts = [] }) {
   return (
     <>
       <section
         id="home-top"
         aria-labelledby="home-hero"
-        className="home-hero-section relative z-0 grid w-full grid-cols-1 !pt-0 !pb-0 bg-[var(--dark-bg-page)] md:mt-0 max-[767px]:mt-0 min-h-[100dvh] max-[767px]:!min-h-0"
+        className="home-hero-section relative z-0 w-full min-w-0 !pt-0 !pb-0 bg-[#141414] md:mt-0 max-[767px]:mt-0"
       >
-        <div className="relative z-0 col-start-1 row-start-1 min-h-0 min-w-0">
-          <HeroMarketing />
+        <div className="relative z-0 min-h-0 min-w-0">
+          <HeroMarketing slides={heroSlides} />
         </div>
         <div
           id="home-top-mobile-header-slot"
-          className="pointer-events-none col-start-1 row-start-1 self-start md:hidden [&>*]:pointer-events-auto sticky top-0 z-[var(--z-header)] w-full"
+          className="pointer-events-none absolute inset-x-0 top-0 z-[var(--z-header)] md:hidden [&>*]:pointer-events-auto"
         />
       </section>
 
+      <section
+        id="seleccion-destacada"
+        aria-labelledby="destacados-heading"
+        className="w-full bg-gradient-to-b from-[#141414] via-[var(--dark-bg-page)] to-[var(--dark-bg-page)] pt-10 sm:pt-12 md:pt-14 pb-4 sm:pb-5 md:pb-6"
+      >
+        <FeaturedSelection items={featuredProducts} />
+      </section>
+
       <div
-        className={`${layoutShellClassName} px-4 sm:px-5 md:px-8 lg:px-10 pt-0 sm:pt-2 md:pt-4 pb-4 sm:pb-6 md:pb-8 min-[1920px]:px-12 min-[2560px]:px-14 max-[767px]:pb-3`}
+        className={`${layoutShellClassName} px-4 sm:px-5 md:px-8 lg:px-10 pt-0 pb-4 sm:pb-6 md:pb-8 min-[1920px]:px-12 min-[2560px]:px-14 max-[767px]:pb-3`}
       >
         <p className="sr-only">
           La Guarida es una tienda especializada en guitarras, bajos y accesorios. Ofrecemos instrumentos
           seleccionados, asesoramiento profesional y envíos dentro de Argentina.
         </p>
 
-        <section
-          id="seleccion-destacada"
-          className="mt-8 min-w-0 w-full pt-0 sm:mt-8 sm:pt-3 md:mt-10 md:pt-5 max-[767px]:mt-8"
-          aria-labelledby="seleccion-heading"
-        >
-          <FeaturedSelection items={featuredItems} loading={loading} />
-        </section>
-
-        <LowCostSection items={lowCostItems} loading={loading} />
-
-        <section className="mt-8 sm:mt-10 md:mt-12 !pt-3 !pb-0 md:!pt-5 md:!pb-1 max-[767px]:mt-8">
-          <About />
+        <section className="mt-0 !pt-2 !pb-0 md:!pt-3 md:!pb-1">
+          <About compactTop />
         </section>
 
         <HomeTrustStats />

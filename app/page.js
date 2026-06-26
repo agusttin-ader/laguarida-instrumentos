@@ -1,4 +1,6 @@
 import HomePageContent from '../components/HomePageContent'
+import { getHomeHeroBackgrounds } from '../lib/data/homeHeroBackgrounds'
+import { getWeeklyFeaturedExpensiveProducts } from '../lib/data/homeFeaturedExpensive'
 import { absoluteUrl } from '../lib/siteUrl'
 
 export const revalidate = 600
@@ -13,5 +15,7 @@ export const metadata = {
 }
 
 export default function Page() {
-  return <HomePageContent />
+  const heroSlides = getHomeHeroBackgrounds()
+  const featuredProducts = getWeeklyFeaturedExpensiveProducts()
+  return <HomePageContent heroSlides={heroSlides} featuredProducts={featuredProducts} />
 }

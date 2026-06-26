@@ -66,16 +66,16 @@
   --content-gap-mobile: 0.75rem;
   --content-gap-desktop: 1rem;
 
-  /* Oscuros cálidos (base #0D0D0D + elevaciones cálidas) */
-  --dark-bg-page: #0d0d0d;
-  --dark-bg-surface: #151413;
-  --dark-bg-card: #1c1a18;
-  --dark-bg-elevated: #242220;
-  --dark-surface-2: #121211;
+  /* Oscuros cálidos — carbón suave (menos negro puro, más descansado a la vista) */
+  --dark-bg-page: #181715;
+  --dark-bg-surface: #201e1c;
+  --dark-bg-card: #272522;
+  --dark-bg-elevated: #302d2a;
+  --dark-surface-2: #1e1d1b;
   --dark-text-primary: #f7f3eb;
   --dark-text-secondary: #e8e0d4;
-  --dark-muted: #b0a08c;
-  --dark-border: rgba(var(--palette-sand-rgb), 0.14);
+  --dark-muted: #b8aa96;
+  --dark-border: rgba(var(--palette-sand-rgb), 0.17);
   --dark-ring: rgba(var(--palette-gold-rgb), 0.32);
   /* CTAs: fondo claro para contraste sobre oscuro */
   --dark-cta-bg: var(--palette-cream);
@@ -94,37 +94,25 @@
   --vivid-glow-mixed: 0 4px 28px rgba(var(--palette-orange-rgb), 0.35), 0 0 24px rgba(var(--palette-gold-rgb), 0.3);
 }
 
-/* Botones CTA: altura proporcional (mobile más compacto, desktop estándar) */
-.btn-cta-height {
-  min-height: var(--btn-h-mobile);
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  padding-left: var(--btn-px-mobile);
-  padding-right: var(--btn-px-mobile);
-}
-@media (min-width: 640px) {
-  .btn-cta-height {
-    min-height: var(--btn-h-desktop);
-    padding-left: var(--btn-px-desktop);
-    padding-right: var(--btn-px-desktop);
-  }
-}
-
-html,body,#root{
-  height:100%;
+html, body, #root {
+  min-height: 100%;
+  max-width: 100%;
 }
 
 html {
   scroll-behavior: auto;
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
-body{
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background-color: var(--dark-bg-page);
   color: var(--dark-text-primary);
+  overflow-x: hidden;
   overflow-y: visible;
+  width: 100%;
 }
 
 /* Mobile typography & rhythm (≤767px; aligns with Tailwind `md` at 768px) */
@@ -153,14 +141,6 @@ body{
   .section-kicker-minimal {
     font-size: 0.75rem;
     line-height: 1.4;
-  }
-  .card-desc {
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-  .body-copy {
-    font-size: 1rem;
-    line-height: 1.55;
   }
   .search-pill .search-input {
     font-size: 1rem !important;
@@ -204,67 +184,6 @@ body{
   background: linear-gradient(180deg,#e9e9eb,#f6f6f7);
 }
 
-.showcase-title{
-  letter-spacing: -0.02em;
-}
-
-/* Typographic system: strong editorial hierarchy */
-:root{
-  --display-heavy: 4.5rem; /* fallback */
-  --display-large: 3rem;
-  --subtitle-size: 1rem;
-  --body-size: 0.95rem;
-}
-
-.display-xxl{
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-  font-weight: 800;
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-}
-
-/* Product page: slightly reduced display size for the main title to improve balance */
-.product-title {
-  font-size: clamp(2.25rem, 5.2vw, 4.2rem);
-  line-height: 1.04;
-}
-
-.display-xl{
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-  font-weight: 700;
-  font-size: clamp(1.75rem, 4vw, 3rem);
-  line-height: 1.06;
-  letter-spacing: -0.01em;
-}
-
-.subtitle-compact{
-  font-weight: 500;
-  font-size: var(--subtitle-size);
-  letter-spacing: 0.04em;
-  text-transform: none;
-  color: #52525b;
-}
-
-.body-copy{
-  font-size: var(--body-size);
-  line-height: 1.75;
-  color: #4b5563;
-}
-
-.price-large{
-  font-weight: 800;
-  /* slightly larger for product pages while keeping cards proportional */
-  font-size: clamp(1.25rem, 2.8vw, 1.9rem);
-  line-height: 1.05;
-  max-width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.tight-tracking{ letter-spacing: -0.02em }
-
 .btn-focus{
   outline: none;
 }
@@ -280,7 +199,15 @@ html, body {
 }
 
 /* Prevent page-level horizontal scroll caused by overflow in children */
-html, body { overflow-x: hidden; }
+html, body {
+  overflow-x: hidden;
+}
+
+#__next {
+  min-height: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
 
 /* Lock background scroll when a modal or drawer is open */
 body.modal-open,
@@ -309,7 +236,8 @@ body.modal-open .admin-desk-top {
   }
   main {
     min-height: 0;
-    overflow-x: hidden;
+    max-width: 100%;
+    overflow-x: clip;
   }
   a, button {
     -webkit-tap-highlight-color: rgba(var(--palette-gold-rgb), 0.15);
@@ -330,23 +258,23 @@ html, body, #__next, #root, main {
 .dark html,
 .dark body {
   background-color: var(--dark-bg-page) !important;
-  background-image: radial-gradient(ellipse 100% 55% at 50% -20%, rgba(var(--palette-gold-rgb), 0.07) 0%, transparent 45%),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(var(--palette-flame-rgb), 0.04) 0%, transparent 40%);
+  background-image: radial-gradient(ellipse 100% 55% at 50% -20%, rgba(var(--palette-gold-rgb), 0.055) 0%, transparent 48%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(var(--palette-flame-rgb), 0.03) 0%, transparent 42%);
   color: #ffffff;
 }
 
 /* Dark theme: misma paleta (tokens alineados con :root) */
 :root.dark,
 .dark {
-  --dark-bg-page: #0d0d0d;
-  --dark-bg-surface: #151413;
-  --dark-bg-card: #1c1a18;
-  --dark-bg-elevated: #242220;
-  --dark-surface-2: #121211;
+  --dark-bg-page: #181715;
+  --dark-bg-surface: #201e1c;
+  --dark-bg-card: #272522;
+  --dark-bg-elevated: #302d2a;
+  --dark-surface-2: #1e1d1b;
   --dark-text-primary: #f7f3eb;
   --dark-text-secondary: #e8e0d4;
-  --dark-muted: #b0a08c;
-  --dark-border: rgba(var(--palette-sand-rgb), 0.14);
+  --dark-muted: #b8aa96;
+  --dark-border: rgba(var(--palette-sand-rgb), 0.17);
   --dark-ring: rgba(var(--palette-gold-rgb), 0.32);
   --dark-cta-bg: var(--palette-cream);
   --dark-cta-text: var(--palette-ink);
@@ -383,117 +311,17 @@ html, body, #__next, #root, main {
 .dark .text-gray-700 { color: var(--dark-text-primary) !important }
 .dark .text-gray-800 { color: var(--dark-text-primary) !important }
 
-/* Admin/Auth bar: premium solid surface (no gradient to avoid iOS glitches) */
-.admin-auth-bar {
-  background-color: var(--auth-bg);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.04);
-}
-
-/* Admin wrapper and card helpers
-   - Use CSS variables so admin areas follow light/dark tokens
-   - Apply .admin-card to panels that should flip between light card and dark card surfaces */
+/* Admin wrapper */
 .admin-root {
   background-color: var(--auth-bg);
   color: inherit;
-}
-.admin-card {
-  background-color: var(--card-bg);
-  color: inherit;
-  position: relative;
-  overflow: hidden;
 }
 .dark .admin-root {
   background-color: var(--dark-bg-page) !important;
   color: var(--dark-text-primary) !important;
 }
-.dark .admin-card {
-  background-color: var(--dark-bg-card) !important;
-  color: var(--dark-text-primary) !important;
-  border-color: var(--dark-border) !important;
-  position: relative;
-  overflow: hidden;
-}
-
-/* When the list is collapsed (Tailwind's `max-h-0` applied), ensure
-   all child items are hidden and any padding removed so thumbnails
-   cannot peek through. This targets the specific compound class
-   produced by the component's dynamic className. */
-.admin-card.max-h-0 {
-  max-height: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  overflow: hidden !important;
-}
-.admin-card.max-h-0 .admin-item {
-  display: none !important;
-}
-
-/* Admin action button: used for 'Cerrar sesión' and 'Ir al panel' */
-.admin-action,
-.admin-logout {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.35rem 0.75rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border-radius: 0.5rem;
-  background-color: #dc2626; /* red-600 */
-  color: #ffffff;
-  border: 1px solid rgba(0,0,0,0.08);
-  transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, opacity 120ms ease;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-}
-.admin-action:hover,
-.admin-logout:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
-  background-color: #b91c1c; /* red-700 */
-}
-.admin-action:active,
-.admin-logout:active { transform: translateY(0); }
-.admin-action:focus,
-.admin-logout:focus { outline: none; box-shadow: 0 0 0 4px rgba(220,38,38,0.12); }
-
-.dark .admin-action,
-.dark .admin-logout {
-  background-color: #dc2626 !important;
-  color: #ffffff !important;
-  border-color: rgba(255,255,255,0.06) !important;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.24) !important;
-}
-.admin-panel-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.35rem 0.75rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border-radius: 0.5rem;
-  background-color: var(--color-orange);
-  color: #ffffff;
-  border: 1px solid rgba(0,0,0,0.06);
-  transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-}
-.admin-panel-link:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.18); background-color: #ea580c }
-.dark .admin-panel-link { background-color: var(--color-orange) !important }
 
 .contact-orange { color: var(--vintage-gold); font-weight: 600 }
-.dark .admin-action:hover,
-.dark .admin-logout:hover { background-color: #b91c1c !important; box-shadow: 0 12px 30px rgba(0,0,0,0.28) !important }
-
-/* Admin list item hover — not pure white, subtle lift for light and dark */
-.admin-item {
-  transition: background-color 140ms ease, color 140ms ease;
-}
-.admin-item:hover {
-  background-color: rgba(15,23,42,0.03); /* subtle warm lift on light */
-}
-.dark .admin-item:hover {
-  background-color: rgba(255,255,255,0.03) !important; /* subtle light overlay on dark */
-}
 
 /* Barra de búsqueda (Selección destacada): refinada
    - Light: pill suave con sombras
@@ -605,6 +433,8 @@ html, body, #__next, #root, main {
     animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
     animation-delay: calc(min(var(--grid-cell-i, 0), 10) * 44ms);
   }
+  .search-pill { width: 100%; max-width: 100%; padding: 0.55rem 0.9rem; }
+  .search-pill .search-input { width: 100%; min-width: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .product-grid--slow-enter .home-grid-product-cell {
@@ -614,33 +444,6 @@ html, body, #__next, #root, main {
   }
 }
 
-@keyframes card-appear-in {
-  from {
-    opacity: 0.92;
-    transform: translateY(4px) scale(0.998);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-.card-appear {
-  animation: none;
-  opacity: 1;
-  transform: none;
-}
-
-@media (max-width: 767px) {
-  .search-pill { width: 100%; max-width: 100%; padding: 0.55rem 0.9rem; }
-  .search-pill .search-input { width: 100%; min-width: 0; }
-  .card-appear {
-    animation-duration: 140ms;
-    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
-    animation-delay: var(--card-appear-delay-mobile, 0ms);
-  }
-}
-
-/* Systematic mappings: convert common Tailwind bg/text/border utilities to dark equivalents */
 /* Backgrounds */
 .dark .bg-white,
 .dark .bg-gray-50,
@@ -685,32 +488,20 @@ html, body, #__next, #root, main {
 .dark footer {
   background-color: var(--dark-bg-page) !important;
 }
-/* Header: dark por defecto; home móvil ajusta opacidad/borde en @media más abajo */
-.dark header {
+/* Header: dark por defecto; barra del sitio usa superficie elevada más abajo */
+.dark header:not(.site-header-bar) {
   background-color: var(--dark-bg-page) !important;
 }
 
-/* Muted / secondary text in dark */
-.dark .muted-text { color: #9ca3af }
-.dark .subtitle-compact { color: #c7c7cf }
-.dark .body-copy { color: #e6e7ea }
-.dark .price-large { color: #ffffff }
+/* Evita la “caja” oscura dentro del header (logo + nav) */
+.dark header .container-tight {
+  background-color: transparent !important;
+}
 
 .price-highlight {
   color: var(--palette-gold);
   text-shadow: none;
 }
-
-/* Alternativa rápida: reemplazar price-highlight por price-highlight-alt */
-.price-highlight-alt {
-  color: var(--palette-orange);
-  text-shadow: 0 0 18px rgba(var(--palette-orange-rgb), 0.55), 0 0 32px rgba(var(--palette-flame-rgb), 0.3);
-}
-
-/* Panels and cards in dark */
-.card-compact { background: var(--card-bg); }
-.dark .card-compact { background: var(--dark-bg-card) !important; }
-.dark .subtle-border { border-color: rgba(255,255,255,0.04) }
 
 /* Convert common Tailwind background/text utility classes to dark variants when needed */
 .dark .bg-white { background-color: var(--dark-bg-card) !important }
@@ -727,59 +518,68 @@ html, body, #__next, #root, main {
 
 /* Dark gradient for image placeholders */
 .dark .image-placeholder { background: linear-gradient(180deg, var(--dark-bg-card), var(--dark-surface-2)) !important }
-.dark article.card-compact .image-placeholder { background: linear-gradient(180deg, var(--dark-bg-surface), var(--dark-bg-page)) !important }
 
 /* Transiciones globales cortas (menos trabajo por frame al cambiar tema / layout) */
-html, body, header, main, footer, .container-tight, .card-compact, .image-placeholder {
+html, body, header, main, footer, .container-tight, .image-placeholder {
   transition: background-color 120ms ease, color 120ms ease;
 }
 
 /* Header: mismo fondo que la página (móvil home incluido: barra sólida sobre el hero) */
 header {
   background-color: var(--dark-bg-page);
-  transition: background-color 140ms var(--motion-ease), box-shadow 140ms var(--motion-ease);
+  transition: background-color 140ms var(--motion-ease), box-shadow 140ms var(--motion-ease), border-color 140ms var(--motion-ease);
+}
+
+/* Header separado del contenido (catálogo, favoritos, etc.) */
+header.site-header-bar {
+  background-color: var(--dark-bg-card) !important;
+  border-bottom: 1px solid rgba(var(--palette-gold-rgb), 0.32);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+}
+
+body.page-home header.site-header-bar.header-home-mobile:not(.header-scrolled) {
+  background-color: rgba(14, 13, 12, 0.55) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: none;
 }
 @media (max-width: 767px) {
   html.dark header.header-home-mobile,
   html.dark header.header-mobile.header-home-mobile,
-  body.page-home header.header-mobile {
-    background-color: rgba(0, 0, 0, 0.94) !important;
-    background-image: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: none;
+  body.page-home header.header-mobile:not(.header-scrolled) {
+    background-color: rgba(14, 13, 12, 0.55) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: none !important;
+  }
+  body.page-home header.header-mobile.header-scrolled {
+    background-color: var(--dark-bg-surface) !important;
+    border-bottom: 1px solid rgba(var(--palette-gold-rgb), 0.22);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
   }
   #home-top.home-hero-section,
   body.page-home #home-top,
   .page-home #home-top {
-    background-color: transparent !important;
+    background-color: #141414 !important;
     background-image: none !important;
   }
 }
 
 /* Home: anclas del menú / hash — alinear el inicio de sección al viewport (scroll-margin + scrollIntoView) */
-#seleccion-destacada,
-#low-cost,
+#marcas,
 #about-section,
 #faq-section {
   scroll-margin-top: max(1rem, env(safe-area-inset-top, 0px));
 }
 @media (min-width: 768px) {
-  #seleccion-destacada,
-  #low-cost,
+  #marcas,
   #about-section,
   #faq-section {
     scroll-margin-top: 1.5rem;
   }
-}
-
-/* Botón CTA principal: fondo claro sobre oscuro para contraste */
-.btn-cta-dark {
-  background-color: var(--dark-cta-bg) !important;
-  color: var(--dark-cta-text) !important;
-  border-color: rgba(0,0,0,0.08);
-}
-.btn-cta-dark:hover {
-  background-color: var(--dark-cta-hover) !important;
 }
 
 /* Lightbox: animación al cambiar de imagen (más notoria) */
@@ -791,74 +591,22 @@ header {
   animation: lightbox-image-in 0.18s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-/* Ficha técnica producto: specs ocultos al desplegar (solo móvil) */
-@keyframes spec-in {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.product-specs-expandable-expanded .spec-item-extra {
-  animation: spec-in 0.16s ease-out forwards;
-}
 @media (prefers-reduced-motion: reduce) {
   .search-pill-filtering,
-  .filter-grid-updating,
-  .card-appear {
+  .filter-grid-updating {
     animation: none !important;
   }
-  .product-specs-expandable-expanded .spec-item-extra { animation: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .lightbox-image-in { animation: none !important }
 }
 
-.theme-toggle, .thumb {
-  transition: background-color 240ms ease, transform 240ms ease;
-}
-
-/* Logo opacity swap to avoid layout jumps */
-.header-logo-wrapper { position: relative }
-/* Use grid stacking so wrapper sizes to intrinsic image dimensions
-   while allowing opacity swapping without absolute inset forcing a box. */
-.header-logo-wrapper {
-  display: inline-grid;
-  place-items: center;
-}
-.header-logo-wrapper .logo-light,
-.header-logo-wrapper .logo-dark {
-  grid-area: 1/1;
-  display: block;
-  transition: opacity 300ms ease; /* avoid transform transitions that can shift layout on hover */
-}
-.header-logo-wrapper .logo-light { opacity: 1 }
-.header-logo-wrapper .logo-dark { opacity: 0 }
-.dark .header-logo-wrapper .logo-light { opacity: 0 }
-.dark .header-logo-wrapper .logo-dark { opacity: 1 }
-
-/* Footer logo: subtle, centered, and proportional without changing footer height */
 .footer-logo-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: visible;
-}
-.footer-logo-wrapper .logo-light,
-.footer-logo-wrapper .logo-dark {
-  position: absolute;
-  inset: 0;
-  transition: opacity 300ms ease, transform 300ms ease;
-  object-fit: contain;
-}
-.footer-logo-wrapper .logo-light { opacity: 1 }
-.footer-logo-wrapper .logo-dark { opacity: 0 }
-.dark .footer-logo-wrapper .logo-light { opacity: 0 }
-.dark .footer-logo-wrapper .logo-dark { opacity: 1 }
-
-/* Slight scale to make the footer logo feel premium but subtle */
-.footer-logo-wrapper {
-  transform-origin: center center;
-  transform: none !important;
   overflow: visible;
 }
 
@@ -872,50 +620,29 @@ header {
   }
 }
 
-/* Scale logo visually without affecting header layout (uses transform only) */
 .header-logo-wrapper {
+  display: inline-grid;
+  place-items: center;
   overflow: visible;
   z-index: 10;
   align-self: center;
+  background: transparent !important;
 }
 
-/* Override: increase header logo size across breakpoints (use transform only) */
-.header-logo-wrapper .logo-light,
+.logo-link {
+  background: transparent !important;
+}
+
+.footer-logo-wrapper {
+  background: transparent !important;
+}
+
 .header-logo-wrapper .logo-dark {
-  transform: scale(2.2) !important;
+  grid-area: 1/1;
+  display: block;
+  background: transparent !important;
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
-  .header-logo-wrapper .logo-light,
-  .header-logo-wrapper .logo-dark {
-    transform: scale(2.6) !important;
-  }
-}
-
-@media (min-width: 1024px) and (max-width: 1399px) {
-  .header-logo-wrapper .logo-light,
-  .header-logo-wrapper .logo-dark {
-    transform: scale(3.4) !important;
-  }
-}
-
-@media (min-width: 1400px) {
-  .header-logo-wrapper .logo-light,
-  .header-logo-wrapper .logo-dark {
-    transform: scale(4.4) !important;
-  }
-}
-
-.header-logo-wrapper .logo-light,
-.header-logo-wrapper .logo-dark {
-  transform-origin: center center;
-  transition: opacity 300ms ease; /* avoid transform transitions that shift layout */
-  will-change: opacity;
-}
-
-/* Prevent the header logo link from being affected by global link hover rules
-   (some global .dark a:hover rules add box-shadow/transform to links). Ensure
-   hovering the logo does not change its position or add shadows. */
 .header-logo-wrapper a,
 .header-logo-wrapper a:focus,
 .header-logo-wrapper a:hover {
@@ -923,14 +650,6 @@ header {
   outline: none !important;
 }
 
-.header-logo-wrapper a:hover,
-.header-logo-wrapper a:focus {
-  /* Keep the original horizontal centering transform on hover so the
-     logo doesn't jump (the anchor uses translateX(-50%) via utility class). */
-}
-
-/* Target the explicit logo-link anchor (wraps header logo) to prevent
-   global link hover rules from adding transforms or shadows. */
 .logo-link,
 .logo-link:focus,
 .logo-link:hover {
@@ -938,51 +657,6 @@ header {
   outline: none !important;
 }
 
-/* Desktop: much larger logo via transform only (no layout change) */
-@media (min-width: 1400px) {
-  .header-logo-wrapper .logo-light,
-  .header-logo-wrapper .logo-dark {
-    transform: scale(3.6);
-  }
-}
-
-@media (min-width: 1200px) and (max-width: 1399px) {
-  .header-logo-wrapper .logo-light,
-  .header-logo-wrapper .logo-dark {
-    transform: scale(3.2);
-  }
-}
-
-/* Large laptop / desktop: very prominent */
-@media (min-width: 1024px) and (max-width: 1199px) {
-  .header-logo-wrapper .logo-light,
-  .header-logo-wrapper .logo-dark {
-    transform: scale(2.8);
-  }
-}
-
-/* Tablet: prominent but contained */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .header-logo-wrapper .logo-light,
-  .header-logo-wrapper .logo-dark {
-    transform: scale(2.0);
-  }
-}
-
-/* Mobile: modest increase to keep header compact */
-@media (max-width: 767px) {
-  .header-logo-wrapper .logo-light,
-  .header-logo-wrapper .logo-dark {
-    transform: scale(1.4);
-  }
-  /* Header móvil: tamaño real en px (Header.jsx); sin scale para no duplicar con el bloque anterior */
-  .header-mobile .header-logo-wrapper .logo-light,
-  .header-mobile .header-logo-wrapper .logo-dark {
-    transform: none !important;
-  }
-}
-
-/* Header desktop: logo chico a la izquierda, sin scale global (evita marca gigante + recortes) */
 @media (min-width: 768px) {
   .header-desktop .header-logo-wrapper.header-desktop-logo-wrap {
     display: inline-flex;
@@ -990,18 +664,22 @@ header {
     justify-content: flex-start;
     max-width: 100%;
   }
-  .header-desktop .header-logo-wrapper.header-desktop-logo-wrap .logo-light,
   .header-desktop .header-logo-wrapper.header-desktop-logo-wrap .logo-dark {
     transform: none !important;
     transform-origin: left center;
   }
 }
-/* Desktop con scroll: micro-ajuste sin volver a los scale grandes */
+
 @media (min-width: 768px) {
-  header.header-scrolled.header-desktop .header-logo-wrapper.header-desktop-logo-wrap .logo-light,
   header.header-scrolled.header-desktop .header-logo-wrapper.header-desktop-logo-wrap .logo-dark {
     transform: scale(0.96) !important;
     transform-origin: left center !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .header-mobile .header-logo-wrapper .logo-dark {
+    transform: none !important;
   }
 }
 
@@ -1119,125 +797,9 @@ main.legal-page article {
   font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-/* Card layout: ensure consistent height and spacing for product cards */
-.card-compact {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-.card-compact > div:first-child {
-  /* image wrapper should keep its aspect and not shrink */
-  flex: 0 0 auto;
-}
-.card-compact .card-body {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-}
-.card-compact .card-desc {
-  /* key description slightly bolder */
-  font-weight: 600;
-  color: #475569; /* slightly darker gray */
-}
-
-/* Ensure card titles occupy exactly 3 lines visually */
-.card-title {
-  line-height: 1.02;
-  /* Reserve space for 3 lines regardless of content */
-  min-height: calc(3 * 1.02em);
-  display: block;
-  overflow: hidden;
-  /* allow manual <br/> driven breaks to determine lines */
-}
-
-/* Increase gap between description and actions (buttons) inside cards */
-.card-compact .card-desc {
-  margin-bottom: 1rem;
-}
-
-.card-compact .card-actions {
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding-top: 0.75rem;
-  gap: 0.5rem;
-}
-
-/* Card buttons: slightly lighter typography than headings */
-.card-compact a, .card-compact button {
-  font-weight: 400; /* make buttons thinner */
-  letter-spacing: 0.01em;
-}
-
-/* Ensure card actions stay at bottom-left */
-.card-compact .card-actions {
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-/* Card CTA: compact pill, consistent proportions */
-.card-compact .card-actions a,
-.card-compact .card-actions button {
-  box-shadow: none !important;
-  padding: 0.5rem 1rem !important;
-  font-size: 0.9rem !important;
-  min-height: 38px !important;
-  line-height: 1 !important;
-  border-radius: 999px !important;
-}
-
-@media (max-width: 767px) {
-  .card-compact .card-actions {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.625rem;
-    width: 100%;
-  }
-  .card-compact .card-actions a,
-  .card-compact .card-actions button {
-    width: 100%;
-    min-height: 48px !important;
-    font-size: 1rem !important;
-    justify-content: center;
-  }
-}
-
-.card-compact .card-actions a:hover,
-.card-compact .card-actions button:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: none !important;
-}
-
-.card-compact .card-actions a:active,
-.card-compact .card-actions button:active {
-  transform: translateY(0) !important;
-}
-
 /* Ensure grid items stretch to equal height (in case parent grid settings differ) */
 .grid > * {
   align-self: stretch;
-}
-
-/* Scroll reveal: más liviano (menos duración y menos desplazamiento) */
-.reveal {
-  opacity: 1;
-  transform: none;
-  transition: none;
-}
-.reveal--visible {
-  opacity: 1;
-  transform: none;
-}
-
-@media (max-width: 767px) {
-  .reveal {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-  }
 }
 
 /* Image load: fade-in rápido en capa compositada (prioriza fluidez) */
@@ -1253,7 +815,6 @@ main.legal-page article {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .reveal--visible,
   .img-reveal, .img-reveal.img-loaded, .card-interactive {
     transition: none !important;
     transform: none !important;
@@ -1316,13 +877,6 @@ a.button:focus-visible {
   box-shadow: 0 0 0 4px rgba(15,23,42,0.12), 0 10px 22px rgba(8,10,12,0.35);
 }
 
-.btn-light,
-button.btn-light,
-input.btn-light {
-  background: linear-gradient(180deg,#2b2b2b,#171717);
-  color: #fff;
-}
-
 .no-custom-btn { border-radius: 6px !important; box-shadow: none !important }
 .favorite-heart-btn { border-radius: 999px !important; }
 
@@ -1349,9 +903,7 @@ input.btn-light {
 .dark-section button:not(.no-custom-btn),
 .dark-section a:not(.no-custom-btn),
 .dark-card button:not(.no-custom-btn),
-.dark-card a:not(.no-custom-btn),
-.card-compact.dark button:not(.no-custom-btn),
-.card-compact.dark a:not(.no-custom-btn) {
+.dark-card a:not(.no-custom-btn) {
   background: #ffffff !important;
   color: #0b0d0f !important;
   border: 1px solid rgba(11,13,15,0.06) !important;
@@ -1360,171 +912,33 @@ input.btn-light {
 
 /* Hover/active states for inverted buttons */
 .dark button:not(.no-custom-btn):hover,
-.dark a:hover:not(.no-custom-btn),
-.card-compact.dark button:not(.no-custom-btn):hover,
-.card-compact.dark a:hover:not(.no-custom-btn) {
+.dark a:hover:not(.no-custom-btn) {
   transform: none;
   /* keep inverted buttons from becoming visually heavy on hover */
   box-shadow: 0 6px 12px rgba(11,13,15,0.06) !important;
 }
 .dark button:not(.no-custom-btn):active,
-.dark a:active:not(.no-custom-btn),
-.card-compact.dark button:not(.no-custom-btn):active,
-.card-compact.dark a:active:not(.no-custom-btn) {
+.dark a:active:not(.no-custom-btn) {
   transform: translateY(1px);
   box-shadow: 0 6px 12px rgba(11,13,15,0.06), inset 0 -3px 6px rgba(0,0,0,0.02) !important;
 }
 
 /* Focus visible for accessibility in dark contexts */
 .dark button:not(.no-custom-btn):focus-visible,
-.dark a:not(.no-custom-btn):focus-visible,
-.card-compact.dark button:not(.no-custom-btn):focus-visible,
-.card-compact.dark a:not(.no-custom-btn):focus-visible {
+.dark a:not(.no-custom-btn):focus-visible {
   outline: none;
   box-shadow: 0 0 0 4px rgba(11,13,15,0.06), 0 10px 22px rgba(11,13,15,0.06) !important;
 }
-
-/* Thumbnails: explicitly reset border-radius and any inherited pill styles
-   so gallery miniatures render as perfect squares. This needs to come
-   after the global pill/button rules to take precedence. */
-.thumb-reset,
-.thumb-reset * {
-  border-radius: 0 !important;
-}
-
-/* Thumbnail strip helper: ensure no vertical overflow (hide vertical scrollbar) */
-.thumb-strip {
-  overflow-y: hidden !important;
-}
-
-/* Make borders extremely subtle or remove when not needed */
-.subtle-border { border-color: rgba(34,24,18,0.06) }
-
-/* Product card refinement */
- .card-compact {
-  background: var(--color-surface);
-  padding: 1rem;
-  border-radius: 12px; /* consistent 12px radius */
-  box-shadow: var(--shadow-soft);
-  transition: box-shadow 140ms ease;
-  min-width: 0; /* prevent flex/grid children from overflowing horizontally */
-  overflow: hidden;
-}
-
-/* Card title: reserve visual space for 3 lines and disable CSS ellipsis */
-.card-title {
-  font-weight: 900;
-  font-size: clamp(1.2rem, 3vw, 2rem);
-  line-height: 1.04;
-  /* disable any line-clamp based ellipsis and allow manual <br/> splits */
-  display: block !important;
-  -webkit-line-clamp: unset !important;
-  line-clamp: unset !important;
-  -webkit-box-orient: unset !important;
-  overflow: visible !important;
-  /* reserve three lines height */
-  min-height: calc(3 * 1.04em) !important;
-}
-
-/* Card description: concise fragment (we programmatically provide a short fragment), keep normal flow without ellipsis */
-.card-desc {
-  font-size: 0.95rem;
-  color: #6b7280;
-  line-height: 1.5;
-  max-height: 3.5em; /* approx 2 lines */
-  overflow: hidden;
-}
-
-/* Make card price visually equal to the title (same size & weight) */
-.card-compact .price-large {
-  font-weight: 900;
-  font-size: clamp(1.2rem, 3vw, 2rem);
-  line-height: 1.04;
-}
-
-.card-compact:hover {
-  box-shadow: var(--shadow-hover);
-}
-
-/* Subtle gradient utility for buttons and headers */
-.bg-accent-gradient {
-  background-image: linear-gradient(180deg, #ff1a1d 0%, var(--palette-red) 100%);
-}
-
-.btn-gradient {
-  background-image: linear-gradient(180deg, rgba(237, 0, 3, 0.98), var(--palette-red));
-  color: #ffffff;
-}
-
-.muted-text { color: #6b7280 }
-
-
-/* ===================== Admin responsive helpers ===================== */
-/* Centered admin container to control large layouts */
-.admin-container { max-width: 1100px; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
-@media (min-width: 768px) { .admin-container { padding-left: 1.5rem; padding-right: 1.5rem; } }
 
 /* Login admin: imagen full-screen + degradado; body oscuro como fallback */
 body.admin-login-page {
   background-color: #0a0c10 !important;
   overflow-y: auto !important;
 }
-body.admin-login-page .admin-root,
-body.admin-login-page .admin-container,
-body.admin-login-page .admin-auth-bar {
+body.admin-login-page .admin-root {
   background: transparent !important;
   background-color: transparent !important;
 }
-body.admin-login-page .admin-container {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* Card styling used by admin panels */
-.admin-card { background: #fff; border-radius: 12px; box-shadow: var(--shadow-soft); position: relative; overflow: hidden; }
-@media (min-width: 768px) { .admin-card { padding: 1.25rem; } }
-
-/* Form grid: 1 column mobile, 2 columns on md+ */
-.admin-form-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-@media (min-width: 768px) { .admin-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } }
-
-/* Thumbnails responsive sizing */
-.thumb-xs { width: 48px; height: 48px; }
-@media (min-width: 768px) { .thumb-xs { width: 56px; height: 56px; } }
-
-/* Panel list style */
-.list-panel { border-radius: 10px; overflow: hidden; box-shadow: var(--shadow-soft); }
-.list-row { padding: 0.9rem 1rem; }
-.list-row:hover { background-color: #fafaf9; }
-
-/* Button sizing helpers */
-.btn-admin-primary { background: #0b0b0b; color: #fff; padding: 0.6rem 1rem; border-radius: 10px; }
-.btn-admin-secondary { background: #fff; border: 1px solid rgba(15,23,42,0.06); color: #111827; padding: 0.5rem 0.9rem; border-radius: 10px; }
-
-/* Responsive adjustments for admin header spacing */
-@media (max-width: 767px) {
-  .admin-header-stack { display: grid; gap: 0.5rem; }
-  .admin-header-right { justify-self: start; }
-}
-
-/* small utility to keep consistent input heights across breakpoints */
-.admin-input { padding: 0.6rem 0.9rem; border-radius: 10px; border: 1px solid #e6e6e6; }
-
-/* End admin helpers */
-
-/* Related products slider styles */
-.related-slider { -webkit-overflow-scrolling: touch; scroll-behavior: auto; }
-.related-slider::-webkit-scrollbar { height: 10px; }
-.related-slider::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 8px; }
-.related-slider.no-scrollbar::-webkit-scrollbar { display: none; }
-.related-slider { scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.12) transparent; }
-
-/* Utility to hide scrollbar on all browsers when desired */
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-.no-scrollbar::-webkit-scrollbar { display: none; }
-
-/* Make sure children snap cleanly */
-.related-slider > * { scroll-snap-align: start; }
 
 /* ===================== Motion: corto y barato en compositor ===================== */
 :root{
@@ -1582,28 +996,12 @@ body.page-home main > section {
 
 
 /* Cards: hover sin translate (menos repaints); solo sombra/borde suaves */
-.card-interactive,
-.admin-card,
-.list-panel {
+.card-interactive {
   contain: layout style paint;
   transition:
     transform var(--motion-base) var(--motion-ease),
     box-shadow var(--motion-base) var(--motion-ease),
     border-color var(--motion-base) var(--motion-ease);
-}
-body.page-home #seleccion-destacada .card-interactive,
-body.page-home #low-cost .card-interactive,
-body.page-home #seleccion-destacada .card-interactive:hover,
-body.page-home #low-cost .card-interactive:hover,
-body.page-home #seleccion-destacada .card-interactive:active,
-body.page-home #low-cost .card-interactive:active {
-  transform: none !important;
-  box-shadow: none !important;
-  transition: none !important;
-}
-body.page-home #seleccion-destacada .card-interactive,
-body.page-home #low-cost .card-interactive {
-  contain: layout style;
 }
 .card-interactive:hover {
   transform: translateY(-2px);
@@ -1615,14 +1013,12 @@ body.page-home #low-cost .card-interactive {
 }
 /* Catálogo editorial: casi sin sombra; el hover global añade una muy suave */
 .card-editorial.card-interactive {
-  box-shadow: none !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 8px 24px rgba(0, 0, 0, 0.14) !important;
+  border: 1px solid var(--dark-border);
 }
 .card-editorial.card-interactive:hover {
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18) !important;
-}
-.admin-card:hover,
-.list-panel:hover {
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06), 0 14px 32px rgba(0, 0, 0, 0.2) !important;
+  border-color: rgba(var(--palette-sand-rgb), 0.22);
 }
 
 /* Links/botones: sin lift global (los estilos por componente siguen igual) */
@@ -1643,77 +1039,15 @@ button:not(.no-custom-btn):active {
   transform: none;
 }
 
-.card-image-animated {
-  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-@media (min-width: 768px) {
-  .card-interactive:hover .card-image-animated {
-    transform: scale(1.028);
-  }
-}
-body.page-home .card-image-animated,
-body.page-home .card-interactive:hover .card-image-animated {
-  transition: none !important;
-  transform: none !important;
-}
-
 @media (prefers-reduced-motion: reduce) {
   main > section,
   .card-interactive,
-  .admin-card,
-  .list-panel,
   a:not(.no-custom-btn),
   button:not(.no-custom-btn),
-  .card-interactive img,
-  .bottom-nav-item {
+  .card-interactive img {
     animation: none !important;
     transition: none !important;
     transform: none !important;
-  }
-}
-
-/* ===================== Section heading entrance ===================== */
-.section-heading-entrance {
-  opacity: 0;
-  transform: translateY(4px);
-  animation: premium-enter-up var(--motion-base) var(--motion-ease) both;
-  animation-delay: 16ms;
-}
-@media (max-width: 767px) {
-  .section-heading-entrance {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .section-heading-entrance {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
-
-/* Card overlay: sin shine animado (menos repaints al hover) */
-.card-overlay-hover {
-  transition: opacity var(--motion-base) var(--motion-ease);
-}
-.card-interactive:hover .card-overlay-hover {
-  opacity: 1;
-}
-.card-shine {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  overflow: hidden;
-  pointer-events: none;
-}
-.card-shine::after {
-  display: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .card-overlay-hover {
-    transition: none !important;
   }
 }
 
@@ -1721,42 +1055,44 @@ body.page-home .card-interactive:hover .card-image-animated {
 /* Home móvil: header siempre opaco (sin hero detrás de la barra); sin blur para mejor compositing */
 @media (max-width: 767px) {
   body.page-home header.header-mobile:not(.header-scrolled) {
-    background-color: rgba(0, 0, 0, 0.94) !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+    background-color: rgba(14, 13, 12, 0.55) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
     box-shadow: none !important;
+  }
+  body.page-home header.header-mobile:not(.header-scrolled) button[aria-label="Abrir menú"] {
+    color: #fff !important;
+    background: rgba(0, 0, 0, 0.45) !important;
   }
   body.page-home header.header-mobile:not(.header-scrolled) .header-logo-wrapper {
     filter: none;
   }
   header.header-home-mobile:not(.header-scrolled),
   header[data-hero-bg="true"] {
-    background-color: rgba(0, 0, 0, 0.94) !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+    background-color: rgba(14, 13, 12, 0.55) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
   }
   .header-logo-on-hero {
     filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.45));
   }
 }
-header.header-scrolled {
-  background-color: rgba(0, 0, 0, 0.94) !important;
-  /* Sin backdrop-filter: menos trabajo de composición al scrollear en GPUs modestas */
+header.header-scrolled.site-header-bar {
+  background-color: var(--dark-bg-card) !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.26);
+  border-bottom-color: rgba(var(--palette-gold-rgb), 0.32);
 }
 header.header-scrolled .header-logo-wrapper img,
-header.header-scrolled .header-logo-wrapper .logo-light,
 header.header-scrolled .header-logo-wrapper .logo-dark {
   transform: scale(0.97) !important;
 }
 @media (min-width: 768px) {
   header.header-scrolled .header-logo-wrapper img,
-  header.header-scrolled .header-logo-wrapper .logo-light,
   header.header-scrolled .header-logo-wrapper .logo-dark {
     transform: scale(0.95) !important;
   }
@@ -1764,7 +1100,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 /* Móvil: logo con altura fija; el micro-shrink al scroll no aplica (evita saltos raros) */
 @media (max-width: 767px) {
   header.header-scrolled.header-mobile .header-logo-wrapper img,
-  header.header-scrolled.header-mobile .header-logo-wrapper .logo-light,
   header.header-scrolled.header-mobile .header-logo-wrapper .logo-dark {
     transform: none !important;
   }
@@ -1774,9 +1109,10 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   }
 }
 .header-logo-wrapper img,
-.header-logo-wrapper .logo-light,
 .header-logo-wrapper .logo-dark {
   transition: transform 160ms var(--motion-ease);
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 @media (max-width: 1023px) {
@@ -1850,11 +1186,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   }
 }
 
-/* ===================== Bottom nav item transition ===================== */
-.bottom-nav-item {
-  transition: color 120ms var(--motion-ease);
-}
-
 /* ===================== Product detail CTA entrance ===================== */
 .product-cta-entrance {
   opacity: 0;
@@ -1877,9 +1208,8 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   }
   /* Header móvil sobre el hero: espacio mínimo, logo y menú destacados */
   header.header-mobile {
-    /* Mismo criterio arriba/abajo (el superior incluye notch). */
-    padding-top: max(0.5rem, env(safe-area-inset-top));
-    padding-bottom: 0.5rem;
+    padding-top: max(0.35rem, env(safe-area-inset-top));
+    padding-bottom: 0.35rem;
   }
   .container-tight {
     padding-left: 1.25rem;
@@ -1919,11 +1249,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     transform: none !important;
   }
 
-  nav.bottom-nav-dock svg {
-    width: 21px;
-    height: 21px;
-  }
-
   /* En mobile dark, asegurar contraste alto en textos de cards */
   .card-interactive .md\:hidden h3,
   .card-interactive .md\:hidden p {
@@ -1932,41 +1257,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 
   .card-interactive .md\:hidden span {
     color: #111319;
-  }
-
-  /* Ultra fluida extrema (home mobile): prioriza scroll sobre efectos visuales */
-  body.page-home #seleccion-destacada .card-interactive,
-  body.page-home #low-cost .card-interactive,
-  body.page-home #seleccion-destacada .card-interactive:hover,
-  body.page-home #low-cost .card-interactive:hover,
-  body.page-home #seleccion-destacada .card-interactive:active,
-  body.page-home #low-cost .card-interactive:active {
-    transition: none !important;
-    animation: none !important;
-    transform: none !important;
-    box-shadow: none !important;
-    filter: none !important;
-  }
-  body.page-home #seleccion-destacada .img-reveal,
-  body.page-home #low-cost .img-reveal,
-  body.page-home #seleccion-destacada .img-reveal.img-loaded,
-  body.page-home #low-cost .img-reveal.img-loaded {
-    transition: none !important;
-    animation: none !important;
-    opacity: 1 !important;
-  }
-  body.page-home #seleccion-destacada .filter-grid-updating,
-  body.page-home #low-cost .filter-grid-updating,
-  body.page-home #seleccion-destacada .search-pill-filtering,
-  body.page-home #low-cost .search-pill-filtering {
-    animation: none !important;
-  }
-
-  /* CTA "Ver más" en cards mobile: contraste fijo en dark/light */
-  .card-mobile-cta {
-    background-color: #ffffff !important;
-    color: #111319 !important;
-    border: 1px solid rgba(17, 19, 25, 0.08) !important;
   }
 }
 
@@ -1980,44 +1270,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   border: 0 !important;
   color: inherit !important;
   transform: none !important;
-}
-
-/* ===================== Admin premium redesign (iOS-safe) ===================== */
-.admin-premium-card {
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(165deg, rgba(22, 26, 34, 0.98) 0%, rgba(16, 19, 26, 0.99) 100%);
-  box-shadow:
-    0 4px 28px rgba(0, 0, 0, 0.28),
-    0 1px 0 0 rgba(255, 255, 255, 0.04) inset;
-  transition: border-color 200ms ease, box-shadow 200ms ease;
-}
-
-.admin-premium-card:hover {
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow:
-    0 10px 36px rgba(0, 0, 0, 0.36),
-    0 1px 0 0 rgba(255, 255, 255, 0.06) inset;
-}
-
-.admin-section-title {
-  font-size: 1.0625rem;
-  font-weight: 650;
-  letter-spacing: -0.02em;
-  color: rgba(255, 255, 255, 0.96);
-}
-
-@media (min-width: 768px) {
-  .admin-section-title {
-    font-size: 1.125rem;
-  }
-}
-
-.admin-section-desc {
-  font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.5);
-  line-height: 1.45;
-  margin-top: 0.25rem;
 }
 
 .admin-btn-interact {
@@ -2084,104 +1336,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   border: 3px solid rgba(255, 255, 255, 0.2);
   border-top-color: rgba(255, 255, 255, 0.95);
   animation: admin-splash-spin 0.82s linear infinite;
-}
-
-.admin-premium-input {
-  width: 100%;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(18, 20, 26, 0.9);
-  color: rgba(255, 255, 255, 0.96);
-  padding: 0.65rem 0.9rem;
-  font-size: 0.9375rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.admin-premium-input::placeholder {
-  color: rgba(255, 255, 255, 0.42);
-}
-
-.admin-premium-input:focus {
-  outline: none;
-  border-color: rgba(224, 141, 0, 0.45);
-  box-shadow: 0 0 0 3px rgba(224, 141, 0, 0.12);
-}
-
-.admin-premium-btn-primary,
-.admin-premium-btn-secondary,
-.admin-premium-btn-danger,
-.admin-premium-btn-ghost {
-  border-radius: 12px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  transition: opacity 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background-color 180ms ease;
-}
-
-.admin-premium-btn-primary {
-  background: #e08d00;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 16px rgba(224, 141, 0, 0.35);
-}
-
-.admin-premium-btn-primary:hover {
-  background: #e8990a;
-  box-shadow: 0 6px 20px rgba(224, 141, 0, 0.4);
-}
-
-.admin-premium-btn-secondary {
-  background: rgba(255, 255, 255, 0.07);
-  color: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.admin-premium-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.18);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-}
-
-.admin-premium-btn-danger {
-  background: #c62828;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 4px 16px rgba(198, 40, 40, 0.3);
-}
-
-.admin-premium-btn-danger:hover {
-  background: #d32f2f;
-  box-shadow: 0 6px 20px rgba(198, 40, 40, 0.35);
-}
-
-.admin-premium-btn-ghost {
-  background: transparent;
-  color: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.admin-premium-btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.14);
-}
-
-.admin-premium-btn-primary:active,
-.admin-premium-btn-secondary:active,
-.admin-premium-btn-danger:active,
-.admin-premium-btn-ghost:active {
-  opacity: 0.92;
-}
-
-.admin-premium-btn-primary:focus-visible,
-.admin-premium-btn-secondary:focus-visible,
-.admin-premium-btn-danger:focus-visible,
-.admin-premium-btn-ghost:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
-}
-
-.admin-premium-muted {
-  color: rgba(255, 255, 255, 0.6);
 }
 
 /* ===================== Admin desk (modo oscuro, alto contraste) ===================== */
@@ -2428,6 +1582,16 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   scroll-padding-right: 1.25rem;
 }
 
+.home-brand-card {
+  contain: layout style paint;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-brand-card:hover {
+    transform: none !important;
+  }
+}
+
 @media (max-width: 767px) {
   .related-products-scroll {
     scroll-snap-type: x mandatory;
@@ -2524,3 +1688,35 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   background: var(--vivid-gradient);
   box-shadow: 0 0 14px rgba(var(--palette-gold-rgb), 0.55), 0 0 22px rgba(var(--palette-flame-rgb), 0.25);
 }
+
+/* Header auto-hide al scroll */
+header.site-header-bar.header-scroll-hidden {
+  transform: translate3d(0, -100%, 0);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  header.site-header-bar.header-scroll-hidden {
+    transform: none;
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Home — showcase editorial: corte diagonal imagen / texto */
+@media (min-width: 768px) {
+  .home-featured-editorial-block--img-left .home-featured-editorial__image {
+    clip-path: polygon(0 0, 100% 0, calc(100% - 5rem) 100%, 0 100%);
+  }
+
+  .home-featured-editorial-block--img-right .home-featured-editorial__image {
+    clip-path: polygon(5rem 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+@media (max-width: 767px) {
+  .home-featured-editorial-block .home-featured-editorial__image {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2.5rem), 0 100%);
+  }
+}
+

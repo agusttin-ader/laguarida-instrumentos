@@ -7,7 +7,6 @@ const ScrollReveal = React.memo(function ScrollReveal({
   className = '',
   threshold = 0.12,
   rootMargin = '0px 0px -8% 0px',
-  delay = 0,
   onVisible
 }) {
   const ref = useRef(null)
@@ -49,13 +48,10 @@ const ScrollReveal = React.memo(function ScrollReveal({
     return () => obs.disconnect()
   }, [needsObserver, threshold, rootMargin])
 
-  const style = { '--reveal-delay': `${delay || 0}ms` }
-
   return (
     <div
       ref={needsObserver ? ref : undefined}
-      className={`reveal reveal--visible ${className}`}
-      style={style}
+      className={className}
     >
       {children}
     </div>

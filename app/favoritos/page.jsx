@@ -44,8 +44,8 @@ export default function FavoritosPage() {
           <span className="text-4xl opacity-50" aria-hidden>🎸</span>
           <p className="mt-4 text-white/80 font-medium">Nada en tu selección</p>
           <p className="mt-2 text-sm text-white/55">Guardá productos con el corazón en la ficha de cada uno.</p>
-          <Link href="/#seleccion-destacada" className="inline-block mt-6 px-5 py-2.5 rounded-xl bg-white/10 text-white text-sm font-semibold hover:bg-white/15 transition-colors no-custom-btn">
-            Ver selección destacada
+          <Link href="/catalogo" className="inline-block mt-6 px-5 py-2.5 rounded-xl bg-white/10 text-white text-sm font-semibold hover:bg-white/15 transition-colors no-custom-btn">
+            Ver catálogo
           </Link>
         </div>
       ) : (

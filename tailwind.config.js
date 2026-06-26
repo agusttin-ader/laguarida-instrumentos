@@ -8,13 +8,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        neutralbg: '#F7F7F8',
         brand: {
           sand: '#D9C58B',
           gold: '#F2AE30',
           orange: '#F28729',
           flame: '#F23C13',
-          ink: '#0D0D0D',
+          ink: '#181715',
           cream: '#f5ecd8',
           brown: '#6c5344'
         }
