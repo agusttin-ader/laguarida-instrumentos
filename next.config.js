@@ -2,11 +2,13 @@
 
 const { useLocalCatalog } = require('./lib/supabase/mode')
 
-/** Catálogo en /public → Next redimensiona sin URLs remotas (evita 402 de Vercel). */
+/** Catálogo en /public → servir directo desde /images/* (evita 402 del Image Optimizer en Vercel). */
 function imagesUnoptimized() {
   if (process.env.NEXT_ENABLE_IMAGE_OPTIMIZATION === 'true') return false
   if (process.env.NEXT_ENABLE_IMAGE_OPTIMIZATION === 'false') return true
-  if (useLocalCatalog()) return false
+  // Local: sin /_next/image (en Hobby/Pro sin cuota extra las rutas /public dan 200 directo).
+  if (useLocalCatalog()) return true
+  // Supabase remoto: también directo por defecto (transform CDN opcional vía forDisplay).
   return true
 }
 
@@ -40,9 +42,8 @@ const nextConfig = {
     optimizePackageImports: ['phosphor-react'],
   },
   images: {
-    // Local (SUPABASE_BLOCKED): optimización ON para /images/* vía `/_next/image`.
-    // Supabase remoto: OFF por defecto (402 en Vercel free); usar NEXT_PUBLIC_SUPABASE_IMAGE_TRANSFORM
-    // o NEXT_ENABLE_IMAGE_OPTIMIZATION=true con plan Pro.
+    // Por defecto unoptimized: /images/* y Supabase van directo (evita HTTP 402 en Vercel).
+    // Activar solo con plan/cuota: NEXT_ENABLE_IMAGE_OPTIMIZATION=true
     unoptimized: imagesUnoptimized(),
     // Allowed quality values used across the app (avoid Next.js warnings in dev/prod).
     qualities: [100, 95, 92, 90, 88, 86, 85, 82, 80, 78, 76, 75, 74, 72, 70, 68, 65, 62, 60, 58],
