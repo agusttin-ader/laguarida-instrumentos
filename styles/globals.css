@@ -206,7 +206,6 @@ html, body {
 #__next {
   min-height: 100%;
   max-width: 100%;
-  overflow-x: clip;
 }
 
 /* Lock background scroll when a modal or drawer is open */
@@ -237,7 +236,6 @@ body.modal-open .admin-desk-top {
   main {
     min-height: 0;
     max-width: 100%;
-    overflow-x: clip;
   }
   a, button {
     -webkit-tap-highlight-color: rgba(var(--palette-gold-rgb), 0.15);
@@ -1701,6 +1699,26 @@ header.site-header-bar.header-scroll-hidden {
     opacity: 0;
     visibility: hidden;
   }
+}
+
+/* Catálogo — sidebar fijo al scroll (debajo del header) */
+.catalog-sidebar-sticky {
+  position: sticky;
+  top: calc(var(--site-header-h, 68px) + 1rem);
+  align-self: start;
+  max-height: calc(100dvh - var(--site-header-h, 68px) - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.catalog-sidebar-sticky::-webkit-scrollbar {
+  width: 4px;
+}
+
+.catalog-sidebar-sticky::-webkit-scrollbar-thumb {
+  background: rgba(var(--palette-gold-rgb), 0.25);
+  border-radius: 9999px;
 }
 
 /* Home — showcase editorial: corte diagonal imagen / texto */

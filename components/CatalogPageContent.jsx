@@ -61,8 +61,8 @@ export default function CatalogPageContent() {
       </header>
 
       <div className="grid gap-8 lg:grid-cols-[minmax(220px,280px)_1fr] lg:gap-12">
-        <aside>
-          <nav aria-label="Marcas" className="sticky top-28">
+        <aside className="catalog-sidebar-sticky">
+          <nav aria-label="Marcas">
             {brandList.map((brand, index) => (
               <React.Fragment key={brand.id}>
                 {index > 0 ? <CatalogSidebarDivider /> : null}
