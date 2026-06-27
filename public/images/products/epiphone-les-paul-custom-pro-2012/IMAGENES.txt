@@ -1,0 +1,16 @@
+Producto: Epiphone Les Paul Custom Pro 2012.
+Carpeta: public/images/products/epiphone-les-paul-custom-pro-2012/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1782529985456-08cd17d1af33-WhatsApp-Image-2026-06-26-at-20.03.01--3-.jpg
+2. 1782530012861-94e0aa902d65-WhatsApp-Image-2026-06-26-at-20.03.00--1-.jpg
+3. 1782530015866-21c791f477e4-WhatsApp-Image-2026-06-26-at-20.03.01--2-.jpg
+4. 1782530018644-38b09bc02085-WhatsApp-Image-2026-06-26-at-20.02.59--1-.jpg
+5. 1782530021732-25817b56cf7d-WhatsApp-Image-2026-06-26-at-20.03.00--2-.jpg
+6. 1782530024350-e6124a402de4-WhatsApp-Image-2026-06-26-at-20.03.00--3-.jpg
+7. 1782530027367-2df1a2b9cf32-WhatsApp-Image-2026-06-26-at-20.03.00.jpg
+8. 1782530030186-3b7ce47f07fd-WhatsApp-Image-2026-06-26-at-20.03.01.jpg
+9. 1782530032591-9ee085a08f2f-WhatsApp-Image-2026-06-26-at-20.03.01--1-.jpg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.

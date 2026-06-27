@@ -1,3 +1,24 @@
+[epiphone-les-paul-custom-pro-2012]
+  public/images/products/epiphone-les-paul-custom-pro-2012/1782529985456-08cd17d1af33-WhatsApp-Image-2026-06-26-at-20.03.01--3-.jpg
+  public/images/products/epiphone-les-paul-custom-pro-2012/1782530012861-94e0aa902d65-WhatsApp-Image-2026-06-26-at-20.03.00--1-.jpg
+  public/images/products/epiphone-les-paul-custom-pro-2012/1782530015866-21c791f477e4-WhatsApp-Image-2026-06-26-at-20.03.01--2-.jpg
+  public/images/products/epiphone-les-paul-custom-pro-2012/1782530018644-38b09bc02085-WhatsApp-Image-2026-06-26-at-20.02.59--1-.jpg
+  public/images/products/epiphone-les-paul-custom-pro-2012/1782530021732-25817b56cf7d-WhatsApp-Image-2026-06-26-at-20.03.00--2-.jpg
+  public/images/products/epiphone-les-paul-custom-pro-2012/1782530024350-e6124a402de4-WhatsApp-Image-2026-06-26-at-20.03.00--3-.jpg
+  public/images/products/epiphone-les-paul-custom-pro-2012/1782530027367-2df1a2b9cf32-WhatsApp-Image-2026-06-26-at-20.03.00.jpg
+  public/images/products/epiphone-les-paul-custom-pro-2012/1782530030186-3b7ce47f07fd-WhatsApp-Image-2026-06-26-at-20.03.01.jpg
+  public/images/products/epiphone-les-paul-custom-pro-2012/1782530032591-9ee085a08f2f-WhatsApp-Image-2026-06-26-at-20.03.01--1-.jpg
+
+[fender-telecaster-am-std-2012]
+  public/images/products/fender-telecaster-am-std-2012/1782529476807-e5a856efe2c7-WhatsApp-Image-2026-06-26-at-19.59.54.jpg
+  public/images/products/fender-telecaster-am-std-2012/1782529503336-d59a8a628db7-WhatsApp-Image-2026-06-26-at-19.59.52--2-.jpg
+  public/images/products/fender-telecaster-am-std-2012/1782529506301-711ba60e3ac3-WhatsApp-Image-2026-06-26-at-19.59.53--1-.jpg
+  public/images/products/fender-telecaster-am-std-2012/1782529509695-d9a39099f91f-WhatsApp-Image-2026-06-26-at-19.59.52.jpg
+  public/images/products/fender-telecaster-am-std-2012/1782529513249-a537f0022861-WhatsApp-Image-2026-06-26-at-19.59.52--3-.jpg
+  public/images/products/fender-telecaster-am-std-2012/1782529516000-61fe870348ff-WhatsApp-Image-2026-06-26-at-19.59.52--1-.jpg
+  public/images/products/fender-telecaster-am-std-2012/1782529519169-07cde1b5ab33-WhatsApp-Image-2026-06-26-at-19.59.53--2-.jpg
+  public/images/products/fender-telecaster-am-std-2012/1782529521786-23b735095863-WhatsApp-Image-2026-06-26-at-19.59.53.jpg
+
 [fender-stratocaster-player-series-hsh-2018]
   public/images/products/fender-stratocaster-player-series-hsh-2018/1780604240380-c69631ca461d-8d6c9645-4ab6-4d89-86de-ba0c9dc218d4.jpg
   public/images/products/fender-stratocaster-player-series-hsh-2018/1780604269041-a2d75f54eb75-4f9e8b44-3f86-4895-ab86-eac8fdb98b3d.jpg
@@ -152,21 +173,6 @@
   public/images/products/paul-reed-smith-custom-24-25th-aniversario-10-top/1773543596145-8483-fadababe-277a-4691-926f-1528969e355d.jpeg
   public/images/products/paul-reed-smith-custom-24-25th-aniversario-10-top/1773543598014-9435-fb6b0245-124d-4189-a52b-5a3896683025.jpeg
   public/images/products/paul-reed-smith-custom-24-25th-aniversario-10-top/1773543599736-6148-9ddd84fe-c897-4c10-aa04-7502eacaaac0.jpeg
-
-[fender-telecaster-am-deluxe]
-  public/images/products/fender-telecaster-am-deluxe/1771348487798-8995-hero.jpg
-  public/images/products/fender-telecaster-am-deluxe/1771348489101-4759-back-open-case-2.jpg
-  public/images/products/fender-telecaster-am-deluxe/1771348489671-2578-back-open-case.jpg
-  public/images/products/fender-telecaster-am-deluxe/1771348490256-2205-front-case-open-2.jpg
-  public/images/products/fender-telecaster-am-deluxe/1771348490981-6931-front-case-open.jpg
-  public/images/products/fender-telecaster-am-deluxe/1771348491604-6219-front-case.jpg
-  public/images/products/fender-telecaster-am-deluxe/1771348492242-2305-front-pick-2.jpg
-  public/images/products/fender-telecaster-am-deluxe/1771348492830-6609-front-pick-3.jpg
-  public/images/products/fender-telecaster-am-deluxe/1771348493446-9337-front-pick-4.jpg
-  public/images/products/fender-telecaster-am-deluxe/1771348493992-9929-front-pick.jpg
-  public/images/products/fender-telecaster-am-deluxe/1771348494554-6555-pala-back.jpg
-  public/images/products/fender-telecaster-am-deluxe/1771348495073-7286-pala-front.jpg
-  public/images/products/fender-telecaster-am-deluxe/1771348495857-8905-trastes-2.jpg
 
 [ibanez-rg-350-exz]
   public/images/products/ibanez-rg-350-exz/1771347818642-9767-hero.jpg

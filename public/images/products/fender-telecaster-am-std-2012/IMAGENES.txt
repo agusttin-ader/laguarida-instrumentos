@@ -1,0 +1,15 @@
+Producto: FENDER TELECASTER AM STD 2012.
+Carpeta: public/images/products/fender-telecaster-am-std-2012/
+
+Nombres que usa el sitio en local (generado por npm run sync:catalog):
+
+1. 1782529476807-e5a856efe2c7-WhatsApp-Image-2026-06-26-at-19.59.54.jpg
+2. 1782529503336-d59a8a628db7-WhatsApp-Image-2026-06-26-at-19.59.52--2-.jpg
+3. 1782529506301-711ba60e3ac3-WhatsApp-Image-2026-06-26-at-19.59.53--1-.jpg
+4. 1782529509695-d9a39099f91f-WhatsApp-Image-2026-06-26-at-19.59.52.jpg
+5. 1782529513249-a537f0022861-WhatsApp-Image-2026-06-26-at-19.59.52--3-.jpg
+6. 1782529516000-61fe870348ff-WhatsApp-Image-2026-06-26-at-19.59.52--1-.jpg
+7. 1782529519169-07cde1b5ab33-WhatsApp-Image-2026-06-26-at-19.59.53--2-.jpg
+8. 1782529521786-23b735095863-WhatsApp-Image-2026-06-26-at-19.59.53.jpg
+
+Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.
