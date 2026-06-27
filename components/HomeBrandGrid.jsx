@@ -59,7 +59,7 @@ function BrandCard({ brand }) {
 export default function HomeBrandGrid() {
   return (
     <section id="marcas" aria-labelledby="marcas-heading" className="home-brand-grid w-full">
-      <header className="mb-8 sm:mb-10 md:mb-12">
+      <header className="mb-6 max-md:mb-5 sm:mb-10 md:mb-12">
         <p className="section-kicker-minimal text-[var(--palette-gold)]">Marcas que manejamos</p>
         <h2
           id="marcas-heading"
@@ -81,7 +81,7 @@ export default function HomeBrandGrid() {
       <div className="mt-8 flex justify-center sm:mt-10">
         <Link
           href="/catalogo"
-          className="no-custom-btn inline-flex min-h-[44px] items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-5 py-2 text-sm font-medium text-[var(--dark-text-secondary)] transition-colors hover:border-[rgba(var(--palette-gold-rgb),0.35)] hover:text-[var(--dark-text-primary)]"
+          className="no-custom-btn inline-flex min-h-[48px] items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-[var(--dark-text-secondary)] transition-colors duration-200 hover:border-[rgba(var(--palette-gold-rgb),0.35)] hover:text-[var(--dark-text-primary)] active:scale-[0.98]"
         >
           Ver catálogo completo
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>

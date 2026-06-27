@@ -21,8 +21,8 @@ export default function FavoritosPage() {
   const softGridEnter = useSoftEnterAfterSlowLoad(favoritesGridLoading, 420)
 
   return (
-    <div className="container-tight pt-8 sm:pt-14 pb-7 md:pb-12">
-      <header className="mb-5 md:mb-8">
+    <div className="container-tight pt-6 max-md:pt-5 sm:pt-14 pb-6 max-md:pb-5 md:pb-12">
+      <header className="mb-5 max-md:mb-4 md:mb-8">
         <p className="text-xs uppercase tracking-[0.22em] text-[var(--dark-muted)] mb-1">Tu selección</p>
         <h1 className="text-2xl md:text-3xl font-bold text-[var(--dark-text-primary)]">
           Favoritos
@@ -50,7 +50,7 @@ export default function FavoritosPage() {
         </div>
       ) : (
         <div
-          className={`grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-6 lg:grid-cols-3${softGridEnter ? ' product-grid--slow-enter' : ''}`}
+          className={`grid grid-cols-1 gap-5 max-md:gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3${softGridEnter ? ' product-grid--slow-enter' : ''}`}
         >
           {products.map((item, idx) => (
             <div

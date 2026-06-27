@@ -16,7 +16,7 @@ function HeaderLoading() {
     <>
       {!isHome ? (
         <div
-          className="md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[60px] sm:min-h-[62px] border-b border-[rgba(var(--palette-gold-rgb),0.32)] bg-[var(--dark-bg-card)] pointer-events-none"
+          className="site-header-mobile-shell md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[52px] border-b border-[rgba(var(--palette-gold-rgb),0.32)] bg-[var(--dark-bg-page)] pointer-events-none"
           aria-hidden
         />
       ) : null}
@@ -38,7 +38,9 @@ export default function SiteShell({ children }) {
   const isGuitarProductPage =
     typeof pathname === 'string' && /^\/guitars\/[^/]+$/u.test(pathname)
   const mainTopPad = !isHome
-    ? 'pt-[calc(60px+max(0.2rem,env(safe-area-inset-top)))] sm:pt-[calc(62px+max(0.2rem,env(safe-area-inset-top)))] md:pt-0'
+    ? isGuitarProductPage
+      ? 'md:pt-0'
+      : 'max-md:pt-[var(--site-header-h,var(--mobile-header-h,3.25rem))] md:pt-0'
     : 'pt-0'
 
   const handleRefresh = useCallback(() => {
@@ -54,10 +56,17 @@ export default function SiteShell({ children }) {
 
   useEffect(() => {
     if (typeof document === 'undefined') return
-    const isHome = pathname === '/' || pathname === ''
-    if (isHome) document.body.classList.add('page-home')
-    else document.body.classList.remove('page-home')
-    return () => document.body.classList.remove('page-home')
+    const isHomePage = pathname === '/' || pathname === ''
+    const isProduct =
+      typeof pathname === 'string' && /^\/guitars\/[^/]+$/u.test(pathname)
+
+    document.body.classList.toggle('page-home', isHomePage)
+    document.body.classList.toggle('page-internal', !isHomePage)
+    document.body.classList.toggle('page-product', isProduct)
+
+    return () => {
+      document.body.classList.remove('page-home', 'page-internal', 'page-product')
+    }
   }, [pathname])
 
   useEffect(() => {

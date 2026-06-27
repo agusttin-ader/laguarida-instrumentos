@@ -53,7 +53,7 @@ export default function ProductGrid({
           <div className="h-2.5 w-24 rounded-full bg-white/10 animate-pulse" />
           <div className="h-2.5 w-16 rounded-full bg-white/10 animate-pulse" />
         </div>
-        <div className="grid w-full min-w-0 grid-cols-1 gap-5 max-[767px]:gap-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8" aria-hidden>
+        <div className="grid w-full min-w-0 grid-cols-1 gap-5 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8" aria-hidden>
           {Array.from({ length: 6 }).map((_, idx) => (
             <div key={`skeleton-${idx}`} className="overflow-hidden rounded-2xl md:rounded-3xl border border-white/8 bg-[var(--dark-bg-card)]">
               <div className="aspect-[4/5] w-full bg-[linear-gradient(110deg,rgba(255,255,255,0.03),rgba(255,255,255,0.07),rgba(255,255,255,0.03))] bg-[length:220%_100%] animate-[shimmer_1.9s_ease-in-out_infinite]" />
@@ -88,7 +88,7 @@ export default function ProductGrid({
         <div className="mb-6 p-4 rounded bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200">Error al cargar productos: {hasError}</div>
       ) : null}
 
-      <div className="grid w-full min-w-0 auto-rows-fr grid-cols-1 items-stretch gap-5 max-[767px]:gap-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
+      <div className="grid w-full min-w-0 auto-rows-fr grid-cols-1 items-stretch gap-5 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
         {filteredItems.map((item, idx) => (
           <div
             key={`${item.id ?? item.slug ?? idx}-${filters.q || ''}`}

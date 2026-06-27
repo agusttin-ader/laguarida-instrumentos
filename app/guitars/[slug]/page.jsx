@@ -394,36 +394,38 @@ export default async function GuitarPage({ params }) {
   }
 
   return (
-    <div className="product-detail-page min-h-screen w-full min-w-0">
+    <div className="product-detail-page min-h-screen w-full min-w-0 max-md:overflow-x-clip">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* Sección galería: 100% ancho — breadcrumb, título a la izquierda, galería moderna */}
-      <section className="w-full min-w-0 bg-[var(--dark-surface-2)] px-4 pt-4 pb-8 max-lg:mx-0 sm:px-5 sm:pt-6 sm:pb-10 md:px-6 lg:-mx-8 lg:px-8 lg:pb-10 rounded-b-[24px] md:rounded-b-[32px]">
-        <nav aria-label="Breadcrumb" className="container-tight w-full mb-4 md:mb-6">
-          <ol className="product-detail-breadcrumb flex flex-wrap items-center gap-1.5 text-[13px] sm:text-[14px] md:text-[15px] xl:text-base text-[var(--dark-muted)]">
-            <li><a href="/" className="hover:text-[var(--dark-text-primary)] transition-colors">Inicio</a></li>
-            <li aria-hidden className="opacity-50">/</li>
-            <li><a href="/catalogo" className="hover:text-[var(--dark-text-primary)] transition-colors">Catálogo</a></li>
-            <li aria-hidden className="opacity-50">/</li>
-            <li className="text-[var(--dark-text-secondary)] truncate max-w-[160px] sm:max-w-[280px] lg:max-w-[min(100%,28rem)] xl:max-w-[min(100%,40rem)]" aria-current="page">{product.name}</li>
-          </ol>
-        </nav>
-        <div className="container-tight w-full">
-          <p className="product-detail-kicker text-[11px] sm:text-xs md:text-[13px] xl:text-sm font-semibold uppercase tracking-[0.22em] text-[var(--dark-muted)] mb-2">{categoryLabel}</p>
-          <h1 className="product-detail-title leading-[1.08] font-bold text-[var(--dark-text-primary)] tracking-tight mb-6 text-left">
+      <section className="product-detail-hero-section w-full min-w-0 bg-[var(--dark-surface-2)] px-4 pt-0 pb-6 max-lg:mx-0 max-md:rounded-b-[20px] sm:px-5 sm:pt-6 sm:pb-10 md:px-6 md:pt-3 lg:-mx-8 lg:px-8 lg:pb-10 rounded-b-[24px] md:rounded-b-[32px]">
+        <div className="container-tight w-full flex flex-col">
+          <div className="product-detail-gallery-wrap order-1 md:order-4">
+            <ProductGalleryModern
+              image_url={galleryImageUrl}
+              images={galleryImages}
+              altBase={`${product.name}${product.brand ? ' — ' + product.brand : ''}`}
+            />
+          </div>
+          <nav aria-label="Breadcrumb" className="order-2 md:order-1 w-full mb-0 mt-3 md:mb-6 md:mt-0">
+            <ol className="product-detail-breadcrumb flex flex-wrap items-center gap-1.5 text-[12px] max-md:text-[13px] sm:text-[14px] md:text-[15px] xl:text-base text-[var(--dark-muted)]">
+              <li><a href="/" className="hover:text-[var(--dark-text-primary)] transition-colors">Inicio</a></li>
+              <li aria-hidden className="opacity-50">/</li>
+              <li><a href="/catalogo" className="hover:text-[var(--dark-text-primary)] transition-colors">Catálogo</a></li>
+              <li aria-hidden className="opacity-50">/</li>
+              <li className="text-[var(--dark-text-secondary)] truncate max-w-[min(100%,9.5rem)] max-[360px]:max-w-[7.5rem] sm:max-w-[280px] lg:max-w-[min(100%,28rem)] xl:max-w-[min(100%,40rem)]" aria-current="page">{product.name}</li>
+            </ol>
+          </nav>
+          <p className="product-detail-kicker order-3 md:order-2 text-[11px] sm:text-xs md:text-[13px] xl:text-sm font-semibold uppercase tracking-[0.22em] text-[var(--dark-muted)] mb-2 max-md:mb-0 max-md:mt-2">{categoryLabel}</p>
+          <h1 className="product-detail-title order-4 md:order-3 leading-[1.08] font-bold text-[var(--dark-text-primary)] tracking-tight mb-6 max-md:mb-0 max-md:mt-1.5 text-left">
             {product.name}
           </h1>
-          <ProductGalleryModern
-            image_url={galleryImageUrl}
-            images={galleryImages}
-            altBase={`${product.name}${product.brand ? ' — ' + product.brand : ''}`}
-          />
         </div>
       </section>
 
       {/* Móvil: precio y acciones primero. Desktop lg+: dos columnas — panel (izq) | compra sticky (der). */}
-      <section className="container-tight w-full pt-6 sm:pt-10 md:pt-12 pb-7 sm:pb-10 md:pb-16">
-        <div className="grid w-full grid-cols-1 gap-6 sm:gap-10 md:gap-12 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
+      <section className="container-tight w-full pt-5 max-md:pt-4 sm:pt-10 md:pt-12 pb-6 max-md:pb-5 sm:pb-10 md:pb-16">
+        <div className="grid w-full grid-cols-1 gap-5 max-md:gap-4 sm:gap-10 md:gap-12 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
           <div className="order-2 min-w-0 lg:order-1">
             <ProductDetailInfoPanel highlights={product.highlights}>
               <div className="product-detail-desc-stack">
@@ -455,7 +457,7 @@ export default async function GuitarPage({ params }) {
 
           <div
             id="pdp-primary-cta"
-            className="order-1 min-w-0 space-y-5 sm:space-y-6 scroll-mt-28 lg:order-2 lg:sticky lg:top-24 lg:self-start"
+            className="product-detail-primary-block order-1 min-w-0 space-y-4 max-md:space-y-3 sm:space-y-6 scroll-mt-28 lg:order-2 lg:sticky lg:top-24 lg:self-start"
           >
             {product.price && (
               <p className="price-highlight product-detail-price text-2xl sm:text-[30px] md:text-[32px] lg:text-[34px] xl:text-[2.5rem] min-[1920px]:text-[2.85rem] min-[2560px]:text-[3.1rem] font-bold tracking-tight">{product.price}</p>
@@ -476,11 +478,11 @@ export default async function GuitarPage({ params }) {
       </section>
 
       {relatedProducts && relatedProducts.length > 0 && (
-        <section className="container-tight mt-6 sm:mt-12 md:mt-16 pb-4 sm:pb-10 md:pb-16" aria-labelledby="related-heading">
-          <h2 id="related-heading" className="section-title-premium section-underline-ocre text-[var(--dark-text-primary)] mb-4 sm:mb-6">También te recomendamos</h2>
-          <div className="related-products-scroll flex overflow-x-auto gap-4 sm:gap-5 pb-2 -mx-4 px-5 sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 lg:gap-8 snap-x snap-mandatory scroll-smooth">
+        <section className="container-tight mt-5 max-md:mt-4 sm:mt-12 md:mt-16 pb-4 sm:pb-10 md:pb-16" aria-labelledby="related-heading">
+          <h2 id="related-heading" className="section-title-premium section-underline-ocre text-[var(--dark-text-primary)] mb-3 max-md:mb-3 sm:mb-6">También te recomendamos</h2>
+          <div className="related-products-scroll flex overflow-x-auto gap-4 sm:gap-5 pb-2 sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 lg:gap-8 snap-x snap-mandatory scroll-smooth">
             {relatedProducts.map((r, idx) => (
-              <div key={r.id || r.slug} className="flex-shrink-0 w-[min(280px,84vw)] sm:w-auto snap-center">
+              <div key={r.id || r.slug} className="flex-shrink-0 w-[min(272px,82vw)] sm:w-auto snap-center">
                 <ProductCard item={r} maxGalleryImages={1} />
               </div>
             ))}

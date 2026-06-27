@@ -66,6 +66,19 @@
   --content-gap-mobile: 0.75rem;
   --content-gap-desktop: 1rem;
 
+  /* Mobile design tokens (used inside @media max-width 767px) */
+  --mobile-gutter: 1rem;
+  --mobile-space-xs: 0.5rem;
+  --mobile-space-sm: 0.75rem;
+  --mobile-space-md: 1rem;
+  --mobile-space-lg: 1.25rem;
+  --mobile-space-xl: 1.5rem;
+  --mobile-section-gap: 1.25rem;
+  --mobile-radius-card: 1rem;
+  --mobile-radius-pill: 9999px;
+  --mobile-tap: 3rem;
+  --mobile-header-h: 3.25rem;
+
   /* Oscuros cálidos — carbón suave (menos negro puro, más descansado a la vista) */
   --dark-bg-page: #181715;
   --dark-bg-surface: #201e1c;
@@ -697,9 +710,9 @@ section {
 }
 
 @media (max-width: 767px) {
-  section {
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
+  section:not(.home-hero-section) {
+    padding-top: var(--mobile-section-gap);
+    padding-bottom: var(--mobile-section-gap);
   }
 }
 
@@ -876,6 +889,7 @@ a.button:focus-visible {
 }
 
 .no-custom-btn { border-radius: 6px !important; box-shadow: none !important }
+.no-custom-btn.header-mobile-menu-btn { border-radius: 0 !important; background: transparent !important; border: none !important; }
 .favorite-heart-btn { border-radius: 999px !important; }
 
 .no-custom-btn.whatsapp-float-fab {
@@ -1062,7 +1076,9 @@ button:not(.no-custom-btn):active {
   }
   body.page-home header.header-mobile:not(.header-scrolled) button[aria-label="Abrir menú"] {
     color: #fff !important;
-    background: rgba(0, 0, 0, 0.45) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
   }
   body.page-home header.header-mobile:not(.header-scrolled) .header-logo-wrapper {
     filter: none;
@@ -1129,58 +1145,102 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   }
 }
 
-/* iPhone 15 tuning (mobile only): tighter rhythm and balanced sizing */
+/* iPhone / mobile polish — alineado al sistema unificado (≤767px) */
 @media (max-width: 767px) {
   html {
     font-size: 16px;
   }
-  .container-tight {
-    padding-left: 1rem;
-    padding-right: 1rem;
+
+  .container-tight,
+  .mobile-gutter-x {
+    padding-left: var(--mobile-gutter);
+    padding-right: var(--mobile-gutter);
   }
-  .section-title-premium {
-    font-size: clamp(0.84rem, 3vw, 0.95rem);
-    letter-spacing: 0.14em;
-  }
+
   .search-pill {
-    padding: 0.5rem 0.8rem;
+    padding: 0.5rem 0.85rem;
+    min-height: var(--mobile-tap);
   }
+
   .search-pill .search-input {
-    font-size: 0.95rem !important;
-    line-height: 1.4;
-  }
-  .product-card-mobile-catalog h3 {
     font-size: 1rem !important;
+    line-height: 1.45;
+  }
+
+  .product-card-mobile-catalog h3 {
+    font-size: 1.0625rem !important;
     line-height: 1.32;
   }
+
   .product-card-mobile-catalog .price-highlight {
-    font-size: 1rem !important;
+    font-size: 1.0625rem !important;
     line-height: 1.2;
   }
-  .product-detail-page .container-tight {
-    padding-left: 0.95rem;
-    padding-right: 0.95rem;
+
+  .product-detail-page .product-detail-kicker {
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    margin-bottom: 0.375rem;
   }
-  .product-detail-page .product-detail-title {
-    margin-bottom: 1.1rem !important;
+
+  .product-detail-page .product-detail-desc-stack,
+  .product-detail-page .product-detail-info-panel__single {
+    font-size: 0.9375rem;
+    line-height: 1.52;
   }
-  .product-detail-page .product-detail-price {
-    font-size: clamp(1.55rem, 7.2vw, 1.92rem) !important;
-    line-height: 1.1 !important;
+
+  .product-detail-page .product-detail-desc-lead {
+    font-size: 0.9375rem !important;
+    line-height: 1.52 !important;
   }
+
+  .product-detail-page .product-detail-body {
+    font-size: 0.9375rem;
+    line-height: 1.52;
+    color: var(--dark-text-secondary);
+  }
+
   .product-detail-page .product-detail-info-panel {
-    row-gap: 0.65rem !important;
+    row-gap: 0.75rem !important;
   }
-  .product-detail-page .product-detail-info-panel__panel {
-    padding-top: 0.45rem !important;
+
+  .product-detail-page .product-detail-spec-sheet {
+    padding-top: 1rem;
+    border-top-color: rgba(255, 255, 255, 0.06);
   }
+
+  .product-detail-page .product-detail-spec-sheet li {
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
   #faq-section .section-title-minimal {
     font-size: clamp(1.35rem, 5.4vw, 1.62rem) !important;
     line-height: 1.18;
   }
+
   #faq-section .section-kicker-minimal {
     font-size: 0.7rem;
     letter-spacing: 0.16em;
+  }
+
+  /* Scroll fluido: sin animaciones de entrada por sección */
+  main > section {
+    animation: none !important;
+  }
+
+  .product-cta-entrance {
+    animation-duration: 200ms;
+    animation-delay: 0ms;
+  }
+
+  /* Grid catálogo / cards: gap unificado */
+  .home-grid-product-cell {
+    --grid-gap: var(--mobile-space-lg);
+  }
+
+  .grid.grid-cols-1:has(.home-grid-product-cell) {
+    gap: var(--mobile-space-lg);
   }
 }
 
@@ -1204,14 +1264,10 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   header {
     padding-top: max(0.25rem, env(safe-area-inset-top));
   }
-  /* Header móvil sobre el hero: espacio mínimo, logo y menú destacados */
+
   header.header-mobile {
-    padding-top: max(0.35rem, env(safe-area-inset-top));
-    padding-bottom: 0.35rem;
-  }
-  .container-tight {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
+    padding-top: max(0.3rem, env(safe-area-inset-top));
+    padding-bottom: 0.3rem;
   }
 
   /* Mejorar rendimiento de scroll en listas largas */
@@ -1220,18 +1276,20 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   }
 
   .card-interactive {
-    border-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--mobile-radius-card);
     box-shadow: none;
   }
+
   .card-interactive:hover {
     transform: none;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  .card-editorial.card-interactive:hover {
-    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: none;
   }
 
-  /* En móvil: sin animación de card al tocar o al cambiar imagen; solo transición suave de la imagen */
+  .card-editorial.card-interactive:hover {
+    box-shadow: none !important;
+  }
+
   .card-mobile-no-motion,
   .card-mobile-no-motion:hover,
   .card-mobile-no-motion:active {
@@ -1239,15 +1297,16 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     transform: none !important;
     box-shadow: none !important;
   }
+
   .card-mobile-no-motion img {
-    transition: opacity 0.3s ease-out !important;
+    transition: opacity 0.25s ease-out !important;
     transform: none !important;
   }
+
   .card-mobile-no-motion:hover img {
     transform: none !important;
   }
 
-  /* En mobile dark, asegurar contraste alto en textos de cards */
   .card-interactive .md\:hidden h3,
   .card-interactive .md\:hidden p {
     color: rgba(255, 255, 255, 0.95) !important;
@@ -1255,6 +1314,47 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 
   .card-interactive .md\:hidden span {
     color: #111319;
+  }
+
+  /* Footer compacto */
+  .site-footer__inner {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+
+  .site-footer__divider {
+    margin-bottom: 0.75rem !important;
+  }
+
+  .site-footer__grid {
+    gap: 0.75rem !important;
+  }
+
+  .site-footer__logo {
+    height: 15px !important;
+    max-width: 130px !important;
+  }
+
+  .site-footer__social a {
+    min-width: var(--mobile-tap);
+    min-height: var(--mobile-tap);
+  }
+
+  .site-footer__credit {
+    margin-top: 0.5rem !important;
+    font-size: 0.5625rem !important;
+    opacity: 0.85;
+  }
+
+  .site-footer__legal {
+    gap: 0.75rem !important;
+    margin-top: 0.25rem !important;
+  }
+
+  .site-footer__legal a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
   }
 }
 
@@ -1575,11 +1675,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   100% { background-position: -100% 0; }
 }
 
-.related-products-scroll {
-  scroll-padding-left: 1.25rem;
-  scroll-padding-right: 1.25rem;
-}
-
 .home-brand-card {
   contain: layout style paint;
 }
@@ -1595,6 +1690,208 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     scroll-snap-type: x mandatory;
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* Header móvil interno (catálogo, producto, etc.): barra 100% opaca — sin bleed de imágenes */
+  body.page-internal .header-mobile.header-mobile-internal,
+  body.page-internal .header-mobile.header-mobile-internal.header-scrolled {
+    background-color: var(--dark-bg-page) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-bottom: 1px solid rgba(var(--palette-gold-rgb), 0.2) !important;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35) !important;
+  }
+
+  body.page-product .header-mobile.header-mobile-product {
+    background-color: var(--dark-bg-page) !important;
+  }
+
+  /* Header interno siempre por encima del contenido (capas GPU de imágenes) */
+  .site-header-mobile-shell {
+    z-index: 120 !important;
+    isolation: isolate;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  body.page-internal .site-header-mobile-shell {
+    background-color: var(--dark-bg-page);
+  }
+
+  body.page-internal main {
+    position: relative;
+    z-index: 0;
+    padding-top: var(--site-header-h, var(--mobile-header-h, 3.25rem));
+  }
+
+  body.page-product main {
+    padding-top: 0 !important;
+  }
+
+  body.page-product .product-detail-page {
+    padding-top: var(--site-header-h, var(--mobile-header-h, 3.25rem));
+    position: relative;
+    z-index: 0;
+  }
+
+  /* PDP: galería bajo header sólido, sin bleed vertical ni capas sobre la barra */
+  .product-detail-hero-section {
+    padding-top: 0;
+  }
+
+  .product-detail-gallery-wrap {
+    position: relative;
+    z-index: 0;
+    width: calc(100% + (var(--mobile-gutter) * 2));
+    margin-left: calc(var(--mobile-gutter) * -1);
+    margin-right: calc(var(--mobile-gutter) * -1);
+    max-width: 100vw;
+  }
+
+  .product-detail-page,
+  .product-gallery-mobile-carousel {
+    position: relative;
+    z-index: 0;
+  }
+
+  .product-detail-page .product-gallery-mobile-carousel,
+  .product-detail-page .product-gallery-mobile-carousel button,
+  .product-detail-page .product-gallery-mobile-carousel .relative,
+  .product-detail-page .product-gallery-mobile-carousel img,
+  .product-detail-page .product-gallery-mobile-carousel span[style] {
+    transform: none !important;
+    -webkit-transform: none !important;
+    will-change: auto !important;
+    z-index: auto !important;
+  }
+
+  .header-mobile-menu-btn {
+    min-width: 48px;
+    min-height: 48px;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  .header-mobile-menu-btn:active {
+    background: transparent !important;
+    opacity: 0.75;
+  }
+
+  .product-detail-page {
+    overflow-x: clip;
+  }
+
+  /* Header móvil compacto: blur solo home hero (no páginas internas) */
+  header.header-mobile.header-scrolled:not(.header-home-mobile):not(.header-mobile-internal) {
+    background-color: rgba(24, 23, 21, 0.92) !important;
+    backdrop-filter: blur(12px) saturate(1.1) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(1.1) !important;
+    border-bottom-color: rgba(var(--palette-gold-rgb), 0.24) !important;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22) !important;
+  }
+
+  header.header-mobile {
+    transition:
+      background-color 250ms cubic-bezier(0.32, 0.72, 0, 1),
+      backdrop-filter 250ms cubic-bezier(0.32, 0.72, 0, 1),
+      border-color 250ms cubic-bezier(0.32, 0.72, 0, 1),
+      box-shadow 250ms cubic-bezier(0.32, 0.72, 0, 1),
+      transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Catálogo: búsqueda móvil más visible */
+  .catalog-mobile-search .search-pill {
+    min-height: 48px;
+    padding: 0.5rem 0.85rem;
+    border-radius: 9999px;
+  }
+
+  .catalog-mobile-brands {
+    scroll-padding-left: 1rem;
+    scroll-padding-right: 1rem;
+  }
+
+  /* Galería PDP: carrusel con respiro lateral */
+  .product-gallery-mobile-carousel {
+    scroll-padding-inline: 1rem;
+  }
+
+  /* FAQ / contacto: targets táctiles */
+  #faq-section aside nav a {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Ficha técnica PDP: lectura en bloques */
+  .product-detail-spec-sheet ul {
+    gap: 0.35rem;
+  }
+
+  .product-detail-spec-sheet li {
+    padding-bottom: 0.15rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .product-detail-spec-sheet li:last-child {
+    border-bottom: 0;
+  }
+
+  /* Home editorial: imágenes dominantes */
+  .home-featured-editorial-block + .home-featured-editorial-block {
+    margin-top: 0.35rem;
+  }
+
+  /* Marcas home: grid consistente */
+  .home-brand-grid .grid {
+    gap: 0.625rem;
+  }
+
+  .home-brand-grid header {
+    margin-bottom: 1.25rem;
+  }
+
+  .product-detail-page .product-detail-price {
+    font-size: clamp(1.75rem, 7.5vw, 2rem) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.02em;
+  }
+
+  .product-detail-page .product-detail-primary-block {
+    gap: 0.875rem;
+  }
+
+  /* Relacionados: snap alineado al gutter */
+  .related-products-scroll {
+    margin-left: calc(var(--mobile-gutter) * -1);
+    margin-right: calc(var(--mobile-gutter) * -1);
+    padding-left: var(--mobile-gutter);
+    padding-right: var(--mobile-gutter);
+    scroll-padding-inline: var(--mobile-gutter);
+    gap: var(--mobile-space-md);
+  }
+
+  /* WhatsApp FAB: zona pulgar */
+  .whatsapp-float-fab {
+    bottom: max(1rem, calc(0.65rem + env(safe-area-inset-bottom, 0px))) !important;
+    right: max(0.875rem, env(safe-area-inset-right)) !important;
+    width: 3.25rem !important;
+    height: 3.25rem !important;
+    min-width: var(--mobile-tap) !important;
+    min-height: var(--mobile-tap) !important;
+  }
+
+  /* Transiciones táctiles ≤300ms */
+  .no-custom-btn,
+  .card-product-link,
+  a,
+  button {
+    transition-duration: 200ms;
   }
 }
 

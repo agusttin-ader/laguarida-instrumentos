@@ -314,7 +314,7 @@ const ProductCard = React.memo(function ProductCard({
   return (
     <article
       aria-labelledby={headingId}
-      className="card-interactive card-editorial card-mobile-no-motion product-card-mobile-catalog flex h-full w-full min-w-0 max-w-full flex-col overflow-hidden rounded-2xl border-0 bg-[var(--dark-bg-card)] md:rounded-3xl"
+      className="card-interactive card-editorial card-mobile-no-motion product-card-mobile-catalog flex h-full w-full min-w-0 max-w-full flex-col overflow-hidden rounded-xl max-md:rounded-2xl border-0 bg-[var(--dark-bg-card)] md:rounded-3xl"
     >
       <Link
         href={`/guitars/${p.slug || p.id}`}
@@ -324,7 +324,7 @@ const ProductCard = React.memo(function ProductCard({
       >
         {imageBlock}
 
-        <div className="product-card-body flex min-h-[9.5rem] flex-1 flex-col p-4 max-[767px]:gap-1.5 max-[767px]:px-4 max-[767px]:pb-5 max-[767px]:pt-5 md:min-h-[10.25rem] md:gap-0 md:p-5">
+        <div className="product-card-body flex min-h-[9rem] max-md:min-h-[8.75rem] flex-1 flex-col p-4 max-[767px]:gap-1.5 max-[767px]:px-3.5 max-[767px]:pb-4 max-[767px]:pt-4 md:min-h-[10.25rem] md:gap-0 md:p-5">
           <h3
             id={headingId}
             className="order-1 min-h-[2.875rem] min-w-0 text-[1rem] font-semibold tracking-tight text-[var(--dark-text-primary)] line-clamp-2 md:min-h-[2.75rem] md:text-[1.0625rem] max-[767px]:text-[1.0625rem] max-[767px]:font-bold max-[767px]:leading-snug md:leading-snug"

@@ -30,7 +30,7 @@ export default function HomePageContent({ heroSlides = [], featuredProducts = []
       <section
         id="seleccion-destacada"
         aria-labelledby="destacados-heading"
-        className="w-full bg-gradient-to-b from-[#141414] via-[var(--dark-bg-page)] to-[var(--dark-bg-page)] pt-10 sm:pt-12 md:pt-14 pb-4 sm:pb-5 md:pb-6"
+        className="w-full bg-gradient-to-b from-[#141414] via-[var(--dark-bg-page)] to-[var(--dark-bg-page)] pt-8 max-md:pt-7 sm:pt-12 md:pt-14 pb-3 max-md:pb-2 sm:pb-5 md:pb-6"
       >
         <FeaturedSelection items={featuredProducts} />
       </section>

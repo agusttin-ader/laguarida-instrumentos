@@ -5,7 +5,7 @@ import React from 'react'
 function HighlightsRow({ chipList }) {
   if (!chipList.length) return null
   return (
-    <div className="pb-3 sm:pb-3">
+    <div className="pb-2 max-md:pb-1.5 sm:pb-3">
       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--dark-muted)] mb-1.5">
         Destacados
       </p>
@@ -34,7 +34,7 @@ export default function ProductDetailInfoPanel({ highlights = [], children }) {
     : []
 
   return (
-    <div className="product-detail-info-panel w-full space-y-3 sm:space-y-4">
+    <div className="product-detail-info-panel w-full space-y-3 max-md:space-y-2.5 sm:space-y-4">
       <HighlightsRow chipList={chipList} />
       <div className="product-detail-info-panel__single">{children}</div>
     </div>

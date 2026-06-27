@@ -8,9 +8,7 @@ export default function About({ compactTop = false }) {
 
   return (
     <section id="about-section" className="mt-0">
-      <div
-        className={`${layoutShellClassName} px-4 sm:px-5 md:px-6 lg:px-8 ${topPadding} pb-0 sm:pb-1 md:pb-2 lg:pb-2`}
-      >
+      <div className={`${layoutShellClassName} mobile-gutter-x sm:px-5 md:px-6 lg:px-8 ${topPadding} pb-0 sm:pb-1 md:pb-2 lg:pb-2`}>
           <div className="w-full">
             <p className="section-kicker-minimal section-underline-ocre text-gray-700 dark:text-white/70 mb-2 sm:mb-3">Sobre La Guarida</p>
             <h2 className="section-title-minimal text-[var(--dark-text-primary)] text-2xl sm:text-3xl md:text-[3.2rem] mb-3 md:mb-4 tracking-tight">Una tienda, una historia</h2>

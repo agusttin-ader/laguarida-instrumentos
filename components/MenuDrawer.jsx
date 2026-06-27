@@ -62,7 +62,7 @@ export default function MenuDrawer({ open, setOpen }) {
   }
 
   const rowClass =
-    'no-custom-btn flex w-full min-h-[52px] items-center justify-between gap-4 py-4.5 pl-6 pr-5 text-left text-[1.06rem] sm:text-[1.22rem] font-bold leading-normal tracking-tight text-[var(--dark-text-primary)] border-b border-white/[0.08] transition-colors hover:bg-white/[0.04] active:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--vintage-gold)]/45'
+    'no-custom-btn flex w-full min-h-[52px] items-center justify-between gap-4 py-4 pl-5 pr-4 text-left text-[1.05rem] font-semibold leading-normal tracking-tight text-[var(--dark-text-primary)] border-b border-white/[0.07] transition-[background-color,color] duration-200 hover:bg-white/[0.04] active:bg-white/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--vintage-gold)]/45'
 
   return (
     <div className={`fixed inset-0 z-[var(--z-menu-drawer)] md:hidden ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>
@@ -75,17 +75,17 @@ export default function MenuDrawer({ open, setOpen }) {
         className={`fixed inset-0 z-0 bg-black/60 transition-opacity duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${open ? 'opacity-100' : 'opacity-0'}`}
       />
       <nav
-        className={`menu-drawer-panel fixed inset-0 z-10 flex h-full w-full max-w-none flex-col bg-[var(--dark-bg-page)] transition-transform duration-[260ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${open ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`menu-drawer-panel menu-drawer-panel--right fixed inset-y-0 right-0 left-auto z-10 flex h-full w-full max-w-none flex-col bg-[var(--dark-bg-page)] transition-transform duration-[280ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${open ? 'translate-x-0' : 'translate-x-full'}`}
         aria-label="Menú principal"
       >
-        <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-5 sm:px-6 pt-[max(1rem,env(safe-area-inset-top))] pb-5">
-          <Link href="/" onClick={handleHome} className="relative block min-w-0 max-w-[min(260px,calc(100vw-5.5rem))] py-1" aria-label="Ir al inicio">
+        <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-4">
+          <Link href="/" onClick={handleHome} className="relative block min-w-0 max-w-[min(240px,calc(100vw-5rem))] py-0.5" aria-label="Ir al inicio">
             <Image
               src={LOGO_SRC}
               alt="La Guarida"
               width={1800}
               height={450}
-              className="h-10 sm:h-11 w-auto max-h-[2.85rem] object-contain object-left"
+              className="h-9 w-auto max-h-[2.35rem] object-contain object-left"
               style={{ objectFit: 'contain' }}
               quality={68}
               sizes="260px"

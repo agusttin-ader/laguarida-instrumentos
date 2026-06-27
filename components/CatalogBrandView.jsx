@@ -145,16 +145,16 @@ export default function CatalogBrandView({ brand, products, loading }) {
         </div>
       ) : (
         <>
-          <div className="mb-5 flex gap-2 overflow-x-auto pb-1 md:hidden">
+          <div className="mb-5 flex gap-2 overflow-x-auto pb-1 md:hidden snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {modelGroups.map((group) => (
               <button
                 key={group.id}
                 type="button"
                 onClick={() => selectModel(group.id)}
-                className={`no-custom-btn shrink-0 rounded-full border px-4 py-2 text-xs font-semibold transition-colors ${
+                className={`no-custom-btn shrink-0 snap-start rounded-full border px-4 py-2.5 min-h-[48px] text-xs font-semibold transition-colors duration-200 ${
                   group.id === activeModelId
                     ? 'border-[rgba(var(--palette-gold-rgb),0.5)] bg-[var(--dark-cta-bg)] text-[var(--dark-cta-text)]'
-                    : 'border-[var(--dark-border)] bg-[var(--dark-bg-card)] text-[var(--dark-text-secondary)]'
+                    : 'border-[var(--dark-border)] bg-[var(--dark-bg-card)] text-[var(--dark-text-secondary)] active:bg-white/[0.04]'
                 }`}
               >
                 {group.label} ({group.count})

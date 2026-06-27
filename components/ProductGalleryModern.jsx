@@ -114,30 +114,31 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
   return (
     <>
       {/* Móvil: carrusel horizontal con snap (debajo de lg). Cada slide ocupa el ancho del carrusel; la tarjeta va centrada dentro. */}
-      <div className="w-full space-y-2 lg:hidden">
+      <div className="w-full space-y-2.5 lg:hidden">
         <div
           ref={carouselRef}
           role="region"
           aria-roledescription="Carrusel"
           aria-label="Fotos del producto. Deslizá para ver más."
-          className="flex w-full touch-auto overflow-x-auto scroll-smooth snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="product-gallery-mobile-carousel flex w-full touch-auto overflow-x-auto scroll-smooth snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {allImages.map((src, i) => (
             <div
               key={`${src}-${i}`}
-              className="flex min-h-0 min-w-full shrink-0 snap-center justify-center px-0.5"
+              className="flex min-h-0 min-w-full shrink-0 snap-center justify-center px-0"
             >
               <button
                 type="button"
                 onClick={() => openLightbox(i)}
-                className="no-custom-btn group relative aspect-[4/5] w-full max-w-[min(26rem,calc(100vw-1.25rem))] shrink-0 overflow-hidden rounded-xl bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
+                className="no-custom-btn group relative aspect-[4/5] w-full max-w-[min(28rem,calc(100vw-2rem))] shrink-0 overflow-hidden rounded-2xl bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
                 aria-label={altBase ? `${altBase} — foto ${i + 1} de ${allImages.length}` : `Foto ${i + 1} de ${allImages.length}`}
               >
                 <ImageWithSkeleton
                   src={i === 0 ? displayMain(src) : displayThumb(src)}
                   alt={altBase ? `${altBase} — imagen ${i + 1}` : `Imagen ${i + 1}`}
                   fill
-                  imgClassName="object-cover object-center transition-transform duration-300 ease-out group-active:scale-[1.02]"
+                  imgClassName="object-contain object-center p-1 transition-opacity duration-300 ease-out group-active:opacity-95"
+                  imgStyle={{ transform: 'none', WebkitBackfaceVisibility: 'visible' }}
                   sizes={MOBILE_CAROUSEL_SIZES}
                   quality={i === 0 ? 74 : 62}
                   priority={isMobileGallery && i === 0}

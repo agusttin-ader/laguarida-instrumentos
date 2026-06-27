@@ -18,8 +18,8 @@ function getInitialDesktopHeader() {
 
 function HamburgerIcon({ className }) {
   return (
-    <svg className={className} width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M3 6h18M3 12h18M3 18h18" />
+    <svg className={className} width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 7h16M4 12h16M4 17h16" />
     </svg>
   )
 }
@@ -28,6 +28,9 @@ export default function Header() {
   const pathname = usePathname()
   const router = useRouter()
   const isHome = pathname === '/' || pathname === ''
+  const isProductPage =
+    typeof pathname === 'string' && /^\/guitars\/[^/]+$/u.test(pathname)
+  const isInternalMobile = !isHome
   const [scrolled, setScrolled] = useState(false)
   const [scrollHidden, setScrollHidden] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -36,6 +39,8 @@ export default function Header() {
   const [mounted, setMounted] = useState(false)
   const lastScrollYRef = useRef(0)
   const desktopHeaderRef = useRef(null)
+  const mobileHeaderRef = useRef(null)
+  const mobileShellRef = useRef(null)
 
   useEffect(() => {
     setMounted(true)
@@ -67,7 +72,7 @@ export default function Header() {
 
         setScrolled((prev) => (prev === nextScrolled ? prev : nextScrolled))
 
-        if (!nextScrolled || menuOpen) {
+        if (isInternalMobile || !nextScrolled || menuOpen) {
           setScrollHidden(false)
         } else if (delta > SCROLL_DELTA) {
           setScrollHidden(true)
@@ -82,25 +87,50 @@ export default function Header() {
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [menuOpen])
+  }, [menuOpen, isInternalMobile])
 
   useEffect(() => {
     if (menuOpen) setScrollHidden(false)
-  }, [menuOpen])
+  }, [menuOpen, isInternalMobile])
 
   useEffect(() => {
-    const el = desktopHeaderRef.current
-    if (!el || typeof document === 'undefined') return
+    if (typeof document === 'undefined' || typeof window === 'undefined') return
 
     const syncHeight = () => {
-      document.documentElement.style.setProperty('--site-header-h', `${el.offsetHeight}px`)
+      const isDesktop = window.matchMedia(DESKTOP_HEADER_QUERY).matches
+      const el = isDesktop
+        ? desktopHeaderRef.current
+        : mobileShellRef.current || mobileHeaderRef.current
+      if (!el || el.offsetHeight <= 0) return
+      const h = `${el.offsetHeight}px`
+      document.documentElement.style.setProperty('--site-header-h', h)
+      if (!isDesktop) {
+        document.documentElement.style.setProperty('--mobile-header-h', h)
+      }
     }
 
     syncHeight()
+
+    const targets = [
+      desktopHeaderRef.current,
+      mobileHeaderRef.current,
+      mobileShellRef.current,
+    ].filter(Boolean)
+    if (!targets.length) return
+
     const ro = new ResizeObserver(syncHeight)
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [pathname, scrolled])
+    targets.forEach((target) => ro.observe(target))
+
+    const mq = window.matchMedia(DESKTOP_HEADER_QUERY)
+    mq.addEventListener('change', syncHeight)
+    window.addEventListener('orientationchange', syncHeight)
+
+    return () => {
+      ro.disconnect()
+      mq.removeEventListener('change', syncHeight)
+      window.removeEventListener('orientationchange', syncHeight)
+    }
+  }, [pathname, scrolled, mounted, isHome])
 
   useEffect(() => {
     if (!isHome) {
@@ -146,34 +176,24 @@ export default function Header() {
   const desktopHeaderPad = 'md:py-3 lg:py-3.5'
   const headerMotionClass =
     'transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none'
-  const headerHideClass = scrollHidden && scrolled ? 'header-scroll-hidden' : ''
+  const headerHideClass = !isInternalMobile && scrollHidden && scrolled ? 'header-scroll-hidden' : ''
 
   const mobileHeader = (
     <>
       <header
+        ref={mobileHeaderRef}
         id={isHome ? 'header-home-mobile-overlay' : undefined}
         aria-label="Cabecera"
-        className={`header-mobile site-header-bar md:hidden flex items-center justify-between min-h-[60px] sm:min-h-[62px] py-2.5 sm:py-3 px-4 sm:px-5 left-0 right-0 top-0 ${isHome ? 'header-home-mobile' : ''} ${scrolled ? 'header-scrolled' : ''}`}
+        className={`header-mobile site-header-bar md:hidden flex items-center justify-between gap-2 min-h-[52px] py-2 px-4 left-0 right-0 top-0 ${isHome ? 'header-home-mobile' : 'header-mobile-internal'} ${isProductPage ? 'header-mobile-product' : ''} ${scrolled ? 'header-scrolled' : ''}`}
       >
-        <div className="relative z-20 w-12 flex-shrink-0">
-          <button
-            type="button"
-            onClick={() => setMenuOpen(true)}
-            aria-label="Abrir menú"
-            className="flex items-center justify-center w-12 h-12 -m-0.5 rounded-lg border-0 text-white/95 hover:text-white bg-black/50 hover:bg-black/60 no-custom-btn touch-manipulation transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-            style={{ WebkitTapHighlightColor: 'transparent', tapHighlightColor: 'transparent' }}
-          >
-            <HamburgerIcon className="w-8 h-8" />
-          </button>
-        </div>
-        <div className="flex-1 flex items-center justify-center min-w-0 px-2">
+        <div className="relative z-20 flex min-w-0 flex-1 items-center justify-start">
           <a
             href="/"
             aria-label="Ir al inicio"
-            className="z-10 inline-flex justify-center items-center min-w-0 max-w-full overflow-visible pointer-events-auto leading-none"
+            className="z-10 inline-flex min-w-0 max-w-full items-center justify-start overflow-visible pointer-events-auto leading-none"
             onClick={isHome ? (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) } : undefined}
           >
-            <span className="relative header-logo-wrapper inline-flex max-w-[min(300px,calc(100vw-10rem))] items-center justify-center leading-none">
+            <span className="relative header-logo-wrapper inline-flex max-w-[min(280px,calc(100vw-4.5rem))] items-center justify-start leading-none">
               {/* img nativo: evita fondo opaco del optimizador de Next/Image en PNG transparente */}
               <img
                 src={LOGO_SRC}
@@ -182,19 +202,29 @@ export default function Header() {
                 height={194}
                 decoding="async"
                 fetchPriority={isHome && !isDesktopHeader ? 'high' : 'low'}
-                className="logo-dark h-[40px] w-auto max-h-[42px] sm:h-[42px] sm:max-h-[44px] max-w-[min(280px,72vw)] object-contain block bg-transparent"
+                className="logo-dark h-[34px] w-auto max-h-[36px] max-w-[min(260px,calc(100vw-4.5rem))] object-contain object-left block bg-transparent"
               />
             </span>
           </a>
         </div>
-        <div className="relative z-20 w-12 flex-shrink-0" aria-hidden />
+        <div className="relative z-20 w-12 flex-shrink-0">
+          <button
+            type="button"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Abrir menú"
+            className="header-mobile-menu-btn ml-auto flex items-center justify-center w-12 h-12 -m-1 border-0 bg-transparent p-0 text-white/95 hover:text-white no-custom-btn touch-manipulation transition-[color,opacity,transform] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.94] active:opacity-75 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            style={{ WebkitTapHighlightColor: 'transparent', tapHighlightColor: 'transparent' }}
+          >
+            <HamburgerIcon className="w-[22px] h-[22px]" />
+          </button>
+        </div>
       </header>
     </>
   )
 
-  const mobileShellClass = `md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] ${headerMotionClass} ${headerHideClass}`
+  const mobileShellClass = `site-header-mobile-shell md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] ${isInternalMobile ? 'bg-[var(--dark-bg-page)]' : ''} ${headerMotionClass} ${headerHideClass}`
 
-  const mobileShell = <div className={mobileShellClass}>{mobileHeader}</div>
+  const mobileShell = <div ref={mobileShellRef} className={mobileShellClass}>{mobileHeader}</div>
 
   return (
     <>
