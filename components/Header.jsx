@@ -11,6 +11,7 @@ const LOGO_SRC = SITE_LOGO_SRC
 const SCROLL_THRESHOLD = 72
 const SCROLL_DELTA = 10
 const DESKTOP_HEADER_QUERY = '(min-width: 768px)'
+const MOBILE_HEADER_QUERY = '(max-width: 767px)'
 
 function getInitialDesktopHeader() {
   return false
@@ -36,6 +37,7 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [homeHeaderSlotEl, setHomeHeaderSlotEl] = useState(null)
   const [isDesktopHeader, setIsDesktopHeader] = useState(getInitialDesktopHeader)
+  const [isMobileViewport, setIsMobileViewport] = useState(false)
   const [mounted, setMounted] = useState(false)
   const lastScrollYRef = useRef(0)
   const desktopHeaderRef = useRef(null)
@@ -57,6 +59,15 @@ export default function Header() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return
+    const mq = window.matchMedia(MOBILE_HEADER_QUERY)
+    const sync = () => setIsMobileViewport(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
     let ticking = false
     lastScrollYRef.current = window.scrollY
 
@@ -69,10 +80,12 @@ export default function Header() {
         const prevY = lastScrollYRef.current
         const delta = y - prevY
         const nextScrolled = y > SCROLL_THRESHOLD
+        const isMobile = window.matchMedia(MOBILE_HEADER_QUERY).matches
+        const allowScrollHide = isMobile || !isInternalMobile
 
         setScrolled((prev) => (prev === nextScrolled ? prev : nextScrolled))
 
-        if (isInternalMobile || !nextScrolled || menuOpen) {
+        if (!allowScrollHide || !nextScrolled || menuOpen) {
           setScrollHidden(false)
         } else if (delta > SCROLL_DELTA) {
           setScrollHidden(true)
@@ -176,7 +189,8 @@ export default function Header() {
   const desktopHeaderPad = 'md:py-3 lg:py-3.5'
   const headerMotionClass =
     'transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none'
-  const headerHideClass = !isInternalMobile && scrollHidden && scrolled ? 'header-scroll-hidden' : ''
+  const allowScrollHide = isMobileViewport || !isInternalMobile
+  const headerHideClass = allowScrollHide && scrollHidden && scrolled ? 'header-scroll-hidden' : ''
 
   const mobileHeader = (
     <>
@@ -222,7 +236,7 @@ export default function Header() {
     </>
   )
 
-  const mobileShellClass = `site-header-mobile-shell md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] ${isInternalMobile ? 'bg-[var(--dark-bg-page)]' : ''} ${headerMotionClass} ${headerHideClass}`
+  const mobileShellClass = `site-header-mobile-shell md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] bg-[var(--dark-bg-card)] ${headerMotionClass} ${headerHideClass}`
 
   const mobileShell = <div ref={mobileShellRef} className={mobileShellClass}>{mobileHeader}</div>
 

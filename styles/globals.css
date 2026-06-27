@@ -549,27 +549,22 @@ header.site-header-bar {
 }
 
 body.page-home header.site-header-bar.header-home-mobile:not(.header-scrolled) {
-  background-color: rgba(14, 13, 12, 0.55) !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: none;
+  background-color: var(--dark-bg-card) !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid rgba(var(--palette-gold-rgb), 0.32);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
 }
 @media (max-width: 767px) {
   html.dark header.header-home-mobile,
   html.dark header.header-mobile.header-home-mobile,
-  body.page-home header.header-mobile:not(.header-scrolled) {
-    background-color: rgba(14, 13, 12, 0.55) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
-    box-shadow: none !important;
-  }
-  body.page-home header.header-mobile.header-scrolled {
-    background-color: var(--dark-bg-surface) !important;
-    border-bottom: 1px solid rgba(var(--palette-gold-rgb), 0.22);
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+  body.page-home header.header-mobile {
+    background-color: var(--dark-bg-card) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-bottom: 1px solid rgba(var(--palette-gold-rgb), 0.32) !important;
+    border-bottom-color: rgba(var(--palette-gold-rgb), 0.32) !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22) !important;
   }
   #home-top.home-hero-section,
   body.page-home #home-top,
@@ -1064,34 +1059,20 @@ button:not(.no-custom-btn):active {
 }
 
 /* ===================== Header on scroll ===================== */
-/* Home móvil: header siempre opaco (sin hero detrás de la barra); sin blur para mejor compositing */
 @media (max-width: 767px) {
-  body.page-home header.header-mobile:not(.header-scrolled) {
-    background-color: rgba(14, 13, 12, 0.55) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
-    box-shadow: none !important;
+  header.header-mobile,
+  .site-header-mobile-shell {
+    background-color: var(--dark-bg-card) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
-  body.page-home header.header-mobile:not(.header-scrolled) button[aria-label="Abrir menú"] {
-    color: #fff !important;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-  }
-  body.page-home header.header-mobile:not(.header-scrolled) .header-logo-wrapper {
-    filter: none;
-  }
+
   header.header-home-mobile:not(.header-scrolled),
   header[data-hero-bg="true"] {
-    background-color: rgba(14, 13, 12, 0.55) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    border-bottom-color: rgba(255, 255, 255, 0.1) !important;
-  }
-  .header-logo-on-hero {
-    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.45));
+    background-color: var(--dark-bg-card) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-bottom-color: rgba(var(--palette-gold-rgb), 0.32) !important;
   }
 }
 header.header-scrolled.site-header-bar {
@@ -1692,18 +1673,18 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Header móvil interno (catálogo, producto, etc.): barra 100% opaca — sin bleed de imágenes */
+  /* Header móvil interno: barra 100% opaca */
   body.page-internal .header-mobile.header-mobile-internal,
   body.page-internal .header-mobile.header-mobile-internal.header-scrolled {
-    background-color: var(--dark-bg-page) !important;
+    background-color: var(--dark-bg-card) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    border-bottom: 1px solid rgba(var(--palette-gold-rgb), 0.2) !important;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35) !important;
+    border-bottom: 1px solid rgba(var(--palette-gold-rgb), 0.32) !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22) !important;
   }
 
   body.page-product .header-mobile.header-mobile-product {
-    background-color: var(--dark-bg-page) !important;
+    background-color: var(--dark-bg-card) !important;
   }
 
   /* Header interno siempre por encima del contenido (capas GPU de imágenes) */
@@ -1712,10 +1693,11 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     isolation: isolate;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
+    background-color: var(--dark-bg-card) !important;
   }
 
   body.page-internal .site-header-mobile-shell {
-    background-color: var(--dark-bg-page);
+    background-color: var(--dark-bg-card) !important;
   }
 
   body.page-internal main {
@@ -1782,15 +1764,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 
   .product-detail-page {
     overflow-x: clip;
-  }
-
-  /* Header móvil compacto: blur solo home hero (no páginas internas) */
-  header.header-mobile.header-scrolled:not(.header-home-mobile):not(.header-mobile-internal) {
-    background-color: rgba(24, 23, 21, 0.92) !important;
-    backdrop-filter: blur(12px) saturate(1.1) !important;
-    -webkit-backdrop-filter: blur(12px) saturate(1.1) !important;
-    border-bottom-color: rgba(var(--palette-gold-rgb), 0.24) !important;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22) !important;
   }
 
   header.header-mobile {
@@ -1985,13 +1958,15 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 }
 
 /* Header auto-hide al scroll */
-header.site-header-bar.header-scroll-hidden {
+header.site-header-bar.header-scroll-hidden,
+.site-header-mobile-shell.header-scroll-hidden {
   transform: translate3d(0, -100%, 0);
   pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  header.site-header-bar.header-scroll-hidden {
+  header.site-header-bar.header-scroll-hidden,
+  .site-header-mobile-shell.header-scroll-hidden {
     transform: none;
     opacity: 0;
     visibility: hidden;

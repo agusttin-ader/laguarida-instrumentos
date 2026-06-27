@@ -16,7 +16,7 @@ function HeaderLoading() {
     <>
       {!isHome ? (
         <div
-          className="site-header-mobile-shell md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[52px] border-b border-[rgba(var(--palette-gold-rgb),0.32)] bg-[var(--dark-bg-page)] pointer-events-none"
+          className="site-header-mobile-shell md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[52px] border-b border-[rgba(var(--palette-gold-rgb),0.32)] bg-[var(--dark-bg-card)] pointer-events-none"
           aria-hidden
         />
       ) : null}
