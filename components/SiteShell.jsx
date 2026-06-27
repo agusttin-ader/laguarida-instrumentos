@@ -124,7 +124,7 @@ export default function SiteShell({ children }) {
             <>
               <main
                 key={pathname}
-                className={`min-h-0 w-full min-w-0 pb-[max(1rem,env(safe-area-inset-bottom,0px))] max-md:pb-[max(5.25rem,calc(4.25rem+env(safe-area-inset-bottom)))] md:pb-0 ${mainTopPad}`}
+                className={`min-h-0 w-full min-w-0 max-md:overflow-x-clip pb-[max(1rem,env(safe-area-inset-bottom,0px))] max-md:pb-[max(5.25rem,calc(4.25rem+env(safe-area-inset-bottom)))] md:pb-0 ${mainTopPad}`}
               >
                 {children}
               </main>
@@ -135,7 +135,7 @@ export default function SiteShell({ children }) {
             <PullToRefresh onRefresh={handleRefresh}>
               <main
                 key={pathname}
-                className={`min-h-0 w-full min-w-0 pb-[max(1rem,env(safe-area-inset-bottom,0px))] max-md:pb-[max(5.25rem,calc(4.25rem+env(safe-area-inset-bottom)))] md:pb-0 ${mainTopPad}`}
+                className={`min-h-0 w-full min-w-0 max-md:overflow-x-clip pb-[max(1rem,env(safe-area-inset-bottom,0px))] max-md:pb-[max(5.25rem,calc(4.25rem+env(safe-area-inset-bottom)))] md:pb-0 ${mainTopPad}`}
               >
                 {children}
               </main>

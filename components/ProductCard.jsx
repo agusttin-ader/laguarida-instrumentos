@@ -314,12 +314,12 @@ const ProductCard = React.memo(function ProductCard({
   return (
     <article
       aria-labelledby={headingId}
-      className="card-interactive card-editorial card-mobile-no-motion product-card-mobile-catalog flex h-full w-full min-w-0 max-w-full flex-col overflow-hidden rounded-xl max-md:rounded-2xl border-0 bg-[var(--dark-bg-card)] md:rounded-3xl"
+      className="card-interactive card-editorial card-mobile-no-motion product-card-mobile-catalog flex h-full w-full min-w-0 max-w-full flex-col overflow-hidden rounded-xl max-md:rounded-[1.125rem] border-0 bg-[var(--dark-bg-card)] max-md:shadow-none md:rounded-3xl"
     >
       <Link
         href={`/guitars/${p.slug || p.id}`}
         aria-label={`Ir a ${titleText || 'producto'}`}
-        className="no-custom-btn card-product-link group group/img flex h-full min-h-0 flex-1 flex-col transition-transform duration-120 ease-out active:scale-[0.99]"
+        className="no-custom-btn card-product-link group group/img flex h-full min-h-0 flex-1 flex-col transition-transform duration-120 ease-out max-md:active:scale-100 md:active:scale-[0.99]"
         onClick={handleCardClick}
       >
         {imageBlock}

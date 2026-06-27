@@ -34,7 +34,7 @@ export default function ProductMobileStickyCTA({ price, consultHref, productName
 
   return (
     <div
-      className={`fixed inset-x-0 z-[var(--z-bottom-nav)] md:hidden border-t border-white/[0.1] bg-[var(--dark-bg-elevated)]/94 backdrop-blur-xl shadow-[0_-16px_48px_rgba(0,0,0,0.5)] transition-[transform,opacity] duration-300 ease-out motion-reduce:duration-150 ${
+      className={`fixed inset-x-0 z-[var(--z-bottom-nav)] md:hidden border-t border-white/[0.1] bg-[var(--dark-bg-elevated)] shadow-[0_-12px_40px_rgba(0,0,0,0.45)] transition-[transform,opacity] duration-300 ease-out motion-reduce:duration-150 ${
         visible ? 'pointer-events-auto translate-y-0 opacity-100' : 'pointer-events-none translate-y-full opacity-0'
       }`}
       style={{ paddingBottom: 'max(0.65rem, env(safe-area-inset-bottom))' }}

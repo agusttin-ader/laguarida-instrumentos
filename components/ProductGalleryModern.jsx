@@ -130,7 +130,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
               <button
                 type="button"
                 onClick={() => openLightbox(i)}
-                className="no-custom-btn group relative aspect-[4/5] w-full max-w-[min(28rem,calc(100vw-2rem))] shrink-0 overflow-hidden rounded-2xl bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
+                className="no-custom-btn group relative aspect-[4/5] w-full max-w-[min(28rem,calc(100vw-2rem))] shrink-0 overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
                 aria-label={altBase ? `${altBase} — foto ${i + 1} de ${allImages.length}` : `Foto ${i + 1} de ${allImages.length}`}
               >
                 <ImageWithSkeleton

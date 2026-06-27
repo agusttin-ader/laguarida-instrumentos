@@ -398,7 +398,7 @@ export default async function GuitarPage({ params }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* Sección galería: 100% ancho — breadcrumb, título a la izquierda, galería moderna */}
-      <section className="product-detail-hero-section w-full min-w-0 bg-[var(--dark-surface-2)] px-4 pt-0 pb-6 max-lg:mx-0 max-md:rounded-b-[20px] sm:px-5 sm:pt-6 sm:pb-10 md:px-6 md:pt-3 lg:-mx-8 lg:px-8 lg:pb-10 rounded-b-[24px] md:rounded-b-[32px]">
+      <section className="product-detail-hero-section w-full min-w-0 bg-[var(--dark-surface-2)] px-4 pt-0 pb-5 max-lg:mx-0 max-md:rounded-b-[20px] sm:px-5 sm:pt-6 sm:pb-10 md:px-6 md:pt-3 lg:-mx-8 lg:px-8 lg:pb-10 rounded-b-[24px] md:rounded-b-[32px]">
         <div className="container-tight w-full flex flex-col">
           <div className="product-detail-gallery-wrap order-1 md:order-4">
             <ProductGalleryModern
@@ -424,7 +424,7 @@ export default async function GuitarPage({ params }) {
       </section>
 
       {/* Móvil: precio y acciones primero. Desktop lg+: dos columnas — panel (izq) | compra sticky (der). */}
-      <section className="container-tight w-full pt-5 max-md:pt-4 sm:pt-10 md:pt-12 pb-6 max-md:pb-5 sm:pb-10 md:pb-16">
+      <section className="container-tight w-full pt-5 max-md:pt-3 sm:pt-10 md:pt-12 pb-6 max-md:pb-[max(5rem,calc(4rem+env(safe-area-inset-bottom)))] sm:pb-10 md:pb-16">
         <div className="grid w-full grid-cols-1 gap-5 max-md:gap-4 sm:gap-10 md:gap-12 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
           <div className="order-2 min-w-0 lg:order-1">
             <ProductDetailInfoPanel highlights={product.highlights}>
@@ -457,7 +457,7 @@ export default async function GuitarPage({ params }) {
 
           <div
             id="pdp-primary-cta"
-            className="product-detail-primary-block order-1 min-w-0 space-y-4 max-md:space-y-3 sm:space-y-6 scroll-mt-28 lg:order-2 lg:sticky lg:top-24 lg:self-start"
+            className="product-detail-primary-block order-1 min-w-0 space-y-4 max-md:space-y-3 sm:space-y-6 scroll-mt-[calc(var(--site-header-h,3.25rem)+0.75rem)] lg:order-2 lg:sticky lg:top-24 lg:self-start"
           >
             {product.price && (
               <p className="price-highlight product-detail-price text-2xl sm:text-[30px] md:text-[32px] lg:text-[34px] xl:text-[2.5rem] min-[1920px]:text-[2.85rem] min-[2560px]:text-[3.1rem] font-bold tracking-tight">{product.price}</p>

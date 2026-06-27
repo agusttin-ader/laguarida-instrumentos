@@ -68,7 +68,7 @@ export default function CatalogPageContent() {
     }).length
   }, [products, searchQuery])
 
-  const shellClass = `${layoutShellClassName} mobile-gutter-x sm:px-5 md:px-8 lg:px-10 py-5 sm:py-8 md:py-10 min-[1920px]:px-12`
+  const shellClass = `${layoutShellClassName} mobile-gutter-x sm:px-5 md:px-8 lg:px-10 py-5 max-md:py-4 sm:py-8 md:py-10 min-[1920px]:px-12`
 
   if (catalogBrand) {
     return (
@@ -80,7 +80,7 @@ export default function CatalogPageContent() {
 
   return (
     <div className={`${shellClass} catalog-page catalog-page--all`}>
-      <nav aria-label="Breadcrumb" className="mb-4 text-xs text-[var(--dark-muted)] sm:text-sm">
+      <nav aria-label="Breadcrumb" className="mb-3 max-md:mb-2.5 text-xs text-[var(--dark-muted)] sm:text-sm">
         <ol className="flex flex-wrap items-center gap-1.5">
           <li>
             <Link href="/" className="no-custom-btn hover:text-[var(--dark-text-primary)] transition-colors">
@@ -94,7 +94,7 @@ export default function CatalogPageContent() {
         </ol>
       </nav>
 
-      <header className="mb-6 max-md:mb-5 max-w-2xl sm:mb-10">
+      <header className="mb-6 max-md:mb-4 max-w-2xl sm:mb-10">
         <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--dark-muted)]">
           Instrumentos · Stock real
         </p>
@@ -114,7 +114,7 @@ export default function CatalogPageContent() {
 
       <nav
         aria-label="Marcas"
-        className="catalog-mobile-brands -mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1 md:hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory"
+        className="catalog-mobile-brands max-md:-mx-[var(--mobile-gutter)] mb-5 max-md:mb-4 flex gap-2 overflow-x-auto px-4 max-md:px-[var(--mobile-gutter)] pb-1 md:hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory"
       >
         {brandList.map((brand) => (
           <Link

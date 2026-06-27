@@ -705,9 +705,13 @@ section {
 }
 
 @media (max-width: 767px) {
-  section:not(.home-hero-section) {
+  section:not(.home-hero-section):not(.product-detail-hero-section) {
     padding-top: var(--mobile-section-gap);
     padding-bottom: var(--mobile-section-gap);
+  }
+
+  .product-detail-page > section:not(.product-detail-hero-section) {
+    padding-top: 0;
   }
 }
 
@@ -1151,11 +1155,40 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   .product-card-mobile-catalog h3 {
     font-size: 1.0625rem !important;
     line-height: 1.32;
+    font-weight: 600 !important;
   }
 
   .product-card-mobile-catalog .price-highlight {
     font-size: 1.0625rem !important;
     line-height: 1.2;
+  }
+
+  .product-card-mobile-catalog .product-card-body {
+    min-height: 8.25rem;
+    padding-top: 0.875rem;
+    padding-bottom: 1rem;
+  }
+
+  .catalog-page .grid.grid-cols-1:has(.home-grid-product-cell) {
+    gap: var(--mobile-space-xl);
+  }
+
+  .catalog-page header.mb-6 {
+    margin-bottom: var(--mobile-space-md) !important;
+  }
+
+  .catalog-page .catalog-mobile-search {
+    margin-bottom: var(--mobile-space-md) !important;
+  }
+
+  .catalog-page .catalog-mobile-brands {
+    margin-bottom: var(--mobile-space-lg) !important;
+  }
+
+  .img-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 
   .product-detail-page .product-detail-kicker {
@@ -1691,9 +1724,16 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   .site-header-mobile-shell {
     z-index: 120 !important;
     isolation: isolate;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
     background-color: var(--dark-bg-card) !important;
+    will-change: transform;
+  }
+
+  .site-header-mobile-shell.header-scroll-hidden {
+    transform: translate3d(0, -100%, 0) !important;
+    -webkit-transform: translate3d(0, -100%, 0) !important;
+    pointer-events: none;
   }
 
   body.page-internal .site-header-mobile-shell {
@@ -1703,6 +1743,7 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   body.page-internal main {
     position: relative;
     z-index: 0;
+    overflow-x: clip;
     padding-top: var(--site-header-h, var(--mobile-header-h, 3.25rem));
   }
 
@@ -1837,6 +1878,22 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 
   .product-detail-page .product-detail-primary-block {
     gap: 0.875rem;
+    scroll-margin-top: calc(var(--site-header-h, var(--mobile-header-h, 3.25rem)) + 0.75rem);
+  }
+
+  .product-detail-page .product-detail-hero-section {
+    padding-bottom: var(--mobile-space-md);
+  }
+
+  .product-detail-page .product-detail-title {
+    font-size: clamp(1.5rem, 6.5vw, 1.875rem);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+
+  .product-detail-page .product-detail-breadcrumb {
+    font-size: 0.75rem;
+    line-height: 1.4;
   }
 
   /* Relacionados: snap alineado al gutter */
@@ -1884,15 +1941,10 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   animation: page-in 0.16s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 @media (max-width: 767px) {
-  @keyframes page-in-mobile {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
   .animate-page-in {
-    animation-name: page-in-mobile;
-    animation-duration: 0.14s;
-    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
-    animation-fill-mode: forwards;
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 @media (prefers-reduced-motion: reduce) {
