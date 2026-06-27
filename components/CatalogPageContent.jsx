@@ -132,7 +132,7 @@ export default function CatalogPageContent() {
         ))}
       </nav>
 
-      <div className="grid gap-8 lg:grid-cols-[minmax(220px,280px)_1fr] lg:gap-12">
+      <div className="catalog-layout-grid grid gap-8 md:grid-cols-[minmax(220px,280px)_1fr] md:gap-10 lg:gap-12">
         <aside className="catalog-sidebar-sticky hidden md:block">
           <nav aria-label="Marcas">
             {brandList.map((brand, index) => (

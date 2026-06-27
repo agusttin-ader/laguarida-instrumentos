@@ -162,7 +162,7 @@ export default function CatalogBrandView({ brand, products, loading }) {
             ))}
           </div>
 
-          <div className="grid gap-8 md:grid-cols-[minmax(220px,280px)_1fr] md:gap-10 lg:gap-14">
+          <div className="catalog-layout-grid grid gap-8 md:grid-cols-[minmax(220px,280px)_1fr] md:gap-10 lg:gap-14">
             <aside className="catalog-sidebar-sticky hidden md:block">
               <nav aria-label={`Modelos ${brand.name}`}>
                 {modelGroups.map((group, index) => (
