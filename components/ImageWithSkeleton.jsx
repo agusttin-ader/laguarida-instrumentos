@@ -52,10 +52,11 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
   const aspectRatio = (width && height) ? `${width} / ${height}` : undefined
 
   const mergedImgStyle = {
-    backfaceVisibility: 'hidden',
-    WebkitBackfaceVisibility: 'hidden',
-    transform: 'translateZ(0)',
-    ...imgStyle
+    ...imgStyle,
+  }
+  if (!imgStyle.transform && !imgStyle.WebkitTransform) {
+    mergedImgStyle.backfaceVisibility = 'hidden'
+    mergedImgStyle.WebkitBackfaceVisibility = 'hidden'
   }
   const srcStr = typeof src === 'string' ? src.trim() : ''
   const useUnoptimized = Boolean(unoptimized) || shouldBypassNextOptimization(srcStr)

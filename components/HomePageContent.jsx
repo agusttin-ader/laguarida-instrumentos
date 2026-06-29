@@ -16,15 +16,9 @@ export default function HomePageContent({ heroSlides = [], featuredProducts = []
       <section
         id="home-top"
         aria-labelledby="home-hero"
-        className="home-hero-section relative z-0 w-full min-w-0 !pt-0 !pb-0 bg-[#141414] md:mt-0 max-[767px]:mt-0"
+        className="home-hero-section relative w-full min-w-0 !pt-0 !pb-0 bg-[#141414] md:mt-0 max-[767px]:mt-0"
       >
-        <div className="relative z-0 min-h-0 min-w-0">
-          <HeroMarketing slides={heroSlides} />
-        </div>
-        <div
-          id="home-top-mobile-header-slot"
-          className="pointer-events-none absolute inset-x-0 top-0 z-[var(--z-header)] md:hidden [&>*]:pointer-events-auto"
-        />
+        <HeroMarketing slides={heroSlides} />
       </section>
 
       <section

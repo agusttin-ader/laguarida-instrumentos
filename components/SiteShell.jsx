@@ -37,11 +37,7 @@ export default function SiteShell({ children }) {
   const isHome = pathname === '/' || pathname === ''
   const isGuitarProductPage =
     typeof pathname === 'string' && /^\/guitars\/[^/]+$/u.test(pathname)
-  const mainTopPad = !isHome
-    ? isGuitarProductPage
-      ? 'md:pt-0'
-      : 'max-md:pt-[var(--site-header-h,var(--mobile-header-h,3.25rem))] md:pt-0'
-    : 'pt-0'
+  const mainTopPad = !isHome ? 'md:pt-0' : 'pt-0'
 
   const handleRefresh = useCallback(() => {
     router.refresh()
@@ -124,7 +120,7 @@ export default function SiteShell({ children }) {
             <>
               <main
                 key={pathname}
-                className={`min-h-0 w-full min-w-0 max-md:overflow-x-clip pb-[max(1rem,env(safe-area-inset-bottom,0px))] max-md:pb-[max(5.25rem,calc(4.25rem+env(safe-area-inset-bottom)))] md:pb-0 ${mainTopPad}`}
+                className={`min-h-0 w-full min-w-0 max-md:overflow-x-clip pb-[max(1rem,env(safe-area-inset-bottom,0px))] ${isGuitarProductPage ? 'max-md:pb-[max(4.5rem,calc(3.5rem+env(safe-area-inset-bottom)))]' : 'max-md:pb-[max(5.25rem,calc(4.25rem+env(safe-area-inset-bottom)))]'} md:pb-0 ${mainTopPad}`}
               >
                 {children}
               </main>
@@ -135,7 +131,7 @@ export default function SiteShell({ children }) {
             <PullToRefresh onRefresh={handleRefresh}>
               <main
                 key={pathname}
-                className={`min-h-0 w-full min-w-0 max-md:overflow-x-clip pb-[max(1rem,env(safe-area-inset-bottom,0px))] max-md:pb-[max(5.25rem,calc(4.25rem+env(safe-area-inset-bottom)))] md:pb-0 ${mainTopPad}`}
+                className={`min-h-0 w-full min-w-0 max-md:overflow-x-clip pb-[max(1rem,env(safe-area-inset-bottom,0px))] ${isGuitarProductPage ? 'max-md:pb-[max(4.5rem,calc(3.5rem+env(safe-area-inset-bottom)))]' : 'max-md:pb-[max(5.25rem,calc(4.25rem+env(safe-area-inset-bottom)))]'} md:pb-0 ${mainTopPad}`}
               >
                 {children}
               </main>

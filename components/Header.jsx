@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
 import { usePathname, useRouter } from 'next/navigation'
 import MenuDrawer from './MenuDrawer'
 import { scrollToHomeSectionById } from '../lib/homeSectionScroll'
@@ -35,7 +34,6 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [scrollHidden, setScrollHidden] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [homeHeaderSlotEl, setHomeHeaderSlotEl] = useState(null)
   const [isDesktopHeader, setIsDesktopHeader] = useState(getInitialDesktopHeader)
   const [isMobileViewport, setIsMobileViewport] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -107,6 +105,25 @@ export default function Header() {
   }, [menuOpen, isInternalMobile])
 
   useEffect(() => {
+    if (typeof document === 'undefined' || typeof window === 'undefined') return undefined
+
+    const syncBodyClass = () => {
+      const isMobile = window.matchMedia(MOBILE_HEADER_QUERY).matches
+      const hidden = isMobile && scrollHidden && scrolled
+      document.body.classList.toggle('mobile-header-scroll-hidden', hidden)
+    }
+
+    syncBodyClass()
+    const mq = window.matchMedia(MOBILE_HEADER_QUERY)
+    mq.addEventListener('change', syncBodyClass)
+
+    return () => {
+      mq.removeEventListener('change', syncBodyClass)
+      document.body.classList.remove('mobile-header-scroll-hidden')
+    }
+  }, [scrollHidden, scrolled])
+
+  useEffect(() => {
     if (typeof document === 'undefined' || typeof window === 'undefined') return
 
     const syncHeight = () => {
@@ -145,29 +162,6 @@ export default function Header() {
     }
   }, [pathname, scrolled, mounted, isHome])
 
-  useEffect(() => {
-    if (!isHome) {
-      setHomeHeaderSlotEl(null)
-      return
-    }
-    let cancelled = false
-    let raf = 0
-    function findSlot() {
-      if (cancelled) return
-      const el = document.getElementById('home-top-mobile-header-slot')
-      if (el) {
-        setHomeHeaderSlotEl(el)
-        return
-      }
-      raf = window.requestAnimationFrame(findSlot)
-    }
-    findSlot()
-    return () => {
-      cancelled = true
-      window.cancelAnimationFrame(raf)
-    }
-  }, [isHome, pathname])
-
   const navLinkClass =
     "relative inline-flex items-center py-0.5 px-0.5 text-[11px] lg:text-[13px] font-semibold uppercase tracking-[0.13em] whitespace-nowrap text-[#e4e7f0]/85 hover:text-[#fffaf0] transition-colors duration-300 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent after:content-[''] after:absolute after:left-0 after:-bottom-0.5 after:h-[1.5px] after:w-0 after:bg-[var(--vintage-gold)] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
 
@@ -200,11 +194,11 @@ export default function Header() {
         aria-label="Cabecera"
         className={`header-mobile site-header-bar md:hidden flex items-center justify-between gap-2 min-h-[52px] py-2 px-4 left-0 right-0 top-0 ${isHome ? 'header-home-mobile' : 'header-mobile-internal'} ${isProductPage ? 'header-mobile-product' : ''} ${scrolled ? 'header-scrolled' : ''}`}
       >
-        <div className="relative z-20 flex min-w-0 flex-1 items-center justify-start">
+        <div className="relative flex min-w-0 flex-1 items-center justify-start">
           <a
             href="/"
             aria-label="Ir al inicio"
-            className="z-10 inline-flex min-w-0 max-w-full items-center justify-start overflow-visible pointer-events-auto leading-none"
+            className="inline-flex min-w-0 max-w-full items-center justify-start overflow-visible pointer-events-auto leading-none"
             onClick={isHome ? (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) } : undefined}
           >
             <span className="relative header-logo-wrapper inline-flex max-w-[min(280px,calc(100vw-4.5rem))] items-center justify-start leading-none">
@@ -221,7 +215,7 @@ export default function Header() {
             </span>
           </a>
         </div>
-        <div className="relative z-20 w-12 flex-shrink-0">
+        <div className="relative w-12 flex-shrink-0">
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
@@ -242,11 +236,7 @@ export default function Header() {
 
   return (
     <>
-      {isHome
-        ? mounted && homeHeaderSlotEl
-          ? createPortal(mobileShell, homeHeaderSlotEl)
-          : mobileShell
-        : mobileShell}
+      {mobileShell}
       <MenuDrawer open={menuOpen} setOpen={setMenuOpen} />
 
       {/* Header desktop */}

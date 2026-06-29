@@ -32,7 +32,7 @@ export default function HeroMarketing({ slides = [] }) {
   const visibleIndex = carouselReady ? activeIndex : 0
 
   return (
-    <div className="hero-home relative isolate w-full max-md:min-h-[min(88dvh,680px)] sm:min-h-[min(84vh,880px)] overflow-hidden bg-[#141414] text-[#f7f3eb]">
+    <div className="hero-home relative w-full max-md:min-h-[min(78dvh,600px)] sm:min-h-[min(84vh,880px)] overflow-hidden bg-[#141414] text-[#f7f3eb]">
       <div className="absolute inset-0" aria-hidden>
         {heroSlides.length ? (
           heroSlides.map((slide, i) => (
@@ -62,7 +62,7 @@ export default function HeroMarketing({ slides = [] }) {
       </div>
 
       <div
-        className={`${layoutShellClassName} relative z-[1] mx-auto flex max-md:min-h-[min(88dvh,680px)] sm:min-h-[min(84vh,880px)] w-full max-md:items-end md:items-center px-4 max-md:pb-8 max-md:pt-[max(4.25rem,calc(3.25rem+env(safe-area-inset-top)))] pb-14 pt-[max(5.75rem,calc(4.5rem+env(safe-area-inset-top)))] sm:px-5 sm:pb-16 md:px-8 md:pt-[5.75rem] lg:px-10 min-[1920px]:px-12`}
+        className={`${layoutShellClassName} relative mx-auto flex max-md:min-h-[min(88dvh,680px)] sm:min-h-[min(84vh,880px)] w-full max-md:items-end md:items-center px-4 max-md:pb-8 max-md:pt-[max(4.25rem,calc(3.25rem+env(safe-area-inset-top)))] pb-14 pt-[max(5.75rem,calc(4.5rem+env(safe-area-inset-top)))] sm:px-5 sm:pb-16 md:px-8 md:pt-[5.75rem] lg:px-10 min-[1920px]:px-12`}
       >
         <div className="w-full max-w-xl lg:max-w-2xl">
           <p className="mb-2.5 max-md:mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--palette-gold)] md:text-xs">
@@ -82,10 +82,10 @@ export default function HeroMarketing({ slides = [] }) {
           </p>
           <div className="mt-5 max-md:mt-4 flex flex-wrap items-center gap-2.5 max-md:gap-2 md:mt-8">
             <Link
-              href="#marcas"
+              href="#seleccion-destacada"
               className="no-custom-btn inline-flex min-h-[48px] items-center justify-center rounded-full bg-[var(--dark-cta-bg)] px-5 max-md:px-5 py-2.5 text-sm font-semibold text-[var(--dark-cta-text)] shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-[transform,opacity] duration-250 hover:scale-[1.02] active:scale-[0.98]"
             >
-              Ver marcas
+              Ver destacados
             </Link>
             <Link
               href="/catalogo"

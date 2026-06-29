@@ -3,13 +3,13 @@ import ProductGalleryModern from '../../../components/ProductGalleryModern'
 import normalizeProduct from '../../../lib/utils/normalizeProduct'
 import { fetchProductRowBySlug } from '../../../lib/data/fetchProductBySlug'
 import { getPublicCatalogRows } from '../../../lib/data/publicCatalog'
-import ProductCard from '../../../components/ProductCard'
 import imageService from '../../../lib/utils/imageService'
 import ProductShareAndFavorite from '../../../components/ProductShareAndFavorite'
 import ProductPageCTA from '../../../components/ProductPageCTA'
 import ProductDetailInfoPanel from '../../../components/ProductDetailInfoPanel'
 import ProductDetailSpecSheet from '../../../components/ProductDetailSpecSheet'
 import ProductMobileStickyCTA from '../../../components/ProductMobileStickyCTA'
+import RelatedProductsScroll from '../../../components/RelatedProductsScroll'
 import { parseNumericPriceForSchema } from '../../../lib/utils/normalizeProduct'
 import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
 import { absoluteUrl, toAbsoluteUrl } from '../../../lib/siteUrl'
@@ -398,7 +398,7 @@ export default async function GuitarPage({ params }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* Sección galería: 100% ancho — breadcrumb, título a la izquierda, galería moderna */}
-      <section className="product-detail-hero-section w-full min-w-0 bg-[var(--dark-surface-2)] px-4 pt-0 pb-5 max-lg:mx-0 max-md:rounded-b-[20px] sm:px-5 sm:pt-6 sm:pb-10 md:px-6 md:pt-3 lg:-mx-8 lg:px-8 lg:pb-10 rounded-b-[24px] md:rounded-b-[32px]">
+      <section className="product-detail-hero-section w-full min-w-0 bg-[var(--dark-surface-2)] max-md:px-0 px-4 pt-0 pb-5 max-lg:mx-0 max-md:rounded-b-[20px] sm:px-5 sm:pt-6 sm:pb-10 md:px-6 md:pt-3 lg:-mx-8 lg:px-8 lg:pb-10 rounded-b-[24px] md:rounded-b-[32px]">
         <div className="container-tight w-full flex flex-col">
           <div className="product-detail-gallery-wrap order-1 md:order-4">
             <ProductGalleryModern
@@ -413,7 +413,9 @@ export default async function GuitarPage({ params }) {
               <li aria-hidden className="opacity-50">/</li>
               <li><a href="/catalogo" className="hover:text-[var(--dark-text-primary)] transition-colors">Catálogo</a></li>
               <li aria-hidden className="opacity-50">/</li>
-              <li className="text-[var(--dark-text-secondary)] truncate max-w-[min(100%,9.5rem)] max-[360px]:max-w-[7.5rem] sm:max-w-[280px] lg:max-w-[min(100%,28rem)] xl:max-w-[min(100%,40rem)]" aria-current="page">{product.name}</li>
+              <li className="min-w-0 flex-1 text-[var(--dark-text-secondary)] sm:flex-none sm:max-w-[280px] lg:max-w-[min(100%,28rem)] xl:max-w-[min(100%,40rem)]" aria-current="page">
+                <span className="block truncate">{product.name}</span>
+              </li>
             </ol>
           </nav>
           <p className="product-detail-kicker order-3 md:order-2 text-[11px] sm:text-xs md:text-[13px] xl:text-sm font-semibold uppercase tracking-[0.22em] text-[var(--dark-muted)] mb-2 max-md:mb-0 max-md:mt-2">{categoryLabel}</p>
@@ -480,13 +482,7 @@ export default async function GuitarPage({ params }) {
       {relatedProducts && relatedProducts.length > 0 && (
         <section className="container-tight mt-5 max-md:mt-4 sm:mt-12 md:mt-16 pb-4 sm:pb-10 md:pb-16" aria-labelledby="related-heading">
           <h2 id="related-heading" className="section-title-premium section-underline-ocre text-[var(--dark-text-primary)] mb-3 max-md:mb-3 sm:mb-6">También te recomendamos</h2>
-          <div className="related-products-scroll flex overflow-x-auto gap-4 sm:gap-5 pb-2 sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 lg:gap-8 snap-x snap-mandatory scroll-smooth">
-            {relatedProducts.map((r, idx) => (
-              <div key={r.id || r.slug} className="flex-shrink-0 w-[min(272px,82vw)] sm:w-auto snap-center">
-                <ProductCard item={r} maxGalleryImages={1} />
-              </div>
-            ))}
-          </div>
+          <RelatedProductsScroll products={relatedProducts} />
         </section>
       )}
 

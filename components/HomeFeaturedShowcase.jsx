@@ -38,7 +38,7 @@ function EditorialBlock({ item, index, reversed = false }) {
   const description = excerptDescription(p.description || p.highlights)
 
   const imagePanel = (
-    <div className="home-featured-editorial__image relative min-h-[360px] max-md:min-h-[min(62vw,380px)] overflow-hidden bg-[var(--dark-surface-2)] md:min-h-0 md:h-full">
+    <div className={`home-featured-editorial__image relative order-1 min-h-[360px] max-md:min-h-[min(62vw,380px)] overflow-hidden bg-[var(--dark-surface-2)] md:min-h-0 md:h-full ${reversed ? 'md:order-2' : 'md:order-1'}`}>
       {src ? (
         <Image
           src={src}
@@ -61,7 +61,7 @@ function EditorialBlock({ item, index, reversed = false }) {
   )
 
   const contentPanel = (
-    <div className="home-featured-editorial__content flex flex-col justify-center bg-[var(--dark-bg-card)] px-5 py-7 max-md:px-4 max-md:py-6 md:px-10 md:py-12 lg:px-14 xl:px-20">
+    <div className={`home-featured-editorial__content order-2 flex flex-col justify-center bg-[var(--dark-bg-card)] px-5 py-7 max-md:px-4 max-md:py-6 md:px-10 md:py-12 lg:px-14 xl:px-20 ${reversed ? 'md:order-1' : 'md:order-2'}`}>
       {specs.length > 0 ? (
         <p className="mb-4 flex flex-wrap gap-2">
           {specs.map((s) => (
@@ -111,17 +111,8 @@ function EditorialBlock({ item, index, reversed = false }) {
         className="no-custom-btn grid w-full grid-cols-1 md:grid-cols-2 md:min-h-[540px] lg:min-h-[580px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-inset"
         aria-label={`Ver ${p.name || 'producto'}`}
       >
-        {reversed ? (
-          <>
-            {contentPanel}
-            {imagePanel}
-          </>
-        ) : (
-          <>
-            {imagePanel}
-            {contentPanel}
-          </>
-        )}
+        {imagePanel}
+        {contentPanel}
       </Link>
     </article>
   )

@@ -4,6 +4,7 @@ import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import ImageWithSkeleton from './ImageWithSkeleton'
 import imageService from '../lib/utils/imageService'
+import { animateScrollLeft, createScrollAnimator } from '../lib/smoothHorizontalScroll'
 
 const GalleryLightbox = dynamic(() => import('./GalleryLightbox'), { ssr: false })
 
@@ -13,6 +14,197 @@ const GALLERY_THUMB_SIZES =
   '(max-width:1023px) 50vw, (max-width:1279px) 22vw, (max-width:1919px) min(20vw, 420px), (max-width:2559px) min(18vw, 520px), min(17vw, 640px)'
 const MOBILE_CAROUSEL_SIZES = '(max-width:1023px) 100vw, 100vw'
 const GALLERY_MOBILE_QUERY = '(max-width: 1023px)'
+const SWIPE_HINT_DELAY_MS = 900
+const SWIPE_HINT_PEEK_RATIO = 0.14
+const SWIPE_HINT_MAX_PX = 52
+const SWIPE_COMMIT_RATIO = 0.22
+const TAP_MAX_PX = 12
+
+function delay(ms) {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, ms)
+  })
+}
+
+function getSlideWidth(el) {
+  return el.clientWidth || el.children[0]?.getBoundingClientRect().width || 0
+}
+
+function scrollToIndex(el, index, slideCount, instant = false) {
+  const slideW = getSlideWidth(el)
+  if (!slideW) return 0
+  const clamped = Math.max(0, Math.min(slideCount - 1, index))
+  const left = clamped * slideW
+  if (instant) {
+    el.scrollLeft = left
+  }
+  return { left, index: clamped }
+}
+
+function useMobileSwipeHint({ enabled, carouselRef, slideCount, imagesKey }) {
+  const ranRef = useRef(false)
+
+  useEffect(() => {
+    ranRef.current = false
+  }, [imagesKey])
+
+  useEffect(() => {
+    if (!enabled || slideCount < 2 || ranRef.current) return undefined
+    if (typeof window === 'undefined') return undefined
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
+
+    const el = carouselRef.current
+    if (!el) return undefined
+
+    let cancelled = false
+    let timeoutId = 0
+
+    const cancel = () => {
+      if (cancelled) return
+      cancelled = true
+      window.clearTimeout(timeoutId)
+    }
+
+    el.addEventListener('touchstart', cancel, { passive: true })
+    el.addEventListener('pointerdown', cancel, { passive: true })
+
+    timeoutId = window.setTimeout(async () => {
+      if (cancelled || ranRef.current) return
+      const slideW = getSlideWidth(el)
+      if (slideW <= 0) return
+
+      ranRef.current = true
+      const peek = Math.min(slideW * SWIPE_HINT_PEEK_RATIO, SWIPE_HINT_MAX_PX)
+
+      try {
+        await animateScrollLeft(el, peek, { durationMs: 420 })
+        if (cancelled) {
+          el.scrollLeft = 0
+          return
+        }
+        await delay(140)
+        if (cancelled) {
+          el.scrollLeft = 0
+          return
+        }
+        await animateScrollLeft(el, 0, { durationMs: 520 })
+      } catch {
+        el.scrollLeft = 0
+      }
+    }, SWIPE_HINT_DELAY_MS)
+
+    return () => {
+      cancel()
+      el.removeEventListener('touchstart', cancel)
+      el.removeEventListener('pointerdown', cancel)
+    }
+  }, [enabled, slideCount, imagesKey, carouselRef])
+}
+
+function useControlledMobileCarousel(carouselRef, slideCount, setActiveIndex, onTapSlide) {
+  const gestureRef = useRef({
+    tracking: false,
+    startX: 0,
+    startScroll: 0,
+    startIndex: 0,
+    moved: 0,
+  })
+  const animatorRef = useRef(createScrollAnimator())
+
+  useEffect(() => {
+    const el = carouselRef.current
+    if (!el || slideCount < 2) return undefined
+
+    const animator = animatorRef.current
+    const maxScroll = () => Math.max(0, (slideCount - 1) * getSlideWidth(el))
+
+    const snapTo = (index, instant = false) => {
+      const { left, index: snapped } = scrollToIndex(el, index, slideCount, instant)
+      setActiveIndex(snapped)
+      return animator.run(el, left, { instant, durationMs: 360 })
+    }
+
+    const onTouchStart = (event) => {
+      animator.cancel()
+      const touch = event.touches[0]
+      const slideW = getSlideWidth(el)
+      gestureRef.current = {
+        tracking: true,
+        startX: touch.clientX,
+        startScroll: el.scrollLeft,
+        startIndex: slideW ? Math.round(el.scrollLeft / slideW) : 0,
+        moved: 0,
+      }
+    }
+
+    const onTouchMove = (event) => {
+      if (!gestureRef.current.tracking) return
+      const touch = event.touches[0]
+      const delta = gestureRef.current.startX - touch.clientX
+      gestureRef.current.moved = Math.max(gestureRef.current.moved, Math.abs(delta))
+
+      const slideW = getSlideWidth(el)
+      if (!slideW) return
+
+      let nextScroll = gestureRef.current.startScroll + delta
+      const startIdx = gestureRef.current.startIndex
+      const minScroll = Math.max(0, (startIdx - 1) * slideW)
+      const maxAllowed = Math.min(maxScroll(), (startIdx + 1) * slideW)
+      nextScroll = Math.max(minScroll, Math.min(maxAllowed, nextScroll))
+      el.scrollLeft = nextScroll
+
+      if (Math.abs(delta) > 8) {
+        event.preventDefault()
+      }
+    }
+
+    const onTouchEnd = (event) => {
+      if (!gestureRef.current.tracking) return
+      gestureRef.current.tracking = false
+
+      const { startX, startIndex, moved } = gestureRef.current
+      const endX = event.changedTouches[0].clientX
+      const delta = startX - endX
+      const slideW = getSlideWidth(el)
+
+      if (moved <= TAP_MAX_PX && typeof onTapSlide === 'function') {
+        onTapSlide(startIndex)
+        snapTo(startIndex)
+        return
+      }
+
+      if (!slideW) {
+        snapTo(startIndex)
+        return
+      }
+
+      const offset = el.scrollLeft - startIndex * slideW
+      let target = startIndex
+
+      if (delta > slideW * SWIPE_COMMIT_RATIO || offset > slideW * SWIPE_COMMIT_RATIO) {
+        target = startIndex + 1
+      } else if (delta < -slideW * SWIPE_COMMIT_RATIO || offset < -slideW * SWIPE_COMMIT_RATIO) {
+        target = startIndex - 1
+      }
+
+      target = Math.max(startIndex - 1, Math.min(startIndex + 1, target))
+      snapTo(target)
+    }
+
+    el.addEventListener('touchstart', onTouchStart, { passive: true })
+    el.addEventListener('touchmove', onTouchMove, { passive: false })
+    el.addEventListener('touchend', onTouchEnd, { passive: true })
+    el.addEventListener('touchcancel', onTouchEnd, { passive: true })
+
+    return () => {
+      animator.cancel()
+      el.removeEventListener('touchstart', onTouchStart)
+      el.removeEventListener('touchmove', onTouchMove)
+      el.removeEventListener('touchend', onTouchEnd)
+      el.removeEventListener('touchcancel', onTouchEnd)
+    }
+  }, [carouselRef, slideCount, setActiveIndex, onTapSlide])
+}
 
 function useGalleryIsMobile() {
   const [isMobile, setIsMobile] = useState(() => {
@@ -48,7 +240,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
   usePreloadLightbox()
   const isMobileGallery = useGalleryIsMobile()
   const carouselRef = useRef(null)
-  const [snapIndex, setSnapIndex] = useState(0)
+  const [activeIndex, setActiveIndex] = useState(0)
 
   const allImages = useMemo(() => {
     const main = imageService.resolve(image_url)
@@ -60,48 +252,53 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
     return list
   }, [image_url, images])
 
-  const updateSnapIndex = useCallback(() => {
-    const el = carouselRef.current
-    if (!el || !allImages.length) return
-    const first = el.children[0]
-    if (!first) return
-    const gap = 0
-    const slideW = first.getBoundingClientRect().width + gap
-    if (slideW <= gap) return
-    const idx = Math.round(el.scrollLeft / slideW)
-    setSnapIndex(Math.min(Math.max(0, idx), allImages.length - 1))
-  }, [allImages.length])
+  const galleryImagesKey = allImages.join('|')
 
   useEffect(() => {
+    setActiveIndex(0)
     const el = carouselRef.current
-    if (!el) return
-    const handler = () => updateSnapIndex()
-    el.addEventListener('scroll', handler, { passive: true })
-    el.addEventListener('scrollend', handler)
-    window.addEventListener('resize', handler)
-    return () => {
-      el.removeEventListener('scroll', handler)
-      el.removeEventListener('scrollend', handler)
-      window.removeEventListener('resize', handler)
-    }
-  }, [updateSnapIndex])
-
-  const scrollToSlide = useCallback((i) => {
-    const el = carouselRef.current
-    if (!el || !el.children[i]) return
-    el.children[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' })
-  }, [])
+    if (el) el.scrollLeft = 0
+  }, [galleryImagesKey])
 
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
 
-  const mainImage = allImages[0] || null
-  const sideImages = allImages.slice(1)
-
-  function openLightbox(index) {
+  const openLightbox = useCallback((index) => {
     setLightboxIndex(index)
     setLightboxOpen(true)
-  }
+  }, [])
+
+  useMobileSwipeHint({
+    enabled: isMobileGallery,
+    carouselRef,
+    slideCount: allImages.length,
+    imagesKey: galleryImagesKey,
+  })
+
+  useControlledMobileCarousel(carouselRef, allImages.length, setActiveIndex, openLightbox)
+
+  const goToSlide = useCallback((index) => {
+    const el = carouselRef.current
+    if (!el) return
+    const { left, index: snapped } = scrollToIndex(el, index, allImages.length)
+    setActiveIndex(snapped)
+    animateScrollLeft(el, left, { durationMs: 360 })
+  }, [allImages.length])
+
+  useEffect(() => {
+    const el = carouselRef.current
+    if (!el) return undefined
+    const onResize = () => {
+      const { left, index: snapped } = scrollToIndex(el, activeIndex, allImages.length, true)
+      el.scrollLeft = left
+      setActiveIndex(snapped)
+    }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [activeIndex, allImages.length])
+
+  const mainImage = allImages[0] || null
+  const sideImages = allImages.slice(1)
 
   if (!mainImage) {
     return (
@@ -113,64 +310,89 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
 
   return (
     <>
-      {/* Móvil: carrusel horizontal con snap (debajo de lg). Cada slide ocupa el ancho del carrusel; la tarjeta va centrada dentro. */}
+      {/* Móvil: desliz horizontal, una foto por gesto */}
       <div className="w-full space-y-2.5 lg:hidden">
+        {allImages.length === 1 ? (
+          <button
+            type="button"
+            onClick={() => openLightbox(0)}
+            className="no-custom-btn group relative mx-auto block aspect-[4/5] w-full max-w-[min(28rem,calc(100vw-2rem))] overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
+            aria-label={altBase ? `${altBase} — ampliar foto` : 'Ampliar foto'}
+          >
+            <ImageWithSkeleton
+              src={displayMain(mainImage)}
+              alt={altBase || 'Imagen del producto'}
+              fill
+              imgClassName="object-contain object-center p-1"
+              imgStyle={{ transform: 'none', WebkitBackfaceVisibility: 'visible' }}
+              sizes={MOBILE_CAROUSEL_SIZES}
+              quality={74}
+              priority={isMobileGallery}
+              disableClientPreview
+            />
+          </button>
+        ) : (
         <div
           ref={carouselRef}
           role="region"
           aria-roledescription="Carrusel"
           aria-label="Fotos del producto. Deslizá para ver más."
-          className="product-gallery-mobile-carousel flex w-full touch-auto overflow-x-auto scroll-smooth snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="product-gallery-mobile-carousel flex w-full touch-pan-y overflow-x-auto overscroll-x-contain snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {allImages.map((src, i) => (
             <div
               key={`${src}-${i}`}
-              className="flex min-h-0 min-w-full shrink-0 snap-center justify-center px-0"
+              className="product-gallery-mobile-carousel__slide flex w-full shrink-0 basis-full snap-start snap-always justify-center px-0"
             >
-              <button
-                type="button"
-                onClick={() => openLightbox(i)}
-                className="no-custom-btn group relative aspect-[4/5] w-full max-w-[min(28rem,calc(100vw-2rem))] shrink-0 overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
-                aria-label={altBase ? `${altBase} — foto ${i + 1} de ${allImages.length}` : `Foto ${i + 1} de ${allImages.length}`}
+              <div
+                className="group relative aspect-[4/5] w-full max-w-[min(28rem,calc(100vw-2rem))] shrink-0 overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)]"
+                aria-hidden
               >
                 <ImageWithSkeleton
                   src={i === 0 ? displayMain(src) : displayThumb(src)}
                   alt={altBase ? `${altBase} — imagen ${i + 1}` : `Imagen ${i + 1}`}
                   fill
-                  imgClassName="object-contain object-center p-1 transition-opacity duration-300 ease-out group-active:opacity-95"
+                  imgClassName="object-contain object-center p-1 transition-opacity duration-300 ease-out"
                   imgStyle={{ transform: 'none', WebkitBackfaceVisibility: 'visible' }}
                   sizes={MOBILE_CAROUSEL_SIZES}
                   quality={i === 0 ? 74 : 62}
                   priority={isMobileGallery && i === 0}
                   disableClientPreview
                 />
-              </button>
+              </div>
             </div>
           ))}
         </div>
+        )}
+
         {allImages.length > 1 ? (
           <div className="flex items-center justify-center gap-3 px-0.5">
             <span className="sr-only">
-              Foto {snapIndex + 1} de {allImages.length}
+              Foto {activeIndex + 1} de {allImages.length}
             </span>
             <div className="flex items-center gap-1.5" role="group" aria-label="Ir a una foto">
               {allImages.map((_, i) => (
                 <button
                   key={i}
                   type="button"
-                  aria-current={i === snapIndex ? 'true' : undefined}
+                  aria-current={i === activeIndex ? 'true' : undefined}
                   aria-label={`Foto ${i + 1}`}
-                  onClick={() => scrollToSlide(i)}
-                  className={`no-custom-btn h-2 rounded-full transition-[width,background-color] duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)] ${
-                    i === snapIndex
-                      ? 'w-6 bg-[var(--vintage-gold)]'
-                      : 'w-2 bg-white/25 hover:bg-white/40'
-                  }`}
-                />
+                  onClick={() => goToSlide(i)}
+                  className="no-custom-btn flex h-11 w-11 shrink-0 items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
+                >
+                  <span
+                    aria-hidden
+                    className={`block h-2 rounded-full transition-[width,background-color] duration-200 ${
+                      i === activeIndex
+                        ? 'w-6 bg-[var(--vintage-gold)]'
+                        : 'w-2 bg-white/25'
+                    }`}
+                  />
+                </button>
               ))}
             </div>
             <span className="text-[11px] tabular-nums text-[var(--dark-muted)]" aria-hidden>
-              {snapIndex + 1}/{allImages.length}
+              {activeIndex + 1}/{allImages.length}
             </span>
           </div>
         ) : null}
