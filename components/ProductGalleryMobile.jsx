@@ -47,12 +47,12 @@ export default function ProductGalleryMobile({ allImages, altBase = '', imagesKe
           role="region"
           aria-roledescription="Carrusel"
           aria-label="Fotos del producto. Deslizá horizontalmente para ver más."
-          className="product-gallery-mobile-carousel mx-auto flex w-full max-w-[min(28rem,calc(100vw-2rem))] snap-x snap-mandatory overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="native-mobile-carousel product-gallery-mobile-carousel mx-auto flex w-full max-w-[min(28rem,calc(100vw-2rem))] snap-x snap-mandatory overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {allImages.map((src, i) => (
             <div
               key={`${src}-${i}`}
-              className="product-gallery-mobile-carousel__slide w-full shrink-0 snap-start snap-always"
+              className="native-mobile-carousel__slide product-gallery-mobile-carousel__slide w-full shrink-0 snap-start snap-always"
               aria-hidden={i !== activeIndex}
             >
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)]">

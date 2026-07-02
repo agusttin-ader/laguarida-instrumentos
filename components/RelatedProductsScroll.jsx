@@ -19,12 +19,12 @@ export default function RelatedProductsScroll({ products = [] }) {
           role="region"
           aria-roledescription="Carrusel"
           aria-label="Productos recomendados. Deslizá horizontalmente para ver más."
-          className="related-products-scroll flex w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="native-mobile-carousel related-products-scroll flex w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {items.map((item, i) => (
             <div
               key={item.id || item.slug}
-              className="related-products-scroll__slide w-full shrink-0 snap-start snap-always"
+              className="native-mobile-carousel__slide related-products-scroll__slide w-full shrink-0 snap-start snap-always"
               aria-hidden={i !== activeIndex}
             >
               <div className="related-products-scroll__card mx-auto w-full max-w-[min(20rem,calc(100vw-2rem))]">

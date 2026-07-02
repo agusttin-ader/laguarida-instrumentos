@@ -7,6 +7,13 @@ const PULL_MAX = 80
 const SCROLL_TOP_MAX = 8
 const GESTURE_LOCK_PX = 8
 
+const HORIZONTAL_CAROUSEL_SELECTOR =
+  '.native-mobile-carousel, .product-gallery-mobile-carousel, .related-products-scroll'
+
+function isInHorizontalCarousel(target) {
+  return target instanceof Element && Boolean(target.closest(HORIZONTAL_CAROUSEL_SELECTOR))
+}
+
 export default function PullToRefresh({ children, onRefresh, disabled }) {
   const [pull, setPull] = useState(0)
   const containerRef = useRef(null)
@@ -69,7 +76,14 @@ export default function PullToRefresh({ children, onRefresh, disabled }) {
 
       if (!gesture.decided && (Math.abs(dx) > GESTURE_LOCK_PX || Math.abs(dy) > GESTURE_LOCK_PX)) {
         gesture.decided = true
-        gesture.vertical = Math.abs(dy) > Math.abs(dx)
+        const inCarousel = isInHorizontalCarousel(event.target)
+        if (inCarousel && Math.abs(dx) >= Math.abs(dy)) {
+          gesture.vertical = false
+        } else if (dy > 0 && Math.abs(dy) > Math.abs(dx) * 1.12) {
+          gesture.vertical = true
+        } else {
+          gesture.vertical = !inCarousel && Math.abs(dy) > Math.abs(dx)
+        }
       }
 
       if (!gesture.decided || !gesture.vertical) return
