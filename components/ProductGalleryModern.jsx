@@ -13,10 +13,11 @@ const GALLERY_THUMB_SIZES =
   '(max-width:1023px) 50vw, (max-width:1279px) 22vw, (max-width:1919px) min(20vw, 420px), (max-width:2559px) min(18vw, 520px), min(17vw, 640px)'
 const MOBILE_CAROUSEL_SIZES = '(max-width:1023px) 100vw, 100vw'
 const GALLERY_MOBILE_QUERY = '(max-width: 1023px)'
-const SWIPE_COMMIT_RATIO = 0.18
+const SWIPE_COMMIT_PX = 48
 const TAP_MAX_PX = 12
-const SLIDE_MS = 340
-const SLIDE_EASE = 'cubic-bezier(0.32, 0.72, 0, 1)'
+const SLIDE_MS = 300
+const SLIDE_EASE = 'cubic-bezier(0.33, 1, 0.32, 1)'
+const AXIS_LOCK_PX = 8
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value))
@@ -48,101 +49,108 @@ function usePreloadLightbox() {
 function useTransformCarousel(slideCount, onTapSlide, imagesKey) {
   const viewportRef = useRef(null)
   const [activeIndex, setActiveIndex] = useState(0)
-  const [dragPx, setDragPx] = useState(0)
-  const [isDragging, setIsDragging] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const activeIndexRef = useRef(0)
   const gestureRef = useRef({
     startX: 0,
+    startY: 0,
     startIndex: 0,
     moved: 0,
-    width: 0,
-    dragPx: 0,
+    axis: null,
   })
-
-  const getWidth = useCallback(() => {
-    return viewportRef.current?.clientWidth || 0
-  }, [])
+  const animTimerRef = useRef(0)
 
   const goToIndex = useCallback((index) => {
-    setActiveIndex(clamp(index, 0, Math.max(0, slideCount - 1)))
-    setDragPx(0)
-    setIsDragging(false)
+    const next = clamp(index, 0, Math.max(0, slideCount - 1))
+    window.clearTimeout(animTimerRef.current)
+    activeIndexRef.current = next
+    setActiveIndex(next)
+    setIsAnimating(true)
+    animTimerRef.current = window.setTimeout(() => setIsAnimating(false), SLIDE_MS)
   }, [slideCount])
 
   useEffect(() => {
+    activeIndexRef.current = 0
     setActiveIndex(0)
-    setDragPx(0)
-    setIsDragging(false)
-    gestureRef.current.dragPx = 0
+    setIsAnimating(false)
+    gestureRef.current.axis = null
   }, [slideCount, imagesKey])
 
-  const onTouchStart = useCallback((event) => {
-    const touch = event.touches[0]
-    const width = getWidth()
-    gestureRef.current = {
-      startX: touch.clientX,
-      startIndex: activeIndex,
-      moved: 0,
-      width,
-    }
-    setIsDragging(true)
-    setDragPx(0)
-  }, [activeIndex, getWidth])
+  useEffect(() => () => window.clearTimeout(animTimerRef.current), [])
 
-  const onTouchMove = useCallback((event) => {
-    const touch = event.touches[0]
-    const { startX, startIndex, width } = gestureRef.current
-    const delta = touch.clientX - startX
-    gestureRef.current.moved = Math.max(gestureRef.current.moved, Math.abs(delta))
+  useEffect(() => {
+    const el = viewportRef.current
+    if (!el || slideCount < 2) return undefined
 
-    if (!width) return
-
-    let nextDrag = delta
-    if (startIndex <= 0) nextDrag = Math.min(0, nextDrag)
-    if (startIndex >= slideCount - 1) nextDrag = Math.max(0, nextDrag)
-    nextDrag = clamp(nextDrag, -width, width)
-
-    setDragPx(nextDrag)
-    gestureRef.current.dragPx = nextDrag
-
-    if (Math.abs(delta) > 6) {
-      event.preventDefault()
-    }
-  }, [slideCount])
-
-  const onTouchEnd = useCallback(() => {
-    const { startIndex, moved, width, dragPx: finalDrag } = gestureRef.current
-    setIsDragging(false)
-
-    if (moved <= TAP_MAX_PX && typeof onTapSlide === 'function') {
-      onTapSlide(startIndex)
-      setDragPx(0)
-      gestureRef.current.dragPx = 0
-      return
+    const onTouchStart = (event) => {
+      window.clearTimeout(animTimerRef.current)
+      setIsAnimating(false)
+      const touch = event.touches[0]
+      gestureRef.current = {
+        startX: touch.clientX,
+        startY: touch.clientY,
+        startIndex: activeIndexRef.current,
+        moved: 0,
+        axis: null,
+      }
     }
 
-    if (!width) {
-      setDragPx(0)
-      gestureRef.current.dragPx = 0
-      return
+    const onTouchMove = (event) => {
+      const touch = event.touches[0]
+      const { startX, startY } = gestureRef.current
+      const dx = touch.clientX - startX
+      const dy = touch.clientY - startY
+
+      if (!gestureRef.current.axis && (Math.abs(dx) > AXIS_LOCK_PX || Math.abs(dy) > AXIS_LOCK_PX)) {
+        gestureRef.current.axis = Math.abs(dx) >= Math.abs(dy) ? 'x' : 'y'
+      }
+
+      if (gestureRef.current.axis === 'x') {
+        gestureRef.current.moved = Math.max(gestureRef.current.moved, Math.abs(dx))
+        event.preventDefault()
+        event.stopPropagation()
+      }
     }
 
-    const threshold = width * SWIPE_COMMIT_RATIO
-    let target = startIndex
+    const onTouchEnd = (event) => {
+      const { startX, startIndex, moved, axis } = gestureRef.current
+      const touch = event.changedTouches[0]
+      const dx = touch.clientX - startX
+      const dy = touch.clientY - startY
+      const totalMove = Math.max(Math.abs(dx), Math.abs(dy), moved)
 
-    if (finalDrag <= -threshold) target = startIndex + 1
-    else if (finalDrag >= threshold) target = startIndex - 1
+      gestureRef.current.axis = null
 
-    target = clamp(target, startIndex - 1, startIndex + 1)
-    target = clamp(target, 0, slideCount - 1)
+      if (totalMove <= TAP_MAX_PX && typeof onTapSlide === 'function') {
+        onTapSlide(startIndex)
+        return
+      }
 
-    setActiveIndex(target)
-    setDragPx(0)
-    gestureRef.current.dragPx = 0
-  }, [onTapSlide, slideCount])
+      if (axis !== 'x' || Math.abs(dx) < SWIPE_COMMIT_PX) return
+
+      if (dx < 0 && startIndex < slideCount - 1) {
+        goToIndex(startIndex + 1)
+      } else if (dx > 0 && startIndex > 0) {
+        goToIndex(startIndex - 1)
+      }
+    }
+
+    el.addEventListener('touchstart', onTouchStart, { passive: true })
+    el.addEventListener('touchmove', onTouchMove, { passive: false })
+    el.addEventListener('touchend', onTouchEnd, { passive: true })
+    el.addEventListener('touchcancel', onTouchEnd, { passive: true })
+
+    return () => {
+      el.removeEventListener('touchstart', onTouchStart)
+      el.removeEventListener('touchmove', onTouchMove)
+      el.removeEventListener('touchend', onTouchEnd)
+      el.removeEventListener('touchcancel', onTouchEnd)
+    }
+  }, [goToIndex, onTapSlide, slideCount])
 
   const trackStyle = {
-    transform: `translate3d(calc(-${activeIndex * 100}% + ${dragPx}px), 0, 0)`,
-    transition: isDragging ? 'none' : `transform ${SLIDE_MS}ms ${SLIDE_EASE}`,
+    transform: `translate3d(-${activeIndex * 100}%, 0, 0)`,
+    transition: isAnimating ? `transform ${SLIDE_MS}ms ${SLIDE_EASE}` : 'none',
   }
 
   return {
@@ -150,9 +158,6 @@ function useTransformCarousel(slideCount, onTapSlide, imagesKey) {
     activeIndex,
     goToIndex,
     trackStyle,
-    onTouchStart,
-    onTouchMove,
-    onTouchEnd,
   }
 }
 
@@ -192,9 +197,6 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
     activeIndex,
     goToIndex,
     trackStyle,
-    onTouchStart,
-    onTouchMove,
-    onTouchEnd,
   } = useTransformCarousel(allImages.length, openLightbox, galleryImagesKey)
 
   const mainImage = allImages[0] || null
@@ -236,24 +238,20 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
             ref={viewportRef}
             role="region"
             aria-roledescription="Carrusel"
-            aria-label="Fotos del producto. Deslizá para ver más."
-            className="product-gallery-mobile-carousel overflow-hidden touch-pan-x"
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-            onTouchCancel={onTouchEnd}
+            aria-label="Fotos del producto. Deslizá horizontalmente para ver más."
+            className="product-gallery-mobile-carousel mx-auto w-full max-w-[min(28rem,calc(100vw-2rem))] touch-pan-x select-none"
           >
             <div
-              className="product-gallery-mobile-carousel__track flex w-full will-change-transform"
+              className="product-gallery-mobile-carousel__track flex w-full"
               style={trackStyle}
             >
               {allImages.map((src, i) => (
                 <div
                   key={`${src}-${i}`}
-                  className="product-gallery-mobile-carousel__slide flex w-full shrink-0 basis-full justify-center px-0"
+                  className="product-gallery-mobile-carousel__slide w-full shrink-0 basis-full"
                   aria-hidden={i !== activeIndex}
                 >
-                  <div className="relative aspect-[4/5] w-full max-w-[min(28rem,calc(100vw-2rem))] shrink-0 overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)]">
+                  <div className="relative h-full w-full overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)]">
                     <ImageWithSkeleton
                       src={i === 0 ? displayMain(src) : displayThumb(src)}
                       alt={altBase ? `${altBase} — imagen ${i + 1}` : `Imagen ${i + 1}`}
