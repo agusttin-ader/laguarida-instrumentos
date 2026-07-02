@@ -50,13 +50,13 @@ export default function FavoritosPage() {
         </div>
       ) : (
         <div
-          className={`grid grid-cols-1 gap-5 max-md:gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3${softGridEnter ? ' product-grid--slow-enter' : ''}`}
+          className={`product-grid--enter grid grid-cols-1 gap-5 max-md:gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3${softGridEnter ? ' product-grid--slow-enter' : ''}`}
         >
           {products.map((item, idx) => (
             <div
               key={item.id || item.slug}
               className="home-grid-product-cell min-w-0 [content-visibility:auto] [contain-intrinsic-size:auto_28rem]"
-              style={{ '--grid-cell-i': idx }}
+              style={{ '--enter-i': idx }}
             >
               <ProductCard item={item} maxGalleryImages={1} />
             </div>

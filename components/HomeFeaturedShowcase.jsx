@@ -1,11 +1,10 @@
 "use client"
 
 import React from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import normalizeProduct from '../lib/utils/normalizeProduct'
-import imageService from '../lib/utils/imageService'
 import { pickShowcaseImage } from '../lib/utils/pickShowcaseImage'
+import ImageWithSkeleton from './ImageWithSkeleton'
 
 const CTA_SHAPE =
   'inline-flex min-h-[48px] items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold tracking-wide'
@@ -40,17 +39,16 @@ function EditorialBlock({ item, index, reversed = false }) {
   const imagePanel = (
     <div className={`home-featured-editorial__image relative order-1 min-h-[360px] max-md:min-h-[min(62vw,380px)] overflow-hidden bg-[var(--dark-surface-2)] md:min-h-0 md:h-full ${reversed ? 'md:order-2' : 'md:order-1'}`}>
       {src ? (
-        <Image
+        <ImageWithSkeleton
           src={src}
           alt={p.name || 'Instrumento destacado'}
           fill
           sizes={EDITORIAL_IMAGE_SIZES}
           quality={68}
-          unoptimized={imageService.shouldBypassNextOptimization(src)}
           priority={index === 0}
           loading={index === 0 ? 'eager' : 'lazy'}
-          fetchPriority={index === 0 ? 'high' : 'low'}
-          className="object-cover object-[center_55%] sm:object-[center_60%] md:object-[center_65%]"
+          imgClassName="object-cover object-[center_55%] sm:object-[center_60%] md:object-[center_65%]"
+          disableClientPreview
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center text-5xl opacity-25" aria-hidden>
@@ -102,9 +100,10 @@ function EditorialBlock({ item, index, reversed = false }) {
 
   return (
     <article
-      className={`home-featured-editorial-block w-full ${
+      className={`home-featured-editorial-block product-enter-cell w-full ${
         reversed ? 'home-featured-editorial-block--img-right' : 'home-featured-editorial-block--img-left'
       }`}
+      style={{ '--enter-i': index }}
     >
       <Link
         href={href}
@@ -157,7 +156,7 @@ export default function HomeFeaturedShowcase({ items = [], loading = false }) {
   }
 
   return (
-    <div className="home-featured-editorial w-full">
+    <div className="home-featured-editorial product-grid--enter w-full">
       {picks.map((item, idx) => (
         <EditorialBlock key={item.slug || item.id || idx} item={item} index={idx} reversed={idx === 1} />
       ))}
