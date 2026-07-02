@@ -40,10 +40,11 @@ function useGalleryIsMobile() {
   return isMobile
 }
 
-function usePreloadLightbox() {
+function usePreloadLightbox(enabled) {
   useEffect(() => {
+    if (!enabled) return
     import('./GalleryLightbox')
-  }, [])
+  }, [enabled])
 }
 
 function useTransformCarousel(slideCount, onTapSlide, imagesKey) {
@@ -169,8 +170,8 @@ function displayThumb(url) {
 }
 
 export default function ProductGalleryModern({ image_url, images = [], altBase = '' }) {
-  usePreloadLightbox()
   const isMobileGallery = useGalleryIsMobile()
+  usePreloadLightbox(!isMobileGallery)
 
   const allImages = useMemo(() => {
     const main = imageService.resolve(image_url)
@@ -188,16 +189,21 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
   const [lightboxIndex, setLightboxIndex] = useState(0)
 
   const openLightbox = useCallback((index) => {
+    if (isMobileGallery) return
     setLightboxIndex(index)
     setLightboxOpen(true)
-  }, [])
+  }, [isMobileGallery])
+
+  useEffect(() => {
+    if (isMobileGallery && lightboxOpen) setLightboxOpen(false)
+  }, [isMobileGallery, lightboxOpen])
 
   const {
     viewportRef,
     activeIndex,
     goToIndex,
     trackStyle,
-  } = useTransformCarousel(allImages.length, openLightbox, galleryImagesKey)
+  } = useTransformCarousel(allImages.length, null, galleryImagesKey)
 
   const mainImage = allImages[0] || null
   const sideImages = allImages.slice(1)
@@ -215,11 +221,8 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
       {/* Móvil: slide horizontal con transform (sin scroll-snap) */}
       <div className="w-full space-y-2.5 lg:hidden">
         {allImages.length === 1 ? (
-          <button
-            type="button"
-            onClick={() => openLightbox(0)}
-            className="no-custom-btn group relative mx-auto block aspect-[4/5] w-full max-w-[min(28rem,calc(100vw-2rem))] overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
-            aria-label={altBase ? `${altBase} — ampliar foto` : 'Ampliar foto'}
+          <div
+            className="relative mx-auto aspect-[4/5] w-full max-w-[min(28rem,calc(100vw-2rem))] overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)]"
           >
             <ImageWithSkeleton
               src={displayMain(mainImage)}
@@ -232,7 +235,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
               priority={isMobileGallery}
               disableClientPreview
             />
-          </button>
+          </div>
         ) : (
           <div
             ref={viewportRef}
@@ -435,7 +438,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
         )}
       </div>
 
-      {lightboxOpen && allImages.length > 0 && (
+      {lightboxOpen && !isMobileGallery && allImages.length > 0 && (
         <GalleryLightbox
           images={allImages.map((url) => imageService.forDisplay(url, 'lightbox') || url)}
           altBase={altBase}
