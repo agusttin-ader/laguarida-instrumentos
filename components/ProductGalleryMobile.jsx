@@ -86,7 +86,7 @@ export default function ProductGalleryMobile({ allImages, altBase = '', imagesKe
   if (!mainImage) return null
 
   return (
-    <div className="w-full space-y-2.5 lg:hidden">
+    <div className="product-gallery-mobile-enter w-full space-y-2.5 lg:hidden">
       {allImages.length === 1 ? (
         <div className="relative mx-auto aspect-[4/5] w-full max-w-[min(28rem,calc(100vw-2rem))] overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)]">
           <ImageWithSkeleton
