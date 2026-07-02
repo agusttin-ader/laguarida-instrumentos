@@ -77,7 +77,7 @@
   --mobile-radius-card: 1rem;
   --mobile-radius-pill: 9999px;
   --mobile-tap: 3rem;
-  --mobile-header-h: 3.25rem;
+  --mobile-header-h: 3.625rem;
 
   /* Oscuros cálidos — carbón suave (menos negro puro, más descansado a la vista) */
   --dark-bg-page: #181715;
@@ -1318,8 +1318,8 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   }
 
   header.header-mobile {
-    padding-top: max(0.3rem, env(safe-area-inset-top));
-    padding-bottom: 0.3rem;
+    padding-top: max(0.45rem, env(safe-area-inset-top));
+    padding-bottom: 0.45rem;
   }
 
   /* Mejorar rendimiento de scroll en listas largas */

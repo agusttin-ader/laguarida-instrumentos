@@ -192,7 +192,7 @@ export default function Header() {
         ref={mobileHeaderRef}
         id={isHome ? 'header-home-mobile-overlay' : undefined}
         aria-label="Cabecera"
-        className={`header-mobile site-header-bar md:hidden flex items-center justify-between gap-2 min-h-[52px] py-2 px-4 left-0 right-0 top-0 ${isHome ? 'header-home-mobile' : 'header-mobile-internal'} ${isProductPage ? 'header-mobile-product' : ''} ${scrolled ? 'header-scrolled' : ''}`}
+        className={`header-mobile site-header-bar md:hidden flex items-center justify-between gap-2.5 min-h-[58px] py-2.5 px-4 left-0 right-0 top-0 ${isHome ? 'header-home-mobile' : 'header-mobile-internal'} ${isProductPage ? 'header-mobile-product' : ''} ${scrolled ? 'header-scrolled' : ''}`}
       >
         <div className="relative flex min-w-0 flex-1 items-center justify-start">
           <a
@@ -210,7 +210,7 @@ export default function Header() {
                 height={194}
                 decoding="async"
                 fetchPriority={isHome && !isDesktopHeader ? 'high' : 'low'}
-                className="logo-dark h-[34px] w-auto max-h-[36px] max-w-[min(260px,calc(100vw-4.5rem))] object-contain object-left block bg-transparent"
+                className="logo-dark h-[38px] w-auto max-h-[40px] max-w-[min(260px,calc(100vw-4.5rem))] object-contain object-left block bg-transparent"
               />
             </span>
           </a>
@@ -223,7 +223,7 @@ export default function Header() {
             className="header-mobile-menu-btn ml-auto flex items-center justify-center w-12 h-12 -m-1 border-0 bg-transparent p-0 text-white/95 hover:text-white no-custom-btn touch-manipulation transition-[color,opacity,transform] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.94] active:opacity-75 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{ WebkitTapHighlightColor: 'transparent', tapHighlightColor: 'transparent' }}
           >
-            <HamburgerIcon className="w-[22px] h-[22px]" />
+            <HamburgerIcon className="w-6 h-6" />
           </button>
         </div>
       </header>
