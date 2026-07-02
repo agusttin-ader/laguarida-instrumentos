@@ -6,12 +6,17 @@ const PULL_THRESHOLD = 60
 const PULL_MAX = 80
 const SCROLL_TOP_MAX = 8
 const GESTURE_LOCK_PX = 8
+const VERTICAL_PULL_BIAS = 1.2
 
 const HORIZONTAL_CAROUSEL_SELECTOR =
   '.native-mobile-carousel, .product-gallery-mobile-carousel, .related-products-scroll'
 
 function isInHorizontalCarousel(target) {
   return target instanceof Element && Boolean(target.closest(HORIZONTAL_CAROUSEL_SELECTOR))
+}
+
+function isVerticalPullGesture(dx, dy) {
+  return dy > GESTURE_LOCK_PX && dy > Math.abs(dx) * VERTICAL_PULL_BIAS
 }
 
 export default function PullToRefresh({ children, onRefresh, disabled }) {
@@ -76,13 +81,12 @@ export default function PullToRefresh({ children, onRefresh, disabled }) {
 
       if (!gesture.decided && (Math.abs(dx) > GESTURE_LOCK_PX || Math.abs(dy) > GESTURE_LOCK_PX)) {
         gesture.decided = true
-        const inCarousel = isInHorizontalCarousel(event.target)
-        if (inCarousel && Math.abs(dx) >= Math.abs(dy)) {
-          gesture.vertical = false
-        } else if (dy > 0 && Math.abs(dy) > Math.abs(dx) * 1.12) {
+        if (isVerticalPullGesture(dx, dy)) {
           gesture.vertical = true
+        } else if (isInHorizontalCarousel(event.target) && Math.abs(dx) > Math.abs(dy)) {
+          gesture.vertical = false
         } else {
-          gesture.vertical = !inCarousel && Math.abs(dy) > Math.abs(dx)
+          gesture.vertical = Math.abs(dy) > Math.abs(dx)
         }
       }
 

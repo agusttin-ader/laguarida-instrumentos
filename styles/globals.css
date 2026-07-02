@@ -1740,7 +1740,7 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 @media (max-width: 1023px) {
   /* Carrusel nativo compartido: galería PDP (+ relacionados en móvil) */
   .native-mobile-carousel {
-    touch-action: pan-x pan-y;
+    touch-action: pan-x;
     overscroll-behavior-x: contain;
     overscroll-behavior-y: auto;
     scroll-behavior: smooth;
@@ -1755,10 +1755,17 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     scroll-snap-align: start;
   }
 
-  .product-gallery-mobile-carousel img {
+  .product-gallery-mobile-carousel img,
+  .native-mobile-carousel img,
+  .native-mobile-carousel span[style] {
     pointer-events: none;
     -webkit-user-drag: none;
     user-drag: none;
+  }
+
+  .native-mobile-carousel .favorite-heart-btn,
+  .native-mobile-carousel button {
+    pointer-events: auto;
   }
 
   .product-detail-page .product-gallery-mobile-carousel img,
@@ -1779,10 +1786,19 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   .related-products-scroll__slide {
     display: flex;
     justify-content: center;
+    flex: 0 0 100%;
+    width: 100%;
   }
 
   .related-products-scroll__card {
+    width: 100%;
+    max-width: min(20rem, calc(100vw - 2rem));
     padding-inline: var(--mobile-gutter);
+  }
+
+  .related-products-scroll .product-card-mobile-shell,
+  .related-products-scroll .card-product-link {
+    touch-action: pan-x;
   }
 
   .product-detail-page .native-mobile-carousel img,

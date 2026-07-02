@@ -1,12 +1,47 @@
 "use client"
 
+import { useRef, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import ProductCard from './ProductCard'
 import { useNativeScrollCarousel } from '../hooks/useNativeScrollCarousel'
 
+const SWIPE_LOCK_PX = 10
+
 export default function RelatedProductsScroll({ products = [] }) {
+  const router = useRouter()
   const items = Array.isArray(products) ? products : []
   const itemsKey = items.map((item) => item.id || item.slug).join('|')
   const { scrollerRef, activeIndex, goToIndex } = useNativeScrollCarousel(items.length, itemsKey)
+  const slideGesture = useRef({ startX: 0, startY: 0, didSwipe: false })
+
+  const handleSlideTouchStart = useCallback((event) => {
+    if (!event.touches[0]) return
+    slideGesture.current = {
+      startX: event.touches[0].clientX,
+      startY: event.touches[0].clientY,
+      didSwipe: false,
+    }
+  }, [])
+
+  const handleSlideTouchMove = useCallback((event) => {
+    if (!event.touches[0]) return
+    const dx = Math.abs(event.touches[0].clientX - slideGesture.current.startX)
+    const dy = Math.abs(event.touches[0].clientY - slideGesture.current.startY)
+    if (dx > SWIPE_LOCK_PX && dx > dy) {
+      slideGesture.current.didSwipe = true
+    }
+  }, [])
+
+  const handleSlideClick = useCallback(
+    (slug, id) => {
+      if (slideGesture.current.didSwipe) {
+        slideGesture.current.didSwipe = false
+        return
+      }
+      router.push(`/guitars/${slug || id}`)
+    },
+    [router]
+  )
 
   if (!items.length) return null
 
@@ -24,11 +59,23 @@ export default function RelatedProductsScroll({ products = [] }) {
           {items.map((item, i) => (
             <div
               key={item.id || item.slug}
+              role="button"
+              tabIndex={0}
               className="native-mobile-carousel__slide related-products-scroll__slide w-full shrink-0 snap-start snap-always"
               aria-hidden={i !== activeIndex}
+              aria-label={`Ver ${item.name || 'producto'}`}
+              onTouchStart={handleSlideTouchStart}
+              onTouchMove={handleSlideTouchMove}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  handleSlideClick(item.slug, item.id)
+                }
+              }}
+              onClick={() => handleSlideClick(item.slug, item.id)}
             >
-              <div className="related-products-scroll__card mx-auto w-full max-w-[min(20rem,calc(100vw-2rem))]">
-                <ProductCard item={item} maxGalleryImages={1} />
+              <div className="related-products-scroll__card mx-auto w-full">
+                <ProductCard item={item} maxGalleryImages={1} inCarousel />
               </div>
             </div>
           ))}
