@@ -5,42 +5,27 @@ import { useRouter } from 'next/navigation'
 import ProductCard from './ProductCard'
 import { useNativeScrollCarousel } from '../hooks/useNativeScrollCarousel'
 
-const SWIPE_LOCK_PX = 10
+const TAP_SCROLL_TOLERANCE_PX = 12
 
 export default function RelatedProductsScroll({ products = [] }) {
   const router = useRouter()
   const items = Array.isArray(products) ? products : []
   const itemsKey = items.map((item) => item.id || item.slug).join('|')
   const { scrollerRef, activeIndex, goToIndex } = useNativeScrollCarousel(items.length, itemsKey)
-  const slideGesture = useRef({ startX: 0, startY: 0, didSwipe: false })
+  const scrollAtTouchStart = useRef(0)
 
-  const handleSlideTouchStart = useCallback((event) => {
-    if (!event.touches[0]) return
-    slideGesture.current = {
-      startX: event.touches[0].clientX,
-      startY: event.touches[0].clientY,
-      didSwipe: false,
-    }
-  }, [])
-
-  const handleSlideTouchMove = useCallback((event) => {
-    if (!event.touches[0]) return
-    const dx = Math.abs(event.touches[0].clientX - slideGesture.current.startX)
-    const dy = Math.abs(event.touches[0].clientY - slideGesture.current.startY)
-    if (dx > SWIPE_LOCK_PX && dx > dy) {
-      slideGesture.current.didSwipe = true
-    }
-  }, [])
+  const handleScrollerTouchStart = useCallback(() => {
+    scrollAtTouchStart.current = scrollerRef.current?.scrollLeft ?? 0
+  }, [scrollerRef])
 
   const handleSlideClick = useCallback(
     (slug, id) => {
-      if (slideGesture.current.didSwipe) {
-        slideGesture.current.didSwipe = false
-        return
-      }
+      const el = scrollerRef.current
+      if (!el) return
+      if (Math.abs(el.scrollLeft - scrollAtTouchStart.current) > TAP_SCROLL_TOLERANCE_PX) return
       router.push(`/guitars/${slug || id}`)
     },
-    [router]
+    [router, scrollerRef]
   )
 
   if (!items.length) return null
@@ -55,26 +40,27 @@ export default function RelatedProductsScroll({ products = [] }) {
           aria-roledescription="Carrusel"
           aria-label="Productos recomendados. Deslizá horizontalmente para ver más."
           className="native-mobile-carousel related-products-scroll flex w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          onTouchStart={handleScrollerTouchStart}
         >
           {items.map((item, i) => (
             <div
               key={item.id || item.slug}
-              role="button"
-              tabIndex={0}
-              className="native-mobile-carousel__slide related-products-scroll__slide w-full shrink-0 snap-start snap-always"
+              className="native-mobile-carousel__slide related-products-scroll__slide shrink-0 snap-center snap-always"
               aria-hidden={i !== activeIndex}
-              aria-label={`Ver ${item.name || 'producto'}`}
-              onTouchStart={handleSlideTouchStart}
-              onTouchMove={handleSlideTouchMove}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault()
-                  handleSlideClick(item.slug, item.id)
-                }
-              }}
-              onClick={() => handleSlideClick(item.slug, item.id)}
             >
-              <div className="related-products-scroll__card mx-auto w-full">
+              <div
+                role="button"
+                tabIndex={0}
+                className="related-products-scroll__card mx-auto w-full"
+                aria-label={`Ver ${item.name || 'producto'}`}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    handleSlideClick(item.slug, item.id)
+                  }
+                }}
+                onClick={() => handleSlideClick(item.slug, item.id)}
+              >
                 <ProductCard item={item} maxGalleryImages={1} inCarousel />
               </div>
             </div>

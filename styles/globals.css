@@ -1781,24 +1781,33 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     margin-right: calc(var(--mobile-gutter) * -1);
     width: calc(100% + (var(--mobile-gutter) * 2));
     gap: 0;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .related-products-scroll__slide {
+  .related-products-scroll.native-mobile-carousel .related-products-scroll__slide {
     display: flex;
     justify-content: center;
+    align-items: stretch;
     flex: 0 0 100%;
     width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
   }
 
   .related-products-scroll__card {
     width: 100%;
     max-width: min(20rem, calc(100vw - 2rem));
     padding-inline: var(--mobile-gutter);
+    touch-action: pan-x;
   }
 
   .related-products-scroll .product-card-mobile-shell,
   .related-products-scroll .card-product-link {
-    touch-action: pan-x;
+    touch-action: inherit;
   }
 
   .product-detail-page .native-mobile-carousel img,
