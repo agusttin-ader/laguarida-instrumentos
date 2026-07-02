@@ -1743,7 +1743,7 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
-    touch-action: pan-x;
+    touch-action: pan-x pan-y;
     margin-left: calc(var(--mobile-gutter) * -1);
     margin-right: calc(var(--mobile-gutter) * -1);
     width: calc(100% + (var(--mobile-gutter) * 2));
@@ -2137,7 +2137,7 @@ header.site-header-bar.header-scroll-hidden {
 /* Galería PDP móvil/tablet (< lg / 1024px): scroll nativo horizontal */
 @media (max-width: 1023px) {
   .product-gallery-mobile-carousel {
-    touch-action: pan-x;
+    touch-action: pan-x pan-y;
     overscroll-behavior-x: contain;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
