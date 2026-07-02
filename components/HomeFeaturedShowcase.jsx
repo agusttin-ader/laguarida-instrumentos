@@ -11,7 +11,7 @@ const CTA_SHAPE =
 
 const PRODUCT_CTA_CLASS = `${CTA_SHAPE} border border-[var(--palette-gold)]/35 bg-white/[0.03] text-[var(--dark-text-primary)]`
 
-const CATALOG_CTA_CLASS = `${CTA_SHAPE} text-[var(--palette-ink)] shadow-[0_4px_20px_rgba(var(--palette-gold-rgb),0.25)] transition-[transform,box-shadow] duration-200 hover:shadow-[0_6px_26px_rgba(var(--palette-gold-rgb),0.35)] active:scale-[0.99]`
+const CATALOG_CTA_CLASS = `${CTA_SHAPE} text-[var(--palette-ink)] shadow-[0_4px_20px_rgba(var(--palette-gold-rgb),0.25)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-[0_6px_26px_rgba(var(--palette-gold-rgb),0.35)] active:scale-[0.98]`
 
 const CATALOG_CTA_STYLE = { background: 'linear-gradient(105deg, #f2ae30 0%, #f28729 100%)' }
 const HOME_PICK_COUNT = 3
@@ -107,7 +107,7 @@ function EditorialBlock({ item, index, reversed = false }) {
     >
       <Link
         href={href}
-        className="no-custom-btn grid w-full grid-cols-1 md:grid-cols-2 md:min-h-[540px] lg:min-h-[580px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-inset"
+        className="home-featured-editorial-link no-custom-btn grid w-full grid-cols-1 md:grid-cols-2 md:min-h-[540px] lg:min-h-[580px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-inset"
         aria-label={`Ver ${p.name || 'producto'}`}
       >
         {imagePanel}

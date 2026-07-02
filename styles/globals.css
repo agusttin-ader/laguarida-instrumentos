@@ -459,7 +459,7 @@ html, body, #__next, #root, main {
 @keyframes product-enter-soft-in {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -469,15 +469,15 @@ html, body, #__next, #root, main {
 .product-grid--enter .home-grid-product-cell,
 .product-grid--enter .product-enter-cell,
 .product-grid--slow-enter .home-grid-product-cell {
-  animation: product-enter-soft-in 0.45s cubic-bezier(0.32, 0.72, 0, 1) both;
-  animation-delay: calc(min(var(--enter-i, var(--grid-cell-i, 0)), 12) * 50ms);
+  animation: product-enter-soft-in 0.4s var(--motion-ease-fluid) both;
+  animation-delay: calc(min(var(--enter-i, var(--grid-cell-i, 0)), 12) * 45ms);
 }
 @media (min-width: 768px) {
   .product-grid--enter .home-grid-product-cell,
   .product-grid--enter .product-enter-cell,
   .product-grid--slow-enter .home-grid-product-cell {
-    animation-duration: 0.5s;
-    animation-delay: calc(min(var(--enter-i, var(--grid-cell-i, 0)), 12) * 60ms);
+    animation-duration: 0.45s;
+    animation-delay: calc(min(var(--enter-i, var(--grid-cell-i, 0)), 12) * 55ms);
   }
 }
 @media (max-width: 767px) {
@@ -2026,14 +2026,28 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 }
 
 @media (hover: none) and (pointer: coarse) {
-  .no-custom-btn,
+  .no-custom-btn:not(.home-featured-editorial-link),
   .card-product-link {
-    transition: transform 120ms ease-out, opacity 120ms ease-out, background-color 160ms ease-out;
+    transition:
+      transform var(--motion-fast) var(--motion-ease-fluid),
+      opacity var(--motion-fast) var(--motion-ease-fluid),
+      background-color var(--motion-base) var(--motion-ease-fluid);
   }
 
-  .no-custom-btn:active,
+  .no-custom-btn:not(.home-featured-editorial-link):active,
   .card-product-link:active {
-    transform: scale(0.987);
+    transform: scale(0.988);
+  }
+
+  /* Bloques editoriales del home: sin scale al tocar (se ve sucio en tarjetas grandes) */
+  .home-featured-editorial-link {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .home-featured-editorial-link:active {
+    transform: none;
+    opacity: 1;
   }
 }
 
