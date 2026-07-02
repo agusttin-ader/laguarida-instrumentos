@@ -5,13 +5,6 @@ import ImageWithSkeleton from './ImageWithSkeleton'
 import imageService from '../lib/utils/imageService'
 
 const MOBILE_CAROUSEL_SIZES = '(max-width:1023px) 100vw, 100vw'
-const SWIPE_COMMIT_PX = 36
-const SLIDE_MS = 300
-const SLIDE_EASE = 'cubic-bezier(0.33, 1, 0.32, 1)'
-
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value))
-}
 
 function displayMain(url) {
   return imageService.forDisplay(url, 'galleryMain') || url
@@ -21,137 +14,71 @@ function displayThumb(url) {
   return imageService.forDisplay(url, 'galleryThumb') || url
 }
 
-function useMobileCarousel(slideCount, imagesKey) {
-  const viewportRef = useRef(null)
+function useNativeScrollCarousel(slideCount, imagesKey) {
+  const scrollerRef = useRef(null)
   const [activeIndex, setActiveIndex] = useState(0)
-  const [isAnimating, setIsAnimating] = useState(false)
-  const [slideWidth, setSlideWidth] = useState(0)
-  const activeIndexRef = useRef(0)
-  const gestureRef = useRef({ startX: 0, startY: 0, startIndex: 0, axis: null })
-  const animTimerRef = useRef(0)
+  const scrollEndTimer = useRef(0)
+  const isProgrammaticScroll = useRef(false)
 
-  const measureWidth = useCallback(() => {
-    const w = viewportRef.current?.clientWidth || 0
-    if (w > 0) setSlideWidth(w)
-    return w
-  }, [])
+  const syncIndexFromScroll = useCallback(() => {
+    const el = scrollerRef.current
+    if (!el || isProgrammaticScroll.current) return
+    const w = el.clientWidth || 1
+    const next = Math.max(0, Math.min(slideCount - 1, Math.round(el.scrollLeft / w)))
+    setActiveIndex((prev) => (prev === next ? prev : next))
+  }, [slideCount])
 
   const goToIndex = useCallback((index) => {
-    const next = clamp(index, 0, Math.max(0, slideCount - 1))
-    measureWidth()
-    window.clearTimeout(animTimerRef.current)
-    activeIndexRef.current = next
+    const el = scrollerRef.current
+    if (!el) return
+    const next = Math.max(0, Math.min(slideCount - 1, index))
+    const w = el.clientWidth || 0
+    if (!w) return
+
+    isProgrammaticScroll.current = true
     setActiveIndex(next)
-    setIsAnimating(true)
-    animTimerRef.current = window.setTimeout(() => setIsAnimating(false), SLIDE_MS)
-  }, [measureWidth, slideCount])
+    el.scrollTo({ left: next * w, behavior: 'smooth' })
+
+    window.clearTimeout(scrollEndTimer.current)
+    scrollEndTimer.current = window.setTimeout(() => {
+      isProgrammaticScroll.current = false
+    }, 400)
+  }, [slideCount])
 
   useEffect(() => {
-    activeIndexRef.current = 0
     setActiveIndex(0)
-    setIsAnimating(false)
-    gestureRef.current.axis = null
-    measureWidth()
-  }, [slideCount, imagesKey, measureWidth])
+    const el = scrollerRef.current
+    if (el) el.scrollLeft = 0
+  }, [slideCount, imagesKey])
 
-  useEffect(() => () => window.clearTimeout(animTimerRef.current), [])
-
-  useEffect(() => {
-    const el = viewportRef.current
-    if (!el) return undefined
-
-    measureWidth()
-    const ro = typeof ResizeObserver !== 'undefined'
-      ? new ResizeObserver(() => measureWidth())
-      : null
-    ro?.observe(el)
-    window.addEventListener('resize', measureWidth)
-
-    return () => {
-      ro?.disconnect()
-      window.removeEventListener('resize', measureWidth)
-    }
-  }, [measureWidth, slideCount, imagesKey])
+  useEffect(() => () => window.clearTimeout(scrollEndTimer.current), [])
 
   useEffect(() => {
-    const el = viewportRef.current
+    const el = scrollerRef.current
     if (!el || slideCount < 2) return undefined
 
-    const onTouchStart = (event) => {
-      window.clearTimeout(animTimerRef.current)
-      setIsAnimating(false)
-      const touch = event.touches[0]
-      gestureRef.current = {
-        startX: touch.clientX,
-        startY: touch.clientY,
-        startIndex: activeIndexRef.current,
-        axis: null,
-      }
+    const onScroll = () => {
+      window.clearTimeout(scrollEndTimer.current)
+      scrollEndTimer.current = window.setTimeout(syncIndexFromScroll, 50)
     }
 
-    const onTouchMove = (event) => {
-      const touch = event.touches[0]
-      const { startX, startY } = gestureRef.current
-      const dx = touch.clientX - startX
-      const dy = touch.clientY - startY
-
-      if (!gestureRef.current.axis && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
-        gestureRef.current.axis = Math.abs(dx) >= Math.abs(dy) ? 'x' : 'y'
-      }
-
-      if (gestureRef.current.axis === 'x') {
-        event.preventDefault()
-        event.stopPropagation()
-      }
-    }
-
-    const onTouchEnd = (event) => {
-      const { startX, startY, startIndex, axis } = gestureRef.current
-      const touch = event.changedTouches[0]
-      const dx = touch.clientX - startX
-      const dy = touch.clientY - startY
-
-      const resolvedAxis = axis
-        || (Math.abs(dx) >= Math.abs(dy) && Math.abs(dx) > 6 ? 'x' : null)
-        || (Math.abs(dy) > 6 ? 'y' : null)
-
-      gestureRef.current.axis = null
-
-      if (resolvedAxis !== 'x' || Math.abs(dx) < SWIPE_COMMIT_PX) return
-
-      if (dx < 0 && startIndex < slideCount - 1) {
-        goToIndex(startIndex + 1)
-      } else if (dx > 0 && startIndex > 0) {
-        goToIndex(startIndex - 1)
-      }
-    }
-
-    el.addEventListener('touchstart', onTouchStart, { passive: true })
-    el.addEventListener('touchmove', onTouchMove, { passive: false })
-    el.addEventListener('touchend', onTouchEnd, { passive: true })
-    el.addEventListener('touchcancel', onTouchEnd, { passive: true })
+    el.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', syncIndexFromScroll)
 
     return () => {
-      el.removeEventListener('touchstart', onTouchStart)
-      el.removeEventListener('touchmove', onTouchMove)
-      el.removeEventListener('touchend', onTouchEnd)
-      el.removeEventListener('touchcancel', onTouchEnd)
+      el.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', syncIndexFromScroll)
+      window.clearTimeout(scrollEndTimer.current)
     }
-  }, [goToIndex, slideCount, imagesKey])
+  }, [slideCount, imagesKey, syncIndexFromScroll])
 
-  const offsetPx = slideWidth > 0 ? activeIndex * slideWidth : 0
-  const trackStyle = {
-    transform: `translate3d(-${offsetPx}px, 0, 0)`,
-    transition: isAnimating ? `transform ${SLIDE_MS}ms ${SLIDE_EASE}` : 'none',
-  }
-
-  return { viewportRef, activeIndex, goToIndex, trackStyle }
+  return { scrollerRef, activeIndex, goToIndex }
 }
 
 /** Galería de producto solo para móvil (< lg). Sin lightbox. */
 export default function ProductGalleryMobile({ allImages, altBase = '', imagesKey }) {
   const mainImage = allImages[0]
-  const { viewportRef, activeIndex, goToIndex, trackStyle } = useMobileCarousel(
+  const { scrollerRef, activeIndex, goToIndex } = useNativeScrollCarousel(
     allImages.length,
     imagesKey
   )
@@ -176,35 +103,33 @@ export default function ProductGalleryMobile({ allImages, altBase = '', imagesKe
         </div>
       ) : (
         <div
-          ref={viewportRef}
+          ref={scrollerRef}
           role="region"
           aria-roledescription="Carrusel"
           aria-label="Fotos del producto. Deslizá horizontalmente para ver más."
-          className="product-gallery-mobile-carousel mx-auto w-full max-w-[min(28rem,calc(100vw-2rem))] touch-pan-x select-none"
+          className="product-gallery-mobile-carousel mx-auto flex w-full max-w-[min(28rem,calc(100vw-2rem))] snap-x snap-mandatory overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          <div className="product-gallery-mobile-carousel__track flex w-full" style={trackStyle}>
-            {allImages.map((src, i) => (
-              <div
-                key={`${src}-${i}`}
-                className="product-gallery-mobile-carousel__slide w-full shrink-0 basis-full"
-                aria-hidden={i !== activeIndex}
-              >
-                <div className="relative h-full w-full overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)]">
-                  <ImageWithSkeleton
-                    src={i === 0 ? displayMain(src) : displayThumb(src)}
-                    alt={altBase ? `${altBase} — imagen ${i + 1}` : `Imagen ${i + 1}`}
-                    fill
-                    imgClassName="object-contain object-center p-1 !opacity-100 transition-none motion-reduce:transition-none"
-                    imgStyle={{ transform: 'none', WebkitBackfaceVisibility: 'visible' }}
-                    sizes={MOBILE_CAROUSEL_SIZES}
-                    quality={i === 0 ? 74 : 62}
-                    priority={Math.abs(i - activeIndex) <= 1}
-                    disableClientPreview
-                  />
-                </div>
+          {allImages.map((src, i) => (
+            <div
+              key={`${src}-${i}`}
+              className="product-gallery-mobile-carousel__slide w-full shrink-0 snap-start snap-always"
+              aria-hidden={i !== activeIndex}
+            >
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)]">
+                <ImageWithSkeleton
+                  src={i === 0 ? displayMain(src) : displayThumb(src)}
+                  alt={altBase ? `${altBase} — imagen ${i + 1}` : `Imagen ${i + 1}`}
+                  fill
+                  imgClassName="object-contain object-center p-1 !opacity-100 transition-none motion-reduce:transition-none"
+                  imgStyle={{ transform: 'none', WebkitBackfaceVisibility: 'visible' }}
+                  sizes={MOBILE_CAROUSEL_SIZES}
+                  quality={i === 0 ? 74 : 62}
+                  priority={Math.abs(i - activeIndex) <= 1}
+                  disableClientPreview
+                />
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       )}
 

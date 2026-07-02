@@ -2127,29 +2127,21 @@ header.site-header-bar.header-scroll-hidden {
   }
 }
 
-/* Galería PDP móvil/tablet (< lg / 1024px): no aplica en desktop */
+/* Galería PDP móvil/tablet (< lg / 1024px): scroll nativo horizontal */
 @media (max-width: 1023px) {
   .product-gallery-mobile-carousel {
     touch-action: pan-x;
-    overscroll-behavior: contain;
-    overflow: hidden;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
-    contain: layout style;
-    aspect-ratio: 4 / 5;
-  }
-
-  .product-gallery-mobile-carousel__track {
-    height: 100%;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    will-change: transform;
+    overscroll-behavior-x: contain;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0;
   }
 
   .product-gallery-mobile-carousel__slide {
-    height: 100%;
-    min-height: 0;
+    min-width: 100%;
+    scroll-snap-stop: always;
+    scroll-snap-align: start;
   }
 
   .product-gallery-mobile-carousel img {
@@ -2162,7 +2154,6 @@ header.site-header-bar.header-scroll-hidden {
   .product-detail-page .product-gallery-mobile-carousel span[style] {
     transform: none !important;
     -webkit-transform: none !important;
-    will-change: auto !important;
   }
 }
 
