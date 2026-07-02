@@ -1886,36 +1886,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     scroll-padding-right: 1rem;
   }
 
-  /* Galería PDP mobile: slide fijo, solo cambia con swipe horizontal */
-  .product-gallery-mobile-carousel {
-    touch-action: pan-x;
-    overscroll-behavior: contain;
-    overflow: hidden;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
-    contain: layout style paint;
-    aspect-ratio: 4 / 5;
-  }
-
-  .product-gallery-mobile-carousel__track {
-    height: 100%;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    will-change: transform;
-  }
-
-  .product-gallery-mobile-carousel__slide {
-    height: 100%;
-    min-height: 0;
-  }
-
-  .product-gallery-mobile-carousel img {
-    pointer-events: none;
-    -webkit-user-drag: none;
-    user-drag: none;
-  }
-
   /* FAQ / contacto: targets táctiles */
   #faq-section aside nav a {
     min-width: 44px;
@@ -2154,6 +2124,45 @@ header.site-header-bar.header-scroll-hidden {
   .home-featured-editorial-block .home-featured-editorial__content {
     margin-top: -0.35rem;
     padding-top: calc(1.5rem + 0.35rem);
+  }
+}
+
+/* Galería PDP móvil/tablet (< lg / 1024px): no aplica en desktop */
+@media (max-width: 1023px) {
+  .product-gallery-mobile-carousel {
+    touch-action: pan-x;
+    overscroll-behavior: contain;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    contain: layout style paint;
+    aspect-ratio: 4 / 5;
+  }
+
+  .product-gallery-mobile-carousel__track {
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    will-change: transform;
+  }
+
+  .product-gallery-mobile-carousel__slide {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .product-gallery-mobile-carousel img {
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-drag: none;
+  }
+
+  .product-detail-page .product-gallery-mobile-carousel img,
+  .product-detail-page .product-gallery-mobile-carousel span[style] {
+    transform: none !important;
+    -webkit-transform: none !important;
+    will-change: auto !important;
   }
 }
 
