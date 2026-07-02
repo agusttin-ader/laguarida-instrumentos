@@ -1,21 +1,21 @@
 "use client"
 
 import { useEffect } from 'react'
-import { shouldReadCatalogFromBackup } from '../lib/catalog/readSource'
 
+/** La tienda pública ya no usa PWA; retiramos SW viejos que pueden romper WebViews (Instagram). */
 export default function ServiceWorkerRegister() {
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    if (isLocalhost || shouldReadCatalogFromBackup()) {
-      navigator.serviceWorker.getRegistrations?.().then(regs => regs.forEach(reg => reg.unregister()))
-      return
-    }
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(() => {})
+    if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return
+
+    navigator.serviceWorker
+      .getRegistrations()
+      .then((regs) => {
+        for (const reg of regs) {
+          const script = reg.active?.scriptURL || reg.installing?.scriptURL || reg.waiting?.scriptURL || ''
+          if (!script.includes('sw-admin.js')) reg.unregister()
+        }
       })
-    }
+      .catch(() => {})
   }, [])
 
   return null
