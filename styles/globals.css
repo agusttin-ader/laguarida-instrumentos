@@ -1742,18 +1742,25 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     scroll-snap-type: x mandatory;
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
-    scroll-behavior: auto;
+    scroll-behavior: smooth;
+    touch-action: pan-x;
     margin-left: calc(var(--mobile-gutter) * -1);
     margin-right: calc(var(--mobile-gutter) * -1);
-    padding-left: var(--mobile-gutter);
-    padding-right: var(--mobile-gutter);
-    scroll-padding-inline: var(--mobile-gutter);
-    gap: var(--mobile-space-md);
+    width: calc(100% + (var(--mobile-gutter) * 2));
+    scroll-padding-inline: 0;
+    gap: 0;
   }
 
   .related-products-scroll__slide {
+    min-width: 100%;
     scroll-snap-stop: always;
     scroll-snap-align: start;
+    display: flex;
+    justify-content: center;
+  }
+
+  .related-products-scroll__card {
+    padding-inline: var(--mobile-gutter);
   }
 
   /* Header móvil interno: barra 100% opaca */
