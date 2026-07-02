@@ -4,6 +4,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import Image from 'next/image'
 
+function CloseIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 export default function GalleryLightbox({
   src,
   alt = 'imagen',
@@ -17,6 +25,7 @@ export default function GalleryLightbox({
   const touchStartX = useRef(null)
   const touchDelta = useRef(0)
   const [mounted, setMounted] = useState(false)
+
   useEffect(() => {
     setMounted(true)
     return () => setMounted(false)
@@ -56,6 +65,8 @@ export default function GalleryLightbox({
   if (!mounted || typeof document === 'undefined') return null
 
   const safeAlt = String(alt || '').replace(/\s+—\s+imagen\s+\d+$/i, '').trim()
+  const closeBtnClass =
+    'no-custom-btn z-[220] flex items-center justify-center rounded-full border border-white/25 bg-black/75 text-white shadow-[0_4px_20px_rgba(0,0,0,0.55)] backdrop-blur-sm transition-transform active:scale-95'
 
   return createPortal(
     <div
@@ -63,20 +74,18 @@ export default function GalleryLightbox({
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
-      className="fixed inset-0 z-[80] flex flex-col bg-black"
+      className="gallery-lightbox fixed inset-0 z-[200] flex flex-col bg-black"
       role="dialog"
       aria-modal="true"
-      aria-label="Vista de imagen"
+      aria-label="Vista de imagen ampliada"
     >
-      {/* Fondo: negro sólido, clic cierra (no-custom-btn evita estilos globales de botón) */}
       <button
         type="button"
         aria-label="Cerrar"
         onClick={onClose}
-        className="no-custom-btn absolute inset-0 z-0 cursor-default bg-transparent border-0"
+        className="no-custom-btn absolute inset-0 z-0 cursor-default border-0 bg-transparent"
       />
 
-      {/* Imagen: 100% del alto, animación al cambiar */}
       <div className="absolute inset-0 z-10 flex items-center justify-center p-2 sm:p-4">
         <div key={src} className="relative h-full w-full max-h-full max-w-full lightbox-image-in">
           <Image
@@ -92,61 +101,70 @@ export default function GalleryLightbox({
         </div>
       </div>
 
-      {/* Cerrar: esquina superior derecha */}
+      {/* X arriba: debajo de la barra de Instagram, bien visible */}
       <button
         type="button"
         aria-label="Cerrar"
         onClick={(e) => { e.stopPropagation(); onClose() }}
-        className="absolute top-3 right-3 sm:top-4 sm:right-4 z-50 size-10 sm:size-11 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/15 text-white no-custom-btn transition-colors active:scale-95"
+        className={`${closeBtnClass} absolute left-3 size-12 sm:left-4 sm:size-12`}
+        style={{ top: 'max(0.75rem, env(safe-area-inset-top, 0px))' }}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <CloseIcon />
       </button>
 
-      {/* Anterior: flecha con expansión al hover */}
       {total > 1 && (
         <button
           type="button"
           aria-label="Imagen anterior"
           onClick={(e) => { e.stopPropagation(); onPrev() }}
-          className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-50 p-2 flex items-center justify-center text-white no-custom-btn transition-[opacity,transform] duration-200 hover:opacity-100 hover:scale-125 opacity-90 active:scale-95 [filter:drop-shadow(0_2px_8px_rgba(0,0,0,0.6))]"
+          className="absolute left-3 sm:left-6 top-1/2 z-[210] flex -translate-y-1/2 items-center justify-center p-2 text-white opacity-90 no-custom-btn transition-[opacity,transform] duration-200 hover:scale-125 hover:opacity-100 active:scale-95 [filter:drop-shadow(0_2px_8px_rgba(0,0,0,0.6))]"
         >
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="sm:w-10 sm:h-10">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="sm:h-10 sm:w-10">
             <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
       )}
 
-      {/* Siguiente: flecha con expansión al hover */}
       {total > 1 && (
         <button
           type="button"
           aria-label="Siguiente imagen"
           onClick={(e) => { e.stopPropagation(); onNext() }}
-          className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-50 p-2 flex items-center justify-center text-white no-custom-btn transition-[opacity,transform] duration-200 hover:opacity-100 hover:scale-125 opacity-90 active:scale-95 [filter:drop-shadow(0_2px_8px_rgba(0,0,0,0.6))]"
+          className="absolute right-3 sm:right-6 top-1/2 z-[210] flex -translate-y-1/2 items-center justify-center p-2 text-white opacity-90 no-custom-btn transition-[opacity,transform] duration-200 hover:scale-125 hover:opacity-100 active:scale-95 [filter:drop-shadow(0_2px_8px_rgba(0,0,0,0.6))]"
         >
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="sm:w-10 sm:h-10">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="sm:h-10 sm:w-10">
             <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
       )}
 
-      {/* Pie: texto y contador encima de la imagen con gradiente para contraste */}
       <div
-        className="absolute bottom-0 left-0 right-0 z-50 flex flex-col items-center gap-2 pt-12 pb-6 sm:pb-8 px-4 bg-gradient-to-t from-black/85 via-black/50 to-transparent"
+        className="absolute bottom-0 left-0 right-0 z-[210] flex flex-col items-center gap-3 bg-gradient-to-t from-black/90 via-black/55 to-transparent px-4 pb-6 pt-14 sm:pb-8"
         style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
       >
         {safeAlt && (
-          <p className="text-center text-xs sm:text-sm text-white/95 line-clamp-2 max-w-xl px-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+          <p className="max-w-xl px-2 text-center text-xs text-white/95 line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] sm:text-sm">
             {safeAlt}
           </p>
         )}
-        {total > 1 && (
-          <span className="text-xs text-white/90 tabular-nums drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-            {currentIndex + 1} / {total}
-          </span>
-        )}
+
+        <div className="flex items-center gap-3">
+          {total > 1 && (
+            <span className="text-xs tabular-nums text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+              {currentIndex + 1} / {total}
+            </span>
+          )}
+
+          <button
+            type="button"
+            aria-label="Cerrar vista ampliada"
+            onClick={(e) => { e.stopPropagation(); onClose() }}
+            className={`${closeBtnClass} h-11 gap-2 px-4 text-sm font-medium`}
+          >
+            <CloseIcon />
+            <span>Cerrar</span>
+          </button>
+        </div>
       </div>
     </div>,
     document.body

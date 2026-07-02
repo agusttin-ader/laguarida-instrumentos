@@ -242,6 +242,18 @@ body.modal-open .admin-desk-top {
   z-index: -1;
 }
 
+/* Lightbox galería: tapar header del sitio y permitir gestos horizontales */
+body.modal-open .site-header-mobile-shell,
+body.modal-open .header-desktop,
+body.modal-open .site-header-bar {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+body.modal-open .gallery-lightbox {
+  touch-action: pan-x pinch-zoom;
+}
+
 /* Mobile: scroll fluido y feedback táctil suave (hasta 767px) */
 @media (max-width: 767px) {
   html {
@@ -595,8 +607,8 @@ body.page-home header.site-header-bar.header-home-mobile:not(.header-scrolled) {
 
 /* Lightbox: animación al cambiar de imagen (más notoria) */
 @keyframes lightbox-image-in {
-  from { opacity: 0; transform: scale(0.92); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0.35; }
+  to { opacity: 1; }
 }
 .lightbox-image-in {
   animation: lightbox-image-in 0.18s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -1854,17 +1866,19 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     scroll-padding-right: 1rem;
   }
 
-  /* Galería PDP mobile: desliz fluido, una foto por gesto */
+  /* Galería PDP mobile: slide con transform (sin scroll-snap) */
   .product-gallery-mobile-carousel {
-    scroll-padding-inline: 0;
-    overscroll-behavior-x: contain;
-    scroll-behavior: auto;
-    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    overscroll-behavior: contain;
+  }
+
+  .product-gallery-mobile-carousel__track {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .product-gallery-mobile-carousel__slide {
-    scroll-snap-stop: always;
-    scroll-snap-align: start;
+    min-height: 0;
   }
 
   /* FAQ / contacto: targets táctiles */
