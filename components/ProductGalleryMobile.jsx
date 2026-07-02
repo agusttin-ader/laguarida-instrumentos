@@ -5,11 +5,9 @@ import ImageWithSkeleton from './ImageWithSkeleton'
 import imageService from '../lib/utils/imageService'
 
 const MOBILE_CAROUSEL_SIZES = '(max-width:1023px) 100vw, 100vw'
-const SWIPE_COMMIT_PX = 48
-const TAP_MAX_PX = 12
+const SWIPE_COMMIT_PX = 36
 const SLIDE_MS = 300
 const SLIDE_EASE = 'cubic-bezier(0.33, 1, 0.32, 1)'
-const AXIS_LOCK_PX = 8
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value))
@@ -27,33 +25,53 @@ function useMobileCarousel(slideCount, imagesKey) {
   const viewportRef = useRef(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
+  const [slideWidth, setSlideWidth] = useState(0)
   const activeIndexRef = useRef(0)
-  const gestureRef = useRef({
-    startX: 0,
-    startY: 0,
-    startIndex: 0,
-    moved: 0,
-    axis: null,
-  })
+  const gestureRef = useRef({ startX: 0, startY: 0, startIndex: 0, axis: null })
   const animTimerRef = useRef(0)
+
+  const measureWidth = useCallback(() => {
+    const w = viewportRef.current?.clientWidth || 0
+    if (w > 0) setSlideWidth(w)
+    return w
+  }, [])
 
   const goToIndex = useCallback((index) => {
     const next = clamp(index, 0, Math.max(0, slideCount - 1))
+    measureWidth()
     window.clearTimeout(animTimerRef.current)
     activeIndexRef.current = next
     setActiveIndex(next)
     setIsAnimating(true)
     animTimerRef.current = window.setTimeout(() => setIsAnimating(false), SLIDE_MS)
-  }, [slideCount])
+  }, [measureWidth, slideCount])
 
   useEffect(() => {
     activeIndexRef.current = 0
     setActiveIndex(0)
     setIsAnimating(false)
     gestureRef.current.axis = null
-  }, [slideCount, imagesKey])
+    measureWidth()
+  }, [slideCount, imagesKey, measureWidth])
 
   useEffect(() => () => window.clearTimeout(animTimerRef.current), [])
+
+  useEffect(() => {
+    const el = viewportRef.current
+    if (!el) return undefined
+
+    measureWidth()
+    const ro = typeof ResizeObserver !== 'undefined'
+      ? new ResizeObserver(() => measureWidth())
+      : null
+    ro?.observe(el)
+    window.addEventListener('resize', measureWidth)
+
+    return () => {
+      ro?.disconnect()
+      window.removeEventListener('resize', measureWidth)
+    }
+  }, [measureWidth, slideCount, imagesKey])
 
   useEffect(() => {
     const el = viewportRef.current
@@ -67,7 +85,6 @@ function useMobileCarousel(slideCount, imagesKey) {
         startX: touch.clientX,
         startY: touch.clientY,
         startIndex: activeIndexRef.current,
-        moved: 0,
         axis: null,
       }
     }
@@ -78,29 +95,29 @@ function useMobileCarousel(slideCount, imagesKey) {
       const dx = touch.clientX - startX
       const dy = touch.clientY - startY
 
-      if (!gestureRef.current.axis && (Math.abs(dx) > AXIS_LOCK_PX || Math.abs(dy) > AXIS_LOCK_PX)) {
+      if (!gestureRef.current.axis && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
         gestureRef.current.axis = Math.abs(dx) >= Math.abs(dy) ? 'x' : 'y'
       }
 
       if (gestureRef.current.axis === 'x') {
-        gestureRef.current.moved = Math.max(gestureRef.current.moved, Math.abs(dx))
         event.preventDefault()
         event.stopPropagation()
       }
     }
 
     const onTouchEnd = (event) => {
-      const { startX, startIndex, moved, axis } = gestureRef.current
+      const { startX, startY, startIndex, axis } = gestureRef.current
       const touch = event.changedTouches[0]
       const dx = touch.clientX - startX
       const dy = touch.clientY - startY
-      const totalMove = Math.max(Math.abs(dx), Math.abs(dy), moved)
+
+      const resolvedAxis = axis
+        || (Math.abs(dx) >= Math.abs(dy) && Math.abs(dx) > 6 ? 'x' : null)
+        || (Math.abs(dy) > 6 ? 'y' : null)
 
       gestureRef.current.axis = null
 
-      if (totalMove <= TAP_MAX_PX) return
-
-      if (axis !== 'x' || Math.abs(dx) < SWIPE_COMMIT_PX) return
+      if (resolvedAxis !== 'x' || Math.abs(dx) < SWIPE_COMMIT_PX) return
 
       if (dx < 0 && startIndex < slideCount - 1) {
         goToIndex(startIndex + 1)
@@ -120,10 +137,11 @@ function useMobileCarousel(slideCount, imagesKey) {
       el.removeEventListener('touchend', onTouchEnd)
       el.removeEventListener('touchcancel', onTouchEnd)
     }
-  }, [goToIndex, slideCount])
+  }, [goToIndex, slideCount, imagesKey])
 
+  const offsetPx = slideWidth > 0 ? activeIndex * slideWidth : 0
   const trackStyle = {
-    transform: `translate3d(-${activeIndex * 100}%, 0, 0)`,
+    transform: `translate3d(-${offsetPx}px, 0, 0)`,
     transition: isAnimating ? `transform ${SLIDE_MS}ms ${SLIDE_EASE}` : 'none',
   }
 

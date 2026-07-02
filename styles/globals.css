@@ -2136,7 +2136,7 @@ header.site-header-bar.header-scroll-hidden {
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
-    contain: layout style paint;
+    contain: layout style;
     aspect-ratio: 4 / 5;
   }
 

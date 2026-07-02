@@ -29,6 +29,7 @@ export default function GalleryLightbox({
   const viewportRef = useRef(null)
   const [mounted, setMounted] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
+  const [slideWidth, setSlideWidth] = useState(0)
   const prevIndexRef = useRef(currentIndex)
   const animTimerRef = useRef(0)
   const skipNextAnimationRef = useRef(true)
@@ -75,6 +76,26 @@ export default function GalleryLightbox({
   }, [currentIndex])
 
   useEffect(() => () => window.clearTimeout(animTimerRef.current), [])
+
+  useEffect(() => {
+    const el = viewportRef.current
+    if (!el) return undefined
+
+    const measure = () => {
+      const w = el.clientWidth || 0
+      if (w > 0) setSlideWidth(w)
+    }
+
+    measure()
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null
+    ro?.observe(el)
+    window.addEventListener('resize', measure)
+
+    return () => {
+      ro?.disconnect()
+      window.removeEventListener('resize', measure)
+    }
+  }, [mounted, slideCount])
 
   useEffect(() => {
     const el = viewportRef.current
@@ -144,7 +165,7 @@ export default function GalleryLightbox({
     'no-custom-btn z-[220] flex items-center justify-center rounded-full border border-white/25 bg-black/75 text-white shadow-[0_4px_20px_rgba(0,0,0,0.55)] backdrop-blur-sm transition-transform active:scale-95'
 
   const trackStyle = {
-    transform: `translate3d(-${currentIndex * 100}%, 0, 0)`,
+    transform: `translate3d(-${currentIndex * slideWidth}px, 0, 0)`,
     transition: isAnimating ? `transform ${SLIDE_MS}ms ${SLIDE_EASE}` : 'none',
   }
 
@@ -209,7 +230,7 @@ export default function GalleryLightbox({
         type="button"
         aria-label="Cerrar"
         onClick={(e) => { e.stopPropagation(); onClose() }}
-        className={`${closeBtnClass} absolute left-3 size-12 sm:left-4 sm:size-12`}
+        className={`${closeBtnClass} absolute right-3 size-12 sm:right-4 sm:size-12`}
         style={{ top: 'max(0.75rem, env(safe-area-inset-top, 0px))' }}
       >
         <CloseIcon />
@@ -251,23 +272,11 @@ export default function GalleryLightbox({
           </p>
         )}
 
-        <div className="flex items-center gap-3">
-          {slideCount > 1 && (
-            <span className="text-xs tabular-nums text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-              {currentIndex + 1} / {slideCount}
-            </span>
-          )}
-
-          <button
-            type="button"
-            aria-label="Cerrar vista ampliada"
-            onClick={(e) => { e.stopPropagation(); onClose() }}
-            className={`${closeBtnClass} h-11 gap-2 px-4 text-sm font-medium`}
-          >
-            <CloseIcon />
-            <span>Cerrar</span>
-          </button>
-        </div>
+        {slideCount > 1 && (
+          <span className="text-xs tabular-nums text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+            {currentIndex + 1} / {slideCount}
+          </span>
+        )}
       </div>
     </div>,
     document.body
