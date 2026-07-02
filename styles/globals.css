@@ -254,6 +254,26 @@ body.modal-open .gallery-lightbox {
   touch-action: pan-x pinch-zoom;
 }
 
+.gallery-lightbox__viewport {
+  touch-action: pan-x;
+  overscroll-behavior: contain;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.gallery-lightbox__track {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
+}
+
+.gallery-lightbox__slide img {
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
 /* Mobile: scroll fluido y feedback táctil suave (hasta 767px) */
 @media (max-width: 767px) {
   html {

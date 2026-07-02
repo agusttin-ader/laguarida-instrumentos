@@ -437,8 +437,8 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
 
       {lightboxOpen && allImages.length > 0 && (
         <GalleryLightbox
-          src={imageService.forDisplay(allImages[lightboxIndex], 'lightbox') || allImages[lightboxIndex]}
-          alt={altBase ? `${altBase} — imagen ${lightboxIndex + 1}` : `Imagen ${lightboxIndex + 1}`}
+          images={allImages.map((url) => imageService.forDisplay(url, 'lightbox') || url)}
+          altBase={altBase}
           currentIndex={lightboxIndex}
           total={allImages.length}
           onClose={() => setLightboxOpen(false)}

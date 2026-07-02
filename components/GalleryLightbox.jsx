@@ -4,6 +4,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import Image from 'next/image'
 
+const SWIPE_COMMIT_PX = 48
+const AXIS_LOCK_PX = 8
+const SLIDE_MS = 300
+const SLIDE_EASE = 'cubic-bezier(0.33, 1, 0.32, 1)'
+
 function CloseIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -13,18 +18,29 @@ function CloseIcon() {
 }
 
 export default function GalleryLightbox({
-  src,
-  alt = 'imagen',
+  images = [],
+  altBase = '',
   currentIndex = 0,
   total = 0,
   onClose = () => {},
   onPrev = () => {},
   onNext = () => {}
 }) {
-  const overlayRef = useRef(null)
-  const touchStartX = useRef(null)
-  const touchDelta = useRef(0)
+  const viewportRef = useRef(null)
   const [mounted, setMounted] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const prevIndexRef = useRef(currentIndex)
+  const animTimerRef = useRef(0)
+  const skipNextAnimationRef = useRef(true)
+  const gestureRef = useRef({
+    startX: 0,
+    startY: 0,
+    moved: 0,
+    axis: null,
+  })
+
+  const slideCount = total || images.length
+  const safeAlt = String(altBase || '').trim()
 
   useEffect(() => {
     setMounted(true)
@@ -45,35 +61,95 @@ export default function GalleryLightbox({
     }
   }, [onClose, onPrev, onNext])
 
-  function onTouchStart(e) {
-    if (!e?.touches) return
-    touchStartX.current = e.touches[0].clientX
-    touchDelta.current = 0
-  }
-  function onTouchMove(e) {
-    if (touchStartX.current == null || !e?.touches) return
-    touchDelta.current = e.touches[0].clientX - touchStartX.current
-  }
-  function onTouchEnd() {
-    const threshold = 50
-    if (touchDelta.current > threshold) onPrev()
-    else if (touchDelta.current < -threshold) onNext()
-    touchStartX.current = null
-    touchDelta.current = 0
-  }
+  useEffect(() => {
+    if (skipNextAnimationRef.current) {
+      skipNextAnimationRef.current = false
+      prevIndexRef.current = currentIndex
+      return
+    }
+    if (prevIndexRef.current === currentIndex) return
+    prevIndexRef.current = currentIndex
+    window.clearTimeout(animTimerRef.current)
+    setIsAnimating(true)
+    animTimerRef.current = window.setTimeout(() => setIsAnimating(false), SLIDE_MS)
+  }, [currentIndex])
+
+  useEffect(() => () => window.clearTimeout(animTimerRef.current), [])
+
+  useEffect(() => {
+    const el = viewportRef.current
+    if (!el || slideCount < 2) return undefined
+
+    const onTouchStart = (event) => {
+      window.clearTimeout(animTimerRef.current)
+      setIsAnimating(false)
+      const touch = event.touches[0]
+      gestureRef.current = {
+        startX: touch.clientX,
+        startY: touch.clientY,
+        moved: 0,
+        axis: null,
+      }
+    }
+
+    const onTouchMove = (event) => {
+      const touch = event.touches[0]
+      const { startX, startY } = gestureRef.current
+      const dx = touch.clientX - startX
+      const dy = touch.clientY - startY
+
+      if (!gestureRef.current.axis && (Math.abs(dx) > AXIS_LOCK_PX || Math.abs(dy) > AXIS_LOCK_PX)) {
+        gestureRef.current.axis = Math.abs(dx) >= Math.abs(dy) ? 'x' : 'y'
+      }
+
+      if (gestureRef.current.axis === 'x') {
+        gestureRef.current.moved = Math.max(gestureRef.current.moved, Math.abs(dx))
+        event.preventDefault()
+        event.stopPropagation()
+      }
+    }
+
+    const onTouchEnd = (event) => {
+      const { startX, moved, axis } = gestureRef.current
+      const touch = event.changedTouches[0]
+      const dx = touch.clientX - startX
+      const dy = touch.clientY - startY
+      const totalMove = Math.max(Math.abs(dx), Math.abs(dy), moved)
+
+      gestureRef.current.axis = null
+
+      if (totalMove <= AXIS_LOCK_PX) return
+      if (axis !== 'x' || Math.abs(dx) < SWIPE_COMMIT_PX) return
+
+      if (dx < 0) onNext()
+      else onPrev()
+    }
+
+    el.addEventListener('touchstart', onTouchStart, { passive: true })
+    el.addEventListener('touchmove', onTouchMove, { passive: false })
+    el.addEventListener('touchend', onTouchEnd, { passive: true })
+    el.addEventListener('touchcancel', onTouchEnd, { passive: true })
+
+    return () => {
+      el.removeEventListener('touchstart', onTouchStart)
+      el.removeEventListener('touchmove', onTouchMove)
+      el.removeEventListener('touchend', onTouchEnd)
+      el.removeEventListener('touchcancel', onTouchEnd)
+    }
+  }, [onNext, onPrev, slideCount])
 
   if (!mounted || typeof document === 'undefined') return null
 
-  const safeAlt = String(alt || '').replace(/\s+—\s+imagen\s+\d+$/i, '').trim()
   const closeBtnClass =
     'no-custom-btn z-[220] flex items-center justify-center rounded-full border border-white/25 bg-black/75 text-white shadow-[0_4px_20px_rgba(0,0,0,0.55)] backdrop-blur-sm transition-transform active:scale-95'
 
+  const trackStyle = {
+    transform: `translate3d(-${currentIndex * 100}%, 0, 0)`,
+    transition: isAnimating ? `transform ${SLIDE_MS}ms ${SLIDE_EASE}` : 'none',
+  }
+
   return createPortal(
     <div
-      ref={overlayRef}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
       className="gallery-lightbox fixed inset-0 z-[200] flex flex-col bg-black"
       role="dialog"
       aria-modal="true"
@@ -87,21 +163,48 @@ export default function GalleryLightbox({
       />
 
       <div className="absolute inset-0 z-10 flex items-center justify-center p-2 sm:p-4">
-        <div key={src} className="relative h-full w-full max-h-full max-w-full lightbox-image-in">
-          <Image
-            src={src}
-            alt={alt}
-            fill
-            sizes="100vw"
-            quality={78}
-            loading="eager"
-            draggable={false}
-            className="object-contain"
-          />
-        </div>
+        {slideCount > 1 ? (
+          <div
+            ref={viewportRef}
+            className="gallery-lightbox__viewport relative h-full w-full max-h-full max-w-full overflow-hidden touch-pan-x select-none"
+          >
+            <div className="gallery-lightbox__track flex h-full w-full" style={trackStyle}>
+              {images.map((imageSrc, i) => (
+                <div
+                  key={`${imageSrc}-${i}`}
+                  className="gallery-lightbox__slide relative h-full w-full shrink-0 basis-full"
+                  aria-hidden={i !== currentIndex}
+                >
+                  <Image
+                    src={imageSrc}
+                    alt={safeAlt ? `${safeAlt} — imagen ${i + 1}` : `Imagen ${i + 1}`}
+                    fill
+                    sizes="100vw"
+                    quality={78}
+                    loading={Math.abs(i - currentIndex) <= 1 ? 'eager' : 'lazy'}
+                    draggable={false}
+                    className="object-contain pointer-events-none"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="relative h-full w-full max-h-full max-w-full">
+            <Image
+              src={images[0]}
+              alt={safeAlt || 'Imagen ampliada'}
+              fill
+              sizes="100vw"
+              quality={78}
+              loading="eager"
+              draggable={false}
+              className="object-contain"
+            />
+          </div>
+        )}
       </div>
 
-      {/* X arriba: debajo de la barra de Instagram, bien visible */}
       <button
         type="button"
         aria-label="Cerrar"
@@ -112,7 +215,7 @@ export default function GalleryLightbox({
         <CloseIcon />
       </button>
 
-      {total > 1 && (
+      {slideCount > 1 && (
         <button
           type="button"
           aria-label="Imagen anterior"
@@ -125,7 +228,7 @@ export default function GalleryLightbox({
         </button>
       )}
 
-      {total > 1 && (
+      {slideCount > 1 && (
         <button
           type="button"
           aria-label="Siguiente imagen"
@@ -149,9 +252,9 @@ export default function GalleryLightbox({
         )}
 
         <div className="flex items-center gap-3">
-          {total > 1 && (
+          {slideCount > 1 && (
             <span className="text-xs tabular-nums text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-              {currentIndex + 1} / {total}
+              {currentIndex + 1} / {slideCount}
             </span>
           )}
 
