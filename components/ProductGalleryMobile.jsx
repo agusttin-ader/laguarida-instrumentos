@@ -86,7 +86,7 @@ export default function ProductGalleryMobile({ allImages, altBase = '', imagesKe
   if (!mainImage) return null
 
   return (
-    <div className="product-gallery-mobile-enter w-full space-y-2.5 lg:hidden">
+    <div className="w-full space-y-2.5 lg:hidden">
       {allImages.length === 1 ? (
         <div className="relative mx-auto aspect-[4/5] w-full max-w-[min(28rem,calc(100vw-2rem))] overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)]">
           <ImageWithSkeleton
@@ -120,7 +120,7 @@ export default function ProductGalleryMobile({ allImages, altBase = '', imagesKe
                   src={i === 0 ? displayMain(src) : displayThumb(src)}
                   alt={altBase ? `${altBase} — imagen ${i + 1}` : `Imagen ${i + 1}`}
                   fill
-                  imgClassName="object-contain object-center p-1 !opacity-100 transition-none motion-reduce:transition-none"
+                  imgClassName="object-contain object-center p-1"
                   imgStyle={{ transform: 'none', WebkitBackfaceVisibility: 'visible' }}
                   sizes={MOBILE_CAROUSEL_SIZES}
                   quality={i === 0 ? 74 : 62}

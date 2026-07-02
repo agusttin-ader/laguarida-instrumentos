@@ -50,7 +50,7 @@ export default function FavoritosPage() {
         </div>
       ) : (
         <div
-          className={`product-grid--mobile-enter grid grid-cols-1 gap-5 max-md:gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3${softGridEnter ? ' product-grid--slow-enter' : ''}`}
+          className={`grid grid-cols-1 gap-5 max-md:gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3${softGridEnter ? ' product-grid--slow-enter' : ''}`}
         >
           {products.map((item, idx) => (
             <div

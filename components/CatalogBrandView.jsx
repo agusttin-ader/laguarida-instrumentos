@@ -195,12 +195,11 @@ export default function CatalogBrandView({ brand, products, loading }) {
                     </p>
                   </div>
 
-                  <div className="product-grid--mobile-enter grid w-full min-w-0 auto-rows-fr grid-cols-1 items-stretch gap-5 max-[767px]:gap-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
+                  <div className="grid w-full min-w-0 auto-rows-fr grid-cols-1 items-stretch gap-5 max-[767px]:gap-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
                     {activeGroup.products.map((item, idx) => (
                       <div
                         key={item.slug || item.id || idx}
                         className="home-grid-product-cell flex h-full min-w-0 w-full [content-visibility:auto] [contain-intrinsic-size:auto_28rem]"
-                        style={{ '--grid-cell-i': idx }}
                       >
                         <ProductCard item={item} priority={idx < 2} maxGalleryImages={1} />
                       </div>

@@ -455,7 +455,7 @@ html, body, #__next, #root, main {
   animation: filter-grid-soft-refresh 200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Grid de productos: entrada escalonada en móvil (catálogo, favoritos, marcas) */
+/* Grid de productos: entrada suave solo cuando la carga fue lenta (ver favoritos + hook) */
 @keyframes product-grid-cell-soft-in {
   from {
     opacity: 0;
@@ -467,7 +467,6 @@ html, body, #__next, #root, main {
   }
 }
 @media (min-width: 768px) {
-  .product-grid--mobile-enter .home-grid-product-cell,
   .product-grid--slow-enter .home-grid-product-cell {
     animation: none !important;
     opacity: 1 !important;
@@ -475,7 +474,6 @@ html, body, #__next, #root, main {
   }
 }
 @media (max-width: 767px) {
-  .product-grid--mobile-enter .home-grid-product-cell,
   .product-grid--slow-enter .home-grid-product-cell {
     animation: product-grid-cell-soft-in 0.4s cubic-bezier(0.32, 0.72, 0, 1) both;
     animation-delay: calc(min(var(--grid-cell-i, 0), 10) * 44ms);
@@ -484,7 +482,6 @@ html, body, #__next, #root, main {
   .search-pill .search-input { width: 100%; min-width: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .product-grid--mobile-enter .home-grid-product-cell,
   .product-grid--slow-enter .home-grid-product-cell {
     animation: none !important;
     opacity: 1 !important;
@@ -1225,12 +1222,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 
   .catalog-page .catalog-mobile-brands {
     margin-bottom: var(--mobile-space-lg) !important;
-  }
-
-  .img-reveal {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
   }
 
   .product-detail-page .product-detail-kicker {
@@ -2131,24 +2122,8 @@ header.site-header-bar.header-scroll-hidden {
   }
 }
 
-/* Galería PDP móvil: entrada suave al cargar la ficha */
-@keyframes product-gallery-mobile-enter {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
 /* Galería PDP móvil/tablet (< lg / 1024px): scroll nativo horizontal */
 @media (max-width: 1023px) {
-  .product-gallery-mobile-enter {
-    animation: product-gallery-mobile-enter 0.42s cubic-bezier(0.32, 0.72, 0, 1) both;
-  }
-
   .product-gallery-mobile-carousel {
     touch-action: pan-x;
     overscroll-behavior-x: contain;
@@ -2174,14 +2149,6 @@ header.site-header-bar.header-scroll-hidden {
   .product-detail-page .product-gallery-mobile-carousel span[style] {
     transform: none !important;
     -webkit-transform: none !important;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .product-gallery-mobile-enter {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
   }
 }
 

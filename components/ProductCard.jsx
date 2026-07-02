@@ -7,6 +7,7 @@ import imageService from '../lib/utils/imageService'
 import Link from 'next/link'
 import { useFavorites } from './ProductShareAndFavorite'
 import { useToast } from './ToastContext'
+import { usePremiumImageFade } from '../hooks/usePremiumImageFade'
 
 const CARD_IMAGE_SIZES =
   '(max-width: 767px) 92vw, (max-width: 1023px) 46vw, (max-width: 1535px) 31vw, (max-width: 1919px) 28vw, 24vw'
@@ -18,6 +19,47 @@ const MOBILE_ONLY_QUERY = '(max-width: 767px)'
 function getInitialMediaMatch(query) {
   if (typeof window === 'undefined') return false
   return window.matchMedia(query).matches
+}
+
+function ProductCardImage({
+  src,
+  alt,
+  priority = false,
+  eager = false,
+  fitClassName = '',
+  style,
+  onReady,
+}) {
+  const { loaded, onImageLoad, opacityClass, transitionClass } = usePremiumImageFade(src)
+
+  const handleLoad = useCallback(() => {
+    onImageLoad()
+    onReady?.()
+  }, [onImageLoad, onReady])
+
+  return (
+    <>
+      {!loaded ? (
+        <div className="absolute inset-0 z-0 bg-[var(--dark-surface-2)]" aria-hidden />
+      ) : null}
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes={CARD_IMAGE_SIZES}
+        quality={65}
+        unoptimized={imageService.shouldBypassNextOptimization(src)}
+        priority={priority}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchPriority={eager ? 'high' : 'low'}
+        decoding="async"
+        onLoad={handleLoad}
+        onError={() => {}}
+        className={`${opacityClass} ${transitionClass} ${fitClassName}`}
+        style={style}
+      />
+    </>
+  )
 }
 
 const ProductCard = React.memo(function ProductCard({
@@ -63,7 +105,6 @@ const ProductCard = React.memo(function ProductCard({
   }, [p.images, p.image_url, effectivePrimaryOnly, maxGalleryImages])
 
   const [galleryIndex, setGalleryIndex] = useState(0)
-  const [imageLoaded, setImageLoaded] = useState(false)
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const touchStartTime = useRef(0)
@@ -83,24 +124,10 @@ const ProductCard = React.memo(function ProductCard({
   const { isFavorite, toggle } = useFavorites()
   const fav = isFavorite(p.slug)
   const primarySrc = imageList[0]
-  const useRevealFade = priority
-
-  const handleImageReady = useCallback(() => {
-    setImageLoaded(true)
-  }, [])
-
-  function cardImageClassName(isActive = true) {
-    const reveal = useRevealFade ? 'img-reveal' : ''
-    const loaded = useRevealFade && imageLoaded && isActive ? 'img-loaded' : ''
-    return [
-      reveal,
-      loaded,
-      'max-[767px]:object-contain max-[767px]:object-center',
-      objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover',
-    ]
-      .filter(Boolean)
-      .join(' ')
-  }
+  const imageFitClassName = [
+    'max-[767px]:object-contain max-[767px]:object-center',
+    objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover',
+  ].join(' ')
 
   function goToIndex(nextIndex) {
     setGalleryIndex(() => Math.max(0, Math.min(imageList.length - 1, nextIndex)))
@@ -108,7 +135,6 @@ const ProductCard = React.memo(function ProductCard({
 
   useEffect(() => {
     setGalleryIndex((i) => Math.max(0, Math.min(i, Math.max(0, imageList.length - 1))))
-    setImageLoaded(false)
   }, [imageList.length, primarySrc])
 
   function handleTouchStart(e) {
@@ -172,27 +198,13 @@ const ProductCard = React.memo(function ProductCard({
     >
       {primarySrc ? (
         <>
-          {useRevealFade && !imageLoaded ? (
-            <div
-              className="absolute inset-0 z-0 bg-[var(--dark-surface-2)]"
-              aria-hidden
-            />
-          ) : null}
           {catalogSingleImage ? (
-            <Image
+            <ProductCardImage
               src={primarySrc}
               alt={titleText || 'Imagen del producto'}
-              fill
-              sizes={CARD_IMAGE_SIZES}
-              quality={65}
-              unoptimized={imageService.shouldBypassNextOptimization(primarySrc)}
               priority={priority}
-              loading={priority ? 'eager' : 'lazy'}
-              fetchPriority={priority ? 'high' : 'low'}
-              decoding="async"
-              onLoad={handleImageReady}
-              onError={() => {}}
-              className={cardImageClassName()}
+              eager={priority}
+              fitClassName={imageFitClassName}
               style={{ objectPosition: 'center' }}
             />
           ) : (
@@ -211,22 +223,12 @@ const ProductCard = React.memo(function ProductCard({
                     zIndex: isActive ? 1 : 0,
                   }}
                 >
-                  <Image
+                  <ProductCardImage
                     src={src}
                     alt={idx === 0 ? (titleText || 'Imagen del producto') : `Imagen ${idx + 1} de ${titleText || 'producto'}`}
-                    fill
-                    sizes={CARD_IMAGE_SIZES}
-                    quality={65}
-                    unoptimized={imageService.shouldBypassNextOptimization(src)}
                     priority={Boolean(priority && isMainSlot && isActive)}
-                    loading={eager ? 'eager' : 'lazy'}
-                    fetchPriority={eager ? 'high' : 'low'}
-                    decoding="async"
-                    onLoad={() => {
-                      if (isActive) handleImageReady()
-                    }}
-                    onError={() => {}}
-                    className={cardImageClassName(isActive)}
+                    eager={eager}
+                    fitClassName={imageFitClassName}
                     style={{ objectPosition: 'center' }}
                   />
                 </div>
