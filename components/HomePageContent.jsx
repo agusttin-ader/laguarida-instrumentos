@@ -30,7 +30,7 @@ export default function HomePageContent({ heroSlides = [], featuredProducts = []
       </section>
 
       <div
-        className={`${layoutShellClassName} px-4 sm:px-5 md:px-8 lg:px-10 pt-0 pb-4 sm:pb-6 md:pb-8 min-[1920px]:px-12 min-[2560px]:px-14 max-[767px]:pb-3`}
+        className={`${layoutShellClassName} px-4 sm:px-5 md:px-8 lg:px-10 pt-0 pb-4 sm:pb-6 md:pb-8 min-[1920px]:px-12 min-[2560px]:px-14 max-[767px]:pb-0`}
       >
         <p className="sr-only">
           La Guarida es una tienda especializada en guitarras, bajos y accesorios. Ofrecemos instrumentos

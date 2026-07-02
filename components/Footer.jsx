@@ -16,7 +16,7 @@ export default function Footer({ compact = false }){
   const footerTop = compact
     ? 'mt-0'
     : isHome
-      ? 'mt-1 md:mt-8'
+      ? 'mt-0 md:mt-8'
       : isProductPage
         ? 'mt-3 md:mt-10'
         : 'mt-8 md:mt-12'
@@ -26,7 +26,7 @@ export default function Footer({ compact = false }){
     : isProductPage
       ? 'py-4 sm:py-7'
       : isHome
-        ? 'py-4 sm:py-8'
+        ? 'py-3 max-md:pt-2 max-md:pb-4 sm:py-8'
         : 'py-6 sm:py-8'
 
   const socialBtnClass = compact

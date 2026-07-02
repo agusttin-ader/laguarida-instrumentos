@@ -192,7 +192,7 @@ export default function Header() {
         ref={mobileHeaderRef}
         id={isHome ? 'header-home-mobile-overlay' : undefined}
         aria-label="Cabecera"
-        className={`header-mobile site-header-bar md:hidden flex items-center justify-between gap-2.5 min-h-[58px] py-2.5 px-4 left-0 right-0 top-0 ${isHome ? 'header-home-mobile' : 'header-mobile-internal'} ${isProductPage ? 'header-mobile-product' : ''} ${scrolled ? 'header-scrolled' : ''}`}
+        className={`header-mobile site-header-bar md:hidden flex items-center justify-between gap-3 min-h-[64px] py-3 px-4 left-0 right-0 top-0 ${isHome ? 'header-home-mobile' : 'header-mobile-internal'} ${isProductPage ? 'header-mobile-product' : ''} ${scrolled ? 'header-scrolled' : ''}`}
       >
         <div className="relative flex min-w-0 flex-1 items-center justify-start">
           <a
@@ -210,7 +210,7 @@ export default function Header() {
                 height={194}
                 decoding="async"
                 fetchPriority={isHome && !isDesktopHeader ? 'high' : 'low'}
-                className="logo-dark h-[38px] w-auto max-h-[40px] max-w-[min(260px,calc(100vw-4.5rem))] object-contain object-left block bg-transparent"
+                className="logo-dark h-[44px] w-auto max-h-[46px] max-w-[min(260px,calc(100vw-4.5rem))] object-contain object-left block bg-transparent"
               />
             </span>
           </a>

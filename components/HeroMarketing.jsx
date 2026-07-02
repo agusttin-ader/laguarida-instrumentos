@@ -62,7 +62,7 @@ export default function HeroMarketing({ slides = [] }) {
       </div>
 
       <div
-        className={`${layoutShellClassName} relative mx-auto flex max-md:min-h-[min(88dvh,680px)] sm:min-h-[min(84vh,880px)] w-full max-md:items-end md:items-center px-4 max-md:pb-8 max-md:pt-[max(4.25rem,calc(3.25rem+env(safe-area-inset-top)))] pb-14 pt-[max(5.75rem,calc(4.5rem+env(safe-area-inset-top)))] sm:px-5 sm:pb-16 md:px-8 md:pt-[5.75rem] lg:px-10 min-[1920px]:px-12`}
+        className={`${layoutShellClassName} relative mx-auto flex max-md:min-h-[min(88dvh,680px)] sm:min-h-[min(84vh,880px)] w-full max-md:items-end md:items-center px-4 max-md:pb-8 max-md:pt-[max(4.75rem,calc(4rem+env(safe-area-inset-top)))] pb-14 pt-[max(5.75rem,calc(4.5rem+env(safe-area-inset-top)))] sm:px-5 sm:pb-16 md:px-8 md:pt-[5.75rem] lg:px-10 min-[1920px]:px-12`}
       >
         <div className="w-full max-w-xl lg:max-w-2xl">
           <p className="mb-2.5 max-md:mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--palette-gold)] md:text-xs">

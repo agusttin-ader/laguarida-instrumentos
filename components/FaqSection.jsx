@@ -65,7 +65,7 @@ export default function FaqSection() {
       aria-labelledby="faq-heading"
     >
       <div
-        className={`${layoutShellClassName} sm:px-5 md:px-6 lg:px-8 pt-2 max-md:pt-1 sm:pt-5 md:pt-7 lg:pt-8 pb-3 max-md:pb-2 sm:pb-6 md:pb-7 lg:pb-8`}
+        className={`${layoutShellClassName} sm:px-5 md:px-6 lg:px-8 pt-2 max-md:pt-1 sm:pt-5 md:pt-7 lg:pt-8 pb-2 max-md:pb-0 sm:pb-6 md:pb-7 lg:pb-8`}
       >
           <p className="section-kicker-minimal section-underline-ocre text-gray-700 dark:text-white/70 mb-2 sm:mb-3">Preguntas frecuentes</p>
           <h2 id="faq-heading" className="section-title-minimal text-[var(--dark-text-primary)] text-2xl sm:text-3xl md:text-[2.5rem] mb-3 sm:mb-6 md:mb-8">
@@ -169,7 +169,7 @@ export default function FaqSection() {
             </nav>
           </aside>
           </div>
-          <div className="mt-4 sm:mt-5 md:mt-6 flex justify-center">
+          <div className="mt-3 sm:mt-5 md:mt-6 flex justify-center">
             <Link
               href="/"
               onClick={handleVolverAlHome}

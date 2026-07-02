@@ -16,7 +16,7 @@ function HeaderLoading() {
     <>
       {!isHome ? (
         <div
-          className="site-header-mobile-shell md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[58px] border-b border-[rgba(var(--palette-gold-rgb),0.32)] bg-[var(--dark-bg-card)] pointer-events-none"
+          className="site-header-mobile-shell md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[64px] border-b border-[rgba(var(--palette-gold-rgb),0.32)] bg-[var(--dark-bg-card)] pointer-events-none"
           aria-hidden
         />
       ) : null}
@@ -111,6 +111,12 @@ export default function SiteShell({ children }) {
     return () => window.removeEventListener('hashchange', onHashChange)
   }, [pathname])
 
+  const mainMobileBottomPad = isGuitarProductPage
+    ? 'max-md:pb-[max(4.5rem,calc(3.5rem+env(safe-area-inset-bottom)))]'
+    : isHome
+      ? 'max-md:pb-0'
+      : 'max-md:pb-[max(5.25rem,calc(4.25rem+env(safe-area-inset-bottom)))]'
+
   return (
     <>
       {!isAdmin ? (
@@ -119,7 +125,7 @@ export default function SiteShell({ children }) {
           <PullToRefresh onRefresh={handleRefresh}>
             <main
               key={pathname}
-              className={`min-h-0 w-full min-w-0 max-md:overflow-x-clip pb-[max(1rem,env(safe-area-inset-bottom,0px))] ${isGuitarProductPage ? 'max-md:pb-[max(4.5rem,calc(3.5rem+env(safe-area-inset-bottom)))]' : 'max-md:pb-[max(5.25rem,calc(4.25rem+env(safe-area-inset-bottom)))]'} md:pb-0 ${mainTopPad}`}
+              className={`min-h-0 w-full min-w-0 max-md:overflow-x-clip pb-[max(1rem,env(safe-area-inset-bottom,0px))] ${mainMobileBottomPad} md:pb-0 ${mainTopPad}`}
             >
               {children}
             </main>
