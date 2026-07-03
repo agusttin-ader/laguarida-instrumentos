@@ -19,11 +19,9 @@ export default function About({ compactTop = false }) {
               Guitarras e instrumentos seleccionados, con trato cercano y asesoramiento real para quienes buscan un sonido propio.
             </p>
 
-            <div className="rounded-xl border border-[var(--dark-border)] bg-white/[0.03] px-4 sm:px-5 py-3 sm:py-4 mb-5 md:mb-6">
-              <p className="text-base sm:text-[15px] italic text-[var(--dark-text-secondary)] leading-relaxed">
-                Hecho por un músico, para músicos.
-              </p>
-            </div>
+            <p className="mb-5 max-w-3xl text-base italic leading-relaxed text-[var(--dark-text-secondary)] sm:text-[15px] md:mb-6">
+              Hecho por un músico, para músicos.
+            </p>
 
             <div className="prose prose-sm max-w-none text-base text-gray-200 md:hidden [&>p]:mb-0 [&>p]:leading-relaxed [&>p]:text-base">
               <p>

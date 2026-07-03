@@ -85,7 +85,7 @@ export default function HeroMarketing({ slides = [] }) {
               href="#seleccion-destacada"
               className="no-custom-btn inline-flex min-h-[48px] items-center justify-center rounded-full bg-[var(--dark-cta-bg)] px-5 max-md:px-5 py-2.5 text-sm font-semibold text-[var(--dark-cta-text)] shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-[transform,opacity] duration-250 hover:scale-[1.02] active:scale-[0.98]"
             >
-              Ver destacados
+              Ver novedades
             </Link>
             <Link
               href="/catalogo"

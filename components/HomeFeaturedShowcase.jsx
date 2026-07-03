@@ -150,7 +150,7 @@ export default function HomeFeaturedShowcase({ items = [], loading = false }) {
   if (!picks.length) {
     return (
       <p className="mx-auto max-w-3xl px-5 py-8 text-center text-sm text-[var(--dark-muted)]">
-        Pronto vas a ver acá nuestra selección destacada.
+        Pronto vas a ver acá nuestras novedades del local.
       </p>
     )
   }
