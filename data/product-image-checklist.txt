@@ -1,3 +1,18 @@
+[guitarra-stratocaster-rgx-st-570]
+  public/images/products/guitarra-stratocaster-rgx-st-570/1783200306669-902e13ce1b45-8dc9702f-c75f-43df-a9c7-8057fe986f1b.jpg
+  public/images/products/guitarra-stratocaster-rgx-st-570/1783200432088-16e7c6153f76-14cedc78-c832-450c-bf75-67463bfc929c.jpg
+  public/images/products/guitarra-stratocaster-rgx-st-570/1783200435436-2f025a51cc5e-a89b105d-12f6-48db-9d68-52aab9d9341a.jpg
+  public/images/products/guitarra-stratocaster-rgx-st-570/1783200439051-d8dddca08fd9-c9c02be5-4b79-48a3-a0c1-41e9b9e03118.jpg
+  public/images/products/guitarra-stratocaster-rgx-st-570/1783200441928-8cccfe2ab4e7-13c14f08-b8d9-481b-868f-ce02f53c48dc.jpg
+  public/images/products/guitarra-stratocaster-rgx-st-570/1783200444530-4a27e6639340-748bdf6a-b11b-4840-9ecb-a1e012b5d357.jpg
+  public/images/products/guitarra-stratocaster-rgx-st-570/1783200447585-f3ed77d9927b-eca4ee29-0e6b-4aff-a988-92d162850047.jpg
+  public/images/products/guitarra-stratocaster-rgx-st-570/1783200451090-bd41f8438d68-9dde906d-6b03-49c2-a2d1-7757df70e84b.jpg
+  public/images/products/guitarra-stratocaster-rgx-st-570/1783200454070-69bb6df12b4e-94f9a8a4-b948-4591-9880-80731d7ce9b6.jpg
+  public/images/products/guitarra-stratocaster-rgx-st-570/1783200457338-9a0429e762c6-cc06f35b-33e0-4401-97d9-cc6ea280267d.jpg
+  public/images/products/guitarra-stratocaster-rgx-st-570/1783200460357-69ce5fd186ca-b6634f71-1a38-480f-8054-74806cff8d64.jpg
+  public/images/products/guitarra-stratocaster-rgx-st-570/1783200463658-6bdb5305ec09-4d563748-6516-4a3d-9584-0ca1474d74f7.jpg
+  public/images/products/guitarra-stratocaster-rgx-st-570/1783200466990-d409a05dc406-40299c3a-28b5-4f65-8a02-3551a736f060.jpg
+
 [epiphone-les-paul-custom-pro-2012]
   public/images/products/epiphone-les-paul-custom-pro-2012/1782529985456-08cd17d1af33-WhatsApp-Image-2026-06-26-at-20.03.01--3-.jpg
   public/images/products/epiphone-les-paul-custom-pro-2012/1782530012861-94e0aa902d65-WhatsApp-Image-2026-06-26-at-20.03.00--1-.jpg
@@ -39,20 +54,6 @@
   public/images/products/gibson-sg-standard-2011/1780602904476-8f41a2d3092d-dccb52f8-1bdd-4f89-8caf-c9687d7ee23b.jpg
   public/images/products/gibson-sg-standard-2011/1780602907418-3104ce3eaf1a-c768ddb1-51b2-4aed-bb23-504c651494e0.jpg
   public/images/products/gibson-sg-standard-2011/1780602911365-0796e87a2da8-4441c2cd-1852-4a9e-b6f2-6e3d9a5e4120.jpg
-
-[fender-stratocaster-player-ii]
-  public/images/products/fender-stratocaster-player-ii/1780530684241-8babf1c7aaf4-IMG_5643.jpg
-  public/images/products/fender-stratocaster-player-ii/1780530715831-8babf1c7aaf4-IMG_5643.jpg
-  public/images/products/fender-stratocaster-player-ii/1780530719811-1183213cc164-IMG_5646.jpg
-  public/images/products/fender-stratocaster-player-ii/1780530723454-69e87d0c46e7-IMG_5645.jpg
-  public/images/products/fender-stratocaster-player-ii/1780530726937-fe8d15ce24df-IMG_5648.jpg
-  public/images/products/fender-stratocaster-player-ii/1780530731684-ec9fb7f5d451-IMG_5652.jpg
-  public/images/products/fender-stratocaster-player-ii/1780530734594-d1373d367201-IMG_5655.jpg
-  public/images/products/fender-stratocaster-player-ii/1780530737968-bbdbb383cd3b-IMG_5657.jpg
-  public/images/products/fender-stratocaster-player-ii/1780530741200-4aed633c11f4-IMG_5658.jpg
-  public/images/products/fender-stratocaster-player-ii/1780530744902-82cf7af103a1-IMG_5661.jpg
-  public/images/products/fender-stratocaster-player-ii/1780530747901-659a232eb667-IMG_5667.jpg
-  public/images/products/fender-stratocaster-player-ii/1780530751756-986138689bb9-IMG_5673.jpg
 
 [taylor-214-ce]
   public/images/products/taylor-214-ce/1778453572699-7390-15d08dc2-2a8d-46f3-b3a3-761b78a9f3e9.jpeg

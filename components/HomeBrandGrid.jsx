@@ -68,7 +68,7 @@ export default function HomeBrandGrid() {
           Elegí por marca
         </h2>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-[var(--dark-muted)] sm:text-[15px]">
-          Fender, Gibson, PRS, Ibanez, Taylor y más. Entrá directo al stock de cada fabricante.
+          Fender, Gibson, Paul Reed Smith, Ibanez y más. Entrá directo al stock de cada fabricante.
         </p>
       </header>
 

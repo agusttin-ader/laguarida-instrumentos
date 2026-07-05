@@ -140,15 +140,15 @@ export default function CatalogPageContent() {
                 {index > 0 ? <CatalogSidebarDivider /> : null}
                 <Link
                   href={getHomeBrandCatalogLink(brand)}
-                  className="no-custom-btn block w-full border-l-2 border-transparent py-4 pl-5 pr-2 transition-colors hover:border-[rgba(var(--palette-gold-rgb),0.45)] hover:bg-white/[0.03]"
+                  className="no-custom-btn block w-full border-l-2 border-transparent py-3 pl-5 pr-2 transition-colors hover:border-[rgba(var(--palette-gold-rgb),0.45)] hover:bg-white/[0.03]"
                 >
                   <p className="font-display text-base font-semibold tracking-tight text-[var(--dark-text-primary)]">
                     {brand.name}
                   </p>
-                  <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.16em] text-[var(--dark-muted)]">
+                  <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.15em] text-[var(--dark-muted)]">
                     {brand.kicker}
                   </p>
-                  <p className="mt-2 text-xs text-[var(--dark-muted)]">
+                  <p className="mt-1.5 text-xs text-[var(--dark-muted)]">
                     {brand.count} {brand.count === 1 ? 'instrumento' : 'instrumentos'}
                   </p>
                 </Link>

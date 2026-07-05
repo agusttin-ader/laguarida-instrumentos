@@ -2141,22 +2141,18 @@ header.site-header-bar.header-scroll-hidden {
 .catalog-sidebar-sticky {
   position: -webkit-sticky;
   position: sticky;
-  top: calc(var(--site-header-h, 68px) + 1rem);
+  top: calc(var(--site-header-h, 68px) + 0.5rem);
   align-self: start;
-  max-height: calc(100dvh - var(--site-header-h, 68px) - 2rem);
+  max-height: calc(100dvh - var(--site-header-h, 68px) - 1rem);
   overflow-y: auto;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   z-index: 2;
 }
 
 .catalog-sidebar-sticky::-webkit-scrollbar {
-  width: 4px;
-}
-
-.catalog-sidebar-sticky::-webkit-scrollbar-thumb {
-  background: rgba(var(--palette-gold-rgb), 0.25);
-  border-radius: 9999px;
+  display: none;
 }
 
 /* Home — showcase editorial: corte diagonal imagen / texto */

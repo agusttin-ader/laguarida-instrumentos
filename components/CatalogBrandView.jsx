@@ -7,6 +7,7 @@ import CatalogSidebarDivider from './CatalogSidebarDivider'
 import ProductCard from './ProductCard'
 import {
   buildBrandModelGroups,
+  getModelEmptyStockMessage,
 } from '../lib/catalog/catalogTaxonomy'
 
 function SidebarModelItem({ group, active, onSelect }) {
@@ -14,21 +15,21 @@ function SidebarModelItem({ group, active, onSelect }) {
     <button
       type="button"
       onClick={() => onSelect(group.id)}
-      className={`no-custom-btn w-full border-l-2 py-4 pl-5 pr-2 text-left transition-colors ${
+      className={`no-custom-btn w-full border-l-2 py-3 pl-5 pr-2 text-left transition-colors ${
         active
           ? 'border-[rgba(var(--palette-gold-rgb),0.65)] bg-white/[0.04]'
           : 'border-transparent hover:border-[rgba(var(--palette-gold-rgb),0.28)] hover:bg-white/[0.02]'
       }`}
     >
-      <p className="font-display text-base font-semibold tracking-tight text-[var(--dark-text-primary)] sm:text-lg">
+      <p className="font-display text-base font-semibold tracking-tight text-[var(--dark-text-primary)]">
         {group.label}
       </p>
       {group.subtitle ? (
-        <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.16em] text-[var(--dark-muted)]">
+        <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.15em] text-[var(--dark-muted)]">
           {group.subtitle}
         </p>
       ) : null}
-      <p className="mt-2 text-xs text-[var(--dark-muted)]">
+      <p className={`mt-1.5 text-xs ${group.count === 0 ? 'text-[var(--dark-muted)]/70' : 'text-[var(--dark-muted)]'}`}>
         {group.count} {group.count === 1 ? 'instrumento' : 'instrumentos'}
       </p>
     </button>
@@ -39,6 +40,8 @@ export default function CatalogBrandView({ brand, products, loading }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const modeloParam = searchParams.get('modelo')
+
+  const isOtrosBrand = brand.id === 'otros'
 
   const modelGroups = useMemo(
     () => buildBrandModelGroups(products, brand),
@@ -110,7 +113,9 @@ export default function CatalogBrandView({ brand, products, loading }) {
           {brand.name}
         </h1>
         <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[var(--dark-muted)] sm:text-base">
-          Elegí el modelo en la columna izquierda y explorá las unidades disponibles en stock.
+          {isOtrosBrand
+            ? 'Instrumentos fuera de las marcas principales. Elegí el tipo en la columna izquierda.'
+            : 'Elegí el modelo en la columna izquierda y explorá las unidades disponibles en stock.'}
         </p>
       </header>
 
@@ -191,10 +196,22 @@ export default function CatalogBrandView({ brand, products, loading }) {
                       </p>
                     ) : null}
                     <p className="mt-2 text-sm text-[var(--dark-muted)]">
-                      {activeGroup.count} {activeGroup.count === 1 ? 'unidad' : 'unidades'} en stock
+                      {activeGroup.count > 0
+                        ? `${activeGroup.count} ${activeGroup.count === 1 ? 'unidad' : 'unidades'} en stock`
+                        : 'Sin stock por ahora'}
                     </p>
                   </div>
 
+                  {activeGroup.count === 0 ? (
+                    <div className="rounded-2xl border border-[var(--dark-border)] bg-[var(--dark-bg-card)] px-6 py-10 text-center sm:px-8">
+                      <p className="text-base font-medium text-[var(--dark-text-primary)]">
+                        {getModelEmptyStockMessage(activeGroup.label)}
+                      </p>
+                      <p className="mt-2 text-sm text-[var(--dark-muted)]">
+                        Cuando ingrese stock, lo vas a ver acá.
+                      </p>
+                    </div>
+                  ) : (
                   <div className="product-grid--enter grid w-full min-w-0 auto-rows-fr grid-cols-1 items-stretch gap-5 max-[767px]:gap-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
                     {activeGroup.products.map((item, idx) => (
                       <div
@@ -206,6 +223,7 @@ export default function CatalogBrandView({ brand, products, loading }) {
                       </div>
                     ))}
                   </div>
+                  )}
                 </>
               ) : null}
             </div>
