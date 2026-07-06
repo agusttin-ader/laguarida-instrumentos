@@ -1248,10 +1248,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     min-height: 2.5rem;
   }
 
-  .catalog-page .grid:has(.home-grid-product-cell) {
-    row-gap: var(--mobile-space-xl);
-  }
-
   .catalog-page header.mb-6 {
     margin-bottom: var(--mobile-space-md) !important;
   }
@@ -2058,16 +2054,6 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   .product-detail-page .product-detail-breadcrumb {
     font-size: 0.75rem;
     line-height: 1.4;
-  }
-
-  /* WhatsApp FAB: zona pulgar */
-  .whatsapp-float-fab {
-    bottom: max(1rem, calc(0.65rem + env(safe-area-inset-bottom, 0px))) !important;
-    right: max(0.875rem, env(safe-area-inset-right)) !important;
-    width: 3.25rem !important;
-    height: 3.25rem !important;
-    min-width: var(--mobile-tap) !important;
-    min-height: var(--mobile-tap) !important;
   }
 
   /* Transiciones táctiles ≤300ms */
