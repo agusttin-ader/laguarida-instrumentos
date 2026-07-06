@@ -8,6 +8,7 @@ import { getHashSectionId, scrollToHomeSectionByIdWhenReady } from '../lib/homeS
 const Footer = dynamic(() => import('./Footer'), { ssr: true })
 const PullToRefresh = dynamic(() => import('./PullToRefresh'), { ssr: false })
 const WhatsAppFloatButton = dynamic(() => import('./WhatsAppFloatButton'), { ssr: false })
+const MobileTabBar = dynamic(() => import('./MobileTabBar'), { ssr: false })
 
 function HeaderLoading() {
   const pathname = usePathname()
@@ -56,12 +57,15 @@ export default function SiteShell({ children }) {
     const isProduct =
       typeof pathname === 'string' && /^\/guitars\/[^/]+$/u.test(pathname)
 
+    const admin = typeof pathname === 'string' && pathname.startsWith('/admin')
+
     document.body.classList.toggle('page-home', isHomePage)
     document.body.classList.toggle('page-internal', !isHomePage)
     document.body.classList.toggle('page-product', isProduct)
+    document.body.classList.toggle('has-mobile-tabbar', !isProduct && !admin)
 
     return () => {
-      document.body.classList.remove('page-home', 'page-internal', 'page-product')
+      document.body.classList.remove('page-home', 'page-internal', 'page-product', 'has-mobile-tabbar')
     }
   }, [pathname])
 
@@ -132,6 +136,7 @@ export default function SiteShell({ children }) {
             <Footer />
             {!isGuitarProductPage ? <WhatsAppFloatButton /> : null}
           </PullToRefresh>
+          {!isGuitarProductPage ? <MobileTabBar /> : null}
         </>
       ) : (
         <main>{children}</main>

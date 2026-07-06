@@ -3,6 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import normalizeProduct from '../lib/utils/normalizeProduct'
+import formatPriceDisplay from '../lib/utils/formatPriceDisplay'
 import { pickShowcaseImage } from '../lib/utils/pickShowcaseImage'
 import ImageWithSkeleton from './ImageWithSkeleton'
 
@@ -78,7 +79,7 @@ function EditorialBlock({ item, index, reversed = false }) {
       </h3>
 
       {p.price ? (
-        <p className="price-highlight mt-3 text-base font-semibold sm:text-lg">{p.price}</p>
+        <p className="price-highlight mt-3 text-base font-semibold sm:text-lg">{formatPriceDisplay(p.price)}</p>
       ) : null}
 
       {description ? (

@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import normalizeProduct from '../lib/utils/normalizeProduct'
+import formatPriceDisplay from '../lib/utils/formatPriceDisplay'
 import imageService from '../lib/utils/imageService'
 import Link from 'next/link'
 import { useFavorites } from './ProductShareAndFavorite'
@@ -10,6 +11,8 @@ import { useToast } from './ToastContext'
 import { usePremiumImageFade } from '../hooks/usePremiumImageFade'
 
 const CARD_IMAGE_SIZES =
+  '(max-width: 767px) 48vw, (max-width: 1023px) 46vw, (max-width: 1535px) 31vw, (max-width: 1919px) 28vw, 24vw'
+const CARD_IMAGE_SIZES_CAROUSEL =
   '(max-width: 767px) 92vw, (max-width: 1023px) 46vw, (max-width: 1535px) 31vw, (max-width: 1919px) 28vw, 24vw'
 const SWIPE_DISTANCE_THRESHOLD = 48
 const SWIPE_VELOCITY_THRESHOLD = 0.35
@@ -30,6 +33,7 @@ function ProductCardImage({
   style,
   onReady,
   pointerEventsNone = false,
+  sizes = CARD_IMAGE_SIZES,
 }) {
   const { loaded, onImageLoad, opacityClass, transitionClass } = usePremiumImageFade(src)
 
@@ -47,7 +51,7 @@ function ProductCardImage({
         src={src}
         alt={alt}
         fill
-        sizes={CARD_IMAGE_SIZES}
+        sizes={sizes}
         quality={65}
         unoptimized={imageService.shouldBypassNextOptimization(src)}
         priority={priority}
@@ -126,6 +130,7 @@ const ProductCard = React.memo(function ProductCard({
   const { isFavorite, toggle } = useFavorites()
   const fav = isFavorite(p.slug)
   const primarySrc = imageList[0]
+  const cardImageSizes = inCarousel ? CARD_IMAGE_SIZES_CAROUSEL : CARD_IMAGE_SIZES
   const imageFitClassName = [
     'max-[767px]:object-contain max-[767px]:object-center',
     objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover',
@@ -209,6 +214,7 @@ const ProductCard = React.memo(function ProductCard({
               fitClassName={imageFitClassName}
               style={{ objectPosition: 'center' }}
               pointerEventsNone={inCarousel}
+              sizes={cardImageSizes}
             />
           ) : (
             imageList.map((src, idx) => {
@@ -233,6 +239,7 @@ const ProductCard = React.memo(function ProductCard({
                     eager={eager}
                     fitClassName={imageFitClassName}
                     style={{ objectPosition: 'center' }}
+                    sizes={cardImageSizes}
                   />
                 </div>
               )
@@ -356,7 +363,7 @@ const ProductCard = React.memo(function ProductCard({
         <p
           className={`price-highlight order-2 mt-1.5 min-h-[1.375rem] text-sm font-semibold max-[767px]:order-3 max-[767px]:mt-2 max-[767px]:text-[1.0625rem] md:order-2 md:text-base ${p.price ? '' : 'invisible'}`}
         >
-          {p.price || '—'}
+          {p.price ? formatPriceDisplay(p.price) : '—'}
         </p>
         <span className="order-4 mt-auto hidden items-center gap-1.5 pt-3 text-xs font-medium text-[var(--dark-text-secondary)] max-[767px]:hidden md:inline-flex">
           Ver producto

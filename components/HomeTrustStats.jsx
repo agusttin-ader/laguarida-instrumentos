@@ -118,8 +118,7 @@ export default function HomeTrustStats() {
   const onReveal = useCallback(() => {
     const instant =
       typeof window !== 'undefined' &&
-      (window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-        window.matchMedia('(max-width: 767px)').matches)
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (instant) {
       setDisplay({
         k: FOLLOWERS_K,

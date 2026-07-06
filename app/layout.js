@@ -2,6 +2,7 @@ import '../styles/globals.css'
 import React from 'react'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
+import { Fraunces } from 'next/font/google'
 import SiteShell from '../components/SiteShell'
 import ServiceWorkerRegister from '../components/ServiceWorkerRegister'
 import DisableZoomInApp from '../components/DisableZoomInApp'
@@ -10,6 +11,15 @@ import { FavoritesProvider } from '../components/ProductShareAndFavorite'
 import { absoluteUrl, getSiteUrl } from '../lib/siteUrl'
 import { Analytics } from '@vercel/analytics/react'
 import { shouldReadCatalogFromBackup } from '../lib/catalog/readSource'
+
+const displayFont = Fraunces({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-display',
+  display: 'swap',
+  fallback: ['ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'serif']
+})
 
 const siteUrl = getSiteUrl()
 
@@ -67,7 +77,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="es"
-      className={`dark ${GeistSans.variable} ${GeistMono.variable}`}
+      className={`dark ${GeistSans.variable} ${GeistMono.variable} ${displayFont.variable}`}
     >
       <head>
         {supabaseOrigin && <link rel="preconnect" href={supabaseOrigin} />}

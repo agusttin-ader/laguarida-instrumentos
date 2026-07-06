@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useToast } from './ToastContext'
 import { WhatsAppGlyph } from './WhatsAppFloatButton'
+import formatPriceDisplay from '../lib/utils/formatPriceDisplay'
 
 /**
  * Barra inferior en móvil cuando el CTA principal sale de vista (patrón sticky ATC habitual en PDP 2025+).
@@ -43,7 +44,7 @@ export default function ProductMobileStickyCTA({ price, consultHref, productName
       <div className="mx-auto flex max-w-lg items-center gap-3 px-4 pt-2.5">
         {price ? (
           <p className="price-highlight shrink-0 text-lg font-bold leading-tight tracking-tight text-[var(--dark-text-primary)]">
-            {price}
+            {formatPriceDisplay(price)}
           </p>
         ) : (
           <span className="min-w-0 flex-1 truncate text-xs font-medium text-[var(--dark-muted)]">

@@ -1,6 +1,7 @@
 import React from 'react'
 import ProductGalleryModern from '../../../components/ProductGalleryModern'
 import normalizeProduct from '../../../lib/utils/normalizeProduct'
+import formatPriceDisplay from '../../../lib/utils/formatPriceDisplay'
 import { fetchProductRowBySlug } from '../../../lib/data/fetchProductBySlug'
 import { getPublicCatalogRows } from '../../../lib/data/publicCatalog'
 import imageService from '../../../lib/utils/imageService'
@@ -462,7 +463,7 @@ export default async function GuitarPage({ params }) {
             className="product-detail-primary-block order-1 min-w-0 space-y-4 max-md:space-y-3 sm:space-y-6 scroll-mt-[calc(var(--site-header-h,3.25rem)+0.75rem)] lg:order-2 lg:sticky lg:top-24 lg:self-start"
           >
             {product.price && (
-              <p className="price-highlight product-detail-price text-2xl sm:text-[30px] md:text-[32px] lg:text-[34px] xl:text-[2.5rem] min-[1920px]:text-[2.85rem] min-[2560px]:text-[3.1rem] font-bold tracking-tight">{product.price}</p>
+              <p className="price-highlight product-detail-price text-2xl sm:text-[30px] md:text-[32px] lg:text-[34px] xl:text-[2.5rem] min-[1920px]:text-[2.85rem] min-[2560px]:text-[3.1rem] font-bold tracking-tight">{formatPriceDisplay(product.price)}</p>
             )}
 
             <ProductPageCTA

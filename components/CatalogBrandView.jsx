@@ -126,7 +126,7 @@ export default function CatalogBrandView({ brand, products, loading }) {
               <div key={i} className="h-20 animate-pulse rounded-xl bg-white/[0.05]" />
             ))}
           </div>
-          <div className="grid grid-cols-1 gap-5 max-[767px]:gap-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
+          <div className="grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="overflow-hidden rounded-2xl border border-white/8 bg-[var(--dark-bg-card)] md:rounded-3xl">
                 <div className="aspect-[4/5] w-full animate-pulse bg-white/[0.05] md:aspect-[3/4]" />
@@ -212,7 +212,7 @@ export default function CatalogBrandView({ brand, products, loading }) {
                       </p>
                     </div>
                   ) : (
-                  <div className="product-grid--enter grid w-full min-w-0 auto-rows-fr grid-cols-1 items-stretch gap-5 max-[767px]:gap-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
+                  <div className="product-grid--enter grid w-full min-w-0 auto-rows-fr grid-cols-2 items-stretch gap-x-3 gap-y-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
                     {activeGroup.products.map((item, idx) => (
                       <div
                         key={item.slug || item.id || idx}

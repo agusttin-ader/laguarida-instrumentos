@@ -75,7 +75,7 @@ export default function MenuDrawer({ open, setOpen }) {
         className={`fixed inset-0 z-0 bg-black/60 transition-opacity duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${open ? 'opacity-100' : 'opacity-0'}`}
       />
       <nav
-        className={`menu-drawer-panel menu-drawer-panel--right fixed inset-y-0 right-0 left-auto z-10 flex h-full w-full max-w-none flex-col bg-[var(--dark-bg-page)] transition-transform duration-[280ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${open ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`menu-drawer-panel menu-drawer-panel--right fixed inset-y-0 right-0 left-auto z-10 flex h-full w-[88%] max-w-[400px] flex-col border-l border-white/10 bg-[var(--dark-bg-page)] shadow-[-24px_0_60px_rgba(0,0,0,0.5)] transition-transform duration-[280ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${open ? 'translate-x-0' : 'translate-x-full'}`}
         aria-label="Menú principal"
       >
         <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-4">

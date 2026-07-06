@@ -82,16 +82,19 @@ export default function HeroMarketing({ slides = [] }) {
           </p>
           <div className="mt-5 max-md:mt-4 flex flex-wrap items-center gap-2.5 max-md:gap-2 md:mt-8">
             <Link
-              href="#seleccion-destacada"
-              className="no-custom-btn inline-flex min-h-[48px] items-center justify-center rounded-full bg-[var(--dark-cta-bg)] px-5 max-md:px-5 py-2.5 text-sm font-semibold text-[var(--dark-cta-text)] shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-[transform,opacity] duration-250 hover:scale-[1.02] active:scale-[0.98]"
+              href="/catalogo"
+              className="no-custom-btn inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-[var(--dark-cta-bg)] px-5 max-md:px-5 py-2.5 text-sm font-semibold text-[var(--dark-cta-text)] shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-[transform,opacity] duration-250 hover:scale-[1.02] active:scale-[0.98]"
             >
-              Ver novedades
+              Ver catálogo
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
             </Link>
             <Link
-              href="/catalogo"
+              href="#seleccion-destacada"
               className="no-custom-btn inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/25 bg-white/10 px-5 max-md:px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition-colors duration-250 hover:bg-white/20 active:bg-white/25"
             >
-              Catálogo completo
+              Ver novedades
             </Link>
           </div>
         </div>
