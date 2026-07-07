@@ -131,6 +131,7 @@ const ProductCard = React.memo(function ProductCard({
   const { toast } = useToast()
   const { isFavorite, toggle } = useFavorites()
   const fav = isFavorite(p.slug)
+  const primarySrc = imageList[0]
   const cardImageSizes = inCarousel ? CARD_IMAGE_SIZES_CAROUSEL : CARD_IMAGE_SIZES
   const brandLogo = useMemo(
     () => (showBrandLogo ? resolveProductBrandLogo(item) : null),
