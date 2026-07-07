@@ -9,7 +9,6 @@ import {
   getProductDisplayTitle,
   resolveProductBrandLogo,
 } from '../lib/catalog/resolveProductBrandLogo'
-import formatPriceDisplay from '../lib/utils/formatPriceDisplay'
 import ImageWithSkeleton from './ImageWithSkeleton'
 
 const HOME_PICK_COUNT = 3
