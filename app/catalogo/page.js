@@ -1,5 +1,6 @@
-import React, { Suspense } from 'react'
 import CatalogPageContent from '../../components/CatalogPageContent'
+import { getPublicCatalogRows } from '../../lib/data/publicCatalog'
+import normalizeProduct from '../../lib/utils/normalizeProduct'
 import { absoluteUrl } from '../../lib/siteUrl'
 
 export const revalidate = 600
@@ -13,10 +14,19 @@ export const metadata = {
   },
 }
 
-export default function CatalogoPage() {
+export default async function CatalogoPage({ searchParams }) {
+  const params = await searchParams
+  const marcaParam = typeof params?.marca === 'string' ? params.marca : ''
+  const modeloParam = typeof params?.modelo === 'string' ? params.modelo : ''
+
+  const rows = await getPublicCatalogRows()
+  const initialProducts = rows.map((row) => normalizeProduct(row))
+
   return (
-    <Suspense fallback={null}>
-      <CatalogPageContent />
-    </Suspense>
+    <CatalogPageContent
+      initialProducts={initialProducts}
+      marcaParam={marcaParam}
+      modeloParam={modeloParam}
+    />
   )
 }

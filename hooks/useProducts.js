@@ -54,10 +54,26 @@ function getCached() {
   return null
 }
 
+function seedFromInitial(initialProducts, shuffleCatalog) {
+  if (!Array.isArray(initialProducts) || !initialProducts.length) return null
+  const list = shuffleCatalog ? weeklyRotateCatalog(initialProducts) : initialProducts
+  cache = { data: initialProducts, timestamp: Date.now() }
+  return list
+}
+
 export function useProducts(options = {}) {
-  const { shuffleCatalog = false, enabled = true } = options
-  const [products, setProducts] = useState(() => (enabled ? getCached() : []))
-  const [loading, setLoading] = useState(() => (enabled ? getCached() === null : false))
+  const { shuffleCatalog = false, enabled = true, initialProducts } = options
+  const [products, setProducts] = useState(() => {
+    if (!enabled) return []
+    const seeded = seedFromInitial(initialProducts, shuffleCatalog)
+    if (seeded) return seeded
+    return getCached()
+  })
+  const [loading, setLoading] = useState(() => {
+    if (!enabled) return false
+    if (Array.isArray(initialProducts) && initialProducts.length) return false
+    return getCached() === null
+  })
   const [error, setError] = useState(null)
 
   const refetch = useCallback(async () => {
@@ -84,6 +100,15 @@ export function useProducts(options = {}) {
 
   useEffect(() => {
     if (!enabled) return
+
+    if (Array.isArray(initialProducts) && initialProducts.length) {
+      const list = shuffleCatalog ? weeklyRotateCatalog(initialProducts) : initialProducts
+      cache = { data: initialProducts, timestamp: Date.now() }
+      setProducts(list)
+      setLoading(false)
+      setError(null)
+      return
+    }
 
     const cached = getCached()
     if (cached !== null) {
@@ -119,7 +144,7 @@ export function useProducts(options = {}) {
       })
 
     return () => { cancelled = true }
-  }, [shuffleCatalog, enabled])
+  }, [shuffleCatalog, enabled, initialProducts])
 
   return { products: products ?? [], loading, error, refetch }
 }

@@ -2,7 +2,6 @@
 
 import React, { useMemo } from 'react'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 import { layoutShellClassName } from '../lib/layoutShell'
 import ProductGrid from './ProductGrid'
 import CatalogBrandView from './CatalogBrandView'
@@ -16,11 +15,15 @@ import {
   resolveCatalogBrand,
 } from '../lib/catalog/catalogTaxonomy'
 
-export default function CatalogPageContent() {
-  const searchParams = useSearchParams()
-  const { products, loading } = useProducts({ shuffleCatalog: false })
-
-  const marcaParam = searchParams.get('marca') || ''
+export default function CatalogPageContent({
+  initialProducts = [],
+  marcaParam = '',
+  modeloParam = '',
+}) {
+  const { products, loading } = useProducts({
+    shuffleCatalog: false,
+    initialProducts,
+  })
   const catalogBrand = useMemo(() => resolveCatalogBrand(marcaParam), [marcaParam])
   const brandList = useMemo(() => getCatalogBrandList(products), [products])
 
@@ -29,7 +32,13 @@ export default function CatalogPageContent() {
   if (catalogBrand) {
     return (
       <div className={`${shellClass} catalog-page catalog-page--brand min-h-screen`}>
-        <CatalogBrandView brand={catalogBrand} products={products} loading={loading} />
+        <CatalogBrandView
+          brand={catalogBrand}
+          products={products}
+          loading={loading}
+          marcaParam={marcaParam}
+          modeloParam={modeloParam}
+        />
       </div>
     )
   }

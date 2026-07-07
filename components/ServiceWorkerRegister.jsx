@@ -7,15 +7,29 @@ export default function ServiceWorkerRegister() {
   useEffect(() => {
     if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return
 
-    navigator.serviceWorker
-      .getRegistrations()
-      .then((regs) => {
-        for (const reg of regs) {
-          const script = reg.active?.scriptURL || reg.installing?.scriptURL || reg.waiting?.scriptURL || ''
-          if (!script.includes('sw-admin.js')) reg.unregister()
+    async function purgeLegacyPwa() {
+      try {
+        if ('caches' in window) {
+          const keys = await caches.keys()
+          await Promise.all(keys.map((key) => caches.delete(key)))
         }
-      })
-      .catch(() => {})
+
+        const regs = await navigator.serviceWorker.getRegistrations()
+        await Promise.all(
+          regs.map(async (reg) => {
+            const script =
+              reg.active?.scriptURL || reg.installing?.scriptURL || reg.waiting?.scriptURL || ''
+            if (!script.includes('sw-admin.js')) {
+              await reg.unregister()
+            }
+          })
+        )
+      } catch {
+        /* ignore */
+      }
+    }
+
+    purgeLegacyPwa()
   }, [])
 
   return null

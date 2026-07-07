@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Fragment, useEffect, useMemo } from 'react'
 import CatalogSidebarDivider from './CatalogSidebarDivider'
 import CatalogHorizontalTabs from './CatalogHorizontalTabs'
@@ -14,10 +14,14 @@ import {
 import { HOME_BRANDS } from '../lib/data/homeBrands'
 import { getModelGroupLogo, getModelGroupLogoHeaderClass } from '../lib/catalog/modelGroupLogos'
 
-export default function CatalogBrandView({ brand, products, loading }) {
+export default function CatalogBrandView({
+  brand,
+  products,
+  loading,
+  marcaParam = '',
+  modeloParam = '',
+}) {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const modeloParam = searchParams.get('modelo')
 
   const isOtrosBrand = brand.id === 'otros'
 
@@ -40,14 +44,14 @@ export default function CatalogBrandView({ brand, products, loading }) {
     if (modeloParam && modelGroups.some((g) => g.id === modeloParam)) return
     const first = modelGroups[0]?.id
     if (!first) return
-    const marca = searchParams.get('marca') || brand.filterBrand
+    const marca = marcaParam || brand.filterBrand
     router.replace(`/catalogo?marca=${encodeURIComponent(marca)}&modelo=${encodeURIComponent(first)}`, {
       scroll: false,
     })
-  }, [loading, modelGroups, modeloParam, brand.filterBrand, router, searchParams])
+  }, [loading, modelGroups, modeloParam, marcaParam, brand.filterBrand, router])
 
   function selectModel(modelId) {
-    const marca = searchParams.get('marca') || brand.filterBrand
+    const marca = marcaParam || brand.filterBrand
     router.push(`/catalogo?marca=${encodeURIComponent(marca)}&modelo=${encodeURIComponent(modelId)}`, {
       scroll: false,
     })
