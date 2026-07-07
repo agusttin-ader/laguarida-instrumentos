@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import MenuDrawer from './MenuDrawer'
 import { scrollToHomeSectionById } from '../lib/homeSectionScroll'
+import { layoutShellClassName } from '../lib/layoutShell'
 import { SITE_LOGO_SRC } from '../lib/branding/logo'
 
 const LOGO_SRC = SITE_LOGO_SRC
@@ -242,9 +243,9 @@ export default function Header() {
       {/* Header desktop */}
       <header
         ref={desktopHeaderRef}
-        className={`header-desktop site-header-bar hidden md:block fixed top-0 left-0 right-0 z-[var(--z-header)] ${headerMotionClass} ${headerHideClass} ${scrolled ? 'header-scrolled ' : ''}${desktopHeaderPad} overflow-visible`}
+        className={`header-desktop site-header-bar hidden md:block fixed top-0 left-0 right-0 z-[var(--z-header)] ${headerMotionClass} ${headerHideClass} ${scrolled ? 'header-scrolled ' : ''}${desktopHeaderPad} overflow-visible ${scrolled ? 'bg-[var(--dark-bg-page)]/88 backdrop-blur-md border-b border-white/[0.06]' : 'bg-transparent'}`}
       >
-        <div className="flex items-center justify-between gap-4 md:gap-6 container-tight max-w-5xl relative min-h-0 py-0 overflow-visible">
+        <div className={`${layoutShellClassName} flex items-center justify-between gap-4 md:gap-6 relative min-h-0 px-5 md:px-8 lg:px-10 py-0 overflow-visible min-[1920px]:px-12`}>
           <a
             href="/"
             aria-label="Ir al inicio"
@@ -275,7 +276,7 @@ export default function Header() {
             </div>
           </nav>
         </div>
-        <div className="container-tight max-w-5xl">
+        <div className={`${layoutShellClassName} px-5 md:px-8 lg:px-10 min-[1920px]:px-12`}>
           <AuthIndicator />
         </div>
       </header>

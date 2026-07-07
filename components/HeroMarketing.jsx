@@ -32,7 +32,7 @@ export default function HeroMarketing({ slides = [] }) {
   const visibleIndex = carouselReady ? activeIndex : 0
 
   return (
-    <div className="hero-home relative w-full max-md:min-h-[min(78dvh,600px)] sm:min-h-[min(84vh,880px)] overflow-hidden bg-[#141414] text-[#f7f3eb]">
+    <div className="hero-home relative w-full max-md:min-h-[min(78dvh,600px)] sm:min-h-[min(84vh,880px)] overflow-hidden bg-[var(--dark-bg-page)] text-[var(--dark-text-primary)]">
       <div className="absolute inset-0" aria-hidden>
         {heroSlides.length ? (
           heroSlides.map((slide, i) => (

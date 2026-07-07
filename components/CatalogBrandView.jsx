@@ -4,37 +4,15 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Fragment, useEffect, useMemo } from 'react'
 import CatalogSidebarDivider from './CatalogSidebarDivider'
+import CatalogHorizontalTabs from './CatalogHorizontalTabs'
+import CatalogSidebarModelItem from './CatalogSidebarModelItem'
 import ProductCard from './ProductCard'
 import {
   buildBrandModelGroups,
   getModelEmptyStockMessage,
 } from '../lib/catalog/catalogTaxonomy'
-
-function SidebarModelItem({ group, active, onSelect }) {
-  return (
-    <button
-      type="button"
-      onClick={() => onSelect(group.id)}
-      className={`no-custom-btn w-full border-l-2 py-3 pl-5 pr-2 text-left transition-colors ${
-        active
-          ? 'border-[rgba(var(--palette-gold-rgb),0.65)] bg-white/[0.04]'
-          : 'border-transparent hover:border-[rgba(var(--palette-gold-rgb),0.28)] hover:bg-white/[0.02]'
-      }`}
-    >
-      <p className="font-display text-base font-semibold tracking-tight text-[var(--dark-text-primary)]">
-        {group.label}
-      </p>
-      {group.subtitle ? (
-        <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.15em] text-[var(--dark-muted)]">
-          {group.subtitle}
-        </p>
-      ) : null}
-      <p className={`mt-1.5 text-xs ${group.count === 0 ? 'text-[var(--dark-muted)]/70' : 'text-[var(--dark-muted)]'}`}>
-        {group.count} {group.count === 1 ? 'instrumento' : 'instrumentos'}
-      </p>
-    </button>
-  )
-}
+import { HOME_BRANDS } from '../lib/data/homeBrands'
+import { getModelGroupLogo, getModelGroupLogoHeaderClass } from '../lib/catalog/modelGroupLogos'
 
 export default function CatalogBrandView({ brand, products, loading }) {
   const router = useRouter()
@@ -54,6 +32,8 @@ export default function CatalogBrandView({ brand, products, loading }) {
   }, [modeloParam, modelGroups])
 
   const activeGroup = modelGroups.find((g) => g.id === activeModelId) || null
+  const brandLogo = HOME_BRANDS.find((b) => b.id === brand.id)?.logo
+  const activeModelLogo = activeGroup ? getModelGroupLogo(activeGroup.id) : null
 
   useEffect(() => {
     if (loading || !modelGroups.length) return
@@ -109,9 +89,18 @@ export default function CatalogBrandView({ brand, products, loading }) {
         <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--dark-muted)]">
           {brand.kicker}
         </p>
-        <h1 className="mt-3 font-display text-[clamp(2.25rem,6vw,3.75rem)] font-bold leading-[1.02] tracking-tight text-[var(--dark-text-primary)]">
-          {brand.name}
-        </h1>
+        {brandLogo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={brandLogo}
+            alt={brand.name}
+            className="catalog-brand-header__logo mt-3"
+          />
+        ) : (
+          <h1 className="section-heading-editorial mt-3">
+            {brand.name}
+          </h1>
+        )}
         <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[var(--dark-muted)] sm:text-base">
           {isOtrosBrand
             ? 'Instrumentos fuera de las marcas principales. Elegí el tipo en la columna izquierda.'
@@ -126,10 +115,10 @@ export default function CatalogBrandView({ brand, products, loading }) {
               <div key={i} className="h-20 animate-pulse rounded-xl bg-white/[0.05]" />
             ))}
           </div>
-          <div className="grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
+          <div className="grid grid-cols-2 gap-x-2.5 gap-y-3 max-[767px]:gap-x-2.5 max-[767px]:gap-y-3 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="overflow-hidden rounded-2xl border border-white/8 bg-[var(--dark-bg-card)] md:rounded-3xl">
-                <div className="aspect-[4/5] w-full animate-pulse bg-white/[0.05] md:aspect-[3/4]" />
+              <div key={i} className="overflow-hidden rounded-xl border border-white/8 bg-[var(--dark-bg-card)] md:rounded-3xl">
+                <div className="aspect-square w-full animate-pulse bg-white/[0.05] md:aspect-[3/4]" />
                 <div className="space-y-2 p-4 md:p-5">
                   <div className="h-4 w-3/4 animate-pulse rounded bg-white/10" />
                   <div className="h-3 w-1/3 animate-pulse rounded bg-white/15" />
@@ -150,30 +139,26 @@ export default function CatalogBrandView({ brand, products, loading }) {
         </div>
       ) : (
         <>
-          <div className="mb-5 flex gap-2 overflow-x-auto pb-1 md:hidden snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-            {modelGroups.map((group) => (
-              <button
-                key={group.id}
-                type="button"
-                onClick={() => selectModel(group.id)}
-                className={`no-custom-btn shrink-0 snap-start rounded-full border px-4 py-2.5 min-h-[48px] text-xs font-semibold transition-colors duration-200 ${
-                  group.id === activeModelId
-                    ? 'border-[rgba(var(--palette-gold-rgb),0.5)] bg-[var(--dark-cta-bg)] text-[var(--dark-cta-text)]'
-                    : 'border-[var(--dark-border)] bg-[var(--dark-bg-card)] text-[var(--dark-text-secondary)] active:bg-white/[0.04]'
-                }`}
-              >
-                {group.label} ({group.count})
-              </button>
-            ))}
-          </div>
+          <CatalogHorizontalTabs
+            label="Modelos"
+            ariaLabel={`Modelos ${brand.name}`}
+            className="mb-5"
+            items={modelGroups.map((group) => ({
+              id: group.id,
+              label: group.label,
+              sublabel: `${group.count} en stock`,
+              active: group.id === activeModelId,
+              onClick: () => selectModel(group.id),
+            }))}
+          />
 
           <div className="catalog-layout-grid grid gap-8 md:grid-cols-[minmax(220px,280px)_1fr] md:gap-10 lg:gap-14">
             <aside className="catalog-sidebar-sticky hidden md:block">
-              <nav aria-label={`Modelos ${brand.name}`}>
+              <nav aria-label={`Modelos ${brand.name}`} className="catalog-sidebar-nav">
                 {modelGroups.map((group, index) => (
                   <Fragment key={group.id}>
                     {index > 0 ? <CatalogSidebarDivider /> : null}
-                    <SidebarModelItem
+                    <CatalogSidebarModelItem
                       group={group}
                       active={group.id === activeModelId}
                       onSelect={selectModel}
@@ -187,9 +172,18 @@ export default function CatalogBrandView({ brand, products, loading }) {
               {activeGroup ? (
                 <>
                   <div className="mb-6 border-b border-[var(--dark-border)] pb-5">
-                    <h2 className="font-display text-2xl font-semibold tracking-tight text-[var(--dark-text-primary)] sm:text-[1.75rem]">
-                      {activeGroup.label}
-                    </h2>
+                    {activeModelLogo ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={activeModelLogo}
+                        alt={activeGroup.label}
+                        className={getModelGroupLogoHeaderClass(activeGroup.id)}
+                      />
+                    ) : (
+                      <h2 className="font-display text-[1.75rem] font-semibold tracking-tight text-[var(--dark-text-primary)] sm:text-[2rem]">
+                        {activeGroup.label}
+                      </h2>
+                    )}
                     {activeGroup.subtitle ? (
                       <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.16em] text-[var(--dark-muted)]">
                         {activeGroup.subtitle}
@@ -212,11 +206,11 @@ export default function CatalogBrandView({ brand, products, loading }) {
                       </p>
                     </div>
                   ) : (
-                  <div className="product-grid--enter grid w-full min-w-0 auto-rows-fr grid-cols-2 items-stretch gap-x-3 gap-y-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
+                  <div className="product-grid--enter grid w-full min-w-0 grid-cols-2 items-start gap-x-2.5 gap-y-3 max-[767px]:gap-x-2.5 max-[767px]:gap-y-3 md:auto-rows-fr md:items-stretch md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
                     {activeGroup.products.map((item, idx) => (
                       <div
                         key={item.slug || item.id || idx}
-                        className="home-grid-product-cell flex h-full min-w-0 w-full [content-visibility:auto] [contain-intrinsic-size:auto_28rem]"
+                        className="home-grid-product-cell flex min-w-0 w-full max-md:h-auto md:h-full [content-visibility:auto] [contain-intrinsic-size:auto_18rem] md:[contain-intrinsic-size:auto_28rem]"
                         style={{ '--enter-i': idx }}
                       >
                         <ProductCard item={item} priority={idx < 2} maxGalleryImages={1} />

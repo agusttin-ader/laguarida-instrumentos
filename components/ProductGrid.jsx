@@ -53,14 +53,13 @@ export default function ProductGrid({
           <div className="h-2.5 w-24 rounded-full bg-white/10 animate-pulse" />
           <div className="h-2.5 w-16 rounded-full bg-white/10 animate-pulse" />
         </div>
-        <div className="grid w-full min-w-0 grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8" aria-hidden>
+        <div className="grid w-full min-w-0 grid-cols-2 gap-x-2.5 gap-y-3 max-md:gap-x-2.5 max-md:gap-y-3 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8" aria-hidden>
           {Array.from({ length: 6 }).map((_, idx) => (
-            <div key={`skeleton-${idx}`} className="overflow-hidden rounded-2xl md:rounded-3xl border border-white/8 bg-[var(--dark-bg-card)]">
-              <div className="aspect-[4/5] w-full bg-[linear-gradient(110deg,rgba(255,255,255,0.03),rgba(255,255,255,0.07),rgba(255,255,255,0.03))] bg-[length:220%_100%] animate-[shimmer_1.9s_ease-in-out_infinite]" />
-              <div className="p-4 md:p-5">
-                <div className="h-4 w-3/4 rounded bg-white/10 animate-pulse" />
-                <div className="mt-2 h-3 w-2/3 rounded bg-white/10 animate-pulse" />
-                <div className="mt-3.5 h-4 w-1/3 rounded bg-white/15 animate-pulse" />
+            <div key={`skeleton-${idx}`} className="overflow-hidden rounded-xl md:rounded-3xl border border-white/8 bg-[var(--dark-bg-card)]">
+              <div className="aspect-square w-full bg-[linear-gradient(110deg,rgba(255,255,255,0.03),rgba(255,255,255,0.07),rgba(255,255,255,0.03))] bg-[length:220%_100%] animate-[shimmer_1.9s_ease-in-out_infinite] md:aspect-[3/4]" />
+              <div className="p-2.5 md:p-5">
+                <div className="h-3 w-full rounded bg-white/10 animate-pulse" />
+                <div className="mt-2 h-3 w-2/3 rounded bg-white/15 animate-pulse" />
               </div>
             </div>
           ))}
@@ -88,11 +87,11 @@ export default function ProductGrid({
         <div className="mb-6 p-4 rounded bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200">Error al cargar productos: {hasError}</div>
       ) : null}
 
-      <div className="product-grid--enter grid w-full min-w-0 auto-rows-fr grid-cols-2 items-stretch gap-x-3 gap-y-6 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
+      <div className="product-grid--enter grid w-full min-w-0 grid-cols-2 items-start gap-x-2.5 gap-y-3 max-md:gap-x-2.5 max-md:gap-y-3 md:auto-rows-fr md:items-stretch md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
         {filteredItems.map((item, idx) => (
           <div
             key={`${item.id ?? item.slug ?? idx}-${filters.q || ''}`}
-            className="home-grid-product-cell flex h-full min-w-0 w-full [content-visibility:auto] [contain-intrinsic-size:auto_28rem]"
+            className="home-grid-product-cell flex min-w-0 w-full max-md:h-auto md:h-full [content-visibility:auto] [contain-intrinsic-size:auto_18rem] md:[contain-intrinsic-size:auto_28rem]"
             style={{ '--enter-i': idx }}
           >
             <ProductCard

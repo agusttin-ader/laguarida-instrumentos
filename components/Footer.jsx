@@ -76,7 +76,7 @@ export default function Footer({ compact = false }){
               className={`site-footer__logo logo-dark block w-auto object-contain bg-transparent ${
                 compact
                   ? 'h-[16px] md:h-[18px] max-w-[130px]'
-                  : 'h-[18px] md:h-[19px] lg:h-[21px] xl:h-[22px] max-w-[200px] lg:max-w-[220px]'
+                  : 'h-[18px] md:h-[22px] lg:h-[24px] xl:h-[26px] max-w-[200px] lg:max-w-[240px]'
               }`}
             />
           </div>

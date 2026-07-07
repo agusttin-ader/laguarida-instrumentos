@@ -2,7 +2,7 @@
 export default function CatalogSidebarDivider() {
   return (
     <div className="catalog-sidebar-divider py-2" aria-hidden>
-      <span className="block h-px w-full bg-[rgba(var(--palette-gold-rgb),0.35)]" />
+      <span className="catalog-sidebar-divider__line" />
     </div>
   )
 }

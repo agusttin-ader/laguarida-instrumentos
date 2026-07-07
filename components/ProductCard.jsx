@@ -9,9 +9,10 @@ import Link from 'next/link'
 import { useFavorites } from './ProductShareAndFavorite'
 import { useToast } from './ToastContext'
 import { usePremiumImageFade } from '../hooks/usePremiumImageFade'
+import { resolveProductBrandLogo } from '../lib/catalog/resolveProductBrandLogo'
 
 const CARD_IMAGE_SIZES =
-  '(max-width: 767px) 48vw, (max-width: 1023px) 46vw, (max-width: 1535px) 31vw, (max-width: 1919px) 28vw, 24vw'
+  '(max-width: 767px) 46vw, (max-width: 1023px) 46vw, (max-width: 1535px) 31vw, (max-width: 1919px) 28vw, 24vw'
 const CARD_IMAGE_SIZES_CAROUSEL =
   '(max-width: 767px) 92vw, (max-width: 1023px) 46vw, (max-width: 1535px) 31vw, (max-width: 1919px) 28vw, 24vw'
 const SWIPE_DISTANCE_THRESHOLD = 48
@@ -74,6 +75,7 @@ const ProductCard = React.memo(function ProductCard({
   galleryDesktopOnly = false,
   maxGalleryImages = 3,
   inCarousel = false,
+  showBrandLogo = true,
 }) {
   const p = normalizeProduct(item)
   const catalogSingleImage = maxGalleryImages <= 1
@@ -129,8 +131,11 @@ const ProductCard = React.memo(function ProductCard({
   const { toast } = useToast()
   const { isFavorite, toggle } = useFavorites()
   const fav = isFavorite(p.slug)
-  const primarySrc = imageList[0]
   const cardImageSizes = inCarousel ? CARD_IMAGE_SIZES_CAROUSEL : CARD_IMAGE_SIZES
+  const brandLogo = useMemo(
+    () => (showBrandLogo ? resolveProductBrandLogo(item) : null),
+    [item, showBrandLogo]
+  )
   const imageFitClassName = [
     'max-[767px]:object-contain max-[767px]:object-center',
     objectFit === 'contain' ? 'md:object-contain' : 'md:object-cover',
@@ -299,11 +304,25 @@ const ProductCard = React.memo(function ProductCard({
           </div>
         </>
       ) : null}
+      {brandLogo ? (
+        <div
+          className="product-card-brand-badge product-card-brand-badge--overlay pointer-events-none absolute bottom-1.5 left-1.5 z-10 flex max-w-[calc(100%-3rem)] items-center rounded-md border border-white/10 bg-black/58 px-1 py-0.5 backdrop-blur-[2px] md:hidden"
+          title={brandLogo.label}
+          aria-hidden
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={brandLogo.src}
+            alt=""
+            className="product-card-brand-logo h-3 w-auto max-w-[2.75rem] object-contain object-left brightness-0 invert opacity-90"
+          />
+        </div>
+      ) : null}
       <button
         type="button"
         onClick={handleFavoriteClick}
         aria-label={fav ? 'Quitar de tu selección' : 'Agregar a tu selección'}
-        className="no-custom-btn favorite-heart-btn absolute top-2 right-2 z-20 min-w-[44px] min-h-[44px] w-11 h-11 md:w-10 md:h-10 flex items-center justify-center border bg-black/62 border-white/25 text-white/90 hover:bg-black/75 hover:border-white/40 transition-all duration-200 touch-manipulation max-[767px]:rounded-md md:rounded-full"
+        className="no-custom-btn favorite-heart-btn absolute top-2 right-2 z-20 min-w-[44px] min-h-[44px] w-11 h-11 md:w-10 md:h-10 flex items-center justify-center rounded-full border bg-black/62 border-white/25 text-white/90 hover:bg-black/75 hover:border-white/40 transition-all duration-200 touch-manipulation"
       >
         <svg
           width="18"
@@ -331,14 +350,28 @@ const ProductCard = React.memo(function ProductCard({
     <>
       {imageBlock}
 
-      <div className="product-card-body flex min-h-[9rem] max-md:min-h-[8.75rem] flex-1 flex-col p-4 max-[767px]:gap-1.5 max-[767px]:px-3.5 max-[767px]:pb-4 max-[767px]:pt-4 md:min-h-[10.25rem] md:gap-0 md:p-5">
+      <div className="product-card-body flex min-h-0 flex-1 flex-col p-4 max-[767px]:gap-0 max-[767px]:px-2.5 max-[767px]:pb-2.5 max-[767px]:pt-2 md:min-h-[10.25rem] md:gap-0 md:p-5">
+        {brandLogo ? (
+          <div
+            className="product-card-brand-badge product-card-brand-badge--body order-0 mb-2 hidden min-h-[1.125rem] items-center md:flex md:mb-2.5"
+            title={brandLogo.label}
+            aria-hidden
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={brandLogo.src}
+              alt=""
+              className="product-card-brand-logo h-4 w-auto max-w-[4.5rem] object-contain object-left brightness-0 invert opacity-[0.88] lg:h-[1.125rem] lg:max-w-[5rem]"
+            />
+          </div>
+        ) : null}
         <h3
           id={headingId}
-          className="order-1 min-h-[2.875rem] min-w-0 text-[1rem] font-semibold tracking-tight text-[var(--dark-text-primary)] line-clamp-2 md:min-h-[2.75rem] md:text-[1.0625rem] max-[767px]:text-[1.0625rem] max-[767px]:font-bold max-[767px]:leading-snug md:leading-snug"
+          className="order-1 min-h-0 min-w-0 text-[1rem] font-semibold tracking-tight text-[var(--dark-text-primary)] line-clamp-3 md:line-clamp-2 md:min-h-[2.75rem] md:text-[1.0625rem] max-[767px]:text-[0.8125rem] max-[767px]:font-semibold max-[767px]:leading-[1.3] md:leading-snug"
         >
           {titleText}
         </h3>
-        <div className="order-2 mt-1 min-h-[1.25rem] max-[767px]:block md:hidden">
+        <div className="order-2 mt-0.5 min-h-0 product-card-specs-mobile max-[767px]:block md:hidden">
           {specs.length > 0 ? (
             <p
               className="truncate text-xs font-medium uppercase leading-snug tracking-wider text-[var(--dark-muted)]"
@@ -361,7 +394,7 @@ const ProductCard = React.memo(function ProductCard({
           )}
         </div>
         <p
-          className={`price-highlight order-2 mt-1.5 min-h-[1.375rem] text-sm font-semibold max-[767px]:order-3 max-[767px]:mt-2 max-[767px]:text-[1.0625rem] md:order-2 md:text-base ${p.price ? '' : 'invisible'}`}
+          className={`price-highlight order-3 mt-1 min-h-0 text-sm font-semibold max-[767px]:mt-1 max-[767px]:text-[0.875rem] md:order-2 md:mt-1.5 md:min-h-[1.375rem] md:text-base ${p.price ? '' : 'invisible'}`}
         >
           {p.price ? formatPriceDisplay(p.price) : '—'}
         </p>
@@ -378,7 +411,7 @@ const ProductCard = React.memo(function ProductCard({
   return (
     <article
       aria-labelledby={headingId}
-      className="card-interactive card-editorial card-mobile-no-motion product-card-mobile-catalog flex h-full w-full min-w-0 max-w-full flex-col overflow-hidden rounded-xl max-md:rounded-[1.125rem] border-0 bg-[var(--dark-bg-card)] max-md:shadow-none md:rounded-3xl"
+      className="card-interactive card-editorial card-mobile-no-motion product-card-mobile-catalog flex h-full w-full min-w-0 max-w-full flex-col overflow-hidden rounded-xl max-md:rounded-xl max-md:border max-md:border-white/[0.06] border-0 bg-[var(--dark-bg-card)] max-md:shadow-none md:rounded-3xl"
     >
       {inCarousel ? (
         <div className={cardLinkClassName}>{cardBody}</div>

@@ -54,7 +54,7 @@ const StatCard = memo(function StatCard({ label, value, description, className =
       <p className="text-[0.65rem] font-medium uppercase tracking-[0.16em] text-[var(--vintage-gold)] md:text-xs md:tracking-[0.18em]">
         {label}
       </p>
-      <p className="flex min-h-[2.75rem] items-baseline text-2xl font-bold tabular-nums tracking-tight text-[var(--color-white)] md:min-h-[3rem] md:text-[1.75rem] lg:text-[1.85rem]">
+      <p className="flex min-h-[2.75rem] items-baseline text-2xl font-bold tabular-nums tracking-tight text-[var(--color-white)] md:min-h-[3.25rem] md:text-[2rem] lg:text-[2.35rem]">
         <span className="inline-block min-w-[6.5ch] max-w-full">{value}</span>
       </p>
       <p className="text-xs leading-relaxed text-[var(--vintage-muted)] md:text-[0.8125rem]">{description}</p>
@@ -156,7 +156,7 @@ export default function HomeTrustStats() {
 
   return (
     <section
-      className="mx-0 mt-0 mb-2 w-full bg-[var(--dark-bg-page)] sm:mb-2 md:mt-1 md:mb-3"
+      className="mx-0 mt-0 mb-1 w-full bg-[var(--dark-bg-page)] sm:mb-1 md:mt-0 md:mb-2"
       aria-label="Indicadores de trayectoria y confianza"
     >
       <ScrollReveal
@@ -165,7 +165,13 @@ export default function HomeTrustStats() {
         rootMargin="64px 0px -8% 0px"
         onVisible={onReveal}
       >
-        <div className="flex flex-col gap-2 px-0 pt-1 pb-3 md:mx-auto md:max-w-6xl md:gap-3 md:px-0 md:pt-2 md:pb-5 lg:px-0 lg:pt-2 lg:pb-5">
+        <div className="flex flex-col gap-2 px-0 pt-0 pb-2 md:mx-auto md:max-w-none md:gap-3 md:px-0 md:pt-1 md:pb-3 lg:px-0 lg:pt-1 lg:pb-3">
+          <header className="mb-0 px-0 md:mb-1">
+            <p className="section-kicker-minimal text-[var(--palette-gold)]">Trayectoria</p>
+            <h2 className="section-heading-editorial mt-2 text-[clamp(1.5rem,3vw,2.25rem)]">
+              Números que hablan
+            </h2>
+          </header>
           <TrustSectionRulesDouble />
           <div className="flex flex-col gap-3 md:hidden">
             {STATS_META.map((item) => (
