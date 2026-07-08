@@ -2502,6 +2502,70 @@ header.site-header-bar.header-scroll-hidden {
   opacity: 0.92;
 }
 
+.product-detail-identity {
+  min-width: 0;
+  max-width: 42rem;
+}
+
+.product-detail-logo {
+  display: block;
+  width: auto;
+  object-fit: contain;
+  object-position: left center;
+  filter: brightness(0) invert(1);
+  opacity: 0.95;
+}
+
+.product-detail-logo--hero {
+  height: 2.25rem;
+  max-width: 10rem;
+}
+
+.product-detail-logo--hero.product-detail-logo--wide {
+  height: 2.5rem;
+  max-width: 13rem;
+}
+
+.product-detail-logo--hero.product-detail-logo--custom-shop {
+  height: 2.65rem;
+  max-width: 14.5rem;
+}
+
+.product-detail-title--with-logo {
+  font-family: var(--font-display), ui-serif, Georgia, Cambria, 'Times New Roman', serif;
+  font-size: clamp(1.35rem, 4.2vw, 2.05rem) !important;
+  line-height: 1.14 !important;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .product-detail-logo--hero {
+    height: 2.65rem;
+    max-width: 11.5rem;
+  }
+
+  .product-detail-logo--hero.product-detail-logo--wide {
+    height: 2.85rem;
+    max-width: 14.5rem;
+  }
+
+  .product-detail-logo--hero.product-detail-logo--custom-shop {
+    height: 3rem;
+    max-width: 16rem;
+  }
+
+  .product-detail-title--with-logo {
+    font-size: clamp(1.65rem, 2.4vw, 2.35rem) !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  .product-detail-title--with-logo {
+    font-size: clamp(1.85rem, 2vw, 2.55rem) !important;
+  }
+}
+
 .home-featured-editorial__cta {
   display: inline-flex;
   min-height: 48px;

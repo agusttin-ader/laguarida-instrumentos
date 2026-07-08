@@ -17,6 +17,12 @@ import { absoluteUrl, toAbsoluteUrl } from '../../../lib/siteUrl'
 import { buildWaMeHref, whatsAppProductMessage } from '../../../lib/whatsappWeb'
 import { descriptionLooksLikeMarkdown, markdownToPlainText } from '../../../lib/utils/descriptionMarkdown'
 import ProductDescriptionMarkdown from '../../../components/ProductDescriptionMarkdown'
+import ProductDetailLogoMark from '../../../components/ProductDetailLogoMark'
+import {
+  getProductDetailDisplayTitle,
+  resolveProductBrandLogo,
+} from '../../../lib/catalog/resolveProductBrandLogo'
+import { productIsCustomShopGuitar } from '../../../lib/catalog/catalogTaxonomy'
 
 /** ISR: menos llamadas a Supabase; tras guardar en admin se invalida con revalidatePath/revalidateTag. */
 export const revalidate = 300
@@ -294,7 +300,15 @@ export default async function GuitarPage({ params }) {
   }
 
   const consultHref = buildWaMeHref(whatsAppProductMessage(product.name))
-  const categoryLabel = [product.brand, product.model].filter(Boolean).join(' · ') || 'Premium guitars'
+  const brandLogo = resolveProductBrandLogo(product)
+  const headerLogo = brandLogo
+  const modelLabel =
+    String(product.model || '').trim() ||
+    (productIsCustomShopGuitar(product) ? 'Custom Shop' : '')
+  const categoryLabel = brandLogo
+    ? modelLabel
+    : ([product.brand, product.model].filter(Boolean).join(' · ') || 'Premium guitars')
+  const displayTitle = getProductDetailDisplayTitle(product, brandLogo, modelLabel)
   const modelValue = product.model || 'N/A'
   const woodValue = Array.isArray(product.wood) ? product.wood.join(', ') : (product.wood || 'N/A')
   const micsValue = Array.isArray(product.mics) ? product.mics.join(', ') : (product.mics || 'N/A')
@@ -408,7 +422,7 @@ export default async function GuitarPage({ params }) {
               altBase={`${product.name}${product.brand ? ' — ' + product.brand : ''}`}
             />
           </div>
-          <nav aria-label="Breadcrumb" className="order-2 md:order-1 w-full mb-0 mt-3 md:mb-6 md:mt-0">
+          <nav aria-label="Breadcrumb" className="order-2 md:order-1 w-full mb-0 mt-3 md:mb-4 md:mt-0">
             <ol className="product-detail-breadcrumb flex flex-wrap items-center gap-1.5 text-[12px] max-md:text-[13px] sm:text-[14px] md:text-[15px] xl:text-base text-[var(--dark-muted)]">
               <li><a href="/" className="hover:text-[var(--dark-text-primary)] transition-colors">Inicio</a></li>
               <li aria-hidden className="opacity-50">/</li>
@@ -419,10 +433,23 @@ export default async function GuitarPage({ params }) {
               </li>
             </ol>
           </nav>
-          <p className="product-detail-kicker order-3 md:order-2 text-[11px] sm:text-xs md:text-[13px] xl:text-sm font-semibold uppercase tracking-[0.22em] text-[var(--dark-muted)] mb-2 max-md:mb-0 max-md:mt-2">{categoryLabel}</p>
-          <h1 className="product-detail-title order-4 md:order-3 leading-[1.08] font-bold text-[var(--dark-text-primary)] tracking-tight mb-6 max-md:mb-0 max-md:mt-1.5 text-left">
-            {product.name}
-          </h1>
+          <div className="product-detail-identity order-3 md:order-3 mb-6 max-md:mb-0 max-md:mt-2 md:mb-8">
+            {headerLogo ? (
+              <ProductDetailLogoMark logo={headerLogo} size="hero" />
+            ) : null}
+            {categoryLabel ? (
+              <p className="product-detail-kicker mt-2 text-[11px] sm:text-xs md:text-[13px] xl:text-sm font-semibold uppercase tracking-[0.22em] text-[var(--dark-muted)] max-md:mt-1.5 md:mt-2.5">
+                {categoryLabel}
+              </p>
+            ) : null}
+            <h1
+              className={`product-detail-title leading-[1.08] font-bold text-[var(--dark-text-primary)] tracking-tight text-left ${
+                headerLogo ? 'product-detail-title--with-logo' : ''
+              } ${categoryLabel || headerLogo ? 'mt-2 max-md:mt-1.5 md:mt-3' : 'mt-0'}`}
+            >
+              {headerLogo ? displayTitle : product.name}
+            </h1>
+          </div>
         </div>
       </section>
 
