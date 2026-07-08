@@ -81,7 +81,7 @@ export default function CatalogBrandView({
 
       <Link
         href="/catalogo"
-        className="no-custom-btn mb-5 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--dark-muted)] transition-colors hover:text-[var(--dark-text-primary)] sm:mb-6"
+        className="no-custom-btn mb-4 max-md:mb-3 inline-flex min-h-[44px] items-center gap-1.5 py-1 text-sm font-medium text-[var(--dark-muted)] transition-colors hover:text-[var(--dark-text-primary)] sm:mb-6"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -89,8 +89,8 @@ export default function CatalogBrandView({
         Volver al catálogo
       </Link>
 
-      <header className="mb-8 max-w-3xl sm:mb-10 md:mb-12">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--dark-muted)]">
+      <header className="mb-5 max-w-3xl max-md:mb-4 sm:mb-10 md:mb-12">
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--dark-muted)]">
           {brand.kicker}
         </p>
         {brandLogo ? (
@@ -105,7 +105,7 @@ export default function CatalogBrandView({
             {brand.name}
           </h1>
         )}
-        <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[var(--dark-muted)] sm:text-base">
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--dark-muted)] sm:mt-4 sm:text-base">
           {isOtrosBrand
             ? 'Instrumentos fuera de las marcas principales. Elegí el tipo en la columna izquierda.'
             : 'Elegí el modelo en la columna izquierda y explorá las unidades disponibles en stock.'}
@@ -146,7 +146,7 @@ export default function CatalogBrandView({
           <CatalogHorizontalTabs
             label="Modelos"
             ariaLabel={`Modelos ${brand.name}`}
-            className="mb-5"
+            className="catalog-mobile-models mb-4 max-md:mb-3"
             items={modelGroups.map((group) => ({
               id: group.id,
               label: group.label,
@@ -175,25 +175,25 @@ export default function CatalogBrandView({
             <div className="min-w-0">
               {activeGroup ? (
                 <>
-                  <div className="mb-6 border-b border-[var(--dark-border)] pb-5">
+                  <div className="mb-4 border-b border-[var(--dark-border)] pb-4 max-md:mb-3 max-md:pb-3 md:mb-6 md:pb-5">
                     {activeModelLogo ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={activeModelLogo}
                         alt={activeGroup.label}
-                        className={getModelGroupLogoHeaderClass(activeGroup.id)}
+                        className={`${getModelGroupLogoHeaderClass(activeGroup.id)} max-md:hidden`}
                       />
                     ) : (
-                      <h2 className="font-display text-[1.75rem] font-semibold tracking-tight text-[var(--dark-text-primary)] sm:text-[2rem]">
+                      <h2 className="font-display text-[1.75rem] font-semibold tracking-tight text-[var(--dark-text-primary)] max-md:hidden sm:text-[2rem]">
                         {activeGroup.label}
                       </h2>
                     )}
                     {activeGroup.subtitle ? (
-                      <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.16em] text-[var(--dark-muted)]">
+                      <p className="mt-1 text-xs font-medium uppercase tracking-[0.16em] text-[var(--dark-muted)] max-md:hidden">
                         {activeGroup.subtitle}
                       </p>
                     ) : null}
-                    <p className="mt-2 text-sm text-[var(--dark-muted)]">
+                    <p className="mt-1 text-xs text-[var(--dark-muted)] md:mt-2 md:text-sm">
                       {activeGroup.count > 0
                         ? `${activeGroup.count} ${activeGroup.count === 1 ? 'unidad' : 'unidades'} en stock`
                         : 'Sin stock por ahora'}

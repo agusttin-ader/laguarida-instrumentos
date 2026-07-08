@@ -63,17 +63,17 @@ export default function CatalogPageContent({
         <p className="section-kicker-minimal text-[var(--palette-gold)]">
           Instrumentos · Stock disponible
         </p>
-        <div className="mt-2 flex flex-wrap items-end justify-between gap-3 max-md:gap-2">
+        <div className="mt-2 flex flex-col gap-1 max-md:gap-1.5 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-3">
           <div className="max-w-2xl">
-            <h1 className="section-heading-editorial max-md:text-[1.625rem]">
+            <h1 className="section-heading-editorial max-md:text-[1.5rem]">
               Catálogo
             </h1>
-            <p className="mt-2 max-md:mt-1.5 text-[15px] leading-relaxed text-[var(--dark-muted)] max-md:text-sm sm:text-base">
+            <p className="mt-1.5 max-md:mt-1 text-sm leading-relaxed text-[var(--dark-muted)] sm:text-base">
               Explorá por marca y elegí el modelo en stock.
             </p>
           </div>
           {!loading ? (
-            <p className="shrink-0 text-sm tabular-nums text-[var(--dark-muted)]">
+            <p className="shrink-0 text-xs tabular-nums text-[var(--dark-muted)] sm:text-sm">
               {products.length} {products.length === 1 ? 'instrumento' : 'instrumentos'}
             </p>
           ) : null}
@@ -83,7 +83,7 @@ export default function CatalogPageContent({
       <CatalogHorizontalTabs
         label="Filtrar por marca"
         ariaLabel="Marcas"
-        className="catalog-mobile-brands max-md:-mx-[var(--mobile-gutter)] mb-4 max-md:mb-3"
+        className="catalog-mobile-brands mb-4 max-md:mb-3"
         items={brandList.map((brand) => ({
           id: brand.id,
           label: brand.name,

@@ -4,8 +4,13 @@ import NextImage from "next/image";
 import { useEffect } from "react";
 import { shouldBypassNextOptimization } from "../lib/utils/imageService";
 import { usePremiumImageFade } from "../hooks/usePremiumImageFade";
+import { useResponsiveImageQuality } from "../hooks/useResponsiveImageQuality";
+import { IMAGE_QUALITY_PRESETS } from "../lib/utils/responsiveImageQuality";
 
-export default function ImageWithSkeleton({ src, alt, width, height, sizes, quality = 72, priority = false, loading = 'lazy', className = "", style = {}, fill = false, fit, imgClassName = '', imgStyle = {}, onImageLoad, disableClientPreview = true, unoptimized }) {
+export default function ImageWithSkeleton({ src, alt, width, height, sizes, quality, qualityPreset = 'galleryMain', priority = false, loading = 'lazy', className = "", style = {}, fill = false, fit, imgClassName = '', imgStyle = {}, onImageLoad, disableClientPreview = true, unoptimized }) {
+  const preset = IMAGE_QUALITY_PRESETS[qualityPreset] || IMAGE_QUALITY_PRESETS.galleryMain
+  const responsiveQuality = useResponsiveImageQuality(preset)
+  const resolvedQuality = quality ?? responsiveQuality
   const srcKey = typeof src === 'string' ? src.trim() : src
   const { loaded, onImageLoad: markImageLoaded, opacityClass, transitionClass } = usePremiumImageFade(srcKey)
   const [errored, setErrored] = useState(false);
@@ -86,7 +91,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
           width={fill ? undefined : width}
           height={fill ? undefined : height}
           sizes={sizes}
-          quality={quality}
+          quality={resolvedQuality}
           unoptimized={useUnoptimized}
           placeholder={blurDataURL ? 'blur' : 'empty'}
           blurDataURL={blurDataURL || undefined}

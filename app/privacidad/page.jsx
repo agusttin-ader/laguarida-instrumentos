@@ -1,8 +1,12 @@
 import React from 'react'
+import { absoluteUrl } from '../../lib/siteUrl'
 
 export const metadata = {
-  title: 'Política de privacidad — La Guarida',
+  title: 'Política de privacidad',
   description: 'Cómo recopilamos, usamos y protegemos tus datos en La Guarida Instrumentos.',
+  alternates: {
+    canonical: absoluteUrl('/privacidad'),
+  },
 }
 
 export const dynamic = 'force-dynamic'

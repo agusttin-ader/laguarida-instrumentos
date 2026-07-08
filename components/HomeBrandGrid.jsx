@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Button from './Button'
 import { HOME_BRANDS } from '../lib/data/homeBrands'
 
 const TILE_LAYOUT = {
@@ -122,9 +123,6 @@ function BrandTile({ brand }) {
           </span>
         </div>
 
-        <p className="line-clamp-2 text-[11px] leading-snug text-[var(--dark-muted)] sm:text-xs">
-          {brand.tagline}
-        </p>
       </div>
     </Link>
   )
@@ -145,7 +143,7 @@ export default function HomeBrandGrid() {
               Elegí por marca
             </h2>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-[var(--dark-muted)] sm:text-[15px] lg:mt-4">
-              Stock disponible, curado por fabricante. Tocá una marca para ver lo que hay hoy.
+              Stock real por fabricante. Tocá una marca para ver lo disponible hoy.
             </p>
           </div>
         </aside>
@@ -161,15 +159,12 @@ export default function HomeBrandGrid() {
           </nav>
 
           <div className="mt-6 flex justify-start md:mt-7">
-            <Link
-              href="/catalogo"
-              className="no-custom-btn group inline-flex min-h-[44px] items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-5 py-2.5 text-sm font-medium text-[var(--dark-text-secondary)] transition-all duration-300 hover:border-[rgba(var(--palette-gold-rgb),0.35)] hover:bg-white/[0.06] hover:text-[var(--dark-text-primary)]"
-            >
+            <Button href="/catalogo" variant="brand-ghost">
               Ver catálogo completo
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
-            </Link>
+            </Button>
           </div>
         </div>
       </div>

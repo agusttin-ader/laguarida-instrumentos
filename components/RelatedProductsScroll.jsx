@@ -11,7 +11,9 @@ export default function RelatedProductsScroll({ products = [] }) {
   const router = useRouter()
   const items = Array.isArray(products) ? products : []
   const itemsKey = items.map((item) => item.id || item.slug).join('|')
-  const { scrollerRef, activeIndex, goToIndex } = useNativeScrollCarousel(items.length, itemsKey)
+  const { scrollerRef, activeIndex, goToIndex } = useNativeScrollCarousel(items.length, itemsKey, {
+    align: 'center',
+  })
   const scrollAtTouchStart = useRef(0)
 
   const handleScrollerTouchStart = useCallback(() => {
@@ -45,13 +47,16 @@ export default function RelatedProductsScroll({ products = [] }) {
           {items.map((item, i) => (
             <div
               key={item.id || item.slug}
-              className="native-mobile-carousel__slide related-products-scroll__slide shrink-0 snap-center snap-always"
+              data-carousel-slide
+              className={`native-mobile-carousel__slide related-products-scroll__slide shrink-0 snap-center snap-always ${
+                i === activeIndex ? 'related-products-scroll__slide--active' : 'related-products-scroll__slide--inactive'
+              }`}
               aria-hidden={i !== activeIndex}
             >
               <div
                 role="button"
                 tabIndex={0}
-                className="related-products-scroll__card mx-auto w-full"
+                className="related-products-scroll__card w-full"
                 aria-label={`Ver ${item.name || 'producto'}`}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') {
@@ -68,11 +73,11 @@ export default function RelatedProductsScroll({ products = [] }) {
         </div>
 
         {items.length > 1 ? (
-          <div className="mt-3 flex items-center justify-center gap-3 px-0.5">
+          <div className="mt-1.5 flex items-center justify-center px-0.5">
             <span className="sr-only">
               Producto {activeIndex + 1} de {items.length}
             </span>
-            <div className="flex items-center gap-1.5" role="group" aria-label="Ir a un producto">
+            <div className="flex items-center gap-1" role="group" aria-label="Ir a un producto">
               {items.map((_, i) => (
                 <button
                   key={i}
@@ -80,22 +85,19 @@ export default function RelatedProductsScroll({ products = [] }) {
                   aria-current={i === activeIndex ? 'true' : undefined}
                   aria-label={`Producto ${i + 1}`}
                   onClick={() => goToIndex(i)}
-                  className="no-custom-btn flex h-11 w-11 shrink-0 items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
+                  className="no-custom-btn flex h-7 w-7 shrink-0 items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
                 >
                   <span
                     aria-hidden
-                    className={`block h-2 rounded-full transition-[width,background-color] duration-200 ${
+                    className={`block rounded-full transition-[width,background-color] duration-200 ${
                       i === activeIndex
-                        ? 'w-6 bg-[var(--vintage-gold)]'
-                        : 'w-2 bg-white/25'
+                        ? 'h-1.5 w-5 bg-[var(--vintage-gold)]'
+                        : 'h-1.5 w-1.5 bg-white/25'
                     }`}
                   />
                 </button>
               ))}
             </div>
-            <span className="text-[11px] tabular-nums text-[var(--dark-muted)]" aria-hidden>
-              {activeIndex + 1}/{items.length}
-            </span>
           </div>
         ) : null}
       </div>

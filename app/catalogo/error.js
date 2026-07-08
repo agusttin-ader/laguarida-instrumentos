@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import Button from '../../components/Button'
 import { layoutShellClassName } from '../../lib/layoutShell'
 
 export default function CatalogoError({ reset }) {
@@ -18,19 +18,12 @@ export default function CatalogoError({ reset }) {
         Puede ser un problema temporal de conexión o de caché del navegador. Probá recargar la página.
       </p>
       <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-        <button
-          type="button"
-          onClick={() => reset()}
-          className="no-custom-btn rounded-full bg-[var(--palette-gold)] px-5 py-2.5 text-sm font-semibold text-[#181715] transition-opacity hover:opacity-90"
-        >
+        <Button type="button" variant="gold" onClick={() => reset()}>
           Reintentar
-        </button>
-        <Link
-          href="/"
-          className="no-custom-btn rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-[var(--dark-text-primary)] transition-colors hover:border-white/25"
-        >
+        </Button>
+        <Button href="/" variant="ghost-subtle">
           Volver al inicio
-        </Link>
+        </Button>
       </div>
     </div>
   )

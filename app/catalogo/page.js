@@ -6,11 +6,18 @@ import { absoluteUrl } from '../../lib/siteUrl'
 export const revalidate = 600
 
 export const metadata = {
-  title: 'Catálogo — La Guarida',
+  title: 'Catálogo',
   description:
     'Catálogo completo de guitarras e instrumentos musicales seleccionados. Stratocaster, Telecaster, Les Paul, PRS y más.',
   alternates: {
     canonical: absoluteUrl('/catalogo'),
+  },
+  openGraph: {
+    title: 'Catálogo — La Guarida',
+    description:
+      'Catálogo completo de guitarras e instrumentos musicales seleccionados. Stratocaster, Telecaster, Les Paul, PRS y más.',
+    url: absoluteUrl('/catalogo'),
+    type: 'website',
   },
 }
 

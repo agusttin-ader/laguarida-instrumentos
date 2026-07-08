@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useMemo } from 'react'
-import Link from 'next/link'
 import ProductCard from '../../components/ProductCard'
+import Button from '../../components/Button'
 import { useFavorites } from '../../components/ProductShareAndFavorite'
 import { useProducts } from '../../hooks/useProducts'
 import { useSoftEnterAfterSlowLoad } from '../../hooks/useSoftEnterAfterSlowLoad'
@@ -21,7 +21,7 @@ export default function FavoritosPage() {
   const softGridEnter = useSoftEnterAfterSlowLoad(favoritesGridLoading, 420)
 
   return (
-    <div className="container-tight pt-6 max-md:pt-5 sm:pt-14 pb-6 max-md:pb-5 md:pb-12">
+    <div className="container-tight favoritos-page pt-6 max-md:pt-5 sm:pt-14 pb-6 max-md:pb-5 md:pb-12">
       <header className="mb-5 max-md:mb-4 md:mb-8">
         <p className="text-xs uppercase tracking-[0.22em] text-[var(--dark-muted)] mb-1">Tu selección</p>
         <h1 className="text-2xl md:text-3xl font-bold text-[var(--dark-text-primary)]">
@@ -44,9 +44,9 @@ export default function FavoritosPage() {
           <span className="text-4xl opacity-50" aria-hidden>🎸</span>
           <p className="mt-4 text-white/80 font-medium">Nada en tu selección</p>
           <p className="mt-2 text-sm text-white/55">Guardá productos con el corazón en la ficha de cada uno.</p>
-          <Link href="/catalogo" className="inline-block mt-6 px-5 py-2.5 rounded-xl bg-white/10 text-white text-sm font-semibold hover:bg-white/15 transition-colors no-custom-btn">
+          <Button href="/catalogo" variant="ghost" className="mt-6">
             Ver catálogo
-          </Link>
+          </Button>
         </div>
       ) : (
         <div

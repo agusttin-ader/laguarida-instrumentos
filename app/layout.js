@@ -28,24 +28,49 @@ const supabaseOrigin = !shouldReadCatalogFromBackup() && process.env.NEXT_PUBLIC
   : null
 
 export const metadata = {
-  title: 'La Guarida — Catálogo de Instrumentos',
-  description: 'Tienda de guitarras e instrumentos musicales en Argentina. Catálogo curado, asesoramiento profesional y atención personalizada.',
+  title: {
+    default: 'La Guarida — Guitarras e Instrumentos en Argentina',
+    template: '%s | La Guarida',
+  },
+  description:
+    'Tienda de guitarras e instrumentos musicales en Argentina. Stock real, asesoramiento profesional y atención personalizada.',
   metadataBase: new URL(siteUrl),
   robots: { index: true, follow: true },
+  keywords: [
+    'guitarras Argentina',
+    'instrumentos musicales',
+    'tienda de guitarras',
+    'guitarras eléctricas',
+    'bajos',
+    'La Guarida',
+    'La Guarida Instrumentos',
+  ],
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    images: ['/images/icons/og-image.png'],
+    title: 'La Guarida — Guitarras e Instrumentos en Argentina',
+    description:
+      'Tienda de guitarras e instrumentos musicales en Argentina. Stock real, asesoramiento profesional y atención personalizada.',
+    url: siteUrl,
+    locale: 'es_AR',
     type: 'website',
-    siteName: 'La Guarida'
+    siteName: 'La Guarida',
+    images: [{ url: '/images/icons/og-image.png', width: 1200, height: 630, alt: 'La Guarida Instrumentos' }],
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['/images/icons/og-image.png']
+    title: 'La Guarida — Guitarras e Instrumentos en Argentina',
+    description:
+      'Tienda de guitarras e instrumentos musicales en Argentina. Stock real, asesoramiento profesional y atención personalizada.',
+    images: ['/images/icons/og-image.png'],
   },
   icons: {
     icon: '/images/icons/icon-192.png',
     shortcut: '/images/icons/icon-192.png',
-    apple: '/images/icons/apple-touch-icon.png'
-  }
+    apple: '/images/icons/apple-touch-icon.png',
+  },
+  category: 'shopping',
 }
 
 export const viewport = {
@@ -60,8 +85,11 @@ export default function RootLayout({ children }) {
   const organizationJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'MusicStore',
+    '@id': `${siteUrl}/#organization`,
     name: 'La Guarida',
-    description: 'Tienda de guitarras e instrumentos musicales en Argentina. Catálogo curado, asesoramiento profesional y atención personalizada.',
+    alternateName: 'La Guarida Instrumentos',
+    description:
+      'Tienda de guitarras e instrumentos musicales en Argentina. Stock real, asesoramiento profesional y atención personalizada.',
     url: siteUrl,
     logo: absoluteUrl('/images/icons/icon-512.png'),
     image: absoluteUrl('/images/icons/og-image.png'),
@@ -69,9 +97,23 @@ export default function RootLayout({ children }) {
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',
+      email: 'leonardo_ruberti@hotmail.com',
       availableLanguage: 'Spanish',
-      areaServed: 'AR'
-    }
+      areaServed: 'AR',
+    },
+  }
+
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${siteUrl}/#website`,
+    name: 'La Guarida',
+    alternateName: 'La Guarida Instrumentos',
+    url: siteUrl,
+    description:
+      'Tienda de guitarras e instrumentos musicales en Argentina. Stock real, asesoramiento profesional y atención personalizada.',
+    inLanguage: 'es-AR',
+    publisher: { '@id': `${siteUrl}/#organization` },
   }
 
   return (
@@ -90,6 +132,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`min-h-screen ${GeistSans.className}`}>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
         <DisableZoomInApp />
         <ToastProvider>
           <FavoritesProvider>

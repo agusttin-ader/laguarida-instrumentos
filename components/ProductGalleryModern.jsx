@@ -107,7 +107,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
             fill
             className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
             sizes={GALLERY_MAIN_SIZES}
-            quality={74}
+            qualityPreset="galleryMain"
             priority={isDesktopGallery}
             disableClientPreview
           />
@@ -127,7 +127,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 fill
                 className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                 sizes={GALLERY_THUMB_SIZES}
-                quality={62}
+                qualityPreset="galleryThumb"
                 disableClientPreview
               />
             </button>
@@ -144,7 +144,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={62}
+                  qualityPreset="galleryThumb"
                   disableClientPreview
                 />
               </button>
@@ -162,7 +162,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={62}
+                  qualityPreset="galleryThumb"
                   disableClientPreview
                 />
               </button>
@@ -180,7 +180,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={62}
+                  qualityPreset="galleryThumb"
                   disableClientPreview
                 />
               </button>
@@ -198,7 +198,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={62}
+                  qualityPreset="galleryThumb"
                   disableClientPreview
                 />
               </button>
@@ -216,7 +216,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                   fill
                   className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                   sizes={GALLERY_THUMB_SIZES}
-                  quality={62}
+                  qualityPreset="galleryThumb"
                   disableClientPreview
                 />
               </button>

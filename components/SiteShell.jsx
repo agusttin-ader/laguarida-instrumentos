@@ -8,7 +8,6 @@ import { getHashSectionId, scrollToHomeSectionByIdWhenReady } from '../lib/homeS
 const Footer = dynamic(() => import('./Footer'), { ssr: true })
 const PullToRefresh = dynamic(() => import('./PullToRefresh'), { ssr: false })
 const WhatsAppFloatButton = dynamic(() => import('./WhatsAppFloatButton'), { ssr: false })
-const MobileTabBar = dynamic(() => import('./MobileTabBar'), { ssr: false })
 
 function HeaderLoading() {
   const pathname = usePathname()
@@ -36,8 +35,6 @@ export default function SiteShell({ children }) {
   const router = useRouter()
   const isAdmin = typeof pathname === 'string' && pathname.startsWith('/admin')
   const isHome = pathname === '/' || pathname === ''
-  const isGuitarProductPage =
-    typeof pathname === 'string' && /^\/guitars\/[^/]+$/u.test(pathname)
   const mainTopPad = !isHome ? 'md:pt-0' : 'pt-0'
 
   const handleRefresh = useCallback(() => {
@@ -57,15 +54,12 @@ export default function SiteShell({ children }) {
     const isProduct =
       typeof pathname === 'string' && /^\/guitars\/[^/]+$/u.test(pathname)
 
-    const admin = typeof pathname === 'string' && pathname.startsWith('/admin')
-
     document.body.classList.toggle('page-home', isHomePage)
     document.body.classList.toggle('page-internal', !isHomePage)
     document.body.classList.toggle('page-product', isProduct)
-    document.body.classList.toggle('has-mobile-tabbar', !isProduct && !admin)
 
     return () => {
-      document.body.classList.remove('page-home', 'page-internal', 'page-product', 'has-mobile-tabbar')
+      document.body.classList.remove('page-home', 'page-internal', 'page-product')
     }
   }, [pathname])
 
@@ -115,11 +109,7 @@ export default function SiteShell({ children }) {
     return () => window.removeEventListener('hashchange', onHashChange)
   }, [pathname])
 
-  const mainMobileBottomPad = isGuitarProductPage
-    ? 'max-md:pb-[max(4.5rem,calc(3.5rem+env(safe-area-inset-bottom)))]'
-    : isHome
-      ? 'max-md:pb-0'
-      : 'max-md:pb-[max(5.25rem,calc(4.25rem+env(safe-area-inset-bottom)))]'
+  const mainMobileBottomPad = 'max-md:pb-[max(3.5rem,calc(2.75rem+env(safe-area-inset-bottom)))]'
 
   return (
     <>
@@ -134,9 +124,8 @@ export default function SiteShell({ children }) {
               {children}
             </main>
             <Footer />
-            {!isGuitarProductPage ? <WhatsAppFloatButton /> : null}
           </PullToRefresh>
-          {!isGuitarProductPage ? <MobileTabBar /> : null}
+          <WhatsAppFloatButton />
         </>
       ) : (
         <main>{children}</main>

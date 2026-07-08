@@ -9,7 +9,6 @@ import ProductShareAndFavorite from '../../../components/ProductShareAndFavorite
 import ProductPageCTA from '../../../components/ProductPageCTA'
 import ProductDetailInfoPanel from '../../../components/ProductDetailInfoPanel'
 import ProductDetailSpecSheet from '../../../components/ProductDetailSpecSheet'
-import ProductMobileStickyCTA from '../../../components/ProductMobileStickyCTA'
 import RelatedProductsScroll from '../../../components/RelatedProductsScroll'
 import { parseNumericPriceForSchema } from '../../../lib/utils/normalizeProduct'
 import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
@@ -18,6 +17,7 @@ import { buildWaMeHref, whatsAppProductMessage } from '../../../lib/whatsappWeb'
 import { descriptionLooksLikeMarkdown, markdownToPlainText } from '../../../lib/utils/descriptionMarkdown'
 import ProductDescriptionMarkdown from '../../../components/ProductDescriptionMarkdown'
 import ProductDetailLogoMark from '../../../components/ProductDetailLogoMark'
+import Button from '../../../components/Button'
 import {
   getProductDetailDisplayTitle,
   resolveProductBrandLogo,
@@ -293,7 +293,9 @@ export default async function GuitarPage({ params }) {
         <div className="rounded-2xl border border-[var(--dark-border)] bg-[var(--dark-bg-card)] p-8 md:p-10 text-center">
           <h1 className="text-xl font-semibold text-[var(--dark-text-primary)]">Producto no encontrado</h1>
           <p className="mt-2 text-sm text-[var(--dark-muted)]">No encontramos ese instrumento. Revisá el catálogo o contactanos por WhatsApp.</p>
-          <a href="/catalogo" className="no-custom-btn mt-6 inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] text-[var(--dark-text-primary)] font-medium text-sm hover:bg-white/5 transition-colors">Ver catálogo</a>
+          <Button href="/catalogo" variant="ghost-subtle" className="mt-6">
+            Ver catálogo
+          </Button>
         </div>
       </div>
     )
@@ -377,6 +379,15 @@ export default async function GuitarPage({ params }) {
   const aggregateRatingValue = toFiniteNumber(product.aggregate_rating)
   const reviewCountValue = toFiniteNumber(product.review_count)
   const reviewsForSchema = mapReviewsForSchema(product.reviews).slice(0, 5)
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: absoluteUrl('/') },
+      { '@type': 'ListItem', position: 2, name: 'Catálogo', item: absoluteUrl('/catalogo') },
+      { '@type': 'ListItem', position: 3, name: product.name, item: productUrl },
+    ],
+  }
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -411,6 +422,7 @@ export default async function GuitarPage({ params }) {
   return (
     <div className="product-detail-page min-h-screen w-full min-w-0 max-md:overflow-x-clip">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
       {/* Sección galería: 100% ancho — breadcrumb, título a la izquierda, galería moderna */}
       <section className="product-detail-hero-section w-full min-w-0 bg-[var(--dark-surface-2)] max-md:px-0 px-4 pt-0 pb-5 max-lg:mx-0 max-md:rounded-b-[20px] sm:px-5 sm:pt-6 sm:pb-10 md:px-6 md:pt-3 lg:-mx-8 lg:px-8 lg:pb-10 rounded-b-[24px] md:rounded-b-[32px]">
@@ -454,7 +466,7 @@ export default async function GuitarPage({ params }) {
       </section>
 
       {/* Móvil: precio y acciones primero. Desktop lg+: dos columnas — panel (izq) | compra sticky (der). */}
-      <section className="container-tight w-full pt-5 max-md:pt-3 sm:pt-10 md:pt-12 pb-6 max-md:pb-[max(5rem,calc(4rem+env(safe-area-inset-bottom)))] sm:pb-10 md:pb-16">
+      <section className="container-tight w-full pt-5 max-md:pt-3 sm:pt-10 md:pt-12 pb-6 max-md:pb-6 sm:pb-10 md:pb-16">
         <div className="grid w-full grid-cols-1 gap-5 max-md:gap-4 sm:gap-10 md:gap-12 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
           <div className="order-2 min-w-0 lg:order-1">
             <ProductDetailInfoPanel highlights={product.highlights}>
@@ -508,13 +520,11 @@ export default async function GuitarPage({ params }) {
       </section>
 
       {relatedProducts && relatedProducts.length > 0 && (
-        <section className="container-tight mt-5 max-md:mt-4 sm:mt-12 md:mt-16 pb-4 sm:pb-10 md:pb-16" aria-labelledby="related-heading">
-          <h2 id="related-heading" className="section-title-premium section-underline-ocre text-[var(--dark-text-primary)] mb-3 max-md:mb-3 sm:mb-6">También te recomendamos</h2>
+        <section className="container-tight mt-5 max-md:mt-4 sm:mt-12 md:mt-16 pb-0 max-md:pb-0 sm:pb-10 md:pb-16" aria-labelledby="related-heading">
+          <h2 id="related-heading" className="section-title-premium section-underline-ocre text-[var(--dark-text-primary)] mb-2.5 max-md:mb-2 sm:mb-6">También te recomendamos</h2>
           <RelatedProductsScroll products={relatedProducts} />
         </section>
       )}
-
-      <ProductMobileStickyCTA price={product.price} consultHref={consultHref} productName={product.name} />
     </div>
   )
 }

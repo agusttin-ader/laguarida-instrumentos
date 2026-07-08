@@ -28,7 +28,7 @@ export default function About({ compactTop = false }) {
               <div className="prose prose-sm max-w-none text-base text-[var(--dark-text-secondary)] md:hidden [&>p]:mb-0 [&>p]:leading-relaxed [&>p]:text-base">
                 <p>
                   La Guarida nació como un proyecto personal y creció como un refugio para la música: honestidad,
-                  instrumentos curados y atención directa. Si tenés dudas, escribinos.
+                  instrumentos seleccionados y atención directa. Si tenés dudas, escribinos.
                 </p>
               </div>
 
@@ -47,18 +47,6 @@ export default function About({ compactTop = false }) {
               <p className="text-lg italic leading-relaxed text-[var(--dark-text-secondary)] sm:text-[1.05rem] md:text-xl md:leading-[1.65]">
                 Hecho por un músico, para músicos.
               </p>
-
-              <div className="mt-5 flex flex-wrap gap-2.5 sm:gap-3 md:mt-6">
-                <span className="inline-flex items-center rounded-full border border-[var(--dark-border)] bg-white/[0.04] px-3 py-1.5 sm:px-3.5 text-[11px] sm:text-[12px] font-medium tracking-[0.01em] text-[var(--dark-text-secondary)]">
-                  Asesoramiento real
-                </span>
-                <span className="inline-flex items-center rounded-full border border-[var(--dark-border)] bg-white/[0.04] px-3 py-1.5 sm:px-3.5 text-[11px] sm:text-[12px] font-medium tracking-[0.01em] text-[var(--dark-text-secondary)]">
-                  Instrumentos seleccionados
-                </span>
-                <span className="inline-flex items-center rounded-full border border-[var(--dark-border)] bg-white/[0.04] px-3 py-1.5 sm:px-3.5 text-[11px] sm:text-[12px] font-medium tracking-[0.01em] text-[var(--dark-text-secondary)]">
-                  Atención personalizada
-                </span>
-              </div>
             </aside>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Button from './Button'
 import normalizeProduct from '../lib/utils/normalizeProduct'
 import formatPriceDisplay from '../lib/utils/formatPriceDisplay'
 import { pickShowcaseImage } from '../lib/utils/pickShowcaseImage'
@@ -56,7 +57,7 @@ function EditorialBlock({ item, index, reversed = false }) {
               alt={p.name || 'Instrumento destacado'}
               fill
               sizes={EDITORIAL_IMAGE_SIZES}
-              quality={68}
+              qualityPreset="editorial"
               priority={index === 0}
               loading={index === 0 ? 'eager' : 'lazy'}
               imgClassName="object-cover object-[center_55%] sm:object-[center_60%] md:object-[center_65%]"
@@ -103,7 +104,7 @@ function EditorialBlock({ item, index, reversed = false }) {
           ) : null}
 
           {description ? (
-            <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-[var(--dark-text-secondary)] sm:mt-5 sm:text-base">
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-[var(--dark-text-secondary)] sm:mt-5 sm:text-base">
               {description}
             </p>
           ) : null}
@@ -172,12 +173,12 @@ export default function HomeFeaturedShowcase({ items = [], loading = false }) {
 export function HomeFeaturedCatalogLink() {
   return (
     <div className="mt-4 flex flex-col items-center gap-2 sm:mt-5">
-      <Link href="/catalogo" className="no-custom-btn home-featured-editorial__catalog-cta">
+      <Button href="/catalogo" variant="gold-gradient">
         Explorar catálogo
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
-      </Link>
+      </Button>
     </div>
   )
 }

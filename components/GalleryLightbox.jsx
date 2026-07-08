@@ -201,7 +201,7 @@ export default function GalleryLightbox({
                     alt={safeAlt ? `${safeAlt} — imagen ${i + 1}` : `Imagen ${i + 1}`}
                     fill
                     sizes="100vw"
-                    quality={78}
+                    qualityPreset="lightbox"
                     loading={Math.abs(i - currentIndex) <= 1 ? 'eager' : 'lazy'}
                     draggable={false}
                     className="object-contain pointer-events-none"
@@ -217,7 +217,7 @@ export default function GalleryLightbox({
               alt={safeAlt || 'Imagen ampliada'}
               fill
               sizes="100vw"
-              quality={78}
+              qualityPreset="lightbox"
               loading="eager"
               draggable={false}
               className="object-contain"

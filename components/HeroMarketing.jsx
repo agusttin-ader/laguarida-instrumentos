@@ -1,9 +1,9 @@
 'use client'
 
 import Image from 'next/image'
-import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
 import { layoutShellClassName } from '../lib/layoutShell'
+import Button from './Button'
 
 const ROTATE_MS = 5500
 
@@ -32,7 +32,7 @@ export default function HeroMarketing({ slides = [] }) {
   const visibleIndex = carouselReady ? activeIndex : 0
 
   return (
-    <div className="hero-home relative w-full max-md:min-h-[min(78dvh,600px)] sm:min-h-[min(84vh,880px)] overflow-hidden bg-[var(--dark-bg-page)] text-[var(--dark-text-primary)]">
+    <div className="hero-home relative w-full max-md:min-h-[min(82dvh,640px)] sm:min-h-[min(84vh,880px)] overflow-hidden bg-[var(--dark-bg-page)] text-[var(--dark-text-primary)]">
       <div className="absolute inset-0" aria-hidden>
         {heroSlides.length ? (
           heroSlides.map((slide, i) => (
@@ -47,7 +47,7 @@ export default function HeroMarketing({ slides = [] }) {
                 alt=""
                 fill
                 priority={i === 0}
-                quality={75}
+                quality={62}
                 sizes="100vw"
                 className="object-cover object-[center_42%] max-md:object-[center_38%] md:object-center"
               />
@@ -62,10 +62,10 @@ export default function HeroMarketing({ slides = [] }) {
       </div>
 
       <div
-        className={`${layoutShellClassName} relative mx-auto flex max-md:min-h-[min(88dvh,680px)] sm:min-h-[min(84vh,880px)] w-full max-md:items-end md:items-center px-4 max-md:pb-8 max-md:pt-[max(4.75rem,calc(4rem+env(safe-area-inset-top)))] pb-14 pt-[max(5.75rem,calc(4.5rem+env(safe-area-inset-top)))] sm:px-5 sm:pb-16 md:px-8 md:pt-[5.75rem] lg:px-10 min-[1920px]:px-12`}
+        className={`${layoutShellClassName} relative mx-auto flex max-md:min-h-[min(82dvh,640px)] sm:min-h-[min(84vh,880px)] w-full max-md:items-end md:items-center px-4 max-md:pb-8 max-md:pt-[max(4.75rem,calc(4rem+env(safe-area-inset-top)))] pb-14 pt-[max(5.75rem,calc(4.5rem+env(safe-area-inset-top)))] sm:px-5 sm:pb-16 md:px-8 md:pt-[5.75rem] lg:px-10 min-[1920px]:px-12`}
       >
         <div className="w-full max-w-xl lg:max-w-2xl">
-          <p className="mb-2.5 max-md:mb-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--palette-gold)] md:text-xs">
+          <p className="mb-2.5 max-md:mb-2 text-xs font-semibold uppercase tracking-[0.28em] text-[var(--palette-gold)] md:text-xs">
             La Guarida
           </p>
           <h1
@@ -77,25 +77,19 @@ export default function HeroMarketing({ slides = [] }) {
               buen sonido
             </span>
           </h1>
-          <p className="mt-3 max-md:mt-2.5 max-w-md text-[15px] leading-relaxed text-[#e8e0d4]/90 max-md:text-[#f0e8dc]/95 md:text-base md:mt-5">
+          <p className="mt-3 max-md:mt-2.5 max-w-md text-sm leading-relaxed text-[#e8e0d4]/90 max-md:text-[#f0e8dc]/95 md:text-base md:mt-5">
             Instrumentos seleccionados del stock real. Asesoramiento profesional y atención personalizada.
           </p>
           <div className="mt-5 max-md:mt-4 flex flex-wrap items-center gap-2.5 max-md:gap-2 md:mt-8">
-            <Link
-              href="/catalogo"
-              className="no-custom-btn inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-[var(--dark-cta-bg)] px-5 max-md:px-5 py-2.5 text-sm font-semibold text-[var(--dark-cta-text)] shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-[transform,opacity] duration-250 hover:scale-[1.02] active:scale-[0.98]"
-            >
+            <Button href="/catalogo">
               Ver catálogo
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
-            </Link>
-            <Link
-              href="#seleccion-destacada"
-              className="no-custom-btn inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/25 bg-white/10 px-5 max-md:px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition-colors duration-250 hover:bg-white/20 active:bg-white/25"
-            >
+            </Button>
+            <Button href="#seleccion-destacada" variant="ghost">
               Ver novedades
-            </Link>
+            </Button>
           </div>
         </div>
       </div>

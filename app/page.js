@@ -6,12 +6,28 @@ import { absoluteUrl } from '../lib/siteUrl'
 export const revalidate = 600
 
 export const metadata = {
-  title: 'Catálogo — La Guarida',
+  title: 'La Guarida — Guitarras e Instrumentos en Argentina',
   description:
-    'Catálogo de guitarras e instrumentos musicales en Argentina. Venta de guitarras nuevas y usados, accesorios y amplificadores. Encontrá guitarras, bajos y equipos con asesoramiento profesional.',
+    'Tienda de guitarras e instrumentos musicales en Argentina. Stock real, asesoramiento profesional y atención personalizada. Guitarras, bajos, amplificadores y accesorios.',
+  keywords: [
+    'guitarras Argentina',
+    'instrumentos musicales',
+    'tienda de guitarras',
+    'guitarras eléctricas',
+    'bajos',
+    'La Guarida',
+    'La Guarida Instrumentos',
+  ],
   alternates: {
-    canonical: absoluteUrl('/')
-  }
+    canonical: absoluteUrl('/'),
+  },
+  openGraph: {
+    title: 'La Guarida — Guitarras e Instrumentos en Argentina',
+    description:
+      'Tienda de guitarras e instrumentos musicales en Argentina. Stock real, asesoramiento profesional y atención personalizada.',
+    url: absoluteUrl('/'),
+    type: 'website',
+  },
 }
 
 export default function Page() {

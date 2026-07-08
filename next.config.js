@@ -41,6 +41,22 @@ const nextConfig = {
     // Importar solo los iconos usados de phosphor-react (menos JS en cliente)
     optimizePackageImports: ['phosphor-react'],
   },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), payment=()',
+          },
+        ],
+      },
+    ]
+  },
   images: {
     // Por defecto unoptimized: /images/* y Supabase van directo (evita HTTP 402 en Vercel).
     // Activar solo con plan/cuota: NEXT_ENABLE_IMAGE_OPTIMIZATION=true

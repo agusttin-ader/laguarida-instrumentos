@@ -1,8 +1,12 @@
 import React from 'react'
+import { absoluteUrl } from '../../lib/siteUrl'
 
 export const metadata = {
-  title: 'Términos y condiciones — La Guarida',
+  title: 'Términos y condiciones',
   description: 'Condiciones de uso del sitio y pautas comerciales de La Guarida Instrumentos.',
+  alternates: {
+    canonical: absoluteUrl('/terminos'),
+  },
 }
 
 /** Evita HTML estático cacheado con el recuadro viejo (CDN / edge). */

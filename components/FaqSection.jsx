@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react'
-import Link from 'next/link'
+import Button from './Button'
 import { usePathname } from 'next/navigation'
 import { Plus, Minus, InstagramLogo, WhatsappLogo, EnvelopeSimple } from 'phosphor-react'
 import { layoutShellClassName } from '../lib/layoutShell'
@@ -74,19 +74,16 @@ export default function FaqSection() {
             Envíos, pagos, permutas y más
           </h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-10 items-start">
-          <div className="lg:col-span-2 space-y-2 order-1">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 items-start">
+          <div className="lg:col-span-2 order-1 divide-y divide-white/[0.08] border-t border-white/[0.08]">
             {FAQ_ITEMS.map((item) => {
               const isOpen = openId === item.id
               return (
-                <div
-                  key={item.id}
-                  className={`rounded-xl border border-[var(--dark-border)] bg-[var(--dark-bg-elevated)] overflow-hidden transition-[box-shadow,border-color] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${isOpen ? 'faq-item-open shadow-[0_10px_24px_rgba(0,0,0,0.18)]' : ''}`}
-                >
+                <div key={item.id} className="overflow-hidden">
                   <button
                     type="button"
                     onClick={() => setOpenId(isOpen ? null : item.id)}
-                    className="no-custom-btn no-custom-btn--rect w-full flex items-center justify-between gap-3 px-4 sm:px-5 py-3.5 min-h-[48px] sm:min-h-0 sm:py-4 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-page)] rounded-xl hover:bg-white/5 active:bg-white/5 transition-colors touch-manipulation"
+                    className="no-custom-btn no-custom-btn--rect w-full flex items-center justify-between gap-3 py-4 min-h-[48px] sm:py-4 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-page)] hover:text-[var(--palette-gold)] active:text-[var(--palette-gold)] transition-colors touch-manipulation"
                     aria-expanded={isOpen}
                     aria-controls={`faq-answer-${item.id}`}
                     id={`faq-question-${item.id}`}
@@ -94,8 +91,8 @@ export default function FaqSection() {
                     <span className="text-[0.95rem] sm:text-base font-semibold tracking-tight text-[var(--dark-text-primary)]">
                       {item.question}
                     </span>
-                    <span className="flex-shrink-0 text-[var(--dark-text-primary)]/70" aria-hidden>
-                      {isOpen ? <Minus size={22} weight="bold" /> : <Plus size={22} weight="bold" />}
+                    <span className="flex-shrink-0 text-[var(--dark-text-primary)]/60" aria-hidden>
+                      {isOpen ? <Minus size={20} weight="bold" /> : <Plus size={20} weight="bold" />}
                     </span>
                   </button>
                   <div
@@ -105,7 +102,7 @@ export default function FaqSection() {
                     className={`grid transition-[grid-template-rows] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
                   >
                     <div className="overflow-hidden">
-                      <div className={`px-4 sm:px-5 pt-4 sm:pt-5 pb-4 sm:pb-5 transition-opacity duration-200 ease-out motion-reduce:transition-none ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
+                      <div className={`pb-4 sm:pb-5 transition-opacity duration-200 ease-out motion-reduce:transition-none ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
                         <p className="max-w-[70ch] text-[13px] leading-relaxed text-[var(--dark-text-secondary)] sm:text-sm">
                           {item.answer}
                         </p>
@@ -117,7 +114,7 @@ export default function FaqSection() {
             })}
           </div>
 
-          <aside className="order-2 mt-4 rounded-2xl border border-[rgba(var(--palette-gold-rgb),0.22)] bg-[var(--dark-bg-card)] p-4 shadow-[0_12px_32px_rgba(0,0,0,0.22)] sm:mt-0 sm:p-5 md:p-6 lg:sticky lg:top-24 lg:col-span-1">
+          <aside className="order-2 mt-2 pt-6 border-t border-white/[0.08] sm:mt-0 sm:pt-0 sm:border-t-0 lg:sticky lg:top-24 lg:col-span-1 lg:pl-8 lg:border-l lg:border-white/[0.08]">
             <p className="section-kicker-minimal mb-2 text-[var(--palette-gold)]">Contacto</p>
             <h3 className="mb-3 text-lg font-semibold tracking-tight text-[var(--dark-text-primary)] md:mb-4 md:text-xl">
               Contacto rápido
@@ -143,43 +140,39 @@ export default function FaqSection() {
               </li>
             </ul>
             <p className="section-subtitle-minimal mb-2 text-[var(--dark-muted)] md:mb-2.5">Síguenos</p>
-            <nav className="flex items-center gap-3" aria-label="Redes sociales">
+            <nav className="flex items-center gap-4" aria-label="Redes sociales">
               <a
                 href={insta}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="no-custom-btn flex h-10 w-10 items-center justify-center rounded-full border border-[var(--dark-border)] bg-white/[0.04] text-[var(--dark-text-secondary)] transition-colors hover:border-[rgba(var(--palette-gold-rgb),0.35)] hover:text-[var(--palette-gold)]"
+                className="no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors hover:text-[var(--palette-gold)]"
               >
-                <InstagramLogo size={20} weight="duotone" />
+                <InstagramLogo size={22} weight="duotone" />
               </a>
               <a
                 href={waLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
-                className="no-custom-btn flex h-10 w-10 items-center justify-center rounded-full border border-[var(--dark-border)] bg-white/[0.04] text-[var(--dark-text-secondary)] transition-colors hover:border-[rgba(var(--palette-gold-rgb),0.35)] hover:text-[var(--palette-gold)]"
+                className="no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors hover:text-[var(--palette-gold)]"
               >
-                <WhatsappLogo size={20} weight="duotone" />
+                <WhatsappLogo size={22} weight="duotone" />
               </a>
               <a
                 href={`mailto:${mail}`}
                 aria-label="Email"
-                className="no-custom-btn flex h-10 w-10 items-center justify-center rounded-full border border-[var(--dark-border)] bg-white/[0.04] text-[var(--dark-text-secondary)] transition-colors hover:border-[rgba(var(--palette-gold-rgb),0.35)] hover:text-[var(--palette-gold)]"
+                className="no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors hover:text-[var(--palette-gold)]"
               >
-                <EnvelopeSimple size={20} weight="duotone" />
+                <EnvelopeSimple size={22} weight="duotone" />
               </a>
             </nav>
           </aside>
           </div>
           <div className="mt-3 sm:mt-5 md:mt-6 flex justify-center">
-            <Link
-              href="/"
-              onClick={handleVolverAlHome}
-              className="inline-flex items-center justify-center min-h-[48px] sm:min-h-[44px] py-3 sm:py-3 px-6 sm:px-7 rounded-full border border-white/15 bg-[var(--dark-cta-bg)] text-[var(--dark-cta-text)] text-[13px] sm:text-sm font-semibold hover:bg-[var(--dark-cta-hover)] active:opacity-90 transition-colors no-custom-btn touch-manipulation w-full max-w-[280px] sm:max-w-none"
-            >
+            <Button href="/" onClick={handleVolverAlHome} size="full" className="max-w-[280px] sm:max-w-none sm:w-auto">
               Volver al home
-            </Link>
+            </Button>
           </div>
       </div>
     </section>

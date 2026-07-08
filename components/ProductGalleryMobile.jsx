@@ -36,7 +36,7 @@ export default function ProductGalleryMobile({ allImages, altBase = '', imagesKe
             imgClassName="object-contain object-center p-1"
             imgStyle={{ transform: 'none', WebkitBackfaceVisibility: 'visible' }}
             sizes={MOBILE_CAROUSEL_SIZES}
-            quality={74}
+            qualityPreset="galleryMain"
             priority
             disableClientPreview
           />
@@ -63,7 +63,7 @@ export default function ProductGalleryMobile({ allImages, altBase = '', imagesKe
                   imgClassName="object-contain object-center p-1"
                   imgStyle={{ transform: 'none', WebkitBackfaceVisibility: 'visible' }}
                   sizes={MOBILE_CAROUSEL_SIZES}
-                  quality={i === 0 ? 74 : 62}
+                  qualityPreset={i === 0 ? 'galleryMain' : 'galleryThumb'}
                   priority={Math.abs(i - activeIndex) <= 1}
                   disableClientPreview
                 />
