@@ -82,11 +82,18 @@ export default function Footer({ compact = false }){
           </div>
         </div>
         {!compact && (
-          <div className="site-footer__credit mt-4 sm:mt-5 flex items-center justify-center">
-            <p className="footer-credit text-[10px] sm:text-[11px] font-normal normal-case tracking-[0.02em] text-center max-w-md">
-              Diseño e interfaz — Agustín Ader
-            </p>
-          </div>
+          <>
+            <div className="site-footer__disclaimer mt-3 sm:mt-4 flex items-center justify-center px-1">
+              <p className="footer-disclaimer text-[9px] sm:text-[10px] font-normal normal-case leading-[1.55] tracking-[0.01em] text-center max-w-2xl lg:max-w-3xl">
+                Fender, Gibson, Epiphone, PRS, Ibanez, Squier y las demás marcas mencionadas son marcas registradas de sus respectivos propietarios. Sus logotipos se utilizan únicamente para identificar los productos comercializados por La Guarida Instrumentos. La Guarida Instrumentos no afirma ser distribuidor oficial salvo que se indique expresamente.
+              </p>
+            </div>
+            <div className="site-footer__credit mt-3 sm:mt-4 flex items-center justify-center">
+              <p className="footer-credit text-[10px] sm:text-[11px] font-normal normal-case tracking-[0.02em] text-center max-w-md">
+                Diseño e interfaz — Agustín Ader
+              </p>
+            </div>
+          </>
         )}
       </div>
     </footer>
