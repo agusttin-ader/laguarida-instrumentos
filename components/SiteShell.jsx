@@ -4,6 +4,8 @@ import { useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { usePathname, useRouter } from 'next/navigation'
 import { getHashSectionId, scrollToHomeSectionByIdWhenReady } from '../lib/homeSectionScroll'
+import MotionProvider from './motion/MotionProvider'
+import PageTransition from './motion/PageTransition'
 
 const Footer = dynamic(() => import('./Footer'), { ssr: true })
 const PullToRefresh = dynamic(() => import('./PullToRefresh'), { ssr: false })
@@ -116,15 +118,16 @@ export default function SiteShell({ children }) {
       {!isAdmin ? (
         <>
           <Header />
-          <PullToRefresh onRefresh={handleRefresh}>
-            <main
-              key={pathname}
-              className={`min-h-0 w-full min-w-0 max-md:overflow-x-clip pb-[max(1rem,env(safe-area-inset-bottom,0px))] ${mainMobileBottomPad} md:pb-0 ${mainTopPad}`}
-            >
-              {children}
-            </main>
-            <Footer />
-          </PullToRefresh>
+          <MotionProvider>
+            <PullToRefresh onRefresh={handleRefresh}>
+              <main
+                className={`min-h-0 w-full min-w-0 max-md:overflow-x-clip pb-[max(1rem,env(safe-area-inset-bottom,0px))] ${mainMobileBottomPad} md:pb-0 ${mainTopPad}`}
+              >
+                <PageTransition>{children}</PageTransition>
+              </main>
+              <Footer />
+            </PullToRefresh>
+          </MotionProvider>
           <WhatsAppFloatButton />
         </>
       ) : (

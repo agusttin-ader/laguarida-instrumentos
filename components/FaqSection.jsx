@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { Plus, Minus, InstagramLogo, WhatsappLogo, EnvelopeSimple } from 'phosphor-react'
 import { layoutShellClassName } from '../lib/layoutShell'
 import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
+import FadeInView from './motion/FadeInView'
 const FAQ_ITEMS = [
   {
     id: 'envios',
@@ -67,19 +68,21 @@ export default function FaqSection() {
       <div
         className={`${layoutShellClassName} sm:px-5 md:px-6 lg:px-8 pt-1 max-md:pt-0 sm:pt-3 md:pt-4 lg:pt-5 pb-2 max-md:pb-0 sm:pb-4 md:pb-5 lg:pb-6`}
       >
-          <p className="section-kicker-minimal section-underline-ocre mb-2 text-[var(--palette-gold)] sm:mb-3">
-            Preguntas frecuentes
-          </p>
-          <h2 id="faq-heading" className="section-heading-editorial mb-3 sm:mb-4 md:mb-5">
-            Envíos, pagos, permutas y más
-          </h2>
+          <FadeInView>
+            <p className="section-kicker-minimal section-underline-ocre mb-2 text-[var(--palette-gold)] sm:mb-3">
+              Preguntas frecuentes
+            </p>
+            <h2 id="faq-heading" className="section-heading-editorial mb-3 sm:mb-4 md:mb-5">
+              Envíos, pagos, permutas y más
+            </h2>
+          </FadeInView>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 items-start">
           <div className="lg:col-span-2 order-1 divide-y divide-white/[0.08] border-t border-white/[0.08]">
-            {FAQ_ITEMS.map((item) => {
+            {FAQ_ITEMS.map((item, index) => {
               const isOpen = openId === item.id
               return (
-                <div key={item.id} className="overflow-hidden">
+                <FadeInView key={item.id} delay={index * 0.05} className="overflow-hidden">
                   <button
                     type="button"
                     onClick={() => setOpenId(isOpen ? null : item.id)}
@@ -109,12 +112,12 @@ export default function FaqSection() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </FadeInView>
               )
             })}
           </div>
 
-          <aside className="order-2 mt-2 pt-6 border-t border-white/[0.08] sm:mt-0 sm:pt-0 sm:border-t-0 lg:sticky lg:top-24 lg:col-span-1 lg:pl-8 lg:border-l lg:border-white/[0.08]">
+          <FadeInView as="aside" className="order-2 mt-2 pt-6 border-t border-white/[0.08] sm:mt-0 sm:pt-0 sm:border-t-0 lg:sticky lg:top-24 lg:col-span-1 lg:pl-8 lg:border-l lg:border-white/[0.08]" delay={0.1}>
             <p className="section-kicker-minimal mb-2 text-[var(--palette-gold)]">Contacto</p>
             <h3 className="mb-3 text-lg font-semibold tracking-tight text-[var(--dark-text-primary)] md:mb-4 md:text-xl">
               Contacto rápido
@@ -167,13 +170,13 @@ export default function FaqSection() {
                 <EnvelopeSimple size={22} weight="duotone" />
               </a>
             </nav>
-          </aside>
+          </FadeInView>
           </div>
-          <div className="mt-3 sm:mt-5 md:mt-6 flex justify-center">
+          <FadeInView className="mt-3 sm:mt-5 md:mt-6 flex justify-center" delay={0.15}>
             <Button href="/" onClick={handleVolverAlHome} size="full" className="max-w-[280px] sm:max-w-none sm:w-auto">
               Volver al home
             </Button>
-          </div>
+          </FadeInView>
       </div>
     </section>
   )

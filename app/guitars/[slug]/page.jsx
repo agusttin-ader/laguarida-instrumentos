@@ -23,6 +23,7 @@ import {
   resolveProductBrandLogo,
 } from '../../../lib/catalog/resolveProductBrandLogo'
 import { productIsCustomShopGuitar } from '../../../lib/catalog/catalogTaxonomy'
+import FadeInView from '../../../components/motion/FadeInView'
 
 /** ISR: menos llamadas a Supabase; tras guardar en admin se invalida con revalidatePath/revalidateTag. */
 export const revalidate = 300
@@ -427,13 +428,13 @@ export default async function GuitarPage({ params }) {
       {/* Sección galería: 100% ancho — breadcrumb, título a la izquierda, galería moderna */}
       <section className="product-detail-hero-section w-full min-w-0 bg-[var(--dark-surface-2)] max-md:px-0 px-4 pt-0 pb-5 max-lg:mx-0 max-md:rounded-b-[20px] sm:px-5 sm:pt-6 sm:pb-10 md:px-6 md:pt-3 lg:-mx-8 lg:px-8 lg:pb-10 rounded-b-[24px] md:rounded-b-[32px]">
         <div className="container-tight w-full flex flex-col">
-          <div className="product-detail-gallery-wrap order-1 md:order-4">
+          <FadeInView className="product-detail-gallery-wrap order-1 md:order-4">
             <ProductGalleryModern
               image_url={galleryImageUrl}
               images={galleryImages}
               altBase={`${product.name}${product.brand ? ' — ' + product.brand : ''}`}
             />
-          </div>
+          </FadeInView>
           <nav aria-label="Breadcrumb" className="order-2 md:order-1 w-full mb-0 mt-3 md:mb-4 md:mt-0">
             <ol className="product-detail-breadcrumb flex flex-wrap items-center gap-1.5 text-[12px] max-md:text-[13px] sm:text-[14px] md:text-[15px] xl:text-base text-[var(--dark-muted)]">
               <li><a href="/" className="hover:text-[var(--dark-text-primary)] transition-colors">Inicio</a></li>
@@ -445,7 +446,7 @@ export default async function GuitarPage({ params }) {
               </li>
             </ol>
           </nav>
-          <div className="product-detail-identity order-3 md:order-3 mb-6 max-md:mb-0 max-md:mt-2 md:mb-8">
+          <FadeInView className="product-detail-identity order-3 md:order-3 mb-6 max-md:mb-0 max-md:mt-2 md:mb-8" delay={0.05}>
             {headerLogo ? (
               <ProductDetailLogoMark logo={headerLogo} size="hero" />
             ) : null}
@@ -461,14 +462,14 @@ export default async function GuitarPage({ params }) {
             >
               {headerLogo ? displayTitle : product.name}
             </h1>
-          </div>
+          </FadeInView>
         </div>
       </section>
 
       {/* Móvil: precio y acciones primero. Desktop lg+: dos columnas — panel (izq) | compra sticky (der). */}
       <section className="container-tight w-full pt-5 max-md:pt-3 sm:pt-10 md:pt-12 pb-6 max-md:pb-6 sm:pb-10 md:pb-16">
         <div className="grid w-full grid-cols-1 gap-5 max-md:gap-4 sm:gap-10 md:gap-12 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
-          <div className="order-2 min-w-0 lg:order-1">
+          <FadeInView className="order-2 min-w-0 lg:order-1" delay={0.08}>
             <ProductDetailInfoPanel highlights={product.highlights}>
               <div className="product-detail-desc-stack">
                 {descriptionUseMarkdown ? (
@@ -495,11 +496,12 @@ export default async function GuitarPage({ params }) {
                 )}
               </div>
             </ProductDetailInfoPanel>
-          </div>
+          </FadeInView>
 
-          <div
+          <FadeInView
             id="pdp-primary-cta"
             className="product-detail-primary-block order-1 min-w-0 space-y-4 max-md:space-y-3 sm:space-y-6 scroll-mt-[calc(var(--site-header-h,3.25rem)+0.75rem)] lg:order-2 lg:sticky lg:top-24 lg:self-start"
+            delay={0.04}
           >
             {product.price && (
               <p className="price-highlight product-detail-price text-2xl sm:text-[30px] md:text-[32px] lg:text-[34px] xl:text-[2.5rem] min-[1920px]:text-[2.85rem] min-[2560px]:text-[3.1rem] font-bold tracking-tight">{formatPriceDisplay(product.price)}</p>
@@ -515,15 +517,15 @@ export default async function GuitarPage({ params }) {
             </ProductPageCTA>
 
             {hasFicha ? <ProductDetailSpecSheet specs={productSpecRows} /> : null}
-          </div>
+          </FadeInView>
         </div>
       </section>
 
       {relatedProducts && relatedProducts.length > 0 && (
-        <section className="container-tight mt-5 max-md:mt-4 sm:mt-12 md:mt-16 pb-0 max-md:pb-0 sm:pb-10 md:pb-16" aria-labelledby="related-heading">
+        <FadeInView as="section" className="container-tight mt-5 max-md:mt-4 sm:mt-12 md:mt-16 pb-0 max-md:pb-0 sm:pb-10 md:pb-16" aria-labelledby="related-heading">
           <h2 id="related-heading" className="section-title-premium section-underline-ocre text-[var(--dark-text-primary)] mb-2.5 max-md:mb-2 sm:mb-6">También te recomendamos</h2>
           <RelatedProductsScroll products={relatedProducts} />
-        </section>
+        </FadeInView>
       )}
     </div>
   )

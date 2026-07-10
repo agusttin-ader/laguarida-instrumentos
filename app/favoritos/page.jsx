@@ -6,6 +6,7 @@ import Button from '../../components/Button'
 import { useFavorites } from '../../components/ProductShareAndFavorite'
 import { useProducts } from '../../hooks/useProducts'
 import { useSoftEnterAfterSlowLoad } from '../../hooks/useSoftEnterAfterSlowLoad'
+import FadeInView from '../../components/motion/FadeInView'
 
 export default function FavoritosPage() {
   const { slugs } = useFavorites()
@@ -22,7 +23,7 @@ export default function FavoritosPage() {
 
   return (
     <div className="container-tight favoritos-page pt-6 max-md:pt-5 sm:pt-14 pb-6 max-md:pb-5 md:pb-12">
-      <header className="mb-5 max-md:mb-4 md:mb-8">
+      <FadeInView as="header" className="mb-5 max-md:mb-4 md:mb-8">
         <p className="text-xs uppercase tracking-[0.22em] text-[var(--dark-muted)] mb-1">Tu selección</p>
         <h1 className="text-2xl md:text-3xl font-bold text-[var(--dark-text-primary)]">
           Favoritos
@@ -32,7 +33,7 @@ export default function FavoritosPage() {
             ? 'Aún no tenés productos guardados. Agregá desde la ficha de cada producto haciendo click en el corazón.'
             : `${slugs.length} ${slugs.length === 1 ? 'producto' : 'productos'} guardado${slugs.length === 1 ? '' : 's'} en este dispositivo.`}
         </p>
-      </header>
+      </FadeInView>
 
       {loading && slugs.length > 0 ? (
         <div className="w-full py-10 md:py-14 flex flex-col items-center justify-center gap-3">

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Button from './Button'
 import { HOME_BRANDS } from '../lib/data/homeBrands'
+import FadeInView from './motion/FadeInView'
 
 const TILE_LAYOUT = {
   fender: 'col-span-1 md:col-span-6 md:min-h-[6.25rem] lg:min-h-[7.25rem]',
@@ -80,14 +81,13 @@ function BrandLogoGroup({ brand, type }) {
 }
 
 function BrandTile({ brand }) {
-  const layout = TILE_LAYOUT[brand.id] ?? TILE_LAYOUT.otros
   const type = TILE_TYPE[brand.id] ?? 'default'
   const hasLogo = Boolean(brand.logo)
 
   return (
     <Link
       href={`/catalogo?marca=${encodeURIComponent(brand.filterBrand)}`}
-      className={`home-brand-tile group relative flex overflow-hidden rounded-2xl border border-white/[0.08] bg-[var(--dark-bg-card)]/90 p-4 transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-0.5 hover:border-[color-mix(in_srgb,var(--brand-accent)_45%,transparent)] hover:shadow-[0_18px_48px_rgba(0,0,0,0.38)] active:scale-[0.995] sm:p-5 md:rounded-[1.25rem] md:p-5 lg:p-6 ${layout}`}
+      className={`home-brand-tile group relative flex h-full w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-[var(--dark-bg-card)]/90 p-4 transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-0.5 hover:border-[color-mix(in_srgb,var(--brand-accent)_45%,transparent)] hover:shadow-[0_18px_48px_rgba(0,0,0,0.38)] active:scale-[0.995] sm:p-5 md:rounded-[1.25rem] md:p-5 lg:p-6`}
       style={{ '--brand-accent': brand.accent }}
       aria-label={`Ver ${brand.name}`}
     >
@@ -132,7 +132,7 @@ export default function HomeBrandGrid() {
   return (
     <div aria-labelledby="marcas-heading" className="home-brand-grid w-full">
       <div className="md:grid md:grid-cols-12 md:items-start md:gap-8 lg:gap-10 xl:gap-12">
-        <aside className="home-brand-grid__aside mb-7 md:col-span-4 md:mb-0 xl:col-span-3">
+        <FadeInView as="aside" className="home-brand-grid__aside mb-7 md:col-span-4 md:mb-0 xl:col-span-3">
           <div className="relative pl-0 lg:pl-1">
             <span
               className="mb-4 hidden h-16 w-px bg-gradient-to-b from-[var(--palette-gold)] via-[var(--palette-orange)] to-transparent lg:block"
@@ -146,15 +146,17 @@ export default function HomeBrandGrid() {
               Stock real por fabricante. Tocá una marca para ver lo disponible hoy.
             </p>
           </div>
-        </aside>
+        </FadeInView>
 
         <div className="md:col-span-8 xl:col-span-9">
           <nav
             aria-label="Marcas del catálogo"
             className="home-brand-bento grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-12 md:gap-3.5"
           >
-            {HOME_BRANDS.map((brand) => (
-              <BrandTile key={brand.id} brand={brand} />
+            {HOME_BRANDS.map((brand, index) => (
+              <FadeInView key={brand.id} delay={index * 0.05} className={TILE_LAYOUT[brand.id] ?? TILE_LAYOUT.otros}>
+                <BrandTile brand={brand} />
+              </FadeInView>
             ))}
           </nav>
 
