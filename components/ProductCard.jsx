@@ -37,36 +37,62 @@ function ProductCardImage({
   onReady,
   pointerEventsNone = false,
   sizes = CARD_IMAGE_SIZES,
+  brandLogo = null,
 }) {
   const { loaded, onImageLoad, opacityClass, transitionClass } = usePremiumImageFade(src)
   const cardQuality = useResponsiveImageQuality(IMAGE_QUALITY_PRESETS.card)
+  const [errored, setErrored] = useState(false)
+
+  useEffect(() => {
+    setErrored(false)
+  }, [src])
 
   const handleLoad = useCallback(() => {
+    setErrored(false)
     onImageLoad()
     onReady?.()
   }, [onImageLoad, onReady])
 
+  const handleError = useCallback(() => {
+    setErrored(true)
+  }, [])
+
+  const showFallback = !loaded || errored
+
   return (
     <>
-      {!loaded ? (
-        <div className="absolute inset-0 z-0 bg-[var(--dark-surface-2)]" aria-hidden />
+      {showFallback ? (
+        <div className="product-card-image-fallback absolute inset-0 z-0" aria-hidden>
+          {brandLogo?.src ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={brandLogo.src}
+              alt=""
+              className="product-card-image-fallback__logo"
+            />
+          ) : (
+            <span className="product-card-image-fallback__mark">LG</span>
+          )}
+        </div>
       ) : null}
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes={sizes}
-        quality={cardQuality}
-        unoptimized={imageService.shouldBypassNextOptimization(src)}
-        priority={priority}
-        loading={eager ? 'eager' : 'lazy'}
-        fetchPriority={eager ? 'high' : 'low'}
-        decoding="async"
-        onLoad={handleLoad}
-        onError={() => {}}
-        className={`${opacityClass} ${transitionClass} ${pointerEventsNone ? 'pointer-events-none' : ''} ${fitClassName}`}
-        style={style}
-      />
+      {!errored ? (
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes={sizes}
+          quality={cardQuality}
+          unoptimized={imageService.shouldBypassNextOptimization(src)}
+          priority={priority}
+          loading={eager ? 'eager' : 'lazy'}
+          fetchPriority={eager ? 'high' : 'auto'}
+          decoding="async"
+          onLoad={handleLoad}
+          onError={handleError}
+          className={`${opacityClass} ${transitionClass} ${pointerEventsNone ? 'pointer-events-none' : ''} ${fitClassName}`}
+          style={style}
+        />
+      ) : null}
     </>
   )
 }
@@ -74,12 +100,15 @@ function ProductCardImage({
 const ProductCard = React.memo(function ProductCard({
   item,
   priority = false,
+  /** Carga eager sin priority (p. ej. resto de la primera fila desktop). */
+  eager = false,
   imageFit = 'cover',
   galleryDesktopOnly = false,
   maxGalleryImages = 3,
   inCarousel = false,
   showBrandLogo = true,
 }) {
+  const loadEager = Boolean(priority || eager)
   const p = normalizeProduct(item)
   const catalogSingleImage = maxGalleryImages <= 1
   const [desktopGalleryUnlocked, setDesktopGalleryUnlocked] = useState(() =>
@@ -219,18 +248,19 @@ const ProductCard = React.memo(function ProductCard({
               src={primarySrc}
               alt={titleText || 'Imagen del producto'}
               priority={priority}
-              eager={priority}
+              eager={loadEager}
               fitClassName={imageFitClassName}
               style={{ objectPosition: 'center' }}
               pointerEventsNone={inCarousel}
               sizes={cardImageSizes}
+              brandLogo={brandLogo}
             />
           ) : (
             imageList.map((src, idx) => {
               if (Math.abs(idx - galleryIndex) > GALLERY_MOUNT_RADIUS) return null
               const isActive = idx === galleryIndex
               const isMainSlot = idx === 0
-              const eager = Boolean(priority && isMainSlot && isActive)
+              const slotEager = Boolean(loadEager && isMainSlot && isActive)
               return (
                 <div
                   key={idx}
@@ -245,10 +275,11 @@ const ProductCard = React.memo(function ProductCard({
                     src={src}
                     alt={idx === 0 ? (titleText || 'Imagen del producto') : `Imagen ${idx + 1} de ${titleText || 'producto'}`}
                     priority={Boolean(priority && isMainSlot && isActive)}
-                    eager={eager}
+                    eager={slotEager}
                     fitClassName={imageFitClassName}
                     style={{ objectPosition: 'center' }}
                     sizes={cardImageSizes}
+                    brandLogo={brandLogo}
                   />
                 </div>
               )
@@ -256,8 +287,13 @@ const ProductCard = React.memo(function ProductCard({
           )}
         </>
       ) : (
-        <div className="w-full h-full flex items-center justify-center bg-[var(--dark-surface-2)] animate-pulse">
-          <span className="text-3xl opacity-40">🎸</span>
+        <div className="product-card-image-fallback absolute inset-0 flex items-center justify-center" aria-hidden>
+          {brandLogo?.src ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={brandLogo.src} alt="" className="product-card-image-fallback__logo" />
+          ) : (
+            <span className="product-card-image-fallback__mark">LG</span>
+          )}
         </div>
       )}
       {hasGallery && !isMobile ? (

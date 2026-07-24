@@ -9,7 +9,9 @@ export default function ProductGrid({
   items: itemsProp,
   parentLoading = false,
   maxGalleryImages = 1,
-  priorityFirstCard = false
+  priorityFirstCard = false,
+  /** Desktop (≥768): prioriza la primera fila (2 en md, 3 en lg). */
+  priorityFirstCount = 1,
 }) {
   const fetchSelf = itemsProp === undefined
   const { products, loading, error } = useProducts({ shuffleCatalog: true, enabled: fetchSelf })
@@ -88,19 +90,30 @@ export default function ProductGrid({
       ) : null}
 
       <div className="product-grid--enter grid w-full min-w-0 grid-cols-2 items-start gap-x-2.5 gap-y-3 max-md:gap-x-2.5 max-md:gap-y-3 md:auto-rows-fr md:items-stretch md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
-        {filteredItems.map((item, idx) => (
+        {filteredItems.map((item, idx) => {
+          const eagerCount = priorityFirstCard ? Math.max(1, priorityFirstCount) : 0
+          const isLcp = priorityFirstCard && idx === 0
+          const isEagerRow = priorityFirstCard && idx < eagerCount
+          const isFirstRowDesktop = idx < 3
+          return (
           <div
             key={`${item.id ?? item.slug ?? idx}-${filters.q || ''}`}
-            className="home-grid-product-cell flex min-w-0 w-full max-md:h-auto md:h-full [content-visibility:auto] [contain-intrinsic-size:auto_18rem] md:[contain-intrinsic-size:auto_28rem]"
+            className={`home-grid-product-cell flex min-w-0 w-full max-md:h-auto md:h-full [contain-intrinsic-size:auto_18rem] md:[contain-intrinsic-size:auto_28rem] ${
+              isFirstRowDesktop
+                ? 'max-md:[content-visibility:auto] md:[content-visibility:visible]'
+                : '[content-visibility:auto]'
+            }`}
             style={{ '--enter-i': idx }}
           >
             <ProductCard
               item={item}
-              priority={priorityFirstCard && idx === 0}
+              priority={isLcp}
+              eager={isEagerRow && !isLcp}
               maxGalleryImages={maxGalleryImages}
             />
           </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

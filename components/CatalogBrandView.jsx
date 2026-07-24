@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation'
 import { Fragment, useEffect, useMemo } from 'react'
 import CatalogSidebarDivider from './CatalogSidebarDivider'
 import CatalogHorizontalTabs from './CatalogHorizontalTabs'
+import CatalogSidebarBrandLink from './CatalogSidebarBrandLink'
 import CatalogSidebarModelItem from './CatalogSidebarModelItem'
 import ProductCard from './ProductCard'
 import {
   buildBrandModelGroups,
+  getCatalogBrandList,
   getModelEmptyStockMessage,
 } from '../lib/catalog/catalogTaxonomy'
 import { HOME_BRANDS } from '../lib/data/homeBrands'
@@ -29,6 +31,7 @@ export default function CatalogBrandView({
     () => buildBrandModelGroups(products, brand),
     [products, brand]
   )
+  const brandList = useMemo(() => getCatalogBrandList(products), [products])
 
   const activeModelId = useMemo(() => {
     if (modeloParam && modelGroups.some((g) => g.id === modeloParam)) return modeloParam
@@ -158,18 +161,37 @@ export default function CatalogBrandView({
 
           <div className="catalog-layout-grid grid gap-8 md:grid-cols-[minmax(220px,280px)_1fr] md:gap-10 lg:gap-14">
             <aside className="catalog-sidebar-sticky hidden md:block">
-              <nav aria-label={`Modelos ${brand.name}`} className="catalog-sidebar-nav">
-                {modelGroups.map((group, index) => (
-                  <Fragment key={group.id}>
+              <nav aria-label="Marcas" className="catalog-sidebar-nav">
+                {brandList.map((entry, index) => (
+                  <Fragment key={entry.id}>
                     {index > 0 ? <CatalogSidebarDivider /> : null}
-                    <CatalogSidebarModelItem
-                      group={group}
-                      active={group.id === activeModelId}
-                      onSelect={selectModel}
+                    <CatalogSidebarBrandLink
+                      brand={entry}
+                      active={entry.id === brand.id}
                     />
                   </Fragment>
                 ))}
               </nav>
+              {modelGroups.length > 0 ? (
+                <nav
+                  aria-label={`Modelos ${brand.name}`}
+                  className="catalog-sidebar-nav catalog-sidebar-nav--models mt-6 border-t border-white/[0.08] pt-4"
+                >
+                  <p className="catalog-sidebar-section-label px-1.5 pb-2 pl-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--dark-muted)]">
+                    Modelos
+                  </p>
+                  {modelGroups.map((group, index) => (
+                    <Fragment key={group.id}>
+                      {index > 0 ? <CatalogSidebarDivider /> : null}
+                      <CatalogSidebarModelItem
+                        group={group}
+                        active={group.id === activeModelId}
+                        onSelect={selectModel}
+                      />
+                    </Fragment>
+                  ))}
+                </nav>
+              ) : null}
             </aside>
 
             <div className="min-w-0">
@@ -214,10 +236,19 @@ export default function CatalogBrandView({
                     {activeGroup.products.map((item, idx) => (
                       <div
                         key={item.slug || item.id || idx}
-                        className="home-grid-product-cell flex min-w-0 w-full max-md:h-auto md:h-full [content-visibility:auto] [contain-intrinsic-size:auto_18rem] md:[contain-intrinsic-size:auto_28rem]"
+                        className={`home-grid-product-cell flex min-w-0 w-full max-md:h-auto md:h-full [contain-intrinsic-size:auto_18rem] md:[contain-intrinsic-size:auto_28rem] ${
+                          idx < 3
+                            ? 'max-md:[content-visibility:auto] md:[content-visibility:visible]'
+                            : '[content-visibility:auto]'
+                        }`}
                         style={{ '--enter-i': idx }}
                       >
-                        <ProductCard item={item} priority={idx < 2} maxGalleryImages={1} />
+                        <ProductCard
+                          item={item}
+                          priority={idx === 0}
+                          eager={idx > 0 && idx < 3}
+                          maxGalleryImages={1}
+                        />
                       </div>
                     ))}
                   </div>

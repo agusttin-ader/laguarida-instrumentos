@@ -84,6 +84,7 @@ export default function CatalogPageContent({
         label="Filtrar por marca"
         ariaLabel="Marcas"
         className="catalog-mobile-brands mb-4 max-md:mb-3"
+        showOverflowHint
         items={brandList.map((brand) => ({
           id: brand.id,
           label: brand.name,
@@ -105,7 +106,12 @@ export default function CatalogPageContent({
         </aside>
 
         <div className="min-w-0">
-          <ProductGrid items={products} parentLoading={loading} priorityFirstCard />
+          <ProductGrid
+            items={products}
+            parentLoading={loading}
+            priorityFirstCard
+            priorityFirstCount={3}
+          />
         </div>
       </div>
     </div>

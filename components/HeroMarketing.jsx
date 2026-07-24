@@ -11,6 +11,7 @@ export default function HeroMarketing({ slides = [] }) {
   const heroSlides = slides.length ? slides : []
   const [activeIndex, setActiveIndex] = useState(0)
   const [carouselReady, setCarouselReady] = useState(false)
+  const [primaryReady, setPrimaryReady] = useState(false)
 
   const advance = useCallback(() => {
     if (heroSlides.length < 2) return
@@ -29,16 +30,23 @@ export default function HeroMarketing({ slides = [] }) {
     return () => window.clearInterval(id)
   }, [advance, carouselReady, heroSlides.length])
 
+  const onPrimaryLoad = useCallback(() => {
+    setPrimaryReady(true)
+  }, [])
+
   const visibleIndex = carouselReady ? activeIndex : 0
 
   return (
     <div className="hero-home relative w-full max-md:min-h-[min(82dvh,640px)] sm:min-h-[min(84vh,880px)] overflow-hidden bg-[var(--dark-bg-page)] text-[var(--dark-text-primary)]">
+      {/* Mobile: base cálida desde el primer paint; desktop sin cambio visual */}
+      <div className="hero-home__paint-fallback absolute inset-0 md:hidden" aria-hidden />
+
       <div className="absolute inset-0" aria-hidden>
         {heroSlides.length ? (
           heroSlides.map((slide, i) => (
             <div
               key={slide.src}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-out motion-reduce:transition-none ${
+              className={`absolute inset-0 transition-opacity duration-1000 max-md:duration-500 ease-out motion-reduce:transition-none ${
                 i === visibleIndex ? 'opacity-100' : 'opacity-0'
               }`}
             >
@@ -47,18 +55,33 @@ export default function HeroMarketing({ slides = [] }) {
                 alt=""
                 fill
                 priority={i === 0}
+                loading={i === 0 ? 'eager' : undefined}
                 quality={62}
                 sizes="100vw"
-                className="object-cover object-[center_42%] max-md:object-[center_38%] md:object-center"
+                onLoad={i === 0 ? onPrimaryLoad : undefined}
+                className={`object-cover object-[center_42%] max-md:object-[center_38%] md:object-center max-md:transition-opacity max-md:duration-300 max-md:ease-out motion-reduce:transition-none ${
+                  i === 0 && !primaryReady
+                    ? 'max-md:opacity-0 md:opacity-100 motion-reduce:!opacity-100'
+                    : 'opacity-100'
+                }`}
               />
             </div>
           ))
         ) : (
-          <div className="absolute inset-0 bg-[#1a1917]" />
+          <div className="absolute inset-0 bg-[#1a1917] max-md:bg-transparent" />
         )}
-        <div className="absolute inset-0 bg-black/20 max-md:bg-black/28" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/22 to-transparent max-md:from-black/72 max-md:via-black/45 max-md:to-black/15" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/10 max-md:from-black/55 max-md:via-black/20 max-md:to-black/25" />
+        {/* Mobile: overlays suaves hasta que la imagen principal esté lista (evita viewport negro). */}
+        <div
+          className={`absolute inset-0 max-md:transition-opacity max-md:duration-300 max-md:ease-out motion-reduce:transition-none ${
+            primaryReady || !heroSlides.length
+              ? 'opacity-100'
+              : 'max-md:opacity-40 md:opacity-100'
+          }`}
+        >
+          <div className="absolute inset-0 bg-black/20 max-md:bg-black/28" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/22 to-transparent max-md:from-black/72 max-md:via-black/45 max-md:to-black/15" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/10 max-md:from-black/55 max-md:via-black/20 max-md:to-black/25" />
+        </div>
       </div>
 
       <div

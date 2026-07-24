@@ -6,9 +6,9 @@ import { usePathname, useRouter } from 'next/navigation'
 import { getHashSectionId, scrollToHomeSectionByIdWhenReady } from '../lib/homeSectionScroll'
 import MotionProvider from './motion/MotionProvider'
 import PageTransition from './motion/PageTransition'
+import PullToRefresh from './PullToRefresh'
 
 const Footer = dynamic(() => import('./Footer'), { ssr: true })
-const PullToRefresh = dynamic(() => import('./PullToRefresh'), { ssr: false })
 const WhatsAppFloatButton = dynamic(() => import('./WhatsAppFloatButton'), { ssr: false })
 
 function HeaderLoading() {
