@@ -13,3 +13,5 @@ Nombres que usa el sitio en local (generado por npm run sync:catalog):
 8. 1782529521786-23b735095863-WhatsApp-Image-2026-06-26-at-19.59.53.jpg
 
 Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.
+
+Después de agregar fotos, generá variantes livianas: npm run images:variants

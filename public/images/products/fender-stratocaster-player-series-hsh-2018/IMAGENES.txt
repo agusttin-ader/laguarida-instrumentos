@@ -14,3 +14,5 @@ Nombres que usa el sitio en local (generado por npm run sync:catalog):
 9. 1780604292420-a6d7c03e8b0f-f91c90df-e1ce-405f-abba-7ac28314afd4.jpg
 
 Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.
+
+Después de agregar fotos, generá variantes livianas: npm run images:variants
