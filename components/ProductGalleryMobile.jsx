@@ -6,6 +6,8 @@ import imageService from '../lib/utils/imageService'
 import { useNativeScrollCarousel } from '../hooks/useNativeScrollCarousel'
 
 const MOBILE_CAROUSEL_SIZES = '(max-width:1023px) 100vw, 100vw'
+/** Solo monta la foto activa ±1 para no bajar toda la galería al abrir. */
+const MOUNT_RADIUS = 1
 
 function displayMain(url) {
   return imageService.forDisplay(url, 'galleryMain') || url
@@ -31,6 +33,7 @@ export default function ProductGalleryMobile({ allImages, altBase = '', imagesKe
         <div className="relative mx-auto aspect-[4/5] w-full max-w-[min(28rem,calc(100vw-2rem))] overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)]">
           <ImageWithSkeleton
             src={displayMain(mainImage)}
+            fallbackSrc={mainImage}
             alt={altBase || 'Imagen del producto'}
             fill
             imgClassName="object-contain object-center p-1"
@@ -49,27 +52,35 @@ export default function ProductGalleryMobile({ allImages, altBase = '', imagesKe
           aria-label="Fotos del producto. Deslizá horizontalmente para ver más."
           className="native-mobile-carousel product-gallery-mobile-carousel mx-auto flex w-full max-w-[min(28rem,calc(100vw-2rem))] snap-x snap-mandatory overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          {allImages.map((src, i) => (
-            <div
-              key={`${src}-${i}`}
-              className="native-mobile-carousel__slide product-gallery-mobile-carousel__slide w-full shrink-0 snap-start snap-always"
-              aria-hidden={i !== activeIndex}
-            >
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)]">
-                <ImageWithSkeleton
-                  src={i === 0 ? displayMain(src) : displayThumb(src)}
-                  alt={altBase ? `${altBase} — imagen ${i + 1}` : `Imagen ${i + 1}`}
-                  fill
-                  imgClassName="object-contain object-center p-1"
-                  imgStyle={{ transform: 'none', WebkitBackfaceVisibility: 'visible' }}
-                  sizes={MOBILE_CAROUSEL_SIZES}
-                  qualityPreset={i === 0 ? 'galleryMain' : 'galleryThumb'}
-                  priority={Math.abs(i - activeIndex) <= 1}
-                  disableClientPreview
-                />
+          {allImages.map((src, i) => {
+            const shouldMount = Math.abs(i - activeIndex) <= MOUNT_RADIUS
+            const isActive = i === activeIndex
+            return (
+              <div
+                key={`${src}-${i}`}
+                className="native-mobile-carousel__slide product-gallery-mobile-carousel__slide w-full shrink-0 snap-start snap-always"
+                aria-hidden={!isActive}
+              >
+                <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.125rem] bg-[var(--dark-bg-card)]">
+                  {shouldMount ? (
+                    <ImageWithSkeleton
+                      src={i === 0 ? displayMain(src) : displayThumb(src)}
+                      fallbackSrc={src}
+                      alt={altBase ? `${altBase} — imagen ${i + 1}` : `Imagen ${i + 1}`}
+                      fill
+                      imgClassName="object-contain object-center p-1"
+                      imgStyle={{ transform: 'none', WebkitBackfaceVisibility: 'visible' }}
+                      sizes={MOBILE_CAROUSEL_SIZES}
+                      qualityPreset={i === 0 ? 'galleryMain' : 'galleryThumb'}
+                      priority={isActive && i === 0}
+                      loading={isActive || i === 0 ? 'eager' : 'lazy'}
+                      disableClientPreview
+                    />
+                  ) : null}
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 

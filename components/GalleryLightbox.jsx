@@ -2,18 +2,39 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import Image from 'next/image'
+import ImageWithSkeleton from './ImageWithSkeleton'
+import imageService from '../lib/utils/imageService'
 
 const SWIPE_COMMIT_PX = 48
 const AXIS_LOCK_PX = 8
 const SLIDE_MS = 300
 const SLIDE_EASE = 'cubic-bezier(0.33, 1, 0.32, 1)'
+const MOUNT_RADIUS = 1
 
 function CloseIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
+  )
+}
+
+function LightboxSlideImage({ src, alt, priority = false }) {
+  const display = imageService.forDisplay(src, 'lightbox') || src
+  return (
+    <ImageWithSkeleton
+      src={display}
+      fallbackSrc={src}
+      alt={alt}
+      fill
+      sizes="100vw"
+      qualityPreset="lightbox"
+      priority={priority}
+      loading={priority ? 'eager' : 'lazy'}
+      fit="contain"
+      imgClassName="pointer-events-none"
+      disableClientPreview
+    />
   )
 }
 
@@ -190,37 +211,32 @@ export default function GalleryLightbox({
             className="gallery-lightbox__viewport relative h-full w-full max-h-full max-w-full overflow-hidden touch-pan-x select-none"
           >
             <div className="gallery-lightbox__track flex h-full w-full" style={trackStyle}>
-              {images.map((imageSrc, i) => (
-                <div
-                  key={`${imageSrc}-${i}`}
-                  className="gallery-lightbox__slide relative h-full w-full shrink-0 basis-full"
-                  aria-hidden={i !== currentIndex}
-                >
-                  <Image
-                    src={imageSrc}
-                    alt={safeAlt ? `${safeAlt} — imagen ${i + 1}` : `Imagen ${i + 1}`}
-                    fill
-                    sizes="100vw"
-                    qualityPreset="lightbox"
-                    loading={Math.abs(i - currentIndex) <= 1 ? 'eager' : 'lazy'}
-                    draggable={false}
-                    className="object-contain pointer-events-none"
-                  />
-                </div>
-              ))}
+              {images.map((imageSrc, i) => {
+                const shouldMount = Math.abs(i - currentIndex) <= MOUNT_RADIUS
+                return (
+                  <div
+                    key={`${imageSrc}-${i}`}
+                    className="gallery-lightbox__slide relative h-full w-full shrink-0 basis-full"
+                    aria-hidden={i !== currentIndex}
+                  >
+                    {shouldMount ? (
+                      <LightboxSlideImage
+                        src={imageSrc}
+                        alt={safeAlt ? `${safeAlt} — imagen ${i + 1}` : `Imagen ${i + 1}`}
+                        priority={i === currentIndex}
+                      />
+                    ) : null}
+                  </div>
+                )
+              })}
             </div>
           </div>
         ) : (
           <div className="relative h-full w-full max-h-full max-w-full">
-            <Image
+            <LightboxSlideImage
               src={images[0]}
               alt={safeAlt || 'Imagen ampliada'}
-              fill
-              sizes="100vw"
-              qualityPreset="lightbox"
-              loading="eager"
-              draggable={false}
-              className="object-contain"
+              priority
             />
           </div>
         )}

@@ -6,28 +6,88 @@ import { layoutShellClassName } from '../lib/layoutShell'
 import ProductGrid from './ProductGrid'
 import CatalogBrandView from './CatalogBrandView'
 import CatalogSidebarDivider from './CatalogSidebarDivider'
-import CatalogHorizontalTabs from './CatalogHorizontalTabs'
 import CatalogSidebarBrandLink from './CatalogSidebarBrandLink'
+import CatalogFiltersPanel from './CatalogFiltersPanel'
+import CatalogEmptyFiltered from './CatalogEmptyFiltered'
+import CatalogEditorialCard from './CatalogEditorialCard'
 import { useProducts } from '../hooks/useProducts'
 import {
   getCatalogBrandList,
-  getHomeBrandCatalogLink,
   resolveCatalogBrand,
 } from '../lib/catalog/catalogTaxonomy'
+import {
+  applyCatalogFilters,
+  catalogFiltersAreActive,
+  parseCatalogFilterParams,
+} from '../lib/catalog/catalogFilters'
+
+function CatalogIntro({ filteredCount, loading, filtersActive }) {
+  return (
+    <div className="catalog-page-header__intro">
+      <nav aria-label="Breadcrumb" className="mb-2 max-md:mb-1.5 text-xs text-[var(--dark-muted)] sm:text-sm">
+        <ol className="flex flex-wrap items-center gap-1.5">
+          <li>
+            <Link
+              href="/"
+              className="no-custom-btn inline-flex min-h-11 items-center hover:text-[var(--dark-text-primary)] transition-colors"
+            >
+              Inicio
+            </Link>
+          </li>
+          <li aria-hidden className="opacity-50">/</li>
+          <li className="text-[var(--dark-text-secondary)]" aria-current="page">
+            Catálogo
+          </li>
+        </ol>
+      </nav>
+
+      <p className="section-kicker-minimal text-[var(--palette-gold)]">
+        Instrumentos · Stock disponible
+      </p>
+      <h1 className="section-heading-editorial mt-1.5 max-md:text-[1.5rem]">
+        Catálogo
+      </h1>
+      {!loading ? (
+        <p className="mt-1 text-sm tabular-nums text-[var(--dark-text-secondary)] sm:text-[0.9375rem]">
+          <span className="font-semibold text-[var(--dark-text-primary)]">
+            {filteredCount}
+          </span>{' '}
+          {filteredCount === 1 ? 'instrumento disponible' : 'instrumentos disponibles'}
+          {filtersActive ? (
+            <span className="text-[var(--dark-muted)]"> · filtrados</span>
+          ) : null}
+        </p>
+      ) : null}
+      <p className="mt-1 text-sm leading-relaxed text-[var(--dark-muted)] sm:text-[0.9375rem]">
+        Explorá por marca y filtrá por tipo o precio.
+      </p>
+    </div>
+  )
+}
 
 export default function CatalogPageContent({
   initialProducts = [],
   marcaParam = '',
   modeloParam = '',
+  filterParams = null,
 }) {
   const { products, loading } = useProducts({
     shuffleCatalog: false,
     initialProducts,
   })
+  const filters = useMemo(
+    () => parseCatalogFilterParams(filterParams || {}),
+    [filterParams]
+  )
   const catalogBrand = useMemo(() => resolveCatalogBrand(marcaParam), [marcaParam])
   const brandList = useMemo(() => getCatalogBrandList(products), [products])
+  const filteredProducts = useMemo(
+    () => applyCatalogFilters(products, filters),
+    [products, filters]
+  )
+  const filtersActive = catalogFiltersAreActive(filters)
 
-  const shellClass = `${layoutShellClassName} mobile-gutter-x sm:px-5 md:px-8 lg:px-10 py-5 max-md:py-4 sm:py-8 md:py-10 min-[1920px]:px-12`
+  const shellClass = `${layoutShellClassName} mobile-gutter-x sm:px-5 md:px-8 lg:px-10 py-3 max-md:py-3 sm:py-4 md:py-5 lg:pt-5 lg:pb-6 min-[1920px]:px-12`
 
   if (catalogBrand) {
     return (
@@ -45,74 +105,68 @@ export default function CatalogPageContent({
 
   return (
     <div className={`${shellClass} catalog-page catalog-page--all`}>
-      <nav aria-label="Breadcrumb" className="mb-3 max-md:mb-2.5 text-xs text-[var(--dark-muted)] sm:text-sm">
-        <ol className="flex flex-wrap items-center gap-1.5">
-          <li>
-            <Link href="/" className="no-custom-btn hover:text-[var(--dark-text-primary)] transition-colors">
-              Inicio
-            </Link>
-          </li>
-          <li aria-hidden className="opacity-50">/</li>
-          <li className="text-[var(--dark-text-secondary)]" aria-current="page">
-            Catálogo
-          </li>
-        </ol>
-      </nav>
+      {/* Móvil: título (banner solo desktop/tablet) */}
+      <div className="md:hidden mb-3">
+        <CatalogIntro
+          filteredCount={filteredProducts.length}
+          loading={loading}
+          filtersActive={filtersActive}
+        />
+      </div>
 
-      <header className="mb-6 max-md:mb-4 sm:mb-8 md:mb-10">
-        <p className="section-kicker-minimal text-[var(--palette-gold)]">
-          Instrumentos · Stock disponible
-        </p>
-        <div className="mt-2 flex flex-col gap-1 max-md:gap-1.5 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-3">
-          <div className="max-w-2xl">
-            <h1 className="section-heading-editorial max-md:text-[1.5rem]">
-              Catálogo
-            </h1>
-            <p className="mt-1.5 max-md:mt-1 text-sm leading-relaxed text-[var(--dark-muted)] sm:text-base">
-              Explorá por marca y elegí el modelo en stock.
-            </p>
-          </div>
-          {!loading ? (
-            <p className="shrink-0 text-xs tabular-nums text-[var(--dark-muted)] sm:text-sm">
-              {products.length} {products.length === 1 ? 'instrumento' : 'instrumentos'}
-            </p>
-          ) : null}
+      <div id="catalog-results" className="md:contents">
+      {/*
+        Desktop: mismo grid que marcas | filtros.
+        La tarjeta editorial comparte columna (y ancho) con el panel de filtros.
+      */}
+      <div className="catalog-layout-grid catalog-layout-grid--with-header grid gap-6 md:grid-cols-[minmax(220px,280px)_1fr] md:gap-8 lg:gap-10">
+        <div className="catalog-layout-grid__intro hidden md:block">
+          <CatalogIntro
+            filteredCount={filteredProducts.length}
+            loading={loading}
+            filtersActive={filtersActive}
+          />
         </div>
-      </header>
 
-      <CatalogHorizontalTabs
-        label="Filtrar por marca"
-        ariaLabel="Marcas"
-        className="catalog-mobile-brands mb-4 max-md:mb-3"
-        showOverflowHint
-        items={brandList.map((brand) => ({
-          id: brand.id,
-          label: brand.name,
-          sublabel: `${brand.count} en stock`,
-          href: getHomeBrandCatalogLink(brand),
-        }))}
-      />
-
-      <div className="catalog-layout-grid grid gap-8 md:grid-cols-[minmax(220px,280px)_1fr] md:gap-10 lg:gap-12">
-        <aside className="catalog-sidebar-sticky hidden md:block">
+        <aside className="catalog-layout-grid__brands catalog-sidebar-sticky hidden md:block">
           <nav aria-label="Marcas" className="catalog-sidebar-nav">
             {brandList.map((brand, index) => (
               <React.Fragment key={brand.id}>
                 {index > 0 ? <CatalogSidebarDivider /> : null}
-                <CatalogSidebarBrandLink brand={brand} />
+                <CatalogSidebarBrandLink brand={brand} filters={filters} />
               </React.Fragment>
             ))}
           </nav>
         </aside>
 
-        <div className="min-w-0">
-          <ProductGrid
-            items={products}
-            parentLoading={loading}
-            priorityFirstCard
-            priorityFirstCount={3}
-          />
+        <div className="catalog-layout-grid__card hidden md:block">
+          <CatalogEditorialCard />
         </div>
+
+        <div className="catalog-layout-grid__main min-w-0">
+          <CatalogFiltersPanel
+            marcaParam={marcaParam}
+            modeloParam={modeloParam}
+            filters={filters}
+            showBrandSelect
+            className="mb-5 max-md:mb-4 md:mb-6"
+          />
+
+          {!loading && filteredProducts.length === 0 && filtersActive ? (
+            <CatalogEmptyFiltered
+              marcaParam={marcaParam}
+              modeloParam={modeloParam}
+            />
+          ) : (
+            <ProductGrid
+              items={filteredProducts}
+              parentLoading={loading}
+              priorityFirstCard
+              priorityFirstCount={3}
+            />
+          )}
+        </div>
+      </div>
       </div>
     </div>
   )

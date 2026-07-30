@@ -11,7 +11,6 @@ import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
 const MAX_TEXT = 500
 const MAX_NAME = 140
 const MAX_SLUG = 180
-const MAX_PRICE = 120
 const MAX_IMAGES = 12
 const MAX_HIGHLIGHTS = 8
 const MAX_HIGHLIGHT_ITEM = 220

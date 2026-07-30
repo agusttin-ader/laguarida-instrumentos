@@ -11,6 +11,7 @@ import {
   resolveProductBrandLogo,
 } from '../lib/catalog/resolveProductBrandLogo'
 import ImageWithSkeleton from './ImageWithSkeleton'
+import imageService from '../lib/utils/imageService'
 
 const HOME_PICK_COUNT = 3
 const EDITORIAL_IMAGE_SIZES = '(max-width: 767px) 100vw, 50vw'
@@ -53,7 +54,8 @@ function EditorialBlock({ item, index, reversed = false }) {
         >
           {src ? (
             <ImageWithSkeleton
-              src={src}
+              src={imageService.forDisplay(src, 'editorial') || src}
+              fallbackSrc={src}
               alt={p.name || 'Instrumento destacado'}
               fill
               sizes={EDITORIAL_IMAGE_SIZES}
@@ -87,7 +89,6 @@ function EditorialBlock({ item, index, reversed = false }) {
           ) : null}
 
           {brandLogo ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={brandLogo.src}
               alt={brandLogo.label}

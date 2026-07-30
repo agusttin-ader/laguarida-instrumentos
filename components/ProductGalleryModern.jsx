@@ -29,18 +29,37 @@ function usePreloadLightbox(enabled) {
   }, [enabled])
 }
 
+function DesktopSideThumb({ url, index, altBase }) {
+  return (
+    <ImageWithSkeleton
+      src={displayThumb(url)}
+      fallbackSrc={url}
+      alt={altBase ? `${altBase} — imagen ${index + 1}` : `Imagen ${index + 1}`}
+      fill
+      className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+      sizes={GALLERY_THUMB_SIZES}
+      qualityPreset="galleryThumb"
+      loading="lazy"
+      disableClientPreview
+    />
+  )
+}
+
 /**
  * Galería de ficha de producto.
  * - Móvil (< lg): carrusel con slide, sin lightbox → ProductGalleryMobile
  * - Desktop (lg+): grid asimétrico + lightbox al hacer clic
+ * Solo monta una de las dos vistas (evita descargar ambas galerías).
  */
 export default function ProductGalleryModern({ image_url, images = [], altBase = '' }) {
   const [isDesktopGallery, setIsDesktopGallery] = useState(() => {
-    if (typeof window === 'undefined') return true
+    if (typeof window === 'undefined') return false
     return window.matchMedia(DESKTOP_GALLERY_QUERY).matches
   })
+  const [hasMounted, setHasMounted] = useState(false)
 
   useEffect(() => {
+    setHasMounted(true)
     const mq = window.matchMedia(DESKTOP_GALLERY_QUERY)
     const sync = () => setIsDesktopGallery(mq.matches)
     sync()
@@ -48,7 +67,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
     return () => mq.removeEventListener('change', sync)
   }, [])
 
-  usePreloadLightbox(isDesktopGallery)
+  usePreloadLightbox(hasMounted && isDesktopGallery)
 
   const allImages = useMemo(() => {
     const main = imageService.resolve(image_url)
@@ -85,16 +104,19 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
     )
   }
 
+  // Hasta hidratar, preferimos móvil (menos peso). Luego una sola vista.
+  const showDesktop = hasMounted && isDesktopGallery
+
   return (
     <>
-      <ProductGalleryMobile
-        allImages={allImages}
-        altBase={altBase}
-        imagesKey={galleryImagesKey}
-      />
-
-      {/* Desktop (lg+): sin cambios de comportamiento — grid + lightbox */}
-      <div className="hidden w-full min-h-[400px] sm:min-h-[420px] lg:grid lg:min-h-[640px] lg:grid-cols-[1.18fr_0.82fr] min-[1920px]:lg:min-h-[800px] min-[2560px]:lg:min-h-[960px] gap-2 sm:gap-3 md:gap-4 lg:gap-5">
+      {!showDesktop ? (
+        <ProductGalleryMobile
+          allImages={allImages}
+          altBase={altBase}
+          imagesKey={galleryImagesKey}
+        />
+      ) : (
+      <div className="w-full min-h-[400px] sm:min-h-[420px] lg:grid lg:min-h-[640px] lg:grid-cols-[1.18fr_0.82fr] min-[1920px]:lg:min-h-[800px] min-[2560px]:lg:min-h-[960px] gap-2 sm:gap-3 md:gap-4 lg:gap-5">
         <button
           type="button"
           onClick={() => openLightbox(0)}
@@ -103,12 +125,13 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
         >
           <ImageWithSkeleton
             src={displayMain(mainImage)}
+            fallbackSrc={mainImage}
             alt={altBase || 'Imagen del producto'}
             fill
             className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
             sizes={GALLERY_MAIN_SIZES}
             qualityPreset="galleryMain"
-            priority={isDesktopGallery}
+            priority
             disableClientPreview
           />
         </button>
@@ -121,15 +144,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
               className="no-custom-btn group relative row-span-2 min-h-[170px] sm:min-h-[240px] lg:min-h-[280px] min-[1920px]:min-h-[320px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
               aria-label="Ver imagen 2"
             >
-              <ImageWithSkeleton
-                src={displayThumb(sideImages[0])}
-                alt={altBase ? `${altBase} — imagen 2` : 'Imagen 2'}
-                fill
-                className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                sizes={GALLERY_THUMB_SIZES}
-                qualityPreset="galleryThumb"
-                disableClientPreview
-              />
+              <DesktopSideThumb url={sideImages[0]} index={1} altBase={altBase} />
             </button>
             {sideImages[1] && (
               <button
@@ -138,15 +153,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 className="no-custom-btn group relative min-h-[120px] sm:min-h-[160px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
                 aria-label="Ver imagen 3"
               >
-                <ImageWithSkeleton
-                  src={displayThumb(sideImages[1])}
-                  alt={altBase ? `${altBase} — imagen 3` : 'Imagen 3'}
-                  fill
-                  className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes={GALLERY_THUMB_SIZES}
-                  qualityPreset="galleryThumb"
-                  disableClientPreview
-                />
+                <DesktopSideThumb url={sideImages[1]} index={2} altBase={altBase} />
               </button>
             )}
             {sideImages[2] && (
@@ -156,15 +163,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 className="no-custom-btn group relative min-h-[120px] sm:min-h-[160px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
                 aria-label="Ver imagen 4"
               >
-                <ImageWithSkeleton
-                  src={displayThumb(sideImages[2])}
-                  alt={altBase ? `${altBase} — imagen 4` : 'Imagen 4'}
-                  fill
-                  className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes={GALLERY_THUMB_SIZES}
-                  qualityPreset="galleryThumb"
-                  disableClientPreview
-                />
+                <DesktopSideThumb url={sideImages[2]} index={3} altBase={altBase} />
               </button>
             )}
             {sideImages[3] && (
@@ -174,15 +173,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 className="no-custom-btn group relative min-h-[90px] sm:min-h-[120px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
                 aria-label="Ver imagen 5"
               >
-                <ImageWithSkeleton
-                  src={displayThumb(sideImages[3])}
-                  alt={altBase ? `${altBase} — imagen 5` : 'Imagen 5'}
-                  fill
-                  className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes={GALLERY_THUMB_SIZES}
-                  qualityPreset="galleryThumb"
-                  disableClientPreview
-                />
+                <DesktopSideThumb url={sideImages[3]} index={4} altBase={altBase} />
               </button>
             )}
             {sideImages[4] && (
@@ -192,15 +183,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 className="no-custom-btn group relative row-span-2 min-h-[140px] sm:min-h-[180px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
                 aria-label="Ver imagen 6"
               >
-                <ImageWithSkeleton
-                  src={displayThumb(sideImages[4])}
-                  alt={altBase ? `${altBase} — imagen 6` : 'Imagen 6'}
-                  fill
-                  className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes={GALLERY_THUMB_SIZES}
-                  qualityPreset="galleryThumb"
-                  disableClientPreview
-                />
+                <DesktopSideThumb url={sideImages[4]} index={5} altBase={altBase} />
               </button>
             )}
             {sideImages[5] && (
@@ -210,24 +193,17 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
                 className="no-custom-btn group relative min-h-[90px] sm:min-h-[120px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
                 aria-label="Ver imagen 7"
               >
-                <ImageWithSkeleton
-                  src={displayThumb(sideImages[5])}
-                  alt={altBase ? `${altBase} — imagen 7` : 'Imagen 7'}
-                  fill
-                  className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-                  sizes={GALLERY_THUMB_SIZES}
-                  qualityPreset="galleryThumb"
-                  disableClientPreview
-                />
+                <DesktopSideThumb url={sideImages[5]} index={6} altBase={altBase} />
               </button>
             )}
           </div>
         )}
       </div>
+      )}
 
-      {lightboxOpen && isDesktopGallery && allImages.length > 0 && (
+      {lightboxOpen && showDesktop && allImages.length > 0 && (
         <GalleryLightbox
-          images={allImages.map((url) => imageService.forDisplay(url, 'lightbox') || url)}
+          images={allImages}
           altBase={altBase}
           currentIndex={lightboxIndex}
           total={allImages.length}

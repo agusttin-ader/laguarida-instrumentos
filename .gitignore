@@ -65,3 +65,5 @@ playwright-report/
 *.tgz
 .cache-loader
 .DS_Store
+cookies.txt
+build_output.log

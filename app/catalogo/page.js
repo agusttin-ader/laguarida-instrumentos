@@ -25,6 +25,12 @@ export default async function CatalogoPage({ searchParams }) {
   const params = await searchParams
   const marcaParam = typeof params?.marca === 'string' ? params.marca : ''
   const modeloParam = typeof params?.modelo === 'string' ? params.modelo : ''
+  const filterParams = {
+    tipo: typeof params?.tipo === 'string' ? params.tipo : '',
+    precioMin: typeof params?.precioMin === 'string' ? params.precioMin : '',
+    precioMax: typeof params?.precioMax === 'string' ? params.precioMax : '',
+    estado: typeof params?.estado === 'string' ? params.estado : '',
+  }
 
   const rows = await getPublicCatalogRows()
   const initialProducts = rows.map((row) => normalizeProduct(row))
@@ -34,6 +40,7 @@ export default async function CatalogoPage({ searchParams }) {
       initialProducts={initialProducts}
       marcaParam={marcaParam}
       modeloParam={modeloParam}
+      filterParams={filterParams}
     />
   )
 }

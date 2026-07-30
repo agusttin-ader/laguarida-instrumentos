@@ -6,11 +6,13 @@ import { WhatsAppGlyph } from './WhatsAppFloatButton'
 import Button from './Button'
 
 const MOBILE_MQ = '(max-width: 767px)'
-const PRIMARY_CTA_ID = 'pdp-primary-cta'
+/** Bloque principal de compra (precio, confianza, CTA). */
+const PRIMARY_BLOCK_ID = 'pdp-primary-block'
 
 /**
- * Barra sticky inferior (solo ≤767px): aparece cuando el CTA principal
- * deja de estar visible y se oculta al volver a verse.
+ * Barra fija inferior (solo ≤767px): aparece al scrollear más allá
+ * del bloque principal del producto. Refuerza el CTA de WhatsApp;
+ * no reemplaza el CTA en página.
  */
 export default function ProductMobileStickyBar({
   productName,
@@ -37,14 +39,17 @@ export default function ProductMobileStickyBar({
       return undefined
     }
 
-    const target = document.getElementById(PRIMARY_CTA_ID)
+    const target =
+      document.getElementById(PRIMARY_BLOCK_ID) ||
+      document.getElementById('pdp-primary-cta')
     if (!target) return undefined
 
     const observer = new IntersectionObserver(
       ([entry]) => {
+        // Visible cuando el bloque principal ya no intersecta el viewport.
         setShowBar(!entry.isIntersecting)
       },
-      { threshold: 0, rootMargin: '0px' }
+      { threshold: 0, rootMargin: '0px 0px -8% 0px' }
     )
 
     observer.observe(target)
@@ -92,7 +97,7 @@ export default function ProductMobileStickyBar({
           tabIndex={visible ? 0 : -1}
           aria-label={`Consultar por WhatsApp sobre ${shortName}`}
           onClick={handleWhatsAppClick}
-          className="pdp-mobile-sticky-bar__cta w-full"
+          className="pdp-mobile-sticky-bar__cta w-full min-h-11"
         >
           <WhatsAppGlyph className="h-5 w-5 shrink-0" />
           <span>Consultar por WhatsApp</span>

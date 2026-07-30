@@ -41,7 +41,6 @@ function BrandLogoImage({ src, sizeClass, treatment = 'mono' }) {
   const monoClass = treatment === 'mono' ? 'home-brand-logo--mono' : ''
 
   return (
-    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={src}
       alt=""

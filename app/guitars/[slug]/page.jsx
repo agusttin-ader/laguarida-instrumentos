@@ -1,6 +1,5 @@
-import React from 'react'
 import ProductGalleryModern from '../../../components/ProductGalleryModern'
-import normalizeProduct from '../../../lib/utils/normalizeProduct'
+import normalizeProduct, { parseNumericPriceForSchema } from '../../../lib/utils/normalizeProduct'
 import formatPriceDisplay from '../../../lib/utils/formatPriceDisplay'
 import { fetchProductRowBySlug } from '../../../lib/data/fetchProductBySlug'
 import { getPublicCatalogRows } from '../../../lib/data/publicCatalog'
@@ -9,10 +8,10 @@ import ProductShareAndFavorite from '../../../components/ProductShareAndFavorite
 import ProductPageCTA from '../../../components/ProductPageCTA'
 import ProductMobileStickyBar from '../../../components/ProductMobileStickyBar'
 import ProductDesktopPurchasePanel from '../../../components/ProductDesktopPurchasePanel'
+import ProductPurchaseTrustSignals from '../../../components/ProductPurchaseTrustSignals'
 import ProductDetailInfoPanel from '../../../components/ProductDetailInfoPanel'
 import ProductDetailSpecSheet from '../../../components/ProductDetailSpecSheet'
 import RelatedProductsScroll from '../../../components/RelatedProductsScroll'
-import { parseNumericPriceForSchema } from '../../../lib/utils/normalizeProduct'
 import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
 import { absoluteUrl, toAbsoluteUrl } from '../../../lib/siteUrl'
 import { buildWaMeHref, whatsAppProductMessage } from '../../../lib/whatsappWeb'
@@ -475,6 +474,10 @@ export default async function GuitarPage({ params }) {
                 {priceLabel}
               </p>
             ) : null}
+            <p className="product-detail-availability mt-2 flex items-center gap-2 text-[13px] font-medium text-[var(--dark-text-secondary)] md:hidden">
+              <span className="product-detail-availability__dot" aria-hidden />
+              Disponible
+            </p>
           </FadeInView>
 
           {/* Panel compra sticky desktop: misma columna que galería+descripción para sticky real */}
@@ -491,25 +494,34 @@ export default async function GuitarPage({ params }) {
             />
           </div>
 
-          {/* CTA + ficha: mobile/tablet */}
+          {/* CTA + confianza + ficha: mobile/tablet */}
           <FadeInView
             className="product-detail-layout__cta product-detail-primary-block mt-5 max-md:mt-3 min-w-0 space-y-4 max-md:space-y-3 sm:mt-10 sm:space-y-6 md:mt-12 scroll-mt-[calc(var(--site-header-h,3.25rem)+0.75rem)] lg:hidden"
             delay={0.04}
           >
-            {priceLabel ? (
-              <p className="price-highlight product-detail-price hidden text-2xl font-bold tracking-tight sm:text-[30px] md:block md:text-[32px]">
-                {priceLabel}
-              </p>
-            ) : null}
+            <div id="pdp-primary-block" className="space-y-4 max-md:space-y-3 sm:space-y-5">
+              {priceLabel ? (
+                <p className="price-highlight product-detail-price hidden text-2xl font-bold tracking-tight sm:text-[30px] md:block md:text-[32px]">
+                  {priceLabel}
+                </p>
+              ) : null}
 
-            <ProductPageCTA
-              price={product.price}
-              consultHref={consultHref}
-              productName={product.name}
-              showPrice={false}
-            >
-              <ProductShareAndFavorite slug={slug} name={product.name} url={productUrl} />
-            </ProductPageCTA>
+              <p className="product-detail-availability hidden items-center gap-2 text-sm font-medium text-[var(--dark-text-secondary)] md:flex lg:hidden">
+                <span className="product-detail-availability__dot" aria-hidden />
+                Disponible
+              </p>
+
+              <ProductPurchaseTrustSignals />
+
+              <ProductPageCTA
+                price={product.price}
+                consultHref={consultHref}
+                productName={product.name}
+                showPrice={false}
+              >
+                <ProductShareAndFavorite slug={slug} name={product.name} url={productUrl} />
+              </ProductPageCTA>
+            </div>
 
             {hasFicha ? <ProductDetailSpecSheet specs={productSpecRows} /> : null}
           </FadeInView>
@@ -551,7 +563,7 @@ export default async function GuitarPage({ params }) {
       </section>
 
       {relatedProducts && relatedProducts.length > 0 && (
-        <FadeInView as="section" className="container-tight mt-5 max-md:mt-4 sm:mt-12 md:mt-16 lg:mt-16 pb-0 max-md:pb-0 sm:pb-10 md:pb-16" aria-labelledby="related-heading">
+        <FadeInView as="section" className="container-tight mt-5 max-md:mt-4 sm:mt-12 md:mt-16 lg:mt-16 pb-0 max-md:pb-8 sm:pb-10 md:pb-16" aria-labelledby="related-heading">
           <h2 id="related-heading" className="section-title-premium section-underline-ocre text-[var(--dark-text-primary)] mb-2.5 max-md:mb-2 sm:mb-6">También te recomendamos</h2>
           <RelatedProductsScroll products={relatedProducts} />
         </FadeInView>

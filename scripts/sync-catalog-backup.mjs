@@ -191,6 +191,8 @@ function writeImagenesTxt(dir, row, expectedNames) {
     ...expectedNames.map((f, i) => `${i + 1}. ${f}`),
     '',
     'Podés soltar fotos con cualquier nombre; al volver a correr sync:catalog se renombran solas.',
+    '',
+    'Después de agregar fotos, generá variantes livianas: npm run images:variants',
   ]
   fs.writeFileSync(path.join(dir, 'IMAGENES.txt'), `${lines.join('\n')}\n`, 'utf8')
 }
@@ -303,6 +305,7 @@ async function main() {
   }
   console.log(`Renombradas en carpeta: ${totalRenamed}`)
   console.log('Checklist: data/product-image-checklist.txt')
+  console.log('Siguiente: npm run images:variants  (WebP livianos para catálogo/ficha)')
 }
 
 function urlOrMissing(supabaseUrl, key) {

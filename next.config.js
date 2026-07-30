@@ -1,13 +1,13 @@
 /** @type {import('next').NextConfig} */
 
-const { useLocalCatalog } = require('./lib/supabase/mode')
+const { isLocalCatalogEnabled } = require('./lib/supabase/mode')
 
 /** Catálogo en /public → servir directo desde /images/* (evita 402 del Image Optimizer en Vercel). */
 function imagesUnoptimized() {
   if (process.env.NEXT_ENABLE_IMAGE_OPTIMIZATION === 'true') return false
   if (process.env.NEXT_ENABLE_IMAGE_OPTIMIZATION === 'false') return true
   // Local: sin /_next/image (en Hobby/Pro sin cuota extra las rutas /public dan 200 directo).
-  if (useLocalCatalog()) return true
+  if (isLocalCatalogEnabled()) return true
   // Supabase remoto: también directo por defecto (transform CDN opcional vía forDisplay).
   return true
 }
@@ -58,8 +58,10 @@ const nextConfig = {
     ]
   },
   images: {
-    // Por defecto unoptimized: /images/* y Supabase van directo (evita HTTP 402 en Vercel).
-    // Activar solo con plan/cuota: NEXT_ENABLE_IMAGE_OPTIMIZATION=true
+    // Siempre unoptimized por defecto: /images/* y variantes WebP estáticas se sirven directo
+    // (evita HTTP 402 del Image Optimizer en Vercel). No hace falta activar transformaciones on-demand.
+    // Override solo con plan/cuota: NEXT_ENABLE_IMAGE_OPTIMIZATION=true (los componentes de producto
+    // siguen pasando unoptimized y no dependen de /_next/image).
     unoptimized: imagesUnoptimized(),
     // Allowed quality values used across the app (avoid Next.js warnings in dev/prod).
     qualities: [100, 95, 92, 90, 88, 86, 85, 82, 80, 78, 76, 75, 74, 72, 70, 68, 65, 62, 60, 58],

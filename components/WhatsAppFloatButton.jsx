@@ -27,4 +27,4 @@ export default function WhatsAppFloatButton() {
   )
 }
 
-export { WhatsAppGlyph, WA_DEFAULT_HREF }
+export { WhatsAppGlyph }

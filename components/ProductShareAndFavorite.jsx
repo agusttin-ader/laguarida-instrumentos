@@ -50,10 +50,7 @@ export function FavoritesProvider({ children }) {
   return <FavoritesContext.Provider value={value}>{children}</FavoritesContext.Provider>
 }
 
-export function useFavorites() {
-  const ctx = useContext(FavoritesContext)
-  if (ctx) return ctx
-
+function useLocalFavorites() {
   const [slugs, setSlugs] = useState([])
   useEffect(() => {
     setSlugs(getStoredSlugs())
@@ -69,6 +66,12 @@ export function useFavorites() {
   }, [])
   const isFavorite = useCallback((s) => slugs.includes(s), [slugs])
   return { slugs, toggle, isFavorite }
+}
+
+export function useFavorites() {
+  const ctx = useContext(FavoritesContext)
+  const local = useLocalFavorites()
+  return ctx || local
 }
 
 export default function ProductShareAndFavorite({ slug, name, url }) {

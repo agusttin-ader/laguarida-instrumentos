@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeSanitize from 'rehype-sanitize'
@@ -19,39 +18,75 @@ export default function ProductDescriptionMarkdown({ children }) {
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeSanitize]}
         components={{
-          h1: (props) => (
+          h1: ({ children, ...rest }) => (
             <h3
               className={`${headingBase} mt-3 first:mt-0 mb-1 text-lg sm:text-xl md:text-[1.2rem]`}
-              {...props}
-            />
+              {...rest}
+            >
+              {children}
+            </h3>
           ),
-          h2: (props) => (
+          h2: ({ children, ...rest }) => (
             <h4
               className={`${headingBase} mt-2.5 first:mt-0 mb-1 text-base sm:text-lg md:text-[1.1rem]`}
-              {...props}
-            />
+              {...rest}
+            >
+              {children}
+            </h4>
           ),
-          h3: (props) => (
+          h3: ({ children, ...rest }) => (
             <h5
               className={`${headingBase} mt-2 first:mt-0 mb-0.5 text-[15px] sm:text-base`}
-              {...props}
-            />
+              {...rest}
+            >
+              {children}
+            </h5>
           ),
-          h4: (props) => <h5 className={`${headingBase} mt-2 first:mt-0 mb-0.5 text-[15px]`} {...props} />,
-          h5: (props) => <h6 className={`${headingBase} mt-2 first:mt-0 mb-0.5 text-[14px] sm:text-[15px]`} {...props} />,
-          h6: (props) => <h6 className={`${headingBase} mt-1.5 first:mt-0 mb-0.5 text-[14px]`} {...props} />,
-          p: (props) => <p className="m-0 mb-2 last:mb-0" {...props} />,
-          ul: (props) => (
-            <ul className="m-0 mb-2 last:mb-0 list-disc pl-4 sm:pl-4 space-y-0.5 marker:text-[var(--vintage-gold)]" {...props} />
+          h4: ({ children, ...rest }) => (
+            <h5 className={`${headingBase} mt-2 first:mt-0 mb-0.5 text-[15px]`} {...rest}>
+              {children}
+            </h5>
           ),
-          ol: (props) => (
-            <ol className="m-0 mb-2 last:mb-0 list-decimal pl-4 sm:pl-4 space-y-0.5 marker:font-medium marker:text-[var(--dark-text-primary)]" {...props} />
+          h5: ({ children, ...rest }) => (
+            <h6 className={`${headingBase} mt-2 first:mt-0 mb-0.5 text-[14px] sm:text-[15px]`} {...rest}>
+              {children}
+            </h6>
           ),
-          li: (props) => <li className="pl-0.5 [&>p]:mb-1 [&>p:last-child]:mb-0" {...props} />,
-          strong: (props) => (
-            <strong className="font-semibold text-[var(--dark-text-primary)]" {...props} />
+          h6: ({ children, ...rest }) => (
+            <h6 className={`${headingBase} mt-1.5 first:mt-0 mb-0.5 text-[14px]`} {...rest}>
+              {children}
+            </h6>
           ),
-          em: (props) => <em className="italic text-[var(--dark-text-secondary)]" {...props} />,
+          p: ({ children, ...rest }) => (
+            <p className="m-0 mb-2 last:mb-0" {...rest}>
+              {children}
+            </p>
+          ),
+          ul: ({ children, ...rest }) => (
+            <ul className="m-0 mb-2 last:mb-0 list-disc pl-4 sm:pl-4 space-y-0.5 marker:text-[var(--vintage-gold)]" {...rest}>
+              {children}
+            </ul>
+          ),
+          ol: ({ children, ...rest }) => (
+            <ol className="m-0 mb-2 last:mb-0 list-decimal pl-4 sm:pl-4 space-y-0.5 marker:font-medium marker:text-[var(--dark-text-primary)]" {...rest}>
+              {children}
+            </ol>
+          ),
+          li: ({ children, ...rest }) => (
+            <li className="pl-0.5 [&>p]:mb-1 [&>p:last-child]:mb-0" {...rest}>
+              {children}
+            </li>
+          ),
+          strong: ({ children, ...rest }) => (
+            <strong className="font-semibold text-[var(--dark-text-primary)]" {...rest}>
+              {children}
+            </strong>
+          ),
+          em: ({ children, ...rest }) => (
+            <em className="italic text-[var(--dark-text-secondary)]" {...rest}>
+              {children}
+            </em>
+          ),
           a: ({ href, children, ...rest }) => {
             const external = href && /^https?:\/\//i.test(href)
             return (
@@ -65,26 +100,40 @@ export default function ProductDescriptionMarkdown({ children }) {
               </a>
             )
           },
-          blockquote: (props) => (
+          blockquote: ({ children, ...rest }) => (
             <blockquote
               className="m-0 mb-2 border-l-[3px] border-[var(--vintage-gold)]/45 pl-2.5 py-0 text-[var(--dark-muted)] italic text-[0.96em]"
-              {...props}
-            />
+              {...rest}
+            >
+              {children}
+            </blockquote>
           ),
           hr: (props) => <hr className="my-2.5 border-0 border-t border-[var(--dark-border)]" {...props} />,
-          table: (props) => (
+          table: ({ children, ...rest }) => (
             <div className="overflow-x-auto mb-2 -mx-1">
-              <table className="w-full min-w-[280px] text-[0.92em] border-collapse border border-[var(--dark-border)] rounded-lg overflow-hidden" {...props} />
+              <table className="w-full min-w-[280px] text-[0.92em] border-collapse border border-[var(--dark-border)] rounded-lg overflow-hidden" {...rest}>
+                {children}
+              </table>
             </div>
           ),
-          thead: (props) => <thead className="bg-black/25" {...props} />,
-          th: (props) => (
+          thead: ({ children, ...rest }) => (
+            <thead className="bg-black/25" {...rest}>
+              {children}
+            </thead>
+          ),
+          th: ({ children, ...rest }) => (
             <th
               className="border border-[var(--dark-border)] px-2 py-1.5 text-left text-[0.95em] font-semibold text-[var(--dark-text-primary)]"
-              {...props}
-            />
+              {...rest}
+            >
+              {children}
+            </th>
           ),
-          td: (props) => <td className="border border-[var(--dark-border)] px-2 py-1.5 align-top text-[0.95em]" {...props} />,
+          td: ({ children, ...rest }) => (
+            <td className="border border-[var(--dark-border)] px-2 py-1.5 align-top text-[0.95em]" {...rest}>
+              {children}
+            </td>
+          ),
           code: ({ className, children, ...rest }) => {
             const inline = !className
             if (inline) {
@@ -103,11 +152,13 @@ export default function ProductDescriptionMarkdown({ children }) {
               </code>
             )
           },
-          pre: (props) => (
+          pre: ({ children, ...rest }) => (
             <pre
               className="overflow-x-auto rounded-lg bg-black/40 border border-[var(--dark-border)] p-2 sm:p-2.5 my-2 text-[0.88em] leading-snug text-[var(--dark-text-secondary)]"
-              {...props}
-            />
+              {...rest}
+            >
+              {children}
+            </pre>
           ),
         }}
       >

@@ -3,6 +3,7 @@
 import ProductPageCTA from './ProductPageCTA'
 import ProductShareAndFavorite from './ProductShareAndFavorite'
 import ProductDetailLogoMark from './ProductDetailLogoMark'
+import ProductPurchaseTrustSignals from './ProductPurchaseTrustSignals'
 
 /**
  * Panel de compra sticky (solo desktop lg+).
@@ -38,6 +39,8 @@ export default function ProductDesktopPurchasePanel({
           <span className="product-desktop-buy-panel__status-dot" aria-hidden />
           Disponible
         </p>
+
+        <ProductPurchaseTrustSignals className="product-trust-signals--panel mt-3.5" />
 
         <div className="product-desktop-buy-panel__actions">
           <ProductPageCTA

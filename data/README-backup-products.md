@@ -31,3 +31,21 @@ Ejemplo:
 - `public/images/products/fender-stratocaster-1978/detalle-1.jpg`
 
 También podés usar URLs completas `https://...` o rutas absolutas `/images/...`.
+
+## Variantes livianas (catálogo / ficha)
+
+El sitio **no** usa el Image Optimization on-demand de Vercel. Para reducir peso se generan WebP estáticos:
+
+```bash
+npm run images:variants
+```
+
+Quedan en `public/images/products/<slug>/variants/`:
+
+- `*.card.webp` — tarjetas y thumbs (~480px)
+- `*.main.webp` — foto principal de ficha (~1280px)
+- `*.large.webp` — lightbox (~1600px)
+
+Las URLs en `image_url` / `images` **no cambian**; `forDisplay()` apunta a la variante y, si falta el archivo, cae al original.
+
+Correr el script después de agregar o reemplazar fotos (también tras `npm run sync:catalog`).

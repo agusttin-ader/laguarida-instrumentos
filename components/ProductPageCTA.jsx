@@ -36,7 +36,7 @@ export default function ProductPageCTA({
           rel="noopener noreferrer"
           aria-label={`Consultar por WhatsApp sobre ${productName || 'este producto'}`}
           onClick={handleWhatsAppClick}
-          className="w-full md:w-auto min-h-11"
+          className="w-full md:w-auto min-h-11 touch-manipulation"
         >
           <WhatsAppGlyph className="h-6 w-6 shrink-0" />
           <span>Consultar por WhatsApp</span>

@@ -31,5 +31,13 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_' }],
     'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     'no-undef': 'off'
-  }
+  },
+  overrides: [
+    {
+      files: ['next.config.js', 'postcss.config.js', 'tailwind.config.js', 'playwright.config.ts'],
+      rules: {
+        '@typescript-eslint/no-require-imports': 'off',
+      },
+    },
+  ],
 }

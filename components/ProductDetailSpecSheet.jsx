@@ -1,7 +1,3 @@
-'use client'
-
-import React from 'react'
-
 function SpecRow({ spec }) {
   return (
     <li className="product-detail-body text-[14px] sm:text-[15px] md:text-[16px] leading-[1.48] sm:leading-[1.5] text-[var(--dark-text-secondary)]">

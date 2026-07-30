@@ -1,20 +1,48 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NextImage from "next/image";
-import { useEffect } from "react";
-import { shouldBypassNextOptimization } from "../lib/utils/imageService";
 import { usePremiumImageFade } from "../hooks/usePremiumImageFade";
 import { useResponsiveImageQuality } from "../hooks/useResponsiveImageQuality";
 import { IMAGE_QUALITY_PRESETS } from "../lib/utils/responsiveImageQuality";
 
-export default function ImageWithSkeleton({ src, alt, width, height, sizes, quality, qualityPreset = 'galleryMain', priority = false, loading = 'lazy', className = "", style = {}, fill = false, fit, imgClassName = '', imgStyle = {}, onImageLoad, disableClientPreview = true, unoptimized }) {
+export default function ImageWithSkeleton({
+  src,
+  alt,
+  width,
+  height,
+  sizes,
+  quality,
+  qualityPreset = 'galleryMain',
+  priority = false,
+  loading = 'lazy',
+  className = "",
+  style = {},
+  fill = false,
+  fit,
+  imgClassName = '',
+  imgStyle = {},
+  onImageLoad,
+  disableClientPreview = true,
+  unoptimized,
+  /** Original canónico si `src` es variante estática (fallback ante 404). */
+  fallbackSrc,
+}) {
   const preset = IMAGE_QUALITY_PRESETS[qualityPreset] || IMAGE_QUALITY_PRESETS.galleryMain
   const responsiveQuality = useResponsiveImageQuality(preset)
   const resolvedQuality = quality ?? responsiveQuality
-  const srcKey = typeof src === 'string' ? src.trim() : src
+  const requestedSrc = typeof src === 'string' ? src.trim() : src
+  const fallback = typeof fallbackSrc === 'string' ? fallbackSrc.trim() : ''
+  const [activeSrc, setActiveSrc] = useState(requestedSrc)
+  const srcKey = typeof activeSrc === 'string' ? activeSrc.trim() : activeSrc
   const { loaded, onImageLoad: markImageLoaded, opacityClass, transitionClass } = usePremiumImageFade(srcKey)
   const [errored, setErrored] = useState(false);
   const [blurDataURL, setBlurDataURL] = useState(null)
+
+  useEffect(() => {
+    setActiveSrc(requestedSrc)
+    setErrored(false)
+  }, [requestedSrc])
+
   useEffect(() => {
     if (disableClientPreview) {
       setBlurDataURL(null)
@@ -22,7 +50,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
     }
     let mounted = true
     async function makeClientPreview() {
-      if (!src) return
+      if (!activeSrc) return
       try {
         if (typeof window === 'undefined') return
         const imgEl = new window.Image()
@@ -30,7 +58,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
         await new Promise((resolve, reject) => {
           imgEl.onload = () => resolve(imgEl)
           imgEl.onerror = reject
-          imgEl.src = src
+          imgEl.src = activeSrc
         })
         const w = 16
         const h = Math.max(1, Math.round((w * imgEl.naturalHeight) / imgEl.naturalWidth))
@@ -46,9 +74,9 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
     }
     if (typeof window !== 'undefined') makeClientPreview()
     return () => { mounted = false }
-  }, [src, disableClientPreview])
-  if (typeof src === 'string') src = src.trim()
-  if (!src) {
+  }, [activeSrc, disableClientPreview])
+
+  if (!activeSrc) {
     return (
       <div className={`relative overflow-hidden ${className}`} style={{ width: fill ? '100%' : width, height: fill ? '100%' : height, ...style }}>
         <div className="image-placeholder w-full h-full" aria-hidden="true" />
@@ -65,8 +93,8 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
     mergedImgStyle.backfaceVisibility = 'hidden'
     mergedImgStyle.WebkitBackfaceVisibility = 'hidden'
   }
-  const srcStr = typeof src === 'string' ? src.trim() : ''
-  const useUnoptimized = Boolean(unoptimized) || shouldBypassNextOptimization(srcStr)
+  // Sin /_next/image salvo override explícito unoptimized={false}.
+  const useUnoptimized = unoptimized !== false
 
   return (
     <div
@@ -86,7 +114,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
         <div className="image-placeholder w-full h-full" aria-hidden="true" />
       ) : (
         <NextImage
-          src={src}
+          src={activeSrc}
           alt={alt}
           width={fill ? undefined : width}
           height={fill ? undefined : height}
@@ -96,7 +124,7 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
           placeholder={blurDataURL ? 'blur' : 'empty'}
           blurDataURL={blurDataURL || undefined}
           loading={priority ? 'eager' : loading}
-          fetchPriority={priority ? 'high' : undefined}
+          fetchPriority={priority ? 'high' : 'auto'}
           priority={priority}
           fill={fill}
           decoding="async"
@@ -111,7 +139,13 @@ export default function ImageWithSkeleton({ src, alt, width, height, sizes, qual
             } catch { /* ignore */ }
           }}
           style={mergedImgStyle}
-          onError={() => setErrored(true)}
+          onError={() => {
+            if (fallback && activeSrc !== fallback) {
+              setActiveSrc(fallback)
+              return
+            }
+            setErrored(true)
+          }}
         />
       )}
     </div>

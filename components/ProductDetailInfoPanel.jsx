@@ -1,7 +1,3 @@
-'use client'
-
-import React from 'react'
-
 function HighlightsRow({ chipList }) {
   if (!chipList.length) return null
   return (

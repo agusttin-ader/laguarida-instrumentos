@@ -13,7 +13,6 @@ export default function CatalogSidebarModelItem({ group, active, onSelect }) {
     >
       <div className="catalog-sidebar-item__body min-w-0 w-full">
         {modelLogo ? (
-          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={modelLogo}
             alt={group.label}

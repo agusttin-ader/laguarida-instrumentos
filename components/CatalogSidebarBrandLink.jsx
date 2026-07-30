@@ -2,13 +2,13 @@ import Link from 'next/link'
 import { HOME_BRANDS } from '../lib/data/homeBrands'
 import { getHomeBrandCatalogLink } from '../lib/catalog/catalogTaxonomy'
 
-export default function CatalogSidebarBrandLink({ brand, active = false }) {
+export default function CatalogSidebarBrandLink({ brand, active = false, filters = {} }) {
   const homeBrand = HOME_BRANDS.find((b) => b.id === brand.id)
   const logo = homeBrand?.logo
 
   return (
     <Link
-      href={getHomeBrandCatalogLink(brand)}
+      href={getHomeBrandCatalogLink(brand, filters)}
       aria-label={`Ver ${brand.name}`}
       aria-current={active ? 'page' : undefined}
       className={`no-custom-btn no-custom-btn--flat catalog-sidebar-item catalog-sidebar-item--brand${
@@ -16,7 +16,6 @@ export default function CatalogSidebarBrandLink({ brand, active = false }) {
       }`}
     >
       {logo ? (
-        // eslint-disable-next-line @next/next/no-img-element
         <img src={logo} alt="" aria-hidden className="catalog-sidebar-item__logo" />
       ) : (
         <span className="catalog-sidebar-item__name-fallback">{brand.name}</span>

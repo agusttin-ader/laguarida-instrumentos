@@ -11,7 +11,7 @@ import { useToast } from './ToastContext'
 import { usePremiumImageFade } from '../hooks/usePremiumImageFade'
 import { useResponsiveImageQuality } from '../hooks/useResponsiveImageQuality'
 import { IMAGE_QUALITY_PRESETS } from '../lib/utils/responsiveImageQuality'
-import { resolveProductBrandLogo } from '../lib/catalog/resolveProductBrandLogo'
+import { resolveProductBrandLogo, resolveProductImageFallbackLogo } from '../lib/catalog/resolveProductBrandLogo'
 
 const CARD_IMAGE_SIZES =
   '(max-width: 767px) 46vw, (max-width: 1023px) 46vw, (max-width: 1535px) 31vw, (max-width: 1919px) 28vw, 24vw'
@@ -27,8 +27,22 @@ function getInitialMediaMatch(query) {
   return window.matchMedia(query).matches
 }
 
+function ProductCardImageFallback({ logo }) {
+  if (!logo?.src) return null
+  return (
+    <img
+      src={logo.src}
+      alt=""
+      className={`product-card-image-fallback__logo${
+        logo.isSiteMark ? ' product-card-image-fallback__logo--site' : ''
+      }`}
+    />
+  )
+}
+
 function ProductCardImage({
   src,
+  fallbackSrc,
   alt,
   priority = false,
   eager = false,
@@ -37,15 +51,18 @@ function ProductCardImage({
   onReady,
   pointerEventsNone = false,
   sizes = CARD_IMAGE_SIZES,
-  brandLogo = null,
+  fallbackLogo = null,
 }) {
-  const { loaded, onImageLoad, opacityClass, transitionClass } = usePremiumImageFade(src)
+  const displaySrc = src
+  const [activeSrc, setActiveSrc] = useState(displaySrc)
+  const { loaded, onImageLoad, opacityClass, transitionClass } = usePremiumImageFade(activeSrc)
   const cardQuality = useResponsiveImageQuality(IMAGE_QUALITY_PRESETS.card)
   const [errored, setErrored] = useState(false)
 
   useEffect(() => {
+    setActiveSrc(displaySrc)
     setErrored(false)
-  }, [src])
+  }, [displaySrc])
 
   const handleLoad = useCallback(() => {
     setErrored(false)
@@ -54,8 +71,12 @@ function ProductCardImage({
   }, [onImageLoad, onReady])
 
   const handleError = useCallback(() => {
+    if (fallbackSrc && activeSrc !== fallbackSrc) {
+      setActiveSrc(fallbackSrc)
+      return
+    }
     setErrored(true)
-  }, [])
+  }, [activeSrc, fallbackSrc])
 
   const showFallback = !loaded || errored
 
@@ -63,26 +84,17 @@ function ProductCardImage({
     <>
       {showFallback ? (
         <div className="product-card-image-fallback absolute inset-0 z-0" aria-hidden>
-          {brandLogo?.src ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={brandLogo.src}
-              alt=""
-              className="product-card-image-fallback__logo"
-            />
-          ) : (
-            <span className="product-card-image-fallback__mark">LG</span>
-          )}
+          <ProductCardImageFallback logo={fallbackLogo} />
         </div>
       ) : null}
-      {!errored ? (
+      {!errored && activeSrc ? (
         <Image
-          src={src}
+          src={activeSrc}
           alt={alt}
           fill
           sizes={sizes}
           quality={cardQuality}
-          unoptimized={imageService.shouldBypassNextOptimization(src)}
+          unoptimized
           priority={priority}
           loading={eager ? 'eager' : 'lazy'}
           fetchPriority={eager ? 'high' : 'auto'}
@@ -139,9 +151,9 @@ const ProductCard = React.memo(function ProductCard({
     const rest = resolved.filter((url) => url !== main)
     const list = main ? [main, ...rest] : rest
     const capped = list.slice(0, Math.max(1, maxGalleryImages))
-    const withDisplay = capped.map((u) => imageService.forDisplay(u, 'card') || u)
-    if (effectivePrimaryOnly) return withDisplay.slice(0, 1)
-    return withDisplay
+    // URLs canónicas; la variante liviana se resuelve al render (fallback al original si falta).
+    if (effectivePrimaryOnly) return capped.slice(0, 1)
+    return capped
   }, [p.images, p.image_url, effectivePrimaryOnly, maxGalleryImages])
 
   const [galleryIndex, setGalleryIndex] = useState(0)
@@ -168,6 +180,10 @@ const ProductCard = React.memo(function ProductCard({
   const brandLogo = useMemo(
     () => (showBrandLogo ? resolveProductBrandLogo(item) : null),
     [item, showBrandLogo]
+  )
+  const imageFallbackLogo = useMemo(
+    () => resolveProductImageFallbackLogo(item),
+    [item]
   )
   const imageFitClassName = [
     'max-[767px]:object-contain max-[767px]:object-center',
@@ -245,7 +261,8 @@ const ProductCard = React.memo(function ProductCard({
         <>
           {catalogSingleImage ? (
             <ProductCardImage
-              src={primarySrc}
+              src={imageService.forDisplay(primarySrc, inCarousel ? 'carousel' : 'card') || primarySrc}
+              fallbackSrc={primarySrc}
               alt={titleText || 'Imagen del producto'}
               priority={priority}
               eager={loadEager}
@@ -253,7 +270,7 @@ const ProductCard = React.memo(function ProductCard({
               style={{ objectPosition: 'center' }}
               pointerEventsNone={inCarousel}
               sizes={cardImageSizes}
-              brandLogo={brandLogo}
+              fallbackLogo={imageFallbackLogo}
             />
           ) : (
             imageList.map((src, idx) => {
@@ -272,14 +289,15 @@ const ProductCard = React.memo(function ProductCard({
                   }}
                 >
                   <ProductCardImage
-                    src={src}
+                    src={imageService.forDisplay(src, inCarousel ? 'carousel' : 'card') || src}
+                    fallbackSrc={src}
                     alt={idx === 0 ? (titleText || 'Imagen del producto') : `Imagen ${idx + 1} de ${titleText || 'producto'}`}
                     priority={Boolean(priority && isMainSlot && isActive)}
                     eager={slotEager}
                     fitClassName={imageFitClassName}
                     style={{ objectPosition: 'center' }}
                     sizes={cardImageSizes}
-                    brandLogo={brandLogo}
+                    fallbackLogo={imageFallbackLogo}
                   />
                 </div>
               )
@@ -288,12 +306,7 @@ const ProductCard = React.memo(function ProductCard({
         </>
       ) : (
         <div className="product-card-image-fallback absolute inset-0 flex items-center justify-center" aria-hidden>
-          {brandLogo?.src ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={brandLogo.src} alt="" className="product-card-image-fallback__logo" />
-          ) : (
-            <span className="product-card-image-fallback__mark">LG</span>
-          )}
+          <ProductCardImageFallback logo={imageFallbackLogo} />
         </div>
       )}
       {hasGallery && !isMobile ? (
@@ -304,7 +317,7 @@ const ProductCard = React.memo(function ProductCard({
               onClick={(e) => handleArrowClick(e, -1)}
               disabled={galleryIndex === 0}
               aria-label="Imagen anterior"
-              className={`no-custom-btn pointer-events-auto absolute left-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/58 text-white shadow-md transition-opacity duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
+              className={`no-custom-btn pointer-events-auto absolute left-1.5 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/58 text-white shadow-md transition-opacity duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
                 galleryIndex === 0
                   ? 'cursor-default opacity-35 md:opacity-0 md:group-hover/img:opacity-40'
                   : 'opacity-100 md:opacity-0 md:group-hover/img:opacity-100 hover:bg-black/60 md:hover:bg-transparent'
@@ -319,7 +332,7 @@ const ProductCard = React.memo(function ProductCard({
               onClick={(e) => handleArrowClick(e, 1)}
               disabled={galleryIndex === imageList.length - 1}
               aria-label="Siguiente imagen"
-              className={`no-custom-btn pointer-events-auto absolute right-1.5 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/58 text-white shadow-md transition-opacity duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
+              className={`no-custom-btn pointer-events-auto absolute right-1.5 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/58 text-white shadow-md transition-opacity duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 md:h-10 md:w-10 md:border-0 md:bg-transparent md:shadow-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.55))] active:scale-95 touch-manipulation ${
                 galleryIndex === imageList.length - 1
                   ? 'cursor-default opacity-35 md:opacity-0 md:group-hover/img:opacity-40'
                   : 'opacity-100 md:opacity-0 md:group-hover/img:opacity-100 hover:bg-black/60 md:hover:bg-transparent'
@@ -346,11 +359,10 @@ const ProductCard = React.memo(function ProductCard({
       ) : null}
       {brandLogo ? (
         <div
-          className="product-card-brand-badge product-card-brand-badge--overlay pointer-events-none absolute bottom-1.5 left-1.5 z-10 flex max-w-[calc(100%-3rem)] items-center rounded-md border border-white/10 bg-black/58 px-1 py-0.5 backdrop-blur-[2px] md:hidden"
+          className="product-card-brand-badge product-card-brand-badge--overlay pointer-events-none absolute bottom-1.5 left-1.5 z-10 flex max-w-[calc(100%-3rem)] items-center rounded-md bg-black/58 px-1 py-0.5 md:hidden"
           title={brandLogo.label}
           aria-hidden
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={brandLogo.src}
             alt=""
@@ -397,7 +409,6 @@ const ProductCard = React.memo(function ProductCard({
             title={brandLogo.label}
             aria-hidden
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={brandLogo.src}
               alt=""
