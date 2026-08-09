@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useToast } from './ToastContext'
 import { WhatsAppGlyph } from './WhatsAppFloatButton'
 import Button from './Button'
+import { trackWhatsAppClick } from '../lib/trackWhatsAppClick'
 
 const MOBILE_MQ = '(max-width: 767px)'
 /** Bloque principal de compra (precio, confianza, CTA). */
@@ -68,6 +69,7 @@ export default function ProductMobileStickyBar({
 
   function handleWhatsAppClick(e) {
     e.preventDefault()
+    trackWhatsAppClick()
     toast('Abriendo WhatsApp…', 'default')
     window.open(consultHref, '_blank', 'noopener,noreferrer')
   }

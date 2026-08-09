@@ -4,6 +4,7 @@ import React from 'react'
 import { useToast } from './ToastContext'
 import { WhatsAppGlyph } from './WhatsAppFloatButton'
 import Button from './Button'
+import { trackWhatsAppClick } from '../lib/trackWhatsAppClick'
 
 export default function ProductPageCTA({
   price,
@@ -18,6 +19,7 @@ export default function ProductPageCTA({
 
   function handleWhatsAppClick(e) {
     e.preventDefault()
+    trackWhatsAppClick()
     toast('Abriendo WhatsApp…', 'default')
     window.open(consultHref, '_blank', 'noopener,noreferrer')
   }

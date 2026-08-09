@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
 import { scrollToHomeSectionById } from '../lib/homeSectionScroll'
 import { SITE_LOGO_SRC } from '../lib/branding/logo'
+import { trackWhatsAppClick } from '../lib/trackWhatsAppClick'
 
 const LOGO_SRC = SITE_LOGO_SRC
 const WA_HREF = buildWaMeHref(WHATSAPP_DEFAULT_WEB_MESSAGE)
@@ -59,6 +60,11 @@ export default function MenuDrawer({ open, setOpen }) {
     }
     try { sessionStorage.setItem('pending-scroll-target', sectionId) } catch { /* empty */ }
     router.push('/')
+  }
+
+  function handleWhatsAppClick() {
+    trackWhatsAppClick()
+    close()
   }
 
   const rowClass =
@@ -135,7 +141,7 @@ export default function MenuDrawer({ open, setOpen }) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp"
-              onClick={close}
+              onClick={handleWhatsAppClick}
               className={`${rowClass} border-b-0`}
             >
               <span className="inline-flex items-center gap-3">

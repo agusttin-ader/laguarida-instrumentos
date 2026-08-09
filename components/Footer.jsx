@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { InstagramLogo, EnvelopeSimple, WhatsappLogo } from 'phosphor-react'
 import { layoutShellClassName } from '../lib/layoutShell'
 import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
+import { trackWhatsAppClick } from '../lib/trackWhatsAppClick'
 import { SITE_LOGO_SRC } from '../lib/branding/logo'
 
 export default function Footer({ compact = false }){
@@ -32,6 +33,10 @@ export default function Footer({ compact = false }){
   const socialBtnClass = compact
     ? 'flex items-center justify-center w-10 h-10 md:w-8 md:h-8'
     : 'flex items-center justify-center w-11 h-11 md:w-9 md:h-9 rounded-full border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] active:scale-[0.97]'
+
+  function handleWhatsAppClick() {
+    trackWhatsAppClick()
+  }
 
   return (
     <footer className={`site-footer ${footerTop} bg-transparent dark:bg-transparent border-0 overflow-x-hidden`}>
@@ -60,7 +65,7 @@ export default function Footer({ compact = false }){
             <a href="mailto:leonardo_ruberti@hotmail.com" aria-label="Correo" className={`no-custom-btn !text-[var(--dark-muted)] hover:!text-[var(--vintage-gold)] transition-colors duration-200 ${socialBtnClass}`}>
               <EnvelopeSimple size={compact ? 24 : 20} weight="duotone" />
             </a>
-            <a href={waHref} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className={`no-custom-btn !text-[var(--dark-muted)] hover:!text-[var(--vintage-gold)] transition-colors duration-200 ${socialBtnClass}`}>
+            <a href={waHref} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" onClick={handleWhatsAppClick} className={`no-custom-btn !text-[var(--dark-muted)] hover:!text-[var(--vintage-gold)] transition-colors duration-200 ${socialBtnClass}`}>
               <WhatsappLogo size={compact ? 24 : 20} weight="duotone" />
             </a>
           </nav>

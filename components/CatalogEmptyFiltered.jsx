@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Button from './Button'
 import { buildWaMeHref } from '../lib/whatsappWeb'
 import { catalogHref } from '../lib/catalog/catalogFilters'
+import { trackWhatsAppClick } from '../lib/trackWhatsAppClick'
 
 const WA_HREF = buildWaMeHref(
   'Hola, vengo de la web de La Guarida. Estoy buscando un instrumento en el catálogo y no encontré resultados con mis filtros. ¿Me podrías orientar?'
@@ -18,6 +19,10 @@ export default function CatalogEmptyFiltered({
     marca: marcaParam || undefined,
     modelo: modeloParam || undefined,
   })
+
+  function handleWhatsAppClick() {
+    trackWhatsAppClick()
+  }
 
   return (
     <div className="catalog-empty-filtered rounded-2xl border border-[var(--dark-border)] bg-[var(--dark-bg-card)] px-5 py-10 text-center sm:px-8">
@@ -47,6 +52,7 @@ export default function CatalogEmptyFiltered({
           variant="whatsapp"
           target="_blank"
           rel="noopener noreferrer"
+          onClick={handleWhatsAppClick}
           className="min-h-11 w-full sm:w-auto"
         >
           Consultar por WhatsApp
