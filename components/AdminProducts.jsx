@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useState, startTransition } from 'react'
-import Image from 'next/image'
+import ImageWithSkeleton from './ImageWithSkeleton'
 import { useRouter } from 'next/navigation'
 import normalizeProduct from '../lib/utils/normalizeProduct'
 import imageService from '../lib/utils/imageService'
@@ -51,8 +51,10 @@ const AdminCatalogRow = React.memo(function AdminCatalogRow({
   onTouchMove,
   onTouchCancel,
 }) {
-  const imgSrc =
+  const rawSrc =
     imageService.resolve(p.image_url || (p.images && p.images[0])) || null
+  const imgSrc =
+    imageService.forDisplay(p.image_url || (p.images && p.images[0]), 'adminThumb') || rawSrc
   return (
     <div
       className="admin-catalog-row flex touch-manipulation flex-col gap-4 rounded-2xl border border-white/[0.09] bg-[#151922]/95 px-4 py-4 shadow-[0_2px_20px_rgba(0,0,0,0.22)] sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:px-5 sm:py-4 hover:border-white/[0.13]"
@@ -65,15 +67,18 @@ const AdminCatalogRow = React.memo(function AdminCatalogRow({
       <div className="flex min-w-0 flex-1 items-center gap-3.5 sm:gap-4">
         <div className="flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#0d1016] ring-1 ring-white/10 sm:h-16 sm:w-16">
           {imgSrc ? (
-            <Image
+            <ImageWithSkeleton
               src={imgSrc}
+              fallbackSrc={rawSrc}
               alt=""
               width={64}
               height={64}
               sizes="64px"
-              quality={58}
+              qualityPreset="adminThumb"
               loading="lazy"
-              className="h-full w-full object-cover"
+              className="h-full w-full"
+              imgClassName="object-cover"
+              disableClientPreview
             />
           ) : (
             <div className="image-placeholder h-full w-full" />

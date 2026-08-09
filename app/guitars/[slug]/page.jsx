@@ -12,7 +12,6 @@ import ProductPurchaseTrustSignals from '../../../components/ProductPurchaseTrus
 import ProductDetailInfoPanel from '../../../components/ProductDetailInfoPanel'
 import ProductDetailSpecSheet from '../../../components/ProductDetailSpecSheet'
 import RelatedProductsScroll from '../../../components/RelatedProductsScroll'
-import { resolveImageUrl } from '../../../lib/utils/imageHelpers'
 import { absoluteUrl, toAbsoluteUrl } from '../../../lib/siteUrl'
 import { buildWaMeHref, whatsAppProductMessage } from '../../../lib/whatsappWeb'
 import { descriptionLooksLikeMarkdown, markdownToPlainText } from '../../../lib/utils/descriptionMarkdown'
@@ -34,7 +33,7 @@ function resolveGalleryImageRef(ref) {
   if (ref == null) return null
   const s = typeof ref === 'string' ? ref.trim() : String(ref).trim()
   if (!s) return null
-  const resolved = resolveImageUrl(s)
+  const resolved = imageService.resolve(s)
   if (resolved) return resolved
   if (/^https?:\/\//i.test(s)) return s
   return null

@@ -91,6 +91,7 @@ export default function MenuDrawer({ open, setOpen }) {
               alt="La Guarida"
               width={1800}
               height={450}
+              unoptimized
               className="h-9 w-auto max-h-[2.35rem] object-contain object-left"
               style={{ objectFit: 'contain' }}
               quality={68}

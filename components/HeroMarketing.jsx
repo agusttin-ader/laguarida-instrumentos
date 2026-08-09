@@ -54,6 +54,7 @@ export default function HeroMarketing({ slides = [] }) {
                 src={slide.src}
                 alt=""
                 fill
+                unoptimized
                 priority={i === 0}
                 loading={i === 0 ? 'eager' : undefined}
                 quality={62}
