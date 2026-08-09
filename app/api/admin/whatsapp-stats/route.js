@@ -5,6 +5,8 @@ import { cookies } from 'next/headers'
 import { getSupabaseServerClient, getSupabaseAdminClient } from '../../../../lib/supabase/server'
 import { isSupabaseFullyBlocked } from '../../../../lib/supabase/mode'
 
+const WHATSAPP_STATS_ALLOWED_EMAIL = 'agusttin.dev@gmail.com'
+
 async function extractAccessToken(req) {
   try {
     const cookieStore = await cookies()
@@ -42,6 +44,11 @@ export async function GET(req) {
     const { data: authData, error: authErr } = await supabase.auth.getUser()
     if (authErr || !authData?.user) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    }
+
+    const email = String(authData.user.email || '').trim().toLowerCase()
+    if (email !== WHATSAPP_STATS_ALLOWED_EMAIL) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
     const admin = getSupabaseAdminClient()

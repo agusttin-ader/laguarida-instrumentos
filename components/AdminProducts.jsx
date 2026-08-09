@@ -8,6 +8,9 @@ import imageService from '../lib/utils/imageService'
 import PullToRefresh from './PullToRefresh'
 import { useToast } from './ToastContext'
 import { hapticLight } from '../lib/haptics'
+import { useAdminAuth } from '../app/admin/auth/ClientAuth'
+
+const WHATSAPP_STATS_ALLOWED_EMAIL = 'agusttin.dev@gmail.com'
 
 const ACTIVITY_FETCH_LIMIT = 200
 const CATALOG_PAGE_SIZE = 35
@@ -136,6 +139,9 @@ const AdminCatalogRow = React.memo(function AdminCatalogRow({
 
 export default function AdminProducts({ showNewProductHeroSection = true }) {
   const router = useRouter()
+  const auth = useAdminAuth()
+  const canSeeWhatsappStats =
+    String(auth?.user?.email || '').trim().toLowerCase() === WHATSAPP_STATS_ALLOWED_EMAIL
   const quickInputRef = React.useRef(null)
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
@@ -290,6 +296,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
       } catch { /* empty */ }
     }
     async function loadWhatsappStats() {
+      if (!canSeeWhatsappStats) return
       try {
         const res = await fetch('/api/admin/whatsapp-stats', { credentials: 'include' })
         if (cancelled || !res.ok) return
@@ -318,7 +325,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
         clearTimeout(schedule)
       }
     }
-  }, [load])
+  }, [load, canSeeWhatsappStats])
 
   const monthlyStats = useMemo(() => {
     if (!toolsOpen) return []
@@ -824,39 +831,41 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
             </div>
           </div>
 
-          <div className="mt-4 rounded-xl border border-white/10 bg-[#141a24] p-4">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-200">Clicks a WhatsApp</p>
-                <p className="mt-1 text-xs text-slate-400">Redirecciones desde la web (total y por mes).</p>
+          {canSeeWhatsappStats ? (
+            <div className="mt-4 rounded-xl border border-white/10 bg-[#141a24] p-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-200">Clicks a WhatsApp</p>
+                  <p className="mt-1 text-xs text-slate-400">Redirecciones desde la web (total y por mes).</p>
+                </div>
+                <p className="text-2xl font-semibold tabular-nums text-emerald-300">{whatsappStats.total}</p>
               </div>
-              <p className="text-2xl font-semibold tabular-nums text-emerald-300">{whatsappStats.total}</p>
-            </div>
-            <div className="mt-3 overflow-x-auto rounded-lg border border-white/10">
-              <table className="min-w-full text-left text-sm">
-                <thead className="bg-white/[0.04] text-slate-300">
-                  <tr>
-                    <th className="px-3 py-2 font-semibold">Mes</th>
-                    <th className="px-3 py-2 font-semibold">Clicks</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/10 text-slate-200">
-                  {whatsappStats.byMonth.length === 0 ? (
+              <div className="mt-3 overflow-x-auto rounded-lg border border-white/10">
+                <table className="min-w-full text-left text-sm">
+                  <thead className="bg-white/[0.04] text-slate-300">
                     <tr>
-                      <td className="px-3 py-3 text-slate-400" colSpan={2}>Todavía no hay clicks registrados.</td>
+                      <th className="px-3 py-2 font-semibold">Mes</th>
+                      <th className="px-3 py-2 font-semibold">Clicks</th>
                     </tr>
-                  ) : (
-                    whatsappStats.byMonth.map((m) => (
-                      <tr key={m.month}>
-                        <td className="px-3 py-2">{m.month}</td>
-                        <td className="px-3 py-2 tabular-nums font-semibold">{m.count}</td>
+                  </thead>
+                  <tbody className="divide-y divide-white/10 text-slate-200">
+                    {whatsappStats.byMonth.length === 0 ? (
+                      <tr>
+                        <td className="px-3 py-3 text-slate-400" colSpan={2}>Todavía no hay clicks registrados.</td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ) : (
+                      whatsappStats.byMonth.map((m) => (
+                        <tr key={m.month}>
+                          <td className="px-3 py-2">{m.month}</td>
+                          <td className="px-3 py-2 tabular-nums font-semibold">{m.count}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          ) : null}
 
           <div className="mt-4 rounded-xl border border-white/10 bg-[#141a24]">
             <div className="border-b border-white/10 px-4 py-2.5">
