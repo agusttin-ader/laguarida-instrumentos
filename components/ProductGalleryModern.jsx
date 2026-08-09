@@ -128,7 +128,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
             fallbackSrc={mainImage}
             alt={altBase || 'Imagen del producto'}
             fill
-            className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+            imgClassName="object-cover object-[center_88%] sm:object-bottom transition-transform duration-300 ease-out group-hover:scale-105"
             sizes={GALLERY_MAIN_SIZES}
             qualityPreset="galleryMain"
             priority

@@ -20,7 +20,7 @@ import ProductDescriptionMarkdown from '../../../components/ProductDescriptionMa
 import ProductDetailLogoMark from '../../../components/ProductDetailLogoMark'
 import Button from '../../../components/Button'
 import {
-  getProductDetailDisplayTitle,
+  getProductIntroTitle,
   resolveProductBrandLogo,
 } from '../../../lib/catalog/resolveProductBrandLogo'
 import { productIsCustomShopGuitar } from '../../../lib/catalog/catalogTaxonomy'
@@ -312,7 +312,8 @@ export default async function GuitarPage({ params }) {
   const categoryLabel = brandLogo
     ? modelLabel
     : ([product.brand, product.model].filter(Boolean).join(' · ') || 'Premium guitars')
-  const displayTitle = getProductDetailDisplayTitle(product, brandLogo, modelLabel)
+  const introTitle = getProductIntroTitle(product, headerLogo)
+  const desktopBrandLabel = product.brand || categoryLabel || null
   const modelValue = product.model || 'N/A'
   const woodValue = Array.isArray(product.wood) ? product.wood.join(', ') : (product.wood || 'N/A')
   const micsValue = Array.isArray(product.mics) ? product.mics.join(', ') : (product.mics || 'N/A')
@@ -421,8 +422,6 @@ export default async function GuitarPage({ params }) {
     ...(reviewsForSchema.length > 0 && { review: reviewsForSchema })
   }
 
-  const desktopTitle = headerLogo ? displayTitle : product.name
-  const desktopBrandLabel = product.brand || categoryLabel || null
   const priceLabel = product.price ? formatPriceDisplay(product.price) : null
 
   return (
@@ -432,17 +431,32 @@ export default async function GuitarPage({ params }) {
 
       <section className="product-detail-hero-section product-detail-layout w-full min-w-0 bg-[var(--dark-surface-2)] max-md:px-0 px-4 pt-0 pb-5 max-lg:mx-0 max-md:rounded-b-[20px] sm:px-5 sm:pt-6 sm:pb-10 md:px-6 md:pt-3 lg:-mx-8 lg:px-8 lg:pt-3 lg:pb-16 rounded-b-[24px] md:rounded-b-[32px]">
         <div className="container-tight product-detail-layout__grid w-full">
-          <nav aria-label="Breadcrumb" className="product-detail-layout__crumb w-full mb-0 mt-3 md:mb-4 md:mt-0">
-            <ol className="product-detail-breadcrumb flex flex-wrap items-center gap-1.5 text-[12px] max-md:text-[13px] sm:text-[14px] md:text-[15px] xl:text-base text-[var(--dark-muted)]">
-              <li><a href="/" className="hover:text-[var(--dark-text-primary)] transition-colors">Inicio</a></li>
-              <li aria-hidden className="opacity-50">/</li>
-              <li><a href="/catalogo" className="hover:text-[var(--dark-text-primary)] transition-colors">Catálogo</a></li>
-              <li aria-hidden className="opacity-50">/</li>
-              <li className="min-w-0 flex-1 text-[var(--dark-text-secondary)] sm:flex-none sm:max-w-[280px] lg:max-w-[min(100%,28rem)] xl:max-w-[min(100%,40rem)]" aria-current="page">
-                <span className="block truncate">{product.name}</span>
-              </li>
-            </ol>
-          </nav>
+          <div className="product-detail-layout__crumb w-full min-w-0">
+            <header className="product-detail-layout__intro">
+              {headerLogo ? (
+                <ProductDetailLogoMark logo={headerLogo} size="hero" className="product-detail-intro__logo" />
+              ) : null}
+              <h1
+                className={`product-detail-title product-detail-intro__title m-0 leading-[1.08] font-bold text-[var(--dark-text-primary)] tracking-tight text-left ${
+                  headerLogo ? 'product-detail-title--with-logo mt-2 sm:mt-3' : 'mt-0'
+                }`}
+              >
+                {introTitle}
+              </h1>
+            </header>
+
+            <nav aria-label="Breadcrumb" className="product-detail-breadcrumb-wrap mt-2 md:mt-3 lg:mt-3">
+              <ol className="product-detail-breadcrumb flex flex-wrap items-center gap-1.5 text-[12px] max-md:text-[13px] sm:text-[14px] md:text-[15px] xl:text-base text-[var(--dark-muted)]">
+                <li><a href="/" className="hover:text-[var(--dark-text-primary)] transition-colors">Inicio</a></li>
+                <li aria-hidden className="opacity-50">/</li>
+                <li><a href="/catalogo" className="hover:text-[var(--dark-text-primary)] transition-colors">Catálogo</a></li>
+                <li aria-hidden className="opacity-50">/</li>
+                <li className="min-w-0 flex-1 text-[var(--dark-text-secondary)] sm:flex-none sm:max-w-[280px] lg:max-w-[min(100%,28rem)] xl:max-w-[min(100%,40rem)]" aria-current="page">
+                  <span className="block truncate">{product.name}</span>
+                </li>
+              </ol>
+            </nav>
+          </div>
 
           <FadeInView className="product-detail-layout__gallery product-detail-gallery-wrap min-w-0">
             <ProductGalleryModern
@@ -452,40 +466,12 @@ export default async function GuitarPage({ params }) {
             />
           </FadeInView>
 
-          {/* Identidad: mobile/tablet. En desktop el h1 vive en el panel sticky. */}
-          <FadeInView className="product-detail-layout__identity product-detail-identity mb-6 max-md:mb-0 max-md:mt-2 md:mb-8 lg:hidden" delay={0.05}>
-            {headerLogo ? (
-              <ProductDetailLogoMark logo={headerLogo} size="hero" />
-            ) : null}
-            {categoryLabel ? (
-              <p className="product-detail-kicker mt-2 text-[11px] sm:text-xs md:text-[13px] font-semibold uppercase tracking-[0.22em] text-[var(--dark-muted)] max-md:mt-1.5 md:mt-2.5">
-                {categoryLabel}
-              </p>
-            ) : null}
-            <h1
-              className={`product-detail-title leading-[1.08] font-bold text-[var(--dark-text-primary)] tracking-tight text-left ${
-                headerLogo ? 'product-detail-title--with-logo' : ''
-              } ${categoryLabel || headerLogo ? 'mt-2 max-md:mt-1.5 md:mt-3' : 'mt-0'}`}
-            >
-              {desktopTitle}
-            </h1>
-            {priceLabel ? (
-              <p className="price-highlight product-detail-price product-detail-price--mobile-hero mt-2.5 text-2xl font-bold tracking-tight md:hidden">
-                {priceLabel}
-              </p>
-            ) : null}
-            <p className="product-detail-availability mt-2 flex items-center gap-2 text-[13px] font-medium text-[var(--dark-text-secondary)] md:hidden">
-              <span className="product-detail-availability__dot" aria-hidden />
-              Disponible
-            </p>
-          </FadeInView>
-
-          {/* Panel compra sticky desktop: debajo de galería full-width, columna derecha con la descripción */}
+          {/* Panel compra sticky: debajo de galería full-width, columna derecha junto a la descripción */}
           <div className="product-detail-layout__buy hidden min-w-0 lg:block">
             <ProductDesktopPurchasePanel
-              brandLabel={desktopBrandLabel}
+              brandLabel={headerLogo ? null : desktopBrandLabel}
               headerLogo={headerLogo}
-              title={desktopTitle}
+              title={introTitle}
               priceLabel={priceLabel}
               consultHref={consultHref}
               productName={product.name}
@@ -501,12 +487,12 @@ export default async function GuitarPage({ params }) {
           >
             <div id="pdp-primary-block" className="space-y-4 max-md:space-y-3 sm:space-y-5">
               {priceLabel ? (
-                <p className="price-highlight product-detail-price hidden text-2xl font-bold tracking-tight sm:text-[30px] md:block md:text-[32px]">
+                <p className="price-highlight product-detail-price text-2xl font-bold tracking-tight sm:text-[30px] md:text-[32px] lg:hidden">
                   {priceLabel}
                 </p>
               ) : null}
 
-              <p className="product-detail-availability hidden items-center gap-2 text-sm font-medium text-[var(--dark-text-secondary)] md:flex lg:hidden">
+              <p className="product-detail-availability flex items-center gap-2 text-sm font-medium text-[var(--dark-text-secondary)] lg:hidden">
                 <span className="product-detail-availability__dot" aria-hidden />
                 Disponible
               </p>

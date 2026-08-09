@@ -9,8 +9,7 @@ import PullToRefresh from './PullToRefresh'
 import { useToast } from './ToastContext'
 import { hapticLight } from '../lib/haptics'
 import { useAdminAuth } from '../app/admin/auth/ClientAuth'
-
-const WHATSAPP_STATS_ALLOWED_EMAIL = 'agusttin.dev@gmail.com'
+import { WHATSAPP_STATS_ALLOWED_EMAIL } from '../lib/admin/whatsappStatsAccess'
 
 const ACTIVITY_FETCH_LIMIT = 200
 const CATALOG_PAGE_SIZE = 35

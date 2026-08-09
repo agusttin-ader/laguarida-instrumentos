@@ -4,8 +4,7 @@ import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { getSupabaseServerClient, getSupabaseAdminClient } from '../../../../lib/supabase/server'
 import { isSupabaseFullyBlocked } from '../../../../lib/supabase/mode'
-
-const WHATSAPP_STATS_ALLOWED_EMAIL = 'agusttin.dev@gmail.com'
+import { WHATSAPP_STATS_ALLOWED_EMAIL } from '../../../../lib/admin/whatsappStatsAccess'
 
 async function extractAccessToken(req) {
   try {

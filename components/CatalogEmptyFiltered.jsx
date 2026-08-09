@@ -20,10 +20,6 @@ export default function CatalogEmptyFiltered({
     modelo: modeloParam || undefined,
   })
 
-  function handleWhatsAppClick() {
-    trackWhatsAppClick()
-  }
-
   return (
     <div className="catalog-empty-filtered rounded-2xl border border-[var(--dark-border)] bg-[var(--dark-bg-card)] px-5 py-10 text-center sm:px-8">
       <h3 className="text-lg font-semibold text-[var(--dark-text-primary)]">
@@ -52,7 +48,7 @@ export default function CatalogEmptyFiltered({
           variant="whatsapp"
           target="_blank"
           rel="noopener noreferrer"
-          onClick={handleWhatsAppClick}
+          onClick={trackWhatsAppClick}
           className="min-h-11 w-full sm:w-auto"
         >
           Consultar por WhatsApp

@@ -60,10 +60,6 @@ export default function FaqSection() {
   const mail = 'leonardo_ruberti@hotmail.com'
   const insta = 'https://www.instagram.com/laguaridainstrumentos/'
 
-  function handleWhatsAppClick() {
-    trackWhatsAppClick()
-  }
-
   return (
     <section
       id="faq-section"
@@ -130,13 +126,13 @@ export default function FaqSection() {
             <ul className="mb-4 space-y-2.5 text-[13px] text-[var(--dark-text-secondary)] sm:space-y-3 sm:text-sm md:mb-5">
               <li>
                 <strong className="text-[var(--dark-text-primary)]">Teléfono:</strong>{' '}
-                <a href={waLink} target="_blank" rel="noopener noreferrer" onClick={handleWhatsAppClick} className="text-[var(--palette-gold)] hover:underline">
+                <a href={waLink} target="_blank" rel="noopener noreferrer" onClick={trackWhatsAppClick} className="text-[var(--palette-gold)] hover:underline">
                   {phone}
                 </a>
               </li>
               <li>
                 <strong className="text-[var(--dark-text-primary)]">WhatsApp:</strong>{' '}
-                <a href={waLink} target="_blank" rel="noopener noreferrer" onClick={handleWhatsAppClick} className="text-[var(--palette-gold)] hover:underline">
+                <a href={waLink} target="_blank" rel="noopener noreferrer" onClick={trackWhatsAppClick} className="text-[var(--palette-gold)] hover:underline">
                   Iniciar chat
                 </a>
               </li>
@@ -163,7 +159,7 @@ export default function FaqSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
-                onClick={handleWhatsAppClick}
+                onClick={trackWhatsAppClick}
                 className="no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors hover:text-[var(--palette-gold)]"
               >
                 <WhatsappLogo size={22} weight="duotone" />

@@ -31,7 +31,7 @@ export default function ProductDesktopPurchasePanel({
         {brandLabel ? (
           <p className="product-desktop-buy-panel__brand">{brandLabel}</p>
         ) : null}
-        <h1 className="product-desktop-buy-panel__title product-detail-title">{title}</h1>
+        <p className="product-desktop-buy-panel__title product-detail-title">{title}</p>
         {priceLabel ? (
           <p className="price-highlight product-desktop-buy-panel__price">{priceLabel}</p>
         ) : null}

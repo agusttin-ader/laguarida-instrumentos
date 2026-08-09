@@ -15,17 +15,13 @@ function WhatsAppGlyph({ className }) {
 }
 
 export default function WhatsAppFloatButton() {
-  function handleClick() {
-    trackWhatsAppClick()
-  }
-
   return (
     <a
       href={WA_DEFAULT_HREF}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Escribinos por WhatsApp"
-      onClick={handleClick}
+      onClick={trackWhatsAppClick}
       className="no-custom-btn whatsapp-float-fab fixed z-[var(--z-mobile-fab)] flex size-[3.75rem] shrink-0 items-center justify-center rounded-full bg-[#25D366] p-0 text-white transition-[transform,opacity,box-shadow] duration-200 hover:scale-105 hover:bg-[#20bd5a] active:scale-[0.96] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-page)] max-md:size-14 md:size-14 right-[max(1rem,env(safe-area-inset-right,0px))] bottom-[max(1rem,env(safe-area-inset-bottom,0px))] md:right-6 md:bottom-6"
     >
       <WhatsAppGlyph className="h-7 w-7 md:h-7 md:w-7" />
