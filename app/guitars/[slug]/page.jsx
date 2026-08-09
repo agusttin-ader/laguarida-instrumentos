@@ -480,7 +480,7 @@ export default async function GuitarPage({ params }) {
             </p>
           </FadeInView>
 
-          {/* Panel compra sticky desktop: misma columna que galería+descripción para sticky real */}
+          {/* Panel compra sticky desktop: debajo de galería full-width, columna derecha con la descripción */}
           <div className="product-detail-layout__buy hidden min-w-0 lg:block">
             <ProductDesktopPurchasePanel
               brandLabel={desktopBrandLabel}

@@ -2880,7 +2880,7 @@ header.site-header-bar.header-scroll-hidden {
     grid-template-columns: minmax(0, 1fr) minmax(280px, 24rem);
     grid-template-areas:
       'crumb crumb'
-      'gallery buy'
+      'gallery gallery'
       'info buy';
     column-gap: 2.5rem;
     row-gap: 0;
@@ -2900,12 +2900,13 @@ header.site-header-bar.header-scroll-hidden {
   .product-detail-layout__info {
     grid-area: info;
     order: unset;
-    margin-top: 2.5rem !important;
+    margin-top: 2.25rem !important;
   }
 
   .product-detail-layout__buy {
     grid-area: buy;
     order: unset;
+    margin-top: 2.25rem;
     position: -webkit-sticky;
     position: sticky;
     top: calc(var(--site-header-h, 68px) + 1rem);

@@ -9,9 +9,9 @@ import imageService from '../lib/utils/imageService'
 const GalleryLightbox = dynamic(() => import('./GalleryLightbox'), { ssr: false })
 
 const GALLERY_MAIN_SIZES =
-  '(max-width:1023px) 100vw, (max-width:1279px) 54vw, (max-width:1919px) min(52vw, 960px), (max-width:2559px) min(50vw, 1200px), min(48vw, 1440px)'
+  '(max-width:1023px) 100vw, (max-width:1279px) 62vw, (max-width:1919px) min(64vw, 1180px), (max-width:2559px) min(62vw, 1400px), min(58vw, 1600px)'
 const GALLERY_THUMB_SIZES =
-  '(max-width:1023px) 50vw, (max-width:1279px) 22vw, (max-width:1919px) min(20vw, 420px), (max-width:2559px) min(18vw, 520px), min(17vw, 640px)'
+  '(max-width:1023px) 50vw, (max-width:1279px) 28vw, (max-width:1919px) min(28vw, 520px), (max-width:2559px) min(26vw, 620px), min(24vw, 720px)'
 const DESKTOP_GALLERY_QUERY = '(min-width: 1024px)'
 
 function displayMain(url) {
@@ -116,11 +116,11 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
           imagesKey={galleryImagesKey}
         />
       ) : (
-      <div className="w-full min-h-[400px] sm:min-h-[420px] lg:grid lg:min-h-[640px] lg:grid-cols-[1.18fr_0.82fr] min-[1920px]:lg:min-h-[800px] min-[2560px]:lg:min-h-[960px] gap-2 sm:gap-3 md:gap-4 lg:gap-5">
+      <div className="w-full min-h-[400px] sm:min-h-[420px] lg:grid lg:min-h-[min(72vh,780px)] lg:grid-cols-[1.35fr_0.65fr] min-[1600px]:lg:min-h-[min(74vh,880px)] min-[1920px]:lg:min-h-[min(76vh,960px)] min-[2560px]:lg:min-h-[min(78vh,1100px)] gap-2 sm:gap-3 md:gap-4 lg:gap-5">
         <button
           type="button"
           onClick={() => openLightbox(0)}
-          className="no-custom-btn group relative w-full aspect-[4/5] lg:aspect-auto lg:min-h-[640px] min-[1920px]:lg:min-h-[800px] min-[2560px]:lg:min-h-[960px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
+          className="no-custom-btn group relative w-full aspect-[4/5] lg:aspect-auto lg:min-h-[min(72vh,780px)] min-[1600px]:lg:min-h-[min(74vh,880px)] min-[1920px]:lg:min-h-[min(76vh,960px)] min-[2560px]:lg:min-h-[min(78vh,1100px)] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-surface-2)]"
           aria-label="Ver imagen principal"
         >
           <ImageWithSkeleton
@@ -137,11 +137,11 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
         </button>
 
         {sideImages.length > 0 && (
-          <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-5 grid-rows-[1fr_1fr_1fr_1fr] min-h-[400px] sm:min-h-[420px] lg:min-h-[640px] min-[1920px]:lg:min-h-[800px] min-[2560px]:lg:min-h-[960px]">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-5 grid-rows-[1fr_1fr_1fr_1fr] min-h-[400px] sm:min-h-[420px] lg:min-h-[min(72vh,780px)] min-[1600px]:lg:min-h-[min(74vh,880px)] min-[1920px]:lg:min-h-[min(76vh,960px)] min-[2560px]:lg:min-h-[min(78vh,1100px)]">
             <button
               type="button"
               onClick={() => openLightbox(1)}
-              className="no-custom-btn group relative row-span-2 min-h-[170px] sm:min-h-[240px] lg:min-h-[280px] min-[1920px]:min-h-[320px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
+              className="no-custom-btn group relative row-span-2 min-h-[170px] sm:min-h-[240px] lg:min-h-[300px] min-[1920px]:min-h-[360px] rounded-xl md:rounded-2xl overflow-hidden bg-[var(--dark-bg-card)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]"
               aria-label="Ver imagen 2"
             >
               <DesktopSideThumb url={sideImages[0]} index={1} altBase={altBase} />
