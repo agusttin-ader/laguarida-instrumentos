@@ -157,6 +157,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
   const [historyByProduct, setHistoryByProduct] = useState({})
   const [historyProductId, setHistoryProductId] = useState('')
   const [toolsOpen, setToolsOpen] = useState(false)
+  const [whatsappStats, setWhatsappStats] = useState({ total: 0, byMonth: [] })
   const [catalogVisible, setCatalogVisible] = useState(CATALOG_PAGE_SIZE)
   const longPressTimerRef = React.useRef(null)
   const longPressSuppressRef = React.useRef(false)
@@ -288,10 +289,27 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
         }
       } catch { /* empty */ }
     }
+    async function loadWhatsappStats() {
+      try {
+        const res = await fetch('/api/admin/whatsapp-stats', { credentials: 'include' })
+        if (cancelled || !res.ok) return
+        const data = await res.json()
+        setWhatsappStats({
+          total: Number(data?.total) || 0,
+          byMonth: Array.isArray(data?.byMonth) ? data.byMonth : [],
+        })
+      } catch { /* empty */ }
+    }
     const schedule =
       typeof window !== 'undefined' && typeof window.requestIdleCallback === 'function'
-        ? window.requestIdleCallback(() => { loadActivity() }, { timeout: 1800 })
-        : setTimeout(loadActivity, 400)
+        ? window.requestIdleCallback(() => {
+          loadActivity()
+          loadWhatsappStats()
+        }, { timeout: 1800 })
+        : setTimeout(() => {
+          loadActivity()
+          loadWhatsappStats()
+        }, 400)
     return () => {
       cancelled = true
       if (typeof window !== 'undefined' && typeof window.cancelIdleCallback === 'function') {
@@ -803,6 +821,40 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
             <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
               <p className="text-[11px] uppercase tracking-wide text-slate-400">Desc. corta</p>
               <p className="mt-1 text-lg font-semibold text-amber-300">{dashboardStats.shortDescription}</p>
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-white/10 bg-[#141a24] p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-200">Clicks a WhatsApp</p>
+                <p className="mt-1 text-xs text-slate-400">Redirecciones desde la web (total y por mes).</p>
+              </div>
+              <p className="text-2xl font-semibold tabular-nums text-emerald-300">{whatsappStats.total}</p>
+            </div>
+            <div className="mt-3 overflow-x-auto rounded-lg border border-white/10">
+              <table className="min-w-full text-left text-sm">
+                <thead className="bg-white/[0.04] text-slate-300">
+                  <tr>
+                    <th className="px-3 py-2 font-semibold">Mes</th>
+                    <th className="px-3 py-2 font-semibold">Clicks</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/10 text-slate-200">
+                  {whatsappStats.byMonth.length === 0 ? (
+                    <tr>
+                      <td className="px-3 py-3 text-slate-400" colSpan={2}>Todavía no hay clicks registrados.</td>
+                    </tr>
+                  ) : (
+                    whatsappStats.byMonth.map((m) => (
+                      <tr key={m.month}>
+                        <td className="px-3 py-2">{m.month}</td>
+                        <td className="px-3 py-2 tabular-nums font-semibold">{m.count}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
 
