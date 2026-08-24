@@ -7,8 +7,8 @@ import { getHashSectionId, scrollToHomeSectionByIdWhenReady } from '../lib/homeS
 import MotionProvider from './motion/MotionProvider'
 import PageTransition from './motion/PageTransition'
 import PullToRefresh from './PullToRefresh'
+import Footer from './Footer'
 
-const Footer = dynamic(() => import('./Footer'), { ssr: true })
 const WhatsAppFloatButton = dynamic(() => import('./WhatsAppFloatButton'), { ssr: false })
 
 function HeaderLoading() {

@@ -1389,13 +1389,24 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     margin-bottom: 0.75rem !important;
   }
 
-  .site-footer__grid {
+  .site-footer__grid,
+  .site-footer__main {
     gap: 0.75rem !important;
+  }
+
+  .site-footer__sub {
+    margin-top: 1.25rem !important;
+    padding-top: 1rem !important;
   }
 
   .site-footer__logo {
     height: 15px !important;
     max-width: 130px !important;
+  }
+
+  .site-footer__main .site-footer__logo {
+    height: 20px !important;
+    max-width: 180px !important;
   }
 
   .site-footer__social a {
@@ -1412,10 +1423,8 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
     line-height: 1.5 !important;
   }
 
-  .site-footer__credit {
-    margin-top: 0.5rem !important;
-    font-size: var(--text-xs) !important;
-    opacity: 0.85;
+  .site-footer__dev-credit {
+    margin-top: 0.125rem !important;
   }
 
   .site-footer__legal {
@@ -2128,7 +2137,7 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   }
 
   body.page-product .site-footer__disclaimer,
-  body.page-product .site-footer__credit {
+  body.page-product .site-footer__dev-credit {
     margin-top: 0.5rem !important;
   }
 

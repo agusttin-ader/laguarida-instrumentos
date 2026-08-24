@@ -262,7 +262,7 @@ async function main() {
     .order('created_at', { ascending: false })
 
   if (error) {
-    console.error(error.message)
+    console.error(formatSupabaseError(error, supabaseUrl))
     process.exit(1)
   }
 
@@ -308,6 +308,35 @@ async function main() {
   console.log('Siguiente: npm run images:variants  (WebP livianos para catálogo/ficha)')
 }
 
+function formatSupabaseError(error, supabaseUrl) {
+  const msg = String(error?.message || error || '')
+  if (
+    msg.includes('521') ||
+    msg.includes('Web server is down') ||
+    msg.trimStart().startsWith('<!DOCTYPE')
+  ) {
+    const host = supabaseUrl ? new URL(supabaseUrl).hostname : 'tu proyecto Supabase'
+    return [
+      `Supabase no responde (${host}).`,
+      'Error 521: el proyecto está pausado o el servidor no levantó todavía.',
+      'Dashboard → Restore project → esperá 2–5 min → npm run sync:catalog',
+    ].join('\n')
+  }
+  if (msg.length > 400) {
+    return `${msg.slice(0, 180)}… (respuesta inesperada; revisá SUPABASE_URL en .env.local)`
+  }
+  return msg
+}
+
+function formatFetchError(error, supabaseUrl) {
+  const cause = error?.cause
+  if (cause?.code === 'ENOTFOUND') {
+    const host = supabaseUrl ? new URL(supabaseUrl).hostname : 'SUPABASE_URL'
+    return `No se pudo resolver ${host}. Revisá SUPABASE_URL en .env.local.`
+  }
+  if (cause?.message) return `fetch failed: ${cause.message}`
+  return String(error?.message || error)
+}
 function urlOrMissing(supabaseUrl, key) {
   if (!supabaseUrl || !key) {
     console.error('Faltan SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY en .env.local')
@@ -317,6 +346,8 @@ function urlOrMissing(supabaseUrl, key) {
 }
 
 main().catch((e) => {
-  console.error(e)
+  loadEnvLocal()
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
+  console.error(formatFetchError(e, supabaseUrl))
   process.exit(1)
 })
