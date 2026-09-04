@@ -350,6 +350,41 @@
   background: var(--dark-cta-bg);
 }
 
+.catalog-filters__apply {
+  display: inline-flex;
+  min-height: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(11, 13, 15, 0.06);
+  background: #fff;
+  color: #0b0d0f;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  touch-action: manipulation;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.catalog-filters__apply:hover {
+  border-color: var(--dark-cta-bg);
+  background: var(--dark-cta-bg);
+  color: #fff;
+  box-shadow: var(--btn-red-shadow);
+}
+
+.catalog-filters__desktop-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
 /* ===================== FilterSelect (custom listbox) ===================== */
 .filter-select {
   position: relative;
@@ -656,6 +691,11 @@
   .catalog-filters__clear {
     min-width: 4.75rem;
     padding: 0 0.75rem;
+  }
+
+  .catalog-filters__apply {
+    min-width: 5.25rem;
+    padding: 0 0.9rem;
   }
 
   .catalog-filters__hint {

@@ -1079,15 +1079,7 @@ header.site-header-bar.header-scroll-hidden {
     position: sticky;
     top: calc(var(--site-header-h, 68px) + 1rem);
     align-self: start;
-    max-height: calc(100dvh - var(--site-header-h, 68px) - 1.5rem);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: none;
     z-index: 3;
-  }
-
-  .product-detail-layout__buy::-webkit-scrollbar {
-    display: none;
   }
 
   .product-detail-intro__title {

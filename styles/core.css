@@ -255,6 +255,11 @@ a.site-accent-pill[href*='wa.me']:hover {
   transform: scale(0.99);
 }
 
+.whatsapp-glyph {
+  display: block;
+  fill: currentColor;
+}
+
 .btn-variant-gold {
   background: var(--palette-gold);
   color: var(--palette-ink);
@@ -1071,10 +1076,10 @@ input[type="submit"]:not(.no-custom-btn),
 input[type="button"]:not(.no-custom-btn),
 .btn,
 a.button,
-[class^="btn-"],
-[class*=" btn-"],
-[class^="btn"],
-[class*=" btn"] {
+[class^="btn-"]:not(.no-custom-btn),
+[class*=" btn-"]:not(.no-custom-btn),
+[class^="btn"]:not(.no-custom-btn),
+[class*=" btn"]:not(.no-custom-btn) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1120,6 +1125,12 @@ a.button:focus-visible {
 }
 
 .no-custom-btn { box-shadow: none !important; border-radius: 9999px !important; }
+.no-custom-btn.btn-variant-whatsapp {
+  box-shadow: 0 2px 12px rgba(37, 211, 102, 0.35) !important;
+}
+.no-custom-btn.btn-variant-whatsapp:hover {
+  box-shadow: var(--btn-whatsapp-shadow) !important;
+}
 .no-custom-btn.no-custom-btn--rect { border-radius: 0.75rem !important; }
 .no-custom-btn.no-custom-btn--flat,
 .no-custom-btn.card-product-link { border-radius: 0 !important; }

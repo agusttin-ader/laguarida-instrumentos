@@ -17,7 +17,7 @@ import FilterSelect from './FilterSelect'
 
 /**
  * Panel de filtros del catálogo.
- * - Desktop: barra horizontal compacta.
+ * - Desktop: barra horizontal + Aplicar / Limpiar.
  * - Móvil: acordeón con Aplicar / Limpiar.
  * (Lógica y params de URL sin cambios.)
  */
@@ -107,23 +107,13 @@ export default function CatalogFiltersPanel({
     const cleared = emptyCatalogFilters()
     setDraft({ ...cleared, marca: marcaParam || '' })
     pushFilters({ ...cleared, marca: marcaParam || '' })
-  }
-
-  function onDesktopChange(patch) {
-    const next = { ...draft, ...patch }
-    setDraft(next)
-    const marcaChanged =
-      String(next.marca || '').trim() !== String(marcaParam || '').trim()
-    pushFilters(next, { dropModelo: marcaChanged })
+    setOpenMobile(false)
   }
 
   const formFields = (mode) => {
     const isMobile = mode === 'mobile'
     const values = draft
-    const setValue = (patch) => {
-      if (isMobile) setDraft((prev) => ({ ...prev, ...patch }))
-      else onDesktopChange(patch)
-    }
+    const setValue = (patch) => setDraft((prev) => ({ ...prev, ...patch }))
 
     return (
       <div className={`catalog-filters__fields${showBrandSelect ? '' : ' catalog-filters__fields--no-brand'}`}>
@@ -163,13 +153,6 @@ export default function CatalogFiltersPanel({
             className="catalog-filters__control"
             value={values.precioMin || ''}
             onChange={(e) => setDraft((prev) => ({ ...prev, precioMin: e.target.value }))}
-            onBlur={(e) => {
-              if (isMobile) return
-              onDesktopChange({
-                precioMin: e.currentTarget.value,
-                precioMax: values.precioMax || '',
-              })
-            }}
             data-price="min"
             aria-label="Precio mínimo"
           />
@@ -189,13 +172,6 @@ export default function CatalogFiltersPanel({
             className="catalog-filters__control"
             value={values.precioMax || ''}
             onChange={(e) => setDraft((prev) => ({ ...prev, precioMax: e.target.value }))}
-            onBlur={(e) => {
-              if (isMobile) return
-              onDesktopChange({
-                precioMin: values.precioMin || '',
-                precioMax: e.currentTarget.value,
-              })
-            }}
             data-price="max"
             aria-label="Precio máximo"
           />
@@ -211,18 +187,29 @@ export default function CatalogFiltersPanel({
           />
         </div>
 
-        {hasActive && !isMobile ? (
+        {!isMobile ? (
           <div className="catalog-filters__field catalog-filters__field--action">
             <span className="catalog-filters__label catalog-filters__label--spacer" aria-hidden>
               &nbsp;
             </span>
-            <button
-              type="button"
-              className="no-custom-btn catalog-filters__clear"
-              onClick={clearFilters}
-            >
-              Limpiar
-            </button>
+            <div className="catalog-filters__desktop-actions">
+              {hasActive ? (
+                <button
+                  type="button"
+                  className="no-custom-btn catalog-filters__clear"
+                  onClick={clearFilters}
+                >
+                  Limpiar
+                </button>
+              ) : null}
+              <button
+                type="button"
+                className="no-custom-btn catalog-filters__apply"
+                onClick={applyDraft}
+              >
+                Aplicar
+              </button>
+            </div>
           </div>
         ) : null}
 
