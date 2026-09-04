@@ -62,26 +62,6 @@
   mask-image: linear-gradient(to right, transparent, #000 12px, #000 calc(100% - 12px), transparent);
 }
 
-.catalog-mobile-sticky-summary {
-  top: var(--mobile-header-h, 4rem);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
-  transition:
-    transform 300ms cubic-bezier(0.32, 0.72, 0, 1),
-    opacity 300ms cubic-bezier(0.32, 0.72, 0, 1),
-    visibility 300ms cubic-bezier(0.32, 0.72, 0, 1),
-    top 280ms cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-@media (max-width: 767px) {
-  body.mobile-header-scroll-hidden .catalog-mobile-sticky-summary {
-    top: max(0.5rem, env(safe-area-inset-top, 0px));
-  }
-
-  .catalog-mobile-sticky-summary:not(.is-visible) {
-    visibility: hidden;
-  }
-}
-
 /* Fila catálogo admin: select + acciones (acento tienda) */
 .admin-catalog-row {
   transition:
