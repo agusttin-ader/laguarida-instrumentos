@@ -1,7 +1,7 @@
+import '../styles/motion.css'
 import '../styles/globals.css'
 import React from 'react'
 import { GeistSans } from 'geist/font/sans'
-import { GeistMono } from 'geist/font/mono'
 import { Fraunces } from 'next/font/google'
 import SiteShell from '../components/SiteShell'
 import ServiceWorkerRegister from '../components/ServiceWorkerRegister'
@@ -14,8 +14,7 @@ import { shouldReadCatalogFromBackup } from '../lib/catalog/readSource'
 
 const displayFont = Fraunces({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  style: ['normal', 'italic'],
+  weight: ['600', '700'],
   variable: '--font-display',
   display: 'swap',
   fallback: ['ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'serif']
@@ -119,7 +118,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="es"
-      className={`dark ${GeistSans.variable} ${GeistMono.variable} ${displayFont.variable}`}
+      className={`dark ${GeistSans.variable} ${displayFont.variable}`}
     >
       <head>
         {supabaseOrigin && <link rel="preconnect" href={supabaseOrigin} />}

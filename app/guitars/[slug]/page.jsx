@@ -457,13 +457,13 @@ export default async function GuitarPage({ params }) {
             </nav>
           </div>
 
-          <FadeInView className="product-detail-layout__gallery product-detail-gallery-wrap min-w-0">
+          <div className="product-detail-layout__gallery product-detail-gallery-wrap min-w-0">
             <ProductGalleryModern
               image_url={galleryImageUrl}
               images={galleryImages}
               altBase={`${product.name}${product.brand ? ' — ' + product.brand : ''}`}
             />
-          </FadeInView>
+          </div>
 
           {/* Panel compra sticky: debajo de galería full-width, columna derecha junto a la descripción */}
           <div className="product-detail-layout__buy hidden min-w-0 lg:block">

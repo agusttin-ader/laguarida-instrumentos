@@ -1,26 +1,48 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { usePathname, useRouter } from 'next/navigation'
-import MenuDrawer from './MenuDrawer'
 import { scrollToHomeSectionById } from '../lib/homeSectionScroll'
 import { layoutShellClassName } from '../lib/layoutShell'
 import { SITE_LOGO_SRC } from '../lib/branding/logo'
+import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
+import { trackWhatsAppClick } from '../lib/trackWhatsAppClick'
+
+const MenuDrawer = dynamic(() => import('./MenuDrawer'), { ssr: false })
 
 const LOGO_SRC = SITE_LOGO_SRC
 const SCROLL_THRESHOLD = 72
 const SCROLL_DELTA = 10
 const DESKTOP_HEADER_QUERY = '(min-width: 768px)'
 const MOBILE_HEADER_QUERY = '(max-width: 767px)'
+const WA_HREF = buildWaMeHref(WHATSAPP_DEFAULT_WEB_MESSAGE)
+
+const NAV_ITEMS = [
+  { href: '/', label: 'Inicio', kind: 'home' },
+  { href: '/catalogo', label: 'Catálogo', kind: 'link' },
+  { href: '/favoritos', label: 'Favoritos', kind: 'link' },
+  { href: '/#about-section', label: 'Sobre nosotros', kind: 'section', sectionId: 'about-section' },
+]
 
 function getInitialDesktopHeader() {
   return false
 }
 
+function navItemIsActive(pathname, item) {
+  if (item.kind === 'home') return pathname === '/' || pathname === ''
+  if (item.href === '/catalogo') {
+    return pathname === '/catalogo' || pathname.startsWith('/catalogo/') || /^\/guitars\//.test(pathname)
+  }
+  if (item.href === '/favoritos') return pathname === '/favoritos' || pathname.startsWith('/favoritos/')
+  return false
+}
+
 function HamburgerIcon({ className }) {
   return (
-    <svg className={className} width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M4 7h16M4 12h16M4 17h16" />
+    <svg className={className} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden>
+      <path d="M5 7h14M5 12h14M5 17h10" />
     </svg>
   )
 }
@@ -31,7 +53,6 @@ export default function Header() {
   const isHome = pathname === '/' || pathname === ''
   const isProductPage =
     typeof pathname === 'string' && /^\/guitars\/[^/]+$/u.test(pathname)
-  const isInternalMobile = !isHome
   const [scrolled, setScrolled] = useState(false)
   const [scrollHidden, setScrollHidden] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -80,7 +101,7 @@ export default function Header() {
         const delta = y - prevY
         const nextScrolled = y > SCROLL_THRESHOLD
         const isMobile = window.matchMedia(MOBILE_HEADER_QUERY).matches
-        const allowScrollHide = isMobile || !isInternalMobile
+        const allowScrollHide = isMobile
 
         setScrolled((prev) => (prev === nextScrolled ? prev : nextScrolled))
 
@@ -99,11 +120,11 @@ export default function Header() {
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [menuOpen, isInternalMobile])
+  }, [menuOpen])
 
   useEffect(() => {
     if (menuOpen) setScrollHidden(false)
-  }, [menuOpen, isInternalMobile])
+  }, [menuOpen])
 
   useEffect(() => {
     if (typeof document === 'undefined' || typeof window === 'undefined') return undefined
@@ -163,9 +184,6 @@ export default function Header() {
     }
   }, [pathname, scrolled, mounted, isHome])
 
-  const navLinkClass =
-    "relative inline-flex items-center py-0.5 px-0.5 text-[11px] lg:text-[13px] font-semibold uppercase tracking-[0.13em] whitespace-nowrap text-[#e4e7f0]/85 hover:text-[#fffaf0] transition-colors duration-300 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent after:content-[''] after:absolute after:left-0 after:-bottom-0.5 after:h-[1.5px] after:w-0 after:bg-[var(--vintage-gold)] after:transition-all after:duration-500 after:ease-out hover:after:w-full"
-
   function handleSectionNav(e, sectionId) {
     e.preventDefault()
     if (isHome) {
@@ -181,11 +199,19 @@ export default function Header() {
     router.push('/')
   }
 
-  const desktopHeaderPad = 'md:py-3 lg:py-3.5'
+  function handleHomeClick(e) {
+    if (!isHome) return
+    e.preventDefault()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const headerMotionClass =
     'transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none'
-  const allowScrollHide = isMobileViewport || !isInternalMobile
+  const allowScrollHide = isMobileViewport
   const headerHideClass = allowScrollHide && scrollHidden && scrolled ? 'header-scroll-hidden' : ''
+
+  const navLinkBase =
+    "relative inline-flex items-center py-1 text-[11px] lg:text-[12px] font-semibold uppercase tracking-[0.16em] whitespace-nowrap transition-colors duration-200 rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent after:content-[''] after:absolute after:left-0 after:-bottom-0.5 after:h-px after:bg-[var(--vintage-gold)] after:transition-all after:duration-300 after:ease-out"
 
   const mobileHeader = (
     <>
@@ -200,10 +226,9 @@ export default function Header() {
             href="/"
             aria-label="Ir al inicio"
             className="inline-flex min-w-0 max-w-full items-center justify-start overflow-visible pointer-events-auto leading-none"
-            onClick={isHome ? (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) } : undefined}
+            onClick={handleHomeClick}
           >
-            <span className="relative header-logo-wrapper inline-flex max-w-[min(280px,calc(100vw-4.5rem))] items-center justify-start leading-none">
-              {/* img nativo: evita fondo opaco del optimizador de Next/Image en PNG transparente */}
+            <span className="relative header-logo-wrapper inline-flex max-w-[min(280px,calc(100vw-5.25rem))] items-center justify-start leading-none">
               <img
                 src={LOGO_SRC}
                 alt="La Guarida logo"
@@ -211,20 +236,20 @@ export default function Header() {
                 height={194}
                 decoding="async"
                 fetchPriority={isHome && !isDesktopHeader ? 'high' : 'low'}
-                className="logo-dark h-[34px] w-auto max-h-[36px] max-w-[min(260px,calc(100vw-4.5rem))] object-contain object-left block bg-transparent"
+                className="logo-dark h-[34px] w-auto max-h-[36px] max-w-[min(260px,calc(100vw-5.25rem))] object-contain object-left block bg-transparent"
               />
             </span>
           </a>
         </div>
-        <div className="relative w-12 flex-shrink-0">
+        <div className="relative flex-shrink-0">
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
             aria-label="Abrir menú"
-            className="header-mobile-menu-btn ml-auto flex items-center justify-center w-12 h-12 -m-1 border-0 bg-transparent p-0 text-white/95 hover:text-white no-custom-btn touch-manipulation transition-[color,opacity,transform] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.94] active:opacity-75 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="header-mobile-menu-btn flex items-center justify-center w-11 h-11 rounded-full border border-white/12 bg-white/[0.03] text-white/90 hover:text-white hover:border-white/20 no-custom-btn touch-manipulation transition-[color,opacity,transform,border-color] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.94] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             style={{ WebkitTapHighlightColor: 'transparent', tapHighlightColor: 'transparent' }}
           >
-            <HamburgerIcon className="w-[22px] h-[22px]" />
+            <HamburgerIcon className="w-5 h-5" />
           </button>
         </div>
       </header>
@@ -240,18 +265,18 @@ export default function Header() {
       {mobileShell}
       <MenuDrawer open={menuOpen} setOpen={setMenuOpen} />
 
-      {/* Header desktop */}
       <header
         ref={desktopHeaderRef}
-        className={`header-desktop site-header-bar hidden md:block fixed top-0 left-0 right-0 z-[var(--z-header)] ${headerMotionClass} ${headerHideClass} ${scrolled ? 'header-scrolled ' : ''}${desktopHeaderPad} overflow-visible ${scrolled ? 'bg-[var(--dark-bg-page)]/88 backdrop-blur-md border-b border-white/[0.06]' : 'bg-transparent'}`}
+        className={`header-desktop site-header-bar hidden md:block fixed top-0 left-0 right-0 z-[var(--z-header)] ${headerMotionClass} ${headerHideClass} ${scrolled ? 'header-scrolled ' : ''}overflow-visible bg-[var(--dark-bg-card)]`}
       >
-        <div className={`${layoutShellClassName} flex items-center justify-between gap-4 md:gap-6 relative min-h-0 px-5 md:px-8 lg:px-10 py-0 overflow-visible min-[1920px]:px-12`}>
+        <div className={`${layoutShellClassName} relative flex items-center gap-6 min-h-[4.5rem] px-4 sm:px-5 md:px-8 lg:px-10 min-[1920px]:px-12`}>
           <a
             href="/"
             aria-label="Ir al inicio"
-            className="logo-link static z-10 pointer-events-auto shrink-0 min-w-0 overflow-visible max-w-[240px] sm:max-w-[260px] lg:max-w-[280px]"
+            onClick={handleHomeClick}
+            className="logo-link relative z-10 pointer-events-auto shrink-0 min-w-0 overflow-visible"
           >
-            <div className="relative header-logo-wrapper header-desktop-logo-wrap">
+            <div className="relative header-logo-wrapper header-desktop-logo-wrap flex items-center">
               <img
                 src={LOGO_SRC}
                 alt="La Guarida logo"
@@ -259,24 +284,62 @@ export default function Header() {
                 height={194}
                 decoding="async"
                 fetchPriority={isHome && isDesktopHeader ? 'high' : 'low'}
-                className="logo-dark h-[21px] md:h-[22px] lg:h-[24px] xl:h-[26px] min-[1920px]:h-[28px] w-auto max-w-[220px] lg:max-w-[240px] xl:max-w-[250px] object-contain object-left block bg-transparent"
+                className="logo-dark h-[34px] lg:h-[38px] xl:h-[40px] w-auto max-w-[280px] object-contain object-left block bg-transparent"
               />
             </div>
           </a>
 
-          <nav className="flex items-center justify-end ml-auto shrink-0 min-w-0 overflow-visible" aria-label="Navegación principal">
-            <div className="flex items-center justify-end gap-2.5 xl:gap-3">
-              <a href="/" className={navLinkClass}>Home</a>
-              <span className="h-[10px] w-px bg-white/18 flex-shrink-0" aria-hidden />
-              <a href="/#about-section" onClick={(e) => handleSectionNav(e, 'about-section')} className={navLinkClass}>Sobre nosotros</a>
-              <span className="h-[10px] w-px bg-white/18 flex-shrink-0" aria-hidden />
-              <a href="/catalogo" className={navLinkClass}>Catálogo</a>
-              <span className="h-[10px] w-px bg-white/18 flex-shrink-0" aria-hidden />
-              <a href="/favoritos" className={navLinkClass}>Favoritos</a>
-            </div>
+          <nav className="pointer-events-none absolute inset-y-0 left-1/2 hidden md:flex -translate-x-1/2 items-center" aria-label="Navegación principal">
+            <ul className="pointer-events-auto flex items-center gap-6 lg:gap-8 xl:gap-10">
+              {NAV_ITEMS.map((item) => {
+                const active = navItemIsActive(pathname, item)
+                const className = `${navLinkBase} ${
+                  active
+                    ? 'text-white after:w-full'
+                    : 'text-white/62 hover:text-white after:w-0 hover:after:w-full'
+                }`
+                if (item.kind === 'section') {
+                  return (
+                    <li key={item.label}>
+                      <a href={item.href} onClick={(e) => handleSectionNav(e, item.sectionId)} className={className}>
+                        {item.label}
+                      </a>
+                    </li>
+                  )
+                }
+                if (item.kind === 'home') {
+                  return (
+                    <li key={item.label}>
+                      <a href="/" onClick={handleHomeClick} className={className}>
+                        {item.label}
+                      </a>
+                    </li>
+                  )
+                }
+                return (
+                  <li key={item.label}>
+                    <Link href={item.href} className={className}>
+                      {item.label}
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
           </nav>
+
+          <div className="relative z-10 ml-auto flex items-center gap-3">
+            <a
+              href={WA_HREF}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={trackWhatsAppClick}
+              className="no-custom-btn hidden lg:inline-flex items-center gap-2 rounded-full border border-[rgba(var(--palette-gold-rgb),0.42)] bg-[rgba(var(--palette-gold-rgb),0.08)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--vintage-gold)] transition-colors duration-200 hover:border-[rgba(var(--palette-gold-rgb),0.62)] hover:bg-[rgba(var(--palette-gold-rgb),0.14)] hover:text-[#fff6e4] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            >
+              Consultar
+            </a>
+          </div>
         </div>
-        <div className={`${layoutShellClassName} px-5 md:px-8 lg:px-10 min-[1920px]:px-12`}>
+        <div className={`${layoutShellClassName} px-4 sm:px-5 md:px-8 lg:px-10 min-[1920px]:px-12`}>
           <AuthIndicator />
         </div>
       </header>
@@ -300,17 +363,23 @@ function AuthIndicator() {
       return () => { mounted = false }
     }
     (async () => {
-      try {
-        const res = await fetch('/api/auth/me', { credentials: 'include' })
-        if (!mounted) return
-        if (!res.ok) return setAuth({ loading: false, authenticated: false, email: null })
-        const j = await res.json()
-        if (j?.authenticated) setAuth({ loading: false, authenticated: true, email: j.user?.email || null })
-        else setAuth({ loading: false, authenticated: false, email: null })
-      } catch {
-        if (!mounted) return
-        setAuth({ loading: false, authenticated: false, email: null })
+      const run = async () => {
+        try {
+          const res = await fetch('/api/auth/me', { credentials: 'include' })
+          if (!mounted) return
+          if (!res.ok) return setAuth({ loading: false, authenticated: false, email: null })
+          const j = await res.json()
+          if (j?.authenticated) setAuth({ loading: false, authenticated: true, email: j.user?.email || null })
+          else setAuth({ loading: false, authenticated: false, email: null })
+        } catch {
+          if (!mounted) return
+          setAuth({ loading: false, authenticated: false, email: null })
+        }
       }
+      const idle = typeof window !== 'undefined' && window.requestIdleCallback
+        ? window.requestIdleCallback
+        : (cb) => window.setTimeout(cb, 1400)
+      idle(run)
     })()
     return () => { mounted = false }
   }, [pathname])
@@ -333,9 +402,9 @@ function AuthIndicator() {
   if (typeof pathname === 'string' && pathname.startsWith('/admin')) return null
 
   return (
-    <div className="hidden md:flex w-full flex-col items-stretch border-t border-white/[0.07] pt-1.5 mt-0.5">
+    <div className="hidden md:flex w-full flex-col items-stretch border-t border-white/[0.06] pt-1.5 pb-2">
       <div className="flex flex-wrap items-center justify-end gap-2.5 text-[11px] text-white/75">
-        <div className="flex max-w-full items-center gap-2 rounded-full border border-white/[0.1] bg-black/25 px-3 py-1 pl-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-sm">
+        <div className="flex max-w-full items-center gap-2 rounded-full border border-white/[0.1] bg-black/25 px-3 py-1 pl-2.5">
           {(online === true || online === false) && (
             <div className="flex items-center gap-1.5 shrink-0">
               <span
@@ -356,43 +425,9 @@ function AuthIndicator() {
         </div>
         <a
           href="/admin/productos/catalogo"
-          className="no-custom-btn inline-flex items-center justify-center gap-2 rounded-full border border-[rgba(var(--palette-gold-rgb),0.42)] bg-[rgba(var(--palette-gold-rgb),0.07)] px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--vintage-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] transition-all duration-300 hover:border-[rgba(var(--palette-gold-rgb),0.62)] hover:bg-[rgba(var(--palette-gold-rgb),0.16)] hover:text-[#fff8e7] hover:shadow-[0_0_20px_rgba(var(--palette-gold-rgb),0.12)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+          className="no-custom-btn inline-flex items-center justify-center gap-2 rounded-full border border-[rgba(var(--palette-gold-rgb),0.42)] bg-[rgba(var(--palette-gold-rgb),0.07)] px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--vintage-gold)] transition-colors duration-200 hover:border-[rgba(var(--palette-gold-rgb),0.62)] hover:bg-[rgba(var(--palette-gold-rgb),0.16)] hover:text-[#fff8e7] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
           aria-label="Ir al administrador (catálogo)"
         >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="opacity-90"
-            aria-hidden
-          >
-            <path
-              d="M4 5a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M13 5a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2V5Z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M4 16a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3Z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M13 14a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2v-3Z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-            />
-          </svg>
           <span>Admin</span>
         </a>
       </div>

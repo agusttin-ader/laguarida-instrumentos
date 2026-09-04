@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 const VARIANTS = {
   primary:
-    'bg-[var(--dark-cta-bg)] text-[var(--dark-cta-text)] shadow-[0_8px_24px_rgba(0,0,0,0.35)] hover:bg-[var(--dark-cta-hover)] hover:scale-[1.02] active:scale-[0.98]',
+    'bg-[var(--dark-cta-bg)] text-[var(--dark-cta-text)] shadow-[0_8px_24px_rgba(0,0,0,0.35)] hover:bg-[var(--dark-cta-hover)] active:scale-[0.98]',
   ghost:
     'border border-white/25 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 active:bg-white/25',
   'ghost-subtle':

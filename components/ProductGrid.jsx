@@ -2,6 +2,7 @@
 
 import React, { useMemo } from 'react'
 import ProductCard from './ProductCard'
+import ProductGridMotion from './motion/ProductGridMotion'
 import { useProducts } from '../hooks/useProducts'
 
 export default function ProductGrid({
@@ -89,7 +90,7 @@ export default function ProductGrid({
         <div className="mb-6 p-4 rounded bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200">Error al cargar productos: {hasError}</div>
       ) : null}
 
-      <div className="product-grid--enter grid w-full min-w-0 grid-cols-2 items-start gap-x-2.5 gap-y-3 max-md:gap-x-2.5 max-md:gap-y-3 md:auto-rows-fr md:items-stretch md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
+      <ProductGridMotion className="product-grid--enter grid w-full min-w-0 grid-cols-2 items-start gap-x-2.5 gap-y-3 max-md:gap-x-2.5 max-md:gap-y-3 md:auto-rows-fr md:items-stretch md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
         {filteredItems.map((item, idx) => {
           const eagerCount = priorityFirstCard ? Math.max(1, priorityFirstCount) : 0
           const isLcp = priorityFirstCard && idx === 0
@@ -114,7 +115,7 @@ export default function ProductGrid({
           </div>
           )
         })}
-      </div>
+      </ProductGridMotion>
     </div>
   )
 }

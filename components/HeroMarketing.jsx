@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { layoutShellClassName } from '../lib/layoutShell'
 import Button from './Button'
 
-const ROTATE_MS = 5500
+const ROTATE_MS = 7000
 
 export default function HeroMarketing({ slides = [] }) {
   const heroSlides = slides.length ? slides : []
@@ -30,11 +30,25 @@ export default function HeroMarketing({ slides = [] }) {
     return () => window.clearInterval(id)
   }, [advance, carouselReady, heroSlides.length])
 
+  const visibleIndex = carouselReady ? activeIndex : 0
+  const slide = heroSlides[visibleIndex] || heroSlides[0]
+  const nextSlide = heroSlides.length > 1 ? heroSlides[(visibleIndex + 1) % heroSlides.length] : null
+
+  useEffect(() => {
+    if (!nextSlide?.src || typeof document === 'undefined') return undefined
+    const link = document.createElement('link')
+    link.rel = 'preload'
+    link.as = 'image'
+    link.href = nextSlide.src
+    document.head.appendChild(link)
+    return () => {
+      link.remove()
+    }
+  }, [nextSlide?.src])
+
   const onPrimaryLoad = useCallback(() => {
     setPrimaryReady(true)
   }, [])
-
-  const visibleIndex = carouselReady ? activeIndex : 0
 
   return (
     <div className="hero-home relative w-full max-md:min-h-[min(82dvh,640px)] sm:min-h-[min(84vh,880px)] overflow-hidden bg-[var(--dark-bg-page)] text-[var(--dark-text-primary)]">
@@ -42,32 +56,25 @@ export default function HeroMarketing({ slides = [] }) {
       <div className="hero-home__paint-fallback absolute inset-0 md:hidden" aria-hidden />
 
       <div className="absolute inset-0" aria-hidden>
-        {heroSlides.length ? (
-          heroSlides.map((slide, i) => (
-            <div
+        {slide ? (
+          <div className="absolute inset-0">
+            <Image
               key={slide.src}
-              className={`absolute inset-0 transition-opacity duration-1000 max-md:duration-500 ease-out motion-reduce:transition-none ${
-                i === visibleIndex ? 'opacity-100' : 'opacity-0'
+              src={slide.src}
+              alt=""
+              fill
+              unoptimized
+              priority
+              fetchPriority="high"
+              sizes="100vw"
+              onLoad={onPrimaryLoad}
+              className={`object-cover object-[center_42%] max-md:object-[center_38%] md:object-center ${
+                !primaryReady
+                  ? 'max-md:opacity-0 md:opacity-100'
+                  : 'opacity-100'
               }`}
-            >
-              <Image
-                src={slide.src}
-                alt=""
-                fill
-                unoptimized
-                priority={i === 0}
-                loading={i === 0 ? 'eager' : undefined}
-                quality={62}
-                sizes="100vw"
-                onLoad={i === 0 ? onPrimaryLoad : undefined}
-                className={`object-cover object-[center_42%] max-md:object-[center_38%] md:object-center max-md:transition-opacity max-md:duration-300 max-md:ease-out motion-reduce:transition-none ${
-                  i === 0 && !primaryReady
-                    ? 'max-md:opacity-0 md:opacity-100 motion-reduce:!opacity-100'
-                    : 'opacity-100'
-                }`}
-              />
-            </div>
-          ))
+            />
+          </div>
         ) : (
           <div className="absolute inset-0 bg-[#1a1917] max-md:bg-transparent" />
         )}

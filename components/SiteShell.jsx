@@ -1,47 +1,19 @@
 "use client"
 
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { getHashSectionId, scrollToHomeSectionByIdWhenReady } from '../lib/homeSectionScroll'
-import MotionProvider from './motion/MotionProvider'
-import PageTransition from './motion/PageTransition'
-import PullToRefresh from './PullToRefresh'
+import Header from './Header'
 import Footer from './Footer'
 
 const WhatsAppFloatButton = dynamic(() => import('./WhatsAppFloatButton'), { ssr: false })
 
-function HeaderLoading() {
-  const pathname = usePathname()
-  const isHome = pathname === '/' || pathname === ''
-  return (
-    <>
-      {!isHome ? (
-        <div
-          className="site-header-mobile-shell md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] min-h-[64px] border-b border-[rgba(var(--palette-gold-rgb),0.32)] bg-[var(--dark-bg-card)] pointer-events-none"
-          aria-hidden
-        />
-      ) : null}
-      <div className="hidden md:block w-full h-[var(--site-header-h,68px)] shrink-0" aria-hidden />
-    </>
-  )
-}
-
-const Header = dynamic(() => import('./Header'), {
-  ssr: false,
-  loading: HeaderLoading
-})
-
 export default function SiteShell({ children }) {
   const pathname = usePathname()
-  const router = useRouter()
   const isAdmin = typeof pathname === 'string' && pathname.startsWith('/admin')
   const isHome = pathname === '/' || pathname === ''
   const mainTopPad = !isHome ? 'md:pt-0' : 'pt-0'
-
-  const handleRefresh = useCallback(() => {
-    router.refresh()
-  }, [router])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -118,16 +90,12 @@ export default function SiteShell({ children }) {
       {!isAdmin ? (
         <>
           <Header />
-          <MotionProvider>
-            <PullToRefresh onRefresh={handleRefresh}>
-              <main
-                className={`min-h-0 w-full min-w-0 max-md:overflow-x-clip pb-[max(1rem,env(safe-area-inset-bottom,0px))] ${mainMobileBottomPad} md:pb-0 ${mainTopPad}`}
-              >
-                <PageTransition>{children}</PageTransition>
-              </main>
-              <Footer />
-            </PullToRefresh>
-          </MotionProvider>
+          <main
+            className={`min-h-0 w-full min-w-0 max-md:overflow-x-clip pb-[max(1rem,env(safe-area-inset-bottom,0px))] ${mainMobileBottomPad} md:pb-0 ${mainTopPad}`}
+          >
+            {children}
+          </main>
+          <Footer />
           <WhatsAppFloatButton />
         </>
       ) : (

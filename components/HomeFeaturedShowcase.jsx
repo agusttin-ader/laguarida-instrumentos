@@ -11,6 +11,7 @@ import {
   resolveProductBrandLogo,
 } from '../lib/catalog/resolveProductBrandLogo'
 import ImageWithSkeleton from './ImageWithSkeleton'
+import ProductGridMotion from './motion/ProductGridMotion'
 import imageService from '../lib/utils/imageService'
 
 const HOME_PICK_COUNT = 3
@@ -60,8 +61,8 @@ function EditorialBlock({ item, index, reversed = false }) {
               fill
               sizes={EDITORIAL_IMAGE_SIZES}
               qualityPreset="editorial"
-              priority={index === 0}
-              loading={index === 0 ? 'eager' : 'lazy'}
+              priority={false}
+              loading="lazy"
               imgClassName="object-cover object-[center_55%] sm:object-[center_60%] md:object-[center_65%]"
               disableClientPreview
             />
@@ -163,11 +164,11 @@ export default function HomeFeaturedShowcase({ items = [], loading = false }) {
   }
 
   return (
-    <div className="home-featured-editorial product-grid--enter w-full">
+    <ProductGridMotion className="home-featured-editorial product-grid--enter w-full">
       {picks.map((item, idx) => (
         <EditorialBlock key={item.slug || item.id || idx} item={item} index={idx} reversed={idx === 1} />
       ))}
-    </div>
+    </ProductGridMotion>
   )
 }
 

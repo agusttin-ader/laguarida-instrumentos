@@ -1,0 +1,172 @@
+/**
+ * Motion package — animaciones fluidas y baratas (opacity + transform).
+ * Importado desde globals.css. Tokens en :root (--motion-*).
+ */
+
+/* ── Keyframes ─────────────────────────────────────────────────────────── */
+@keyframes motion-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes motion-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes motion-scale-in {
+  from {
+    opacity: 0;
+    transform: scale3d(0.97, 0.97, 1);
+  }
+  to {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes motion-fade-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-12px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes motion-fade-right {
+  from {
+    opacity: 0;
+    transform: translate3d(12px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes product-enter-soft-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ── Reveal (FadeInView) ───────────────────────────────────────────────── */
+.motion-reveal {
+  will-change: auto;
+}
+
+.motion-reveal--armed.motion-reveal--hidden {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+}
+
+.motion-reveal--armed.motion-variant-fade-in.motion-reveal--hidden {
+  transform: none;
+}
+
+.motion-reveal--armed.motion-variant-scale-in.motion-reveal--hidden {
+  transform: scale3d(0.97, 0.97, 1);
+}
+
+.motion-reveal--armed.motion-variant-fade-left.motion-reveal--hidden {
+  transform: translate3d(-12px, 0, 0);
+}
+
+.motion-reveal--armed.motion-variant-fade-right.motion-reveal--hidden {
+  transform: translate3d(12px, 0, 0);
+}
+
+.motion-reveal--in.motion-variant-fade-up {
+  animation: motion-fade-up var(--motion-duration-reveal, 520ms) var(--motion-ease-fluid) both;
+}
+
+.motion-reveal--in.motion-variant-fade-in {
+  animation: motion-fade-in var(--motion-duration-reveal, 480ms) var(--motion-ease-fluid) both;
+}
+
+.motion-reveal--in.motion-variant-scale-in {
+  animation: motion-scale-in var(--motion-duration-reveal, 520ms) var(--motion-ease-fluid) both;
+}
+
+.motion-reveal--in.motion-variant-fade-left {
+  animation: motion-fade-left var(--motion-duration-reveal, 520ms) var(--motion-ease-fluid) both;
+}
+
+.motion-reveal--in.motion-variant-fade-right {
+  animation: motion-fade-right var(--motion-duration-reveal, 520ms) var(--motion-ease-fluid) both;
+}
+
+/* Scroll-driven reveal (sin JS cuando el navegador lo soporta) */
+@supports (animation-timeline: view()) {
+  .motion-reveal-view.motion-variant-fade-up {
+    animation: motion-fade-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 22%;
+  }
+
+  .motion-reveal-view.motion-variant-fade-in {
+    animation: motion-fade-in linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 18%;
+  }
+}
+
+/* ── Stagger group ─────────────────────────────────────────────────────── */
+.motion-stagger > .motion-stagger-item {
+  animation: motion-fade-up var(--motion-duration-reveal, 520ms) var(--motion-ease-fluid) both;
+  animation-delay: calc(min(var(--stagger-i, 0), 10) * var(--motion-stagger-step, 36ms));
+}
+
+/* ── Product grids ─────────────────────────────────────────────────────── */
+.product-grid--enter.product-grid--armed .home-grid-product-cell,
+.product-grid--enter.product-grid--armed .product-enter-cell {
+  animation: product-enter-soft-in var(--motion-duration-grid, 340ms) var(--motion-ease) both;
+  animation-delay: calc(min(var(--enter-i, 0), 9) * var(--motion-stagger-step, 36ms));
+}
+
+.product-grid--slow-enter.product-grid--armed .home-grid-product-cell,
+.product-grid--slow-enter.product-grid--armed .product-enter-cell {
+  animation-duration: 420ms;
+  animation-delay: calc(min(var(--enter-i, 0), 9) * 48ms);
+}
+
+/* ── Hover lift (opcional, compositor-friendly) ────────────────────────── */
+.motion-hover-lift {
+  transition:
+    transform var(--motion-base) var(--motion-ease),
+    box-shadow var(--motion-base) var(--motion-ease);
+}
+
+.motion-hover-lift:hover {
+  transform: translate3d(0, -2px, 0);
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .motion-reveal,
+  .motion-reveal--armed.motion-reveal--hidden,
+  .motion-reveal-view,
+  .motion-stagger > .motion-stagger-item,
+  .product-grid--enter .home-grid-product-cell,
+  .product-grid--enter .product-enter-cell,
+  .product-grid--slow-enter .home-grid-product-cell {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

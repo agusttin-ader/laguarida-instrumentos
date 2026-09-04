@@ -1,7 +1,5 @@
-"use client"
 import React from 'react'
 import { layoutShellClassName } from '../lib/layoutShell'
-import FadeInView from './motion/FadeInView'
 export default function About({ compactTop = false }) {
   const topPadding = compactTop
     ? 'pt-0 sm:pt-0 md:pt-1'
@@ -11,23 +9,21 @@ export default function About({ compactTop = false }) {
     <section id="about-section" className="mt-0">
       <div className={`${layoutShellClassName} sm:px-5 md:px-6 lg:px-8 ${topPadding} pb-0 sm:pb-1 md:pb-2 lg:pb-2`}>
         <div className="w-full">
-          <FadeInView>
-            <p className="section-kicker-minimal section-underline-ocre mb-2 text-[var(--palette-gold)] sm:mb-3">
-              Sobre La Guarida
-            </p>
-            <h2 className="section-heading-editorial mb-3 md:mb-4">
-              Una tienda, una historia
-            </h2>
-            <p className="mb-5 hidden max-w-3xl text-[15px] leading-relaxed text-[var(--dark-text-secondary)] sm:text-base md:mb-8 md:block">
-              Una tienda, una historia dedicada a las guitarras, a las búsquedas sonoras y a quienes las tocan.
-            </p>
-            <p className="mb-4 max-w-3xl max-md:max-w-none text-base leading-relaxed text-[var(--dark-text-secondary)] md:hidden">
-              Guitarras e instrumentos seleccionados, con trato cercano y asesoramiento real para quienes buscan un sonido propio.
-            </p>
-          </FadeInView>
+          <p className="section-kicker-minimal section-underline-ocre mb-2 text-[var(--palette-gold)] sm:mb-3">
+            Sobre La Guarida
+          </p>
+          <h2 className="section-heading-editorial mb-3 md:mb-4">
+            Una tienda, una historia
+          </h2>
+          <p className="mb-5 hidden max-w-3xl text-[15px] leading-relaxed text-[var(--dark-text-secondary)] sm:text-base md:mb-8 md:block">
+            Una tienda, una historia dedicada a las guitarras, a las búsquedas sonoras y a quienes las tocan.
+          </p>
+          <p className="mb-4 max-w-3xl max-md:max-w-none text-base leading-relaxed text-[var(--dark-text-secondary)] md:hidden">
+            Guitarras e instrumentos seleccionados, con trato cercano y asesoramiento real para quienes buscan un sonido propio.
+          </p>
 
           <div className="grid gap-6 md:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)] md:gap-10 lg:gap-14 md:items-start">
-            <FadeInView className="min-w-0" delay={0.06}>
+            <div className="min-w-0">
               <div className="prose prose-sm max-w-none text-base text-[var(--dark-text-secondary)] md:hidden [&>p]:mb-0 [&>p]:leading-relaxed [&>p]:text-base">
                 <p>
                   La Guarida nació como un proyecto personal y creció como un refugio para la música: honestidad,
@@ -44,13 +40,13 @@ export default function About({ compactTop = false }) {
 
                 <p>Mi compromiso es simple: calidad, transparencia y pasión por la música. Si tenés dudas, escribinos por Instagram o WhatsApp.</p>
               </div>
-            </FadeInView>
+            </div>
 
-            <FadeInView as="aside" className="md:sticky md:top-24" delay={0.12}>
+            <aside className="md:sticky md:top-24">
               <p className="text-lg italic leading-relaxed text-[var(--dark-text-secondary)] sm:text-[1.05rem] md:text-xl md:leading-[1.65]">
                 Hecho por un músico, para músicos.
               </p>
-            </FadeInView>
+            </aside>
           </div>
         </div>
       </div>

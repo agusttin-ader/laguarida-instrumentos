@@ -68,7 +68,7 @@ export default function MenuDrawer({ open, setOpen }) {
   }
 
   const rowClass =
-    'no-custom-btn flex w-full min-h-[4rem] items-center justify-between gap-4 py-5 pl-5 pr-4 text-left text-[1.2rem] font-semibold leading-snug tracking-tight text-[var(--dark-text-primary)] border-b border-white/[0.07] transition-[background-color,color] duration-200 hover:bg-white/[0.04] active:bg-white/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--vintage-gold)]/45'
+    'no-custom-btn flex w-full min-h-[3.75rem] items-center justify-between gap-4 py-4 pl-5 pr-4 text-left text-[1.05rem] font-medium tracking-tight text-[var(--dark-text-primary)] border-b border-white/[0.06] transition-[background-color,color] duration-200 hover:bg-white/[0.03] hover:text-white active:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--vintage-gold)]/45'
 
   return (
     <div className={`fixed inset-0 z-[var(--z-menu-drawer)] md:hidden ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>
@@ -84,7 +84,7 @@ export default function MenuDrawer({ open, setOpen }) {
         className={`menu-drawer-panel menu-drawer-panel--right fixed inset-y-0 right-0 left-auto z-10 flex h-full w-[88%] max-w-[400px] flex-col border-l border-white/10 bg-[var(--dark-bg-page)] shadow-[-24px_0_60px_rgba(0,0,0,0.5)] transition-transform duration-[280ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${open ? 'translate-x-0' : 'translate-x-full'}`}
         aria-label="Menú principal"
       >
-        <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-4">
+        <div className="flex shrink-0 items-center justify-between border-b border-white/[0.08] px-5 pt-[max(0.85rem,env(safe-area-inset-top))] pb-4">
           <Link href="/" onClick={handleHome} className="relative block min-w-0 max-w-[min(240px,calc(100vw-5rem))] py-0.5" aria-label="Ir al inicio">
             <Image
               src={LOGO_SRC}

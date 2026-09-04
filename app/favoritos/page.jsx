@@ -7,6 +7,7 @@ import { useFavorites } from '../../components/ProductShareAndFavorite'
 import { useProducts } from '../../hooks/useProducts'
 import { useSoftEnterAfterSlowLoad } from '../../hooks/useSoftEnterAfterSlowLoad'
 import FadeInView from '../../components/motion/FadeInView'
+import ProductGridMotion from '../../components/motion/ProductGridMotion'
 
 export default function FavoritosPage() {
   const { slugs } = useFavorites()
@@ -50,7 +51,7 @@ export default function FavoritosPage() {
           </Button>
         </div>
       ) : (
-        <div
+        <ProductGridMotion
           className={`product-grid--enter grid grid-cols-2 items-start gap-x-2.5 gap-y-3 max-md:gap-x-2.5 max-md:gap-y-3 md:auto-rows-fr md:items-stretch md:grid-cols-2 md:gap-6 lg:grid-cols-3${softGridEnter ? ' product-grid--slow-enter' : ''}`}
         >
           {products.map((item, idx) => (
@@ -62,7 +63,7 @@ export default function FavoritosPage() {
               <ProductCard item={item} maxGalleryImages={1} />
             </div>
           ))}
-        </div>
+        </ProductGridMotion>
       )}
     </div>
   )

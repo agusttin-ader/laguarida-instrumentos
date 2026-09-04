@@ -3,11 +3,10 @@
 import React, { useState } from 'react'
 import Button from './Button'
 import { usePathname } from 'next/navigation'
-import { Plus, Minus, InstagramLogo, WhatsappLogo, EnvelopeSimple } from 'phosphor-react'
 import { layoutShellClassName } from '../lib/layoutShell'
 import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
 import { trackWhatsAppClick } from '../lib/trackWhatsAppClick'
-import FadeInView from './motion/FadeInView'
+
 const FAQ_ITEMS = [
   {
     id: 'envios',
@@ -30,6 +29,49 @@ const FAQ_ITEMS = [
     answer: 'Todos los productos que están en el catálogo visibles están disponibles.',
   },
 ]
+
+function IconPlus() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path strokeLinecap="round" d="M12 5v14M5 12h14" />
+    </svg>
+  )
+}
+
+function IconMinus() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path strokeLinecap="round" d="M5 12h14" />
+    </svg>
+  )
+}
+
+function IconInstagram() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.4" cy="6.6" r="0.9" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+function IconWhatsApp() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+      <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" />
+    </svg>
+  )
+}
+
+function IconMail() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+      <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
+      <path d="M4 7l8 6 8-6" />
+    </svg>
+  )
+}
 
 export default function FaqSection() {
   const [openId, setOpenId] = useState(null)
@@ -69,21 +111,19 @@ export default function FaqSection() {
       <div
         className={`${layoutShellClassName} sm:px-5 md:px-6 lg:px-8 pt-1 max-md:pt-0 sm:pt-3 md:pt-4 lg:pt-5 pb-2 max-md:pb-0 sm:pb-4 md:pb-5 lg:pb-6`}
       >
-          <FadeInView>
-            <p className="section-kicker-minimal section-underline-ocre mb-2 text-[var(--palette-gold)] sm:mb-3">
-              Preguntas frecuentes
-            </p>
-            <h2 id="faq-heading" className="section-heading-editorial mb-3 sm:mb-4 md:mb-5">
-              Envíos, pagos, permutas y más
-            </h2>
-          </FadeInView>
+        <p className="section-kicker-minimal section-underline-ocre mb-2 text-[var(--palette-gold)] sm:mb-3">
+          Preguntas frecuentes
+        </p>
+        <h2 id="faq-heading" className="section-heading-editorial mb-3 sm:mb-4 md:mb-5">
+          Envíos, pagos, permutas y más
+        </h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 items-start">
           <div className="lg:col-span-2 order-1 divide-y divide-white/[0.08] border-t border-white/[0.08]">
-            {FAQ_ITEMS.map((item, index) => {
+            {FAQ_ITEMS.map((item) => {
               const isOpen = openId === item.id
               return (
-                <FadeInView key={item.id} delay={index * 0.05} className="overflow-hidden">
+                <div key={item.id} className="overflow-hidden">
                   <button
                     type="button"
                     onClick={() => setOpenId(isOpen ? null : item.id)}
@@ -96,29 +136,27 @@ export default function FaqSection() {
                       {item.question}
                     </span>
                     <span className="flex-shrink-0 text-[var(--dark-text-primary)]/60" aria-hidden>
-                      {isOpen ? <Minus size={20} weight="bold" /> : <Plus size={20} weight="bold" />}
+                      {isOpen ? <IconMinus /> : <IconPlus />}
                     </span>
                   </button>
-                  <div
-                    id={`faq-answer-${item.id}`}
-                    role="region"
-                    aria-labelledby={`faq-question-${item.id}`}
-                    className={`grid transition-[grid-template-rows] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
-                  >
-                    <div className="overflow-hidden">
-                      <div className={`pb-4 sm:pb-5 transition-opacity duration-200 ease-out motion-reduce:transition-none ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
-                        <p className="max-w-[70ch] text-[13px] leading-relaxed text-[var(--dark-text-secondary)] sm:text-sm">
-                          {item.answer}
-                        </p>
-                      </div>
+                  {isOpen ? (
+                    <div
+                      id={`faq-answer-${item.id}`}
+                      role="region"
+                      aria-labelledby={`faq-question-${item.id}`}
+                      className="pb-4 sm:pb-5"
+                    >
+                      <p className="max-w-[70ch] text-[13px] leading-relaxed text-[var(--dark-text-secondary)] sm:text-sm">
+                        {item.answer}
+                      </p>
                     </div>
-                  </div>
-                </FadeInView>
+                  ) : null}
+                </div>
               )
             })}
           </div>
 
-          <FadeInView as="aside" className="order-2 mt-2 pt-6 border-t border-white/[0.08] sm:mt-0 sm:pt-0 sm:border-t-0 lg:sticky lg:top-24 lg:col-span-1 lg:pl-8 lg:border-l lg:border-white/[0.08]" delay={0.1}>
+          <aside className="order-2 mt-2 pt-6 border-t border-white/[0.08] sm:mt-0 sm:pt-0 sm:border-t-0 lg:sticky lg:top-24 lg:col-span-1 lg:pl-8 lg:border-l lg:border-white/[0.08]">
             <p className="section-kicker-minimal mb-2 text-[var(--palette-gold)]">Contacto</p>
             <h3 className="mb-3 text-lg font-semibold tracking-tight text-[var(--dark-text-primary)] md:mb-4 md:text-xl">
               Contacto rápido
@@ -152,7 +190,7 @@ export default function FaqSection() {
                 aria-label="Instagram"
                 className="no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors hover:text-[var(--palette-gold)]"
               >
-                <InstagramLogo size={22} weight="duotone" />
+                <IconInstagram />
               </a>
               <a
                 href={waLink}
@@ -162,23 +200,23 @@ export default function FaqSection() {
                 onClick={trackWhatsAppClick}
                 className="no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors hover:text-[var(--palette-gold)]"
               >
-                <WhatsappLogo size={22} weight="duotone" />
+                <IconWhatsApp />
               </a>
               <a
                 href={`mailto:${mail}`}
                 aria-label="Email"
                 className="no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors hover:text-[var(--palette-gold)]"
               >
-                <EnvelopeSimple size={22} weight="duotone" />
+                <IconMail />
               </a>
             </nav>
-          </FadeInView>
-          </div>
-          <FadeInView className="mt-3 sm:mt-5 md:mt-6 flex justify-center" delay={0.15}>
-            <Button href="/" onClick={handleVolverAlHome} size="full" className="max-w-[280px] sm:max-w-none sm:w-auto">
-              Volver al home
-            </Button>
-          </FadeInView>
+          </aside>
+        </div>
+        <div className="mt-3 sm:mt-5 md:mt-6 flex justify-center">
+          <Button href="/" onClick={handleVolverAlHome} size="full" className="max-w-[280px] sm:max-w-none sm:w-auto">
+            Volver al home
+          </Button>
+        </div>
       </div>
     </section>
   )

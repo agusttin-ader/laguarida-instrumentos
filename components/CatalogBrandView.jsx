@@ -9,6 +9,7 @@ import CatalogSidebarModelItem from './CatalogSidebarModelItem'
 import CatalogEditorialCard from './CatalogEditorialCard'
 import FilterSelect from './FilterSelect'
 import ProductCard from './ProductCard'
+import ProductGridMotion from './motion/ProductGridMotion'
 import {
   buildBrandModelGroups,
   getCatalogBrandList,
@@ -289,7 +290,7 @@ export default function CatalogBrandView({
           </p>
         </div>
       ) : (
-        <div className="product-grid--enter grid w-full min-w-0 grid-cols-2 items-start gap-x-2.5 gap-y-3 max-[767px]:gap-x-2.5 max-[767px]:gap-y-3 md:auto-rows-fr md:items-stretch md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
+        <ProductGridMotion className="product-grid--enter grid w-full min-w-0 grid-cols-2 items-start gap-x-2.5 gap-y-3 max-[767px]:gap-x-2.5 max-[767px]:gap-y-3 md:auto-rows-fr md:items-stretch md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-8">
           {viewProducts.map((item, idx) => (
             <div
               key={item.slug || item.id || idx}
@@ -308,7 +309,7 @@ export default function CatalogBrandView({
               />
             </div>
           ))}
-        </div>
+        </ProductGridMotion>
       )}
     </div>
   )
