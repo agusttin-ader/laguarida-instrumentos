@@ -49,7 +49,7 @@ export default function ProductDesktopPurchasePanel({
             productName={productName}
             showPrice={false}
             ctaId={null}
-            buttonVariant="gold-gradient"
+            buttonVariant="whatsapp"
           />
           <div className="product-desktop-buy-panel__secondary">
             <ProductShareAndFavorite slug={slug} name={productName} url={productUrl} />

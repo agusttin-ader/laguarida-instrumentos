@@ -13,6 +13,7 @@ import {
 import ImageWithSkeleton from './ImageWithSkeleton'
 import ProductGridMotion from './motion/ProductGridMotion'
 import imageService from '../lib/utils/imageService'
+import { SITE_MARK_SRC } from '../lib/branding/logo'
 
 const HOME_PICK_COUNT = 3
 const EDITORIAL_IMAGE_SIZES = '(max-width: 767px) 100vw, 50vw'
@@ -34,6 +35,8 @@ function EditorialBlock({ item, index, reversed = false }) {
   const brandLogo = resolveProductBrandLogo(item)
   const displayTitle = getProductDisplayTitle(p, brandLogo)
   const src = pickShowcaseImage(p)
+  const displayUrl = src ? imageService.forDisplay(src, 'editorial') || src : null
+  const displaySrcSet = src ? imageService.forDisplaySrcSet(src, 'editorial') : null
   const href = `/guitars/${p.slug || p.id}`
   const specs = pickSpecs(p)
   const description = excerptDescription(p.description || p.highlights)
@@ -53,22 +56,26 @@ function EditorialBlock({ item, index, reversed = false }) {
         <div
           className={`home-featured-editorial__image relative order-1 min-h-[360px] max-md:min-h-[min(62vw,380px)] overflow-hidden bg-[var(--dark-surface-2)] md:min-h-0 md:h-full ${reversed ? 'md:order-2' : 'md:order-1'}`}
         >
-          {src ? (
+          {displayUrl ? (
             <ImageWithSkeleton
-              src={imageService.forDisplay(src, 'editorial') || src}
+              src={displayUrl}
               fallbackSrc={src}
+              srcSet={displaySrcSet || undefined}
               alt={p.name || 'Instrumento destacado'}
               fill
               sizes={EDITORIAL_IMAGE_SIZES}
-              qualityPreset="editorial"
-              priority={false}
-              loading="lazy"
+              priority={index === 0}
+              loading={index === 0 ? 'eager' : 'lazy'}
               imgClassName="object-cover object-[center_55%] sm:object-[center_60%] md:object-[center_65%]"
               disableClientPreview
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-5xl opacity-25" aria-hidden>
-              🎸
+            <div className="product-card-image-fallback absolute inset-0" aria-hidden>
+              <img
+                src={SITE_MARK_SRC}
+                alt=""
+                className="product-card-image-fallback__logo product-card-image-fallback__logo--site"
+              />
             </div>
           )}
         </div>

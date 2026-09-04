@@ -34,6 +34,7 @@ export default function ProductGalleryMobile({ allImages, altBase = '', imagesKe
           <ImageWithSkeleton
             src={displayMain(mainImage)}
             fallbackSrc={mainImage}
+            srcSet={imageService.forDisplaySrcSet(mainImage, 'galleryMain') || undefined}
             alt={altBase || 'Imagen del producto'}
             fill
             imgClassName="object-contain object-center p-1"
@@ -66,6 +67,11 @@ export default function ProductGalleryMobile({ allImages, altBase = '', imagesKe
                     <ImageWithSkeleton
                       src={i === 0 ? displayMain(src) : displayThumb(src)}
                       fallbackSrc={src}
+                      srcSet={
+                        i === 0
+                          ? imageService.forDisplaySrcSet(src, 'galleryMain') || undefined
+                          : undefined
+                      }
                       alt={altBase ? `${altBase} — imagen ${i + 1}` : `Imagen ${i + 1}`}
                       fill
                       imgClassName="object-contain object-center p-1"

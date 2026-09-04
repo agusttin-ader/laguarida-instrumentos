@@ -549,7 +549,8 @@ export default async function GuitarPage({ params }) {
 
       {relatedProducts && relatedProducts.length > 0 && (
         <FadeInView as="section" className="container-tight mt-5 max-md:mt-4 sm:mt-12 md:mt-16 lg:mt-16 pb-0 max-md:pb-8 sm:pb-10 md:pb-16" aria-labelledby="related-heading">
-          <h2 id="related-heading" className="section-title-premium section-underline-ocre text-[var(--dark-text-primary)] mb-2.5 max-md:mb-2 sm:mb-6">También te recomendamos</h2>
+          <p className="section-kicker-minimal section-underline-ocre mb-1 max-md:mb-1 sm:mb-2">Recomendados</p>
+          <h2 id="related-heading" className="section-heading-editorial mb-2.5 max-md:mb-2 sm:mb-6">También te puede interesar</h2>
           <RelatedProductsScroll products={relatedProducts} />
         </FadeInView>
       )}

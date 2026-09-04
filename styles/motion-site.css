@@ -1,0 +1,115 @@
+/* ===================== Motion: corto y barato en compositor ===================== */
+:root{
+  --motion-fast: 90ms;
+  --motion-base: 140ms;
+  --motion-slow: 180ms;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+  --motion-duration-reveal: 520ms;
+  --motion-duration-grid: 340ms;
+  --motion-stagger-step: 36ms;
+}
+
+@keyframes premium-enter-up {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Entrada de secciones desactivada: menos trabajo al primer paint y al navegar */
+main > section {
+  animation: none;
+}
+main > section:nth-of-type(2),
+main > section:nth-of-type(3),
+main > section:nth-of-type(4) {
+  animation-delay: 0ms;
+}
+body.page-home main > section {
+  animation: none !important;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --motion-fast: 80ms;
+    --motion-base: 120ms;
+    --motion-slow: 160ms;
+    --motion-ease: var(--motion-ease-fluid);
+  }
+  @keyframes premium-enter-up-mobile {
+    from { opacity: 0; transform: translateY(3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  main > section {
+    animation-name: premium-enter-up-mobile;
+    animation-duration: var(--motion-slow);
+    animation-timing-function: var(--motion-ease);
+    animation-fill-mode: both;
+  }
+  main > section:nth-of-type(2) { animation-delay: 0ms; }
+  main > section:nth-of-type(3) { animation-delay: 12ms; }
+  main > section:nth-of-type(4) { animation-delay: 24ms; }
+  .filter-grid-updating {
+    animation-duration: 160ms;
+    animation-timing-function: var(--motion-ease-fluid);
+  }
+  body.menu-open .menu-drawer-panel {
+    will-change: transform;
+  }
+}
+
+
+/* Cards: hover sin translate (menos repaints); solo sombra/borde suaves */
+.card-interactive {
+  contain: layout style paint;
+  transition:
+    transform var(--motion-base) var(--motion-ease),
+    box-shadow var(--motion-base) var(--motion-ease),
+    border-color var(--motion-base) var(--motion-ease);
+}
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.card-interactive:active {
+  transform: translateY(-1px) scale(0.998);
+}
+/* Catálogo editorial: casi sin sombra; el hover global añade una muy suave */
+.card-editorial.card-interactive {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 8px 24px rgba(0, 0, 0, 0.14) !important;
+  border: 1px solid var(--dark-border);
+}
+.card-editorial.card-interactive:hover {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06), 0 14px 32px rgba(0, 0, 0, 0.2) !important;
+  border-color: rgba(var(--palette-sand-rgb), 0.22);
+}
+
+/* Links/botones: sin lift global (los estilos por componente siguen igual) */
+a:not(.no-custom-btn),
+button:not(.no-custom-btn) {
+  transition:
+    box-shadow var(--motion-fast) var(--motion-ease),
+    background-color var(--motion-fast) var(--motion-ease),
+    color var(--motion-fast) var(--motion-ease),
+    border-color var(--motion-fast) var(--motion-ease);
+}
+a:not(.no-custom-btn):hover,
+button:not(.no-custom-btn):hover {
+  transform: none;
+}
+a:not(.no-custom-btn):active,
+button:not(.no-custom-btn):active {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main > section,
+  .card-interactive,
+  a:not(.no-custom-btn),
+  button:not(.no-custom-btn),
+  .card-interactive img {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}

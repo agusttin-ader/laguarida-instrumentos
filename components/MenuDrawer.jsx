@@ -137,6 +137,12 @@ export default function MenuDrawer({ open, setOpen }) {
             </a>
           </li>
           <li>
+            <a href="/#faq-section" onClick={(e) => handleSection(e, 'faq-section')} className={rowClass}>
+              <span>Preguntas frecuentes</span>
+              <ChevronRight className="shrink-0 text-white/35" />
+            </a>
+          </li>
+          <li>
             <a
               href={WA_HREF}
               target="_blank"

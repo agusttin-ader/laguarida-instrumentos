@@ -2,8 +2,6 @@
 import React, { useState, useEffect } from "react";
 import NextImage from "next/image";
 import { usePremiumImageFade } from "../hooks/usePremiumImageFade";
-import { useResponsiveImageQuality } from "../hooks/useResponsiveImageQuality";
-import { IMAGE_QUALITY_PRESETS } from "../lib/utils/responsiveImageQuality";
 
 export default function ImageWithSkeleton({
   src,
@@ -26,10 +24,8 @@ export default function ImageWithSkeleton({
   unoptimized,
   /** Original canónico si `src` es variante estática (fallback ante 404). */
   fallbackSrc,
+  srcSet,
 }) {
-  const preset = IMAGE_QUALITY_PRESETS[qualityPreset] || IMAGE_QUALITY_PRESETS.galleryMain
-  const responsiveQuality = useResponsiveImageQuality(preset)
-  const resolvedQuality = quality ?? responsiveQuality
   const requestedSrc = typeof src === 'string' ? src.trim() : src
   const fallback = typeof fallbackSrc === 'string' ? fallbackSrc.trim() : ''
   const [activeSrc, setActiveSrc] = useState(requestedSrc)
@@ -119,7 +115,7 @@ export default function ImageWithSkeleton({
           width={fill ? undefined : width}
           height={fill ? undefined : height}
           sizes={sizes}
-          quality={resolvedQuality}
+          srcSet={srcSet || undefined}
           unoptimized={useUnoptimized}
           placeholder={blurDataURL ? 'blur' : 'empty'}
           blurDataURL={blurDataURL || undefined}

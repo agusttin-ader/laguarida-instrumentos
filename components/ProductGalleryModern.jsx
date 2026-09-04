@@ -126,6 +126,7 @@ export default function ProductGalleryModern({ image_url, images = [], altBase =
           <ImageWithSkeleton
             src={displayMain(mainImage)}
             fallbackSrc={mainImage}
+            srcSet={imageService.forDisplaySrcSet(mainImage, 'galleryMain') || undefined}
             alt={altBase || 'Imagen del producto'}
             fill
             imgClassName="object-cover object-[center_88%] sm:object-bottom transition-transform duration-300 ease-out group-hover:scale-105"

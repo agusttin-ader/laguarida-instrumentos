@@ -1,5 +1,6 @@
 import React from 'react'
 import { absoluteUrl } from '../../lib/siteUrl'
+import LegalPageShell, { LegalSection } from '../../components/LegalPageShell'
 
 export const metadata = {
   title: 'Términos y condiciones',
@@ -14,69 +15,51 @@ export const dynamic = 'force-dynamic'
 
 export default function TerminosPage() {
   return (
-    <main className="legal-page container-tight py-8 sm:py-10 md:py-14">
-      <article className="max-w-4xl mx-auto bg-transparent">
-        <p className="section-kicker-minimal text-[var(--dark-muted)] mb-2">Legal</p>
-        <h1 className="text-[1.85rem] sm:text-[2.2rem] md:text-[2.5rem] font-bold tracking-tight text-[var(--dark-text-primary)] leading-[1.08]">
-          Términos y condiciones
-        </h1>
-        <p className="mt-2 text-sm text-[var(--dark-muted)]">
-          Última actualización: {new Date().toLocaleDateString('es-AR')}
+    <LegalPageShell
+      title="Términos y condiciones"
+      intro="Estas condiciones regulan el uso del sitio y las pautas generales de nuestras operaciones comerciales."
+    >
+      <LegalSection title="01. Uso del sitio">
+        <p>
+          El uso de este sitio implica la aceptación de estos términos. El contenido se ofrece con fines informativos
+          y comerciales sobre productos y servicios de La Guarida Instrumentos.
         </p>
-        <p className="mt-4 text-[14px] sm:text-[15px] md:text-base text-[var(--dark-text-secondary)] max-w-3xl leading-relaxed">
-          Estas condiciones regulan el uso del sitio y las pautas generales de nuestras operaciones comerciales.
+      </LegalSection>
+
+      <LegalSection title="02. Productos y disponibilidad">
+        <p>
+          La disponibilidad, descripciones e imágenes de productos pueden variar sin previo aviso. Publicaciones y
+          detalles técnicos están sujetos a actualización.
         </p>
+      </LegalSection>
 
-        <div className="mt-10 space-y-8 text-[14px] sm:text-[15px] md:text-base leading-relaxed text-[var(--dark-text-secondary)]">
-          <section>
-            <h2 className="text-[15px] sm:text-[1.02rem] md:text-[1.08rem] font-semibold text-[var(--dark-text-primary)]">01. Uso del sitio</h2>
-            <p className="mt-1.5">
-              El uso de este sitio implica la aceptación de estos términos. El contenido se ofrece con fines informativos
-              y comerciales sobre productos y servicios de La Guarida Instrumentos.
-            </p>
-          </section>
+      <LegalSection title="03. Precios y medios de pago">
+        <p>
+          Los precios informados pueden modificarse. Las condiciones de pago se confirman al momento de la operación
+          por los canales oficiales de contacto.
+        </p>
+      </LegalSection>
 
-          <section>
-            <h2 className="text-[15px] sm:text-[1.02rem] md:text-[1.08rem] font-semibold text-[var(--dark-text-primary)]">02. Productos y disponibilidad</h2>
-            <p className="mt-1.5">
-              La disponibilidad, descripciones e imágenes de productos pueden variar sin previo aviso. Publicaciones y
-              detalles técnicos están sujetos a actualización.
-            </p>
-          </section>
+      <LegalSection title="04. Envíos y entregas">
+        <p>
+          Los tiempos y costos de envío dependen del destino y del operador logístico. La coordinación final se realiza
+          con el cliente antes del cierre de cada venta.
+        </p>
+      </LegalSection>
 
-          <section>
-            <h2 className="text-[15px] sm:text-[1.02rem] md:text-[1.08rem] font-semibold text-[var(--dark-text-primary)]">03. Precios y medios de pago</h2>
-            <p className="mt-1.5">
-              Los precios informados pueden modificarse. Las condiciones de pago se confirman al momento de la operación
-              por los canales oficiales de contacto.
-            </p>
-          </section>
+      <LegalSection title="05. Responsabilidad">
+        <p>
+          Hacemos esfuerzos razonables para mantener información actualizada y exacta, pero no garantizamos ausencia de
+          errores tipográficos o interrupciones temporales del servicio.
+        </p>
+      </LegalSection>
 
-          <section>
-            <h2 className="text-[15px] sm:text-[1.02rem] md:text-[1.08rem] font-semibold text-[var(--dark-text-primary)]">04. Envíos y entregas</h2>
-            <p className="mt-1.5">
-              Los tiempos y costos de envío dependen del destino y del operador logístico. La coordinación final se realiza
-              con el cliente antes del cierre de cada venta.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-[15px] sm:text-[1.02rem] md:text-[1.08rem] font-semibold text-[var(--dark-text-primary)]">05. Responsabilidad</h2>
-            <p className="mt-1.5">
-              Hacemos esfuerzos razonables para mantener información actualizada y exacta, pero no garantizamos ausencia de
-              errores tipográficos o interrupciones temporales del servicio.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-[15px] sm:text-[1.02rem] md:text-[1.08rem] font-semibold text-[var(--dark-text-primary)]">06. Contacto</h2>
-            <p className="mt-1.5">
-              Para consultas sobre estos términos o una operación puntual, podés comunicarte por WhatsApp o correo desde
-              los canales publicados en el sitio.
-            </p>
-          </section>
-        </div>
-      </article>
-    </main>
+      <LegalSection title="06. Contacto">
+        <p>
+          Para consultas sobre estos términos o una operación puntual, podés comunicarte por WhatsApp o correo desde
+          los canales publicados en el sitio.
+        </p>
+      </LegalSection>
+    </LegalPageShell>
   )
 }

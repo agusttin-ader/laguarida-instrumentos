@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import Button from './Button'
 import { usePathname } from 'next/navigation'
-import { layoutShellClassName } from '../lib/layoutShell'
 import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
 import { trackWhatsAppClick } from '../lib/trackWhatsAppClick'
 
@@ -108,9 +107,7 @@ export default function FaqSection() {
       className="mt-1 max-md:mt-0 sm:mt-2 md:mt-3"
       aria-labelledby="faq-heading"
     >
-      <div
-        className={`${layoutShellClassName} sm:px-5 md:px-6 lg:px-8 pt-1 max-md:pt-0 sm:pt-3 md:pt-4 lg:pt-5 pb-2 max-md:pb-0 sm:pb-4 md:pb-5 lg:pb-6`}
-      >
+      <div className="w-full pt-1 max-md:pt-0 sm:pt-3 md:pt-4 lg:pt-5 pb-2 max-md:pb-0 sm:pb-4 md:pb-5 lg:pb-6">
         <p className="section-kicker-minimal section-underline-ocre mb-2 sm:mb-3">
           Preguntas frecuentes
         </p>
@@ -123,7 +120,7 @@ export default function FaqSection() {
             {FAQ_ITEMS.map((item) => {
               const isOpen = openId === item.id
               return (
-                <div key={item.id} className="overflow-hidden">
+                <div key={item.id} className="faq-accordion-item">
                   <button
                     type="button"
                     onClick={() => setOpenId(isOpen ? null : item.id)}
@@ -139,18 +136,18 @@ export default function FaqSection() {
                       {isOpen ? <IconMinus /> : <IconPlus />}
                     </span>
                   </button>
-                  {isOpen ? (
-                    <div
-                      id={`faq-answer-${item.id}`}
-                      role="region"
-                      aria-labelledby={`faq-question-${item.id}`}
-                      className="pb-4 sm:pb-5"
-                    >
-                      <p className="max-w-[70ch] text-[13px] leading-relaxed text-[var(--dark-text-secondary)] sm:text-sm">
+                  <div
+                    id={`faq-answer-${item.id}`}
+                    role="region"
+                    aria-labelledby={`faq-question-${item.id}`}
+                    className={`faq-accordion-panel grid transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="max-w-[70ch] pb-4 text-[13px] leading-relaxed text-[var(--dark-text-secondary)] sm:pb-5 sm:text-sm">
                         {item.answer}
                       </p>
                     </div>
-                  ) : null}
+                  </div>
                 </div>
               )
             })}

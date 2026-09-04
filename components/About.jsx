@@ -1,13 +1,13 @@
 import React from 'react'
-import { layoutShellClassName } from '../lib/layoutShell'
+
 export default function About({ compactTop = false }) {
   const topPadding = compactTop
     ? 'pt-0 sm:pt-0 md:pt-1'
     : 'pt-3 sm:pt-5 md:pt-6 lg:pt-7'
 
   return (
-    <section id="about-section" className="mt-0">
-      <div className={`${layoutShellClassName} sm:px-5 md:px-6 lg:px-8 ${topPadding} pb-0 sm:pb-1 md:pb-2 lg:pb-2`}>
+    <section id="about-section" className="mt-0 w-full">
+      <div className={`w-full ${topPadding} pb-0 sm:pb-1 md:pb-2 lg:pb-2`}>
         <div className="w-full">
           <p className="section-kicker-minimal section-underline-ocre mb-2 sm:mb-3">
             Sobre La Guarida

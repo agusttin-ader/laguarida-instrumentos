@@ -1,0 +1,410 @@
+/* ===================== Product detail CTA entrance ===================== */
+.product-cta-entrance {
+  opacity: 0;
+  transform: translateY(4px);
+  animation: premium-enter-up var(--motion-base) var(--motion-ease) both;
+  animation-delay: 60ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .product-cta-entrance {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ===================== Mobile premium tuning ===================== */
+@media (max-width: 767px) {
+  header {
+    padding-top: max(0.25rem, env(safe-area-inset-top));
+  }
+
+  header.header-mobile {
+    padding-top: max(0.5rem, env(safe-area-inset-top));
+    padding-bottom: 0.5rem;
+  }
+
+  /* Mejorar rendimiento de scroll en listas largas */
+  .grid.grid-cols-1 .min-w-0 {
+    contain: layout style;
+  }
+
+  .card-interactive {
+    border-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--mobile-radius-card);
+    box-shadow: none;
+  }
+
+  .card-interactive:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .card-editorial.card-interactive:hover {
+    box-shadow: none !important;
+  }
+
+  .card-mobile-no-motion,
+  .card-mobile-no-motion:hover,
+  .card-mobile-no-motion:active {
+    transition: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .card-mobile-no-motion img {
+    transition: opacity 0.25s ease-out !important;
+    transform: none !important;
+  }
+
+  .card-mobile-no-motion:hover img {
+    transform: none !important;
+  }
+
+  .card-interactive .md\:hidden h3,
+  .card-interactive .md\:hidden p {
+    color: rgba(255, 255, 255, 0.95) !important;
+  }
+
+  .card-interactive .md\:hidden span {
+    color: #111319;
+  }
+
+  /* Footer compacto */
+  .site-footer__inner {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+
+  .site-footer__divider {
+    margin-bottom: 0.75rem !important;
+  }
+
+  .site-footer__grid,
+  .site-footer__main {
+    gap: 0.75rem !important;
+  }
+
+  .site-footer__sub {
+    margin-top: 1.25rem !important;
+    padding-top: 1rem !important;
+  }
+
+  .site-footer__logo {
+    height: 22px !important;
+    max-width: 200px !important;
+  }
+
+  .site-footer__main .site-footer__logo {
+    height: 28px !important;
+    max-width: 240px !important;
+  }
+
+  .site-footer__social a {
+    min-width: var(--mobile-tap);
+    min-height: var(--mobile-tap);
+  }
+
+  .site-footer__disclaimer {
+    margin-top: 0.5rem !important;
+  }
+
+  .footer-disclaimer {
+    font-size: 0.625rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .site-footer__dev-credit {
+    margin-top: 0.125rem !important;
+  }
+
+  .site-footer__legal {
+    gap: 0.75rem !important;
+    margin-top: 0.25rem !important;
+  }
+
+  .site-footer__legal a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* ===================== WhatsApp FAB (mobile + desktop) ===================== */
+.whatsapp-float-fab {
+  position: fixed !important;
+}
+
+@media (max-width: 767px) {
+  body.menu-open .whatsapp-float-fab {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .whatsapp-float-fab {
+    transition: opacity 200ms var(--motion-ease), transform 200ms var(--motion-ease);
+  }
+
+  /* PDP sticky bar visible: ocultar FAB para no duplicar WhatsApp ni tapar la barra */
+  body.pdp-sticky-cta-visible .whatsapp-float-fab {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px) scale(0.92);
+  }
+}
+
+/* ===================== PDP mobile sticky CTA (≤767px) ===================== */
+.pdp-mobile-sticky-bar {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .pdp-mobile-sticky-bar {
+    --pdp-sticky-cta-h: 6.25rem;
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-sticky-cta);
+    width: 100%;
+    max-width: 100vw;
+    pointer-events: none;
+    transform: translate3d(0, 110%, 0);
+    opacity: 0;
+    transition:
+      transform 280ms var(--motion-ease),
+      opacity 220ms var(--motion-ease);
+    will-change: transform, opacity;
+  }
+
+  .pdp-mobile-sticky-bar.is-visible {
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+
+  body.menu-open .pdp-mobile-sticky-bar,
+  body.menu-open .pdp-mobile-sticky-bar.is-visible {
+    pointer-events: none;
+    transform: translate3d(0, 110%, 0);
+    opacity: 0;
+  }
+
+  .pdp-mobile-sticky-bar__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 0.625rem 0.875rem calc(0.625rem + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid rgba(var(--palette-gold-rgb), 0.28);
+    background:
+      linear-gradient(180deg, rgba(26, 28, 32, 0.97) 0%, rgba(18, 19, 22, 0.99) 100%);
+    box-shadow: 0 -10px 36px rgba(0, 0, 0, 0.42);
+  }
+
+  .pdp-mobile-sticky-bar__meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .pdp-mobile-sticky-bar__name {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--dark-text-primary);
+  }
+
+  .pdp-mobile-sticky-bar__price {
+    flex: 0 0 auto;
+    max-width: 46%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-align: right;
+  }
+
+  .pdp-mobile-sticky-bar__cta {
+    min-height: 44px !important;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  body.pdp-sticky-cta-visible .product-detail-page {
+    padding-bottom: calc(var(--pdp-sticky-cta-h, 5.75rem) + env(safe-area-inset-bottom, 0px));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pdp-mobile-sticky-bar {
+      transition: opacity 120ms linear;
+      transform: none;
+    }
+
+    .pdp-mobile-sticky-bar:not(.is-visible) {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .pdp-mobile-sticky-bar.is-visible {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
+
+/* ===================== PDP trust signals + availability ===================== */
+.product-detail-availability__dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: #3dd68c;
+  box-shadow: 0 0 0 3px rgba(61, 214, 140, 0.18);
+  flex-shrink: 0;
+}
+
+.product-trust-signals {
+  list-style: none;
+  margin: 0;
+  padding: 0.75rem 0.875rem;
+  display: grid;
+  gap: 0.55rem;
+  border-radius: 0.875rem;
+  border: 1px solid rgba(var(--palette-gold-rgb), 0.2);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.product-trust-signals__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  min-width: 0;
+}
+
+.product-trust-signals__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  margin-top: 0.05rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  color: rgba(var(--palette-gold-rgb), 0.95);
+  background: rgba(var(--palette-gold-rgb), 0.12);
+}
+
+.product-trust-signals__svg {
+  display: block;
+}
+
+.product-trust-signals__label {
+  min-width: 0;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  font-weight: 500;
+  color: var(--dark-text-secondary);
+  letter-spacing: -0.01em;
+}
+
+.product-trust-signals--panel {
+  padding: 0.7rem 0.8rem;
+}
+
+@media (min-width: 1024px) {
+  .product-trust-signals--panel .product-trust-signals__label {
+    font-size: 0.8rem;
+  }
+}
+
+/* El link que envuelve la card no debe heredar estilos globales de botón */
+.card-product-link,
+.card-product-link:hover,
+.card-product-link:active,
+.card-product-link:focus {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  color: inherit !important;
+  transform: none !important;
+}
+
+.admin-btn-interact {
+  transition: transform 0.2s ease, box-shadow 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+.admin-btn-interact:hover {
+  transform: translateY(-1px);
+}
+.admin-btn-interact:active {
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-btn-interact:hover,
+  .admin-btn-interact:active { transform: none !important; }
+}
+
+/* Admin segment: boot splash (styles live in globals so the admin layout need not render <head>) */
+#admin-boot-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: radial-gradient(ellipse at center, rgba(212, 164, 59, 0.07) 0%, #06080e 52%);
+}
+#admin-boot-splash .admin-splash-inner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 1;
+}
+#admin-boot-splash .admin-splash-spinner {
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: rgba(255, 255, 255, 0.95);
+  animation: admin-splash-spin 0.8s linear infinite;
+}
+#admin-boot-splash .admin-splash-label {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+#admin-boot-splash.admin-boot-splash-fade {
+  opacity: 0;
+  transition: opacity 0.18s ease-out;
+}
+@keyframes admin-splash-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Global loading spinner used in product lists */
+.app-loading-spinner {
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: rgba(255, 255, 255, 0.95);
+  animation: admin-splash-spin 0.82s linear infinite;
+}

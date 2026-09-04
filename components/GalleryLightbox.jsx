@@ -25,6 +25,7 @@ function LightboxSlideImage({ src, alt, priority = false }) {
     <ImageWithSkeleton
       src={display}
       fallbackSrc={src}
+      srcSet={imageService.forDisplaySrcSet(src, 'lightbox') || undefined}
       alt={alt}
       fill
       sizes="100vw"

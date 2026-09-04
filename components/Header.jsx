@@ -255,7 +255,8 @@ export default function Header() {
     </>
   )
 
-  const mobileShellClass = `site-header-mobile-shell md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] bg-[var(--dark-bg-card)] ${headerMotionClass} ${headerHideClass}`
+  const mobileShellImmersive = isHome && !scrolled
+  const mobileShellClass = `site-header-mobile-shell md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] ${mobileShellImmersive ? 'site-header-mobile-shell--immersive' : ''} ${headerMotionClass} ${headerHideClass}`
 
   const mobileShell = <div ref={mobileShellRef} className={mobileShellClass}>{mobileHeader}</div>
 
@@ -266,7 +267,7 @@ export default function Header() {
 
       <header
         ref={desktopHeaderRef}
-        className={`header-desktop site-header-bar hidden md:block fixed top-0 left-0 right-0 z-[var(--z-header)] ${headerMotionClass} ${headerHideClass} ${scrolled ? 'header-scrolled ' : ''}overflow-visible bg-[var(--dark-bg-card)]`}
+        className={`header-desktop site-header-bar hidden md:block fixed top-0 left-0 right-0 z-[var(--z-header)] ${headerMotionClass} ${headerHideClass} ${isHome ? 'header-home-desktop' : ''} ${scrolled ? 'header-scrolled' : ''} overflow-visible ${!isHome || scrolled ? 'bg-[var(--dark-bg-card)]' : ''}`}
       >
         <div className={`${layoutShellClassName} relative flex items-center gap-6 min-h-[4.5rem] px-4 sm:px-5 md:px-8 lg:px-10 min-[1920px]:px-12`}>
           <a
@@ -341,7 +342,7 @@ export default function Header() {
         </div>
       </header>
       <div
-        className="hidden md:block shrink-0 pointer-events-none h-[var(--site-header-h,68px)]"
+        className={`hidden md:block shrink-0 pointer-events-none ${isHome ? 'h-0 overflow-hidden' : 'h-[var(--site-header-h,68px)]'}`}
         aria-hidden
       />
     </>

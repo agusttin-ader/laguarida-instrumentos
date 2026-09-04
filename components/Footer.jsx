@@ -102,8 +102,8 @@ export default function Footer({ compact = false }) {
   const shellPad = compact
     ? 'py-4 md:py-3'
     : isProductPage
-      ? 'py-8 sm:py-10'
-      : 'py-8 max-md:pt-6 max-md:pb-8 sm:py-12'
+      ? 'py-8 sm:py-10 max-md:pb-[max(2.5rem,calc(6.5rem+env(safe-area-inset-bottom,0px)))]'
+      : 'py-8 max-md:pt-6 max-md:pb-[max(2rem,calc(4.5rem+env(safe-area-inset-bottom,0px)))] sm:py-12'
 
   const handleHome = useCallback(
     (e) => {

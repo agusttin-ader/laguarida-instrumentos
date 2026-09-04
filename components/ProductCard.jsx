@@ -9,8 +9,6 @@ import Link from 'next/link'
 import { useFavorites } from './ProductShareAndFavorite'
 import { useToast } from './ToastContext'
 import { usePremiumImageFade } from '../hooks/usePremiumImageFade'
-import { useResponsiveImageQuality } from '../hooks/useResponsiveImageQuality'
-import { IMAGE_QUALITY_PRESETS } from '../lib/utils/responsiveImageQuality'
 import { resolveProductBrandLogo, resolveProductImageFallbackLogo } from '../lib/catalog/resolveProductBrandLogo'
 
 const CARD_IMAGE_SIZES =
@@ -56,7 +54,6 @@ function ProductCardImage({
   const displaySrc = src
   const [activeSrc, setActiveSrc] = useState(displaySrc)
   const { loaded, onImageLoad, opacityClass, transitionClass } = usePremiumImageFade(activeSrc)
-  const cardQuality = useResponsiveImageQuality(IMAGE_QUALITY_PRESETS.card)
   const [errored, setErrored] = useState(false)
 
   useEffect(() => {
@@ -93,7 +90,6 @@ function ProductCardImage({
           alt={alt}
           fill
           sizes={sizes}
-          quality={cardQuality}
           unoptimized
           priority={priority}
           loading={eager ? 'eager' : 'lazy'}

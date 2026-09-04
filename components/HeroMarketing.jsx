@@ -1,11 +1,12 @@
 'use client'
 
-import Image from 'next/image'
-import { useCallback, useLayoutEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { layoutShellClassName } from '../lib/layoutShell'
 import Button from './Button'
 
 const SESSION_KEY = 'lg-hero-slide-index'
+const HERO_INTERVAL_MS = 7000
+const HERO_CROSSFADE_MS = 1400
 
 function pickSessionSlideIndex(count) {
   if (count < 1) return 0
@@ -26,49 +27,126 @@ function pickSessionSlideIndex(count) {
   }
 }
 
+function prefersReducedMotion() {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+function HeroSlidePicture({ slide, eager, onLoad }) {
+  const mobile = slide.mobile || slide.src
+  const desktop = slide.desktop || slide.fallback || slide.src
+
+  return (
+    <picture className="absolute inset-0 block h-full w-full">
+      <source media="(max-width: 767px)" srcSet={mobile} type="image/webp" />
+      <source media="(min-width: 768px)" srcSet={desktop} type="image/webp" />
+      <img
+        src={desktop}
+        alt=""
+        decoding="async"
+        loading={eager ? 'eager' : 'lazy'}
+        fetchPriority={eager ? 'high' : 'low'}
+        onLoad={onLoad}
+        className="h-full w-full object-cover object-[center_42%] max-md:object-[center_38%] md:object-center"
+      />
+    </picture>
+  )
+}
+
 export default function HeroMarketing({ slides = [] }) {
   const heroSlides = slides.length ? slides : []
   const [slideIndex, setSlideIndex] = useState(0)
+  const [renderIndices, setRenderIndices] = useState([0])
   const [primaryReady, setPrimaryReady] = useState(false)
+  const [reduceMotion, setReduceMotion] = useState(false)
+  const preloadedRef = useRef(new Set())
 
   useLayoutEffect(() => {
     setSlideIndex(pickSessionSlideIndex(heroSlides.length))
+    setReduceMotion(prefersReducedMotion())
   }, [heroSlides.length])
 
-  const slide = heroSlides[slideIndex] || heroSlides[0]
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const sync = () => setReduceMotion(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+
+  useEffect(() => {
+    setRenderIndices((prev) => {
+      const next = new Set([slideIndex, ...prev])
+      return [...next].slice(-2)
+    })
+  }, [slideIndex])
+
+  useEffect(() => {
+    if (heroSlides.length <= 1 || reduceMotion) return undefined
+    const id = window.setInterval(() => {
+      setSlideIndex((current) => (current + 1) % heroSlides.length)
+    }, HERO_INTERVAL_MS)
+    return () => window.clearInterval(id)
+  }, [heroSlides.length, reduceMotion])
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || heroSlides.length <= 1) return undefined
+    const nextIndex = (slideIndex + 1) % heroSlides.length
+    const key = String(nextIndex)
+    if (preloadedRef.current.has(key)) return undefined
+
+    const slide = heroSlides[nextIndex]
+    if (!slide) return undefined
+
+    const mobile = slide.mobile || slide.src
+    const desktop = slide.desktop || slide.fallback || slide.src
+    const img = new window.Image()
+    img.src = window.matchMedia('(max-width: 767px)').matches ? mobile : desktop
+    preloadedRef.current.add(key)
+    return undefined
+  }, [slideIndex, heroSlides])
 
   const onPrimaryLoad = useCallback(() => {
     setPrimaryReady(true)
   }, [])
 
   return (
-    <div className="hero-home relative w-full max-md:min-h-[min(82dvh,640px)] sm:min-h-[min(84vh,880px)] overflow-hidden bg-[var(--dark-bg-page)] text-[var(--dark-text-primary)]">
+    <div className="hero-home relative w-full max-md:min-h-[min(82dvh,640px)] md:min-h-[min(100dvh,920px)] sm:min-h-[min(84vh,880px)] overflow-hidden bg-[var(--dark-bg-page)] md:bg-transparent text-[var(--dark-text-primary)]">
       <div className="hero-home__paint-fallback absolute inset-0 md:hidden" aria-hidden />
 
       <div className="absolute inset-0" aria-hidden>
-        {slide ? (
-          <div className="absolute inset-0">
-            <Image
-              src={slide.src}
-              alt=""
-              fill
-              unoptimized
-              priority
-              fetchPriority="high"
-              sizes="100vw"
-              onLoad={onPrimaryLoad}
-              className={`object-cover object-[center_42%] max-md:object-[center_38%] md:object-center ${
-                !primaryReady
-                  ? 'max-md:opacity-0 md:opacity-100'
-                  : 'opacity-100'
-              }`}
-            />
-          </div>
+        {heroSlides.length > 0 ? (
+          renderIndices.map((index) => {
+            const item = heroSlides[index]
+            if (!item) return null
+            const isActive = index === slideIndex
+            const eager = isActive && index === renderIndices[renderIndices.length - 1]
+
+            return (
+              <div
+                key={item.src}
+                className={`hero-home__slide absolute inset-0 transition-opacity ease-in-out motion-reduce:transition-none ${
+                  isActive ? 'opacity-100' : 'opacity-0'
+                }`}
+                style={{
+                  transitionDuration: reduceMotion ? '0ms' : `${HERO_CROSSFADE_MS}ms`,
+                  zIndex: isActive ? 2 : 1,
+                }}
+              >
+                <HeroSlidePicture
+                  slide={item}
+                  eager={eager}
+                  onLoad={isActive ? onPrimaryLoad : undefined}
+                />
+              </div>
+            )
+          })
         ) : (
           <div className="absolute inset-0 bg-[#1E1F28] max-md:bg-transparent" />
         )}
         <div
-          className={`absolute inset-0 max-md:transition-opacity max-md:duration-300 max-md:ease-out motion-reduce:transition-none ${
+          className={`absolute inset-0 z-[3] max-md:transition-opacity max-md:duration-300 max-md:ease-out motion-reduce:transition-none ${
             primaryReady || !heroSlides.length
               ? 'opacity-100'
               : 'max-md:opacity-40 md:opacity-100'
@@ -81,7 +159,7 @@ export default function HeroMarketing({ slides = [] }) {
       </div>
 
       <div
-        className={`${layoutShellClassName} relative mx-auto flex max-md:min-h-[min(82dvh,640px)] sm:min-h-[min(84vh,880px)] w-full max-md:items-end md:items-center px-4 max-md:pb-8 max-md:pt-[max(4.75rem,calc(4rem+env(safe-area-inset-top)))] pb-14 pt-[max(5.75rem,calc(4.5rem+env(safe-area-inset-top)))] sm:px-5 sm:pb-16 md:px-8 md:pt-[5.75rem] lg:px-10 min-[1920px]:px-12`}
+        className={`${layoutShellClassName} relative z-10 mx-auto flex max-md:min-h-[min(82dvh,640px)] md:min-h-[min(100dvh,920px)] sm:min-h-[min(84vh,880px)] w-full max-md:items-end md:items-center px-4 max-md:pb-8 max-md:pt-[max(4.75rem,calc(4rem+env(safe-area-inset-top)))] pb-14 pt-[max(5.75rem,calc(4.5rem+env(safe-area-inset-top)))] sm:px-5 sm:pb-16 md:px-8 md:pt-[max(6.5rem,calc(var(--site-header-h,4.5rem)+1rem))] lg:px-10 min-[1920px]:px-12`}
       >
         <div className="w-full max-w-xl lg:max-w-2xl">
           <p className="hero-kicker max-md:mb-2 md:text-xs">

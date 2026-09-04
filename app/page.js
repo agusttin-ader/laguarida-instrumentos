@@ -1,4 +1,5 @@
 import HomePageContent from '../components/HomePageContent'
+import HeroPreloads from '../components/HeroPreloads'
 import { getHomeHeroBackgrounds } from '../lib/data/homeHeroBackgrounds'
 import { getWeeklyFeaturedExpensiveProducts } from '../lib/data/homeFeaturedExpensive'
 import { absoluteUrl } from '../lib/siteUrl'
@@ -33,5 +34,10 @@ export const metadata = {
 export default function Page() {
   const heroSlides = getHomeHeroBackgrounds()
   const featuredProducts = getWeeklyFeaturedExpensiveProducts()
-  return <HomePageContent heroSlides={heroSlides} featuredProducts={featuredProducts} />
+  return (
+    <>
+      <HeroPreloads slides={heroSlides} />
+      <HomePageContent heroSlides={heroSlides} featuredProducts={featuredProducts} />
+    </>
+  )
 }

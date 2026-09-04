@@ -1,0 +1,58 @@
+/* Páginas legales — shell editorial compartido */
+
+/* Páginas legales (/terminos, /privacidad): sin panel ni borde; mismo negro que el body */
+main.legal-page,
+main.legal-page article {
+  background-color: var(--dark-bg-page) !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.legal-page__article {
+  background-color: transparent;
+}
+
+.legal-page__content {
+  color: var(--dark-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.75;
+}
+
+@media (min-width: 640px) {
+  .legal-page__content {
+    font-size: 0.9375rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .legal-page__content {
+    font-size: var(--text-base);
+  }
+}
+
+.legal-page__section + .legal-page__section {
+  padding-top: 0.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.legal-page__section-title {
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--dark-text-primary);
+}
+
+@media (min-width: 768px) {
+  .legal-page__section-title {
+    font-size: 1.05rem;
+  }
+}
+
+.legal-page__section-body {
+  margin-top: 0.625rem;
+}
+
+.legal-page__section-body p + p {
+  margin-top: 0.75rem;
+}

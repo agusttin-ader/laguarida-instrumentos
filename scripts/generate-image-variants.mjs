@@ -19,9 +19,10 @@ import sharp from 'sharp'
 
 /** Debe coincidir con lib/utils/staticImageVariants.js → STATIC_VARIANT_FILES */
 const STATIC_VARIANT_FILES = {
-  card: { width: 480, quality: 58, suffix: 'card' },
-  main: { width: 1280, quality: 70, suffix: 'main' },
-  large: { width: 1600, quality: 74, suffix: 'large' },
+  card: { width: 480, quality: 62, suffix: 'card' },
+  carousel: { width: 640, quality: 66, suffix: 'carousel' },
+  main: { width: 1400, quality: 74, suffix: 'main' },
+  large: { width: 1800, quality: 78, suffix: 'large' },
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))

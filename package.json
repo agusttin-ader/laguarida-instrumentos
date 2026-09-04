@@ -15,7 +15,9 @@
     "sync:catalog": "node scripts/sync-catalog-backup.mjs",
     "sync": "npm run sync:catalog",
     "init:product-images": "node scripts/sync-catalog-backup.mjs --skip-download",
-    "images:variants": "node scripts/generate-image-variants.mjs"
+    "images:variants": "node scripts/generate-image-variants.mjs",
+    "images:hero": "node scripts/generate-hero-variants.mjs",
+    "images:all": "npm run images:variants && npm run images:hero"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",

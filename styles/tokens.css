@@ -1,0 +1,113 @@
+:root{
+  --max-width: 1200px;
+  /* Stacking (UI fija y overlays) */
+  --z-bottom-nav: 50;
+  --z-sticky-cta: 52;
+  --z-mobile-fab: 55;
+  --z-header: 60;
+  --z-header-mobile: 120;
+  --z-toast: 9999;
+  --z-menu-drawer: 10000;
+  --mobile-tabbar-h: 3.5rem;
+  /* Mobile-first design tokens */
+  /* Paleta — azul oscuro #1A1B22 + rojo/ocre (contraste alto) */
+  --palette-sand: #D4C4A8;
+  --palette-sand-rgb: 212, 196, 168;
+  --palette-gold: #D99530;
+  --palette-gold-rgb: 217, 149, 48;
+  --palette-orange: #D44038;
+  --palette-orange-rgb: 212, 64, 56;
+  --palette-flame: #D44038;
+  --palette-flame-rgb: 212, 64, 56;
+  --palette-ink: #1A1B22;
+  --palette-ink-rgb: 26, 27, 34;
+  --palette-cream: #FAF6F0;
+  --palette-brown: #5C4A3A;
+  --palette-red: #D44038;
+  --accent-gold-light: #E8C878;
+  --accent-red-light: #F09080;
+
+  --color-black: var(--palette-ink);
+  --color-white: var(--palette-cream);
+  --color-accent: var(--palette-flame);
+  --color-orange: var(--palette-orange);
+  --color-surface: #242632;
+  --line-subtle: rgba(255, 255, 255, 0.1);
+  --line-soft: rgba(255, 255, 255, 0.16);
+  --shadow-soft: 0 6px 18px rgba(var(--palette-ink-rgb), 0.12);
+  --shadow-hover: 0 14px 32px rgba(var(--palette-ink-rgb), 0.18);
+  --card-bg: #ebe3d4;
+  --auth-bg: var(--color-white); /* login/admin small header background */
+
+  /* Acentos híbridos */
+  --vintage-gold: var(--accent-gold-light);
+  --vintage-gold-soft: rgba(var(--palette-gold-rgb), 0.16);
+  --vintage-gold-soft-hover: rgba(var(--palette-gold-rgb), 0.26);
+  --vintage-amber: var(--palette-gold);
+  --vintage-amber-dark: #a06f22;
+  --vintage-cream: var(--palette-cream);
+  --vintage-muted: #B5AFA8;
+  --price-accent: var(--palette-gold);
+  --price-accent-alt: var(--palette-flame);
+
+  /* Design tokens: botones y espaciado responsive */
+  --btn-h-mobile: 48px;
+  --btn-h-desktop: 44px;
+  --btn-px-mobile: 0.875rem;
+  --btn-px-desktop: 1.25rem;
+  --section-space-mobile: 1rem;
+  --section-space-tablet: 1.5rem;
+  --section-space-desktop: 2rem;
+  --content-gap-mobile: 0.75rem;
+  --content-gap-desktop: 1rem;
+
+  /* Mobile design tokens (used inside @media max-width 767px) */
+  --mobile-gutter: 1rem;
+  --mobile-space-xs: 0.5rem;
+  --mobile-space-sm: 0.75rem;
+  --mobile-space-md: 1rem;
+  --mobile-space-lg: 1.25rem;
+  --mobile-space-xl: 1.5rem;
+  --mobile-section-gap: 1.5rem;
+  /* Typography scale (mobile-first) */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.75rem;
+  --mobile-radius-card: 1rem;
+  --mobile-radius-pill: 9999px;
+  --mobile-tap: 3rem;
+  --mobile-header-h: 4rem;
+
+  /* Superficies — azul oscuro #1A1B22 base */
+  --dark-bg-page: #1A1B22;
+  --dark-bg-surface: #1E1F28;
+  --dark-bg-card: #242632;
+  --dark-bg-elevated: #2C2E3A;
+  --dark-surface-2: #14151A;
+  --dark-text-primary: #FAF6F0;
+  --dark-text-secondary: #E2DCD4;
+  --dark-muted: #C4BEB6;
+  --dark-border: var(--line-soft);
+  --dark-ring: rgba(var(--palette-gold-rgb), 0.55);
+  --dark-cta-bg: var(--palette-flame);
+  --dark-cta-text: #FFFFFF;
+  --dark-cta-hover: #E85548;
+  --btn-whatsapp-bg: #25D366;
+  --btn-whatsapp-hover: #20bd5a;
+  --btn-whatsapp-shadow: 0 4px 18px rgba(37, 211, 102, 0.45);
+  --btn-red-shadow: 0 8px 24px rgba(var(--palette-flame-rgb), 0.28);
+
+  --vivid-gradient: linear-gradient(105deg, #D99530 0%, #D44038 52%, #1E1F28 100%);
+  --vivid-gradient-soft: linear-gradient(
+    135deg,
+    rgba(var(--palette-gold-rgb), 0.28) 0%,
+    rgba(var(--palette-flame-rgb), 0.2) 48%,
+    rgba(var(--palette-ink-rgb), 0.12) 100%
+  );
+  --vivid-glow-gold: 0 0 20px rgba(var(--palette-gold-rgb), 0.35);
+  --vivid-glow-mixed: 0 4px 28px rgba(var(--palette-flame-rgb), 0.22), 0 0 24px rgba(var(--palette-gold-rgb), 0.2);
+}

@@ -10,6 +10,8 @@ import CatalogSidebarBrandLink from './CatalogSidebarBrandLink'
 import CatalogFiltersPanel from './CatalogFiltersPanel'
 import CatalogEmptyFiltered from './CatalogEmptyFiltered'
 import CatalogEditorialCard from './CatalogEditorialCard'
+import CatalogMobileBrandChips from './CatalogMobileBrandChips'
+import CatalogMobileStickySummary from './CatalogMobileStickySummary'
 import { useProducts } from '../hooks/useProducts'
 import {
   getCatalogBrandList,
@@ -114,6 +116,14 @@ export default function CatalogPageContent({
         />
       </div>
 
+      <CatalogMobileStickySummary
+        count={filteredProducts.length}
+        loading={loading}
+        filtersActive={filtersActive}
+      />
+
+      <div id="catalog-mobile-sentinel" className="md:hidden h-px w-full" aria-hidden />
+
       <div id="catalog-results" className="md:contents">
       {/*
         Desktop: mismo grid que marcas | filtros.
@@ -144,6 +154,8 @@ export default function CatalogPageContent({
         </div>
 
         <div className="catalog-layout-grid__main min-w-0">
+          <CatalogMobileBrandChips brandList={brandList} filters={filters} />
+
           <CatalogFiltersPanel
             marcaParam={marcaParam}
             modeloParam={modeloParam}
@@ -162,7 +174,7 @@ export default function CatalogPageContent({
               items={filteredProducts}
               parentLoading={loading}
               priorityFirstCard
-              priorityFirstCount={3}
+              priorityFirstCount={1}
             />
           )}
         </div>
