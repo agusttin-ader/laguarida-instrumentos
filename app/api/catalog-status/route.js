@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server'
 import { getContingencyStatus } from '../../../lib/supabase/contingency'
-import { shouldReadCatalogFromBackup } from '../../../lib/catalog/readSource'
-import { isLocalCatalogEnabled } from '../../../lib/supabase/mode'
 import { getBackupProducts } from '../../../lib/data/localProductsBackup'
 
 export const runtime = 'nodejs'
@@ -12,13 +10,9 @@ export async function GET() {
   const backupCount = getBackupProducts({ includeReserved: true }).length
   return NextResponse.json(
     {
-      catalogSource: shouldReadCatalogFromBackup()
-        ? contingency.active
-          ? 'backup-contingency'
-          : 'backup'
-        : 'supabase',
-      useLocalCatalog: isLocalCatalogEnabled(),
-      readFromBackup: shouldReadCatalogFromBackup(),
+      catalogSource: 'backup',
+      useLocalCatalog: true,
+      readFromBackup: true,
       contingency,
       backupProductCount: backupCount,
     },

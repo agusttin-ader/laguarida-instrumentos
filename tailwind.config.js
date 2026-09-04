@@ -9,13 +9,13 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          sand: '#D9C58B',
-          gold: '#F2AE30',
-          orange: '#F28729',
-          flame: '#F23C13',
-          ink: '#181715',
-          cream: '#f5ecd8',
-          brown: '#6c5344'
+          sand: '#D4C4A8',
+          gold: '#D99530',
+          orange: '#D44038',
+          flame: '#D44038',
+          ink: '#1A1B22',
+          cream: '#FAF6F0',
+          brown: '#5C4A3A'
         }
       },
       fontFamily: {
@@ -25,11 +25,11 @@ module.exports = {
       },
       spacing: {
         '18': '4.5rem',
-        'nav': '5rem',   /* 80px bottom nav + safe area */
+        'nav': '5rem',
         'safe': 'env(safe-area-inset-bottom, 0px)'
       },
       minHeight: {
-        'touch': '2.75rem' /* 44px min tap target */
+        'touch': '2.75rem'
       }
     },
   },

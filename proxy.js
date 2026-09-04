@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { isSupabaseFullyBlocked } from './lib/supabase/mode'
 
-export function middleware(req) {
+export function proxy(req) {
   const { pathname } = req.nextUrl
 
   if (isSupabaseFullyBlocked() && pathname.startsWith('/admin')) {

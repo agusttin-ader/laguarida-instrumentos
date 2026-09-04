@@ -5,7 +5,7 @@
  * 3. Descarga fotos desde Storage con el nombre que espera el backup local
  * 4. Renombra archivos sueltos en la carpeta al nombre correcto (orden alfabético)
  *
- * Uso: npm run sync:catalog
+ * Uso: npm run sync   (alias de sync:catalog)
  *      npm run sync:catalog -- --skip-download   (solo JSON + carpetas + renombrar)
  *
  * Requiere .env.local: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY

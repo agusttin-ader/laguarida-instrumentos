@@ -14,13 +14,14 @@ const TILE_TYPE = {
   fender: 'default',
   gibson: 'default',
   prs: 'wide',
-  ibanez: 'default',
-  otros: 'default',
+  ibanez: 'compact',
+  otros: 'compact',
 }
 
 const LOGO_SIZES = {
   wide: 'h-10 w-auto max-w-[min(90%,12.5rem)] sm:h-11 md:h-12 lg:h-[3.35rem]',
   default: 'h-9 w-auto max-w-[min(92%,10rem)] sm:h-10 md:h-11 lg:h-12',
+  compact: 'h-8 w-auto max-w-[calc(100%-0.25rem)] sm:h-9 md:h-10',
 }
 
 const PARTNER_LOGO_SIZES = {
@@ -42,7 +43,7 @@ function BrandLogoImage({ src, sizeClass, treatment = 'mono' }) {
       src={src}
       alt=""
       aria-hidden
-      className={`home-brand-logo ${monoClass} shrink-0 object-contain object-left ${toneClass} ${sizeClass}`}
+      className={`home-brand-logo ${monoClass} min-w-0 max-w-full object-contain object-left ${toneClass} ${sizeClass}`}
     />
   )
 }
@@ -83,43 +84,40 @@ function BrandTile({ brand }) {
   return (
     <Link
       href={`/catalogo?marca=${encodeURIComponent(brand.filterBrand)}`}
-      className={`home-brand-tile group relative flex h-full w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-[var(--dark-bg-card)]/90 p-4 sm:p-5 md:rounded-[1.25rem] md:p-5 lg:p-6 md:transition-[box-shadow,border-color] md:duration-200 hover:border-[color-mix(in_srgb,var(--brand-accent)_45%,transparent)] md:hover:shadow-[0_18px_48px_rgba(0,0,0,0.38)]`}
+      className={`home-brand-tile group relative grid h-full w-full grid-cols-[minmax(0,1fr)_2rem] items-center gap-2 rounded-2xl border border-white/[0.08] bg-[var(--dark-bg-card)]/90 p-4 transition-[box-shadow,border-color,transform] duration-200 sm:grid-cols-[minmax(0,1fr)_2.25rem] sm:gap-2.5 sm:p-5 md:rounded-[1.25rem] md:p-5 lg:gap-3 lg:p-6 hover:border-[color-mix(in_srgb,var(--brand-accent)_50%,transparent)] hover:shadow-[0_18px_48px_rgba(0,0,0,0.38)] active:scale-[0.99]`}
       style={{ '--brand-accent': brand.accent }}
       aria-label={`Ver ${brand.name}`}
     >
       <div
-        className="pointer-events-none absolute inset-0 opacity-100"
+        className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"
         style={{
           background: `radial-gradient(ellipse 130% 90% at 15% 115%, ${brand.accent}30 0%, transparent 58%), radial-gradient(circle at 100% 0%, ${brand.accent}12 0%, transparent 42%)`,
         }}
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-transparent md:opacity-0 md:group-hover:opacity-100 md:transition-opacity md:duration-200"
+        className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit] bg-gradient-to-br from-white/[0.04] via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
         aria-hidden
       />
 
-      <div className="relative z-10 flex min-h-0 w-full flex-1 flex-col justify-between gap-3">
-        <div className="flex items-start justify-between gap-2">
-          {hasLogo ? (
-            <BrandLogoGroup brand={brand} type={type} />
-          ) : (
-            <h3 className="font-display text-[clamp(1.35rem,2.5vw,2rem)] font-bold leading-[1] tracking-tight text-[var(--dark-text-primary)] transition-colors duration-300 group-hover:text-white">
-              {brand.name}
-            </h3>
-          )}
-
-          <span
-            className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 bg-black/20 text-[var(--dark-text-secondary)] md:h-9 md:w-9"
-            aria-hidden
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M9 7h8v8" />
-            </svg>
-          </span>
-        </div>
-
+      <div className="home-brand-tile__content relative z-10 min-w-0">
+        {hasLogo ? (
+          <BrandLogoGroup brand={brand} type={type} />
+        ) : (
+          <h3 className="font-display text-[clamp(1.35rem,2.5vw,2rem)] font-bold leading-[1] tracking-tight text-[var(--dark-text-primary)] transition-colors duration-300 group-hover:text-white">
+            {brand.name}
+          </h3>
+        )}
       </div>
+
+      <span
+        className="home-brand-tile__action relative z-20 flex h-8 w-8 shrink-0 items-center justify-center justify-self-end rounded-full border border-white/10 bg-black/20 text-[var(--dark-text-secondary)] md:h-9 md:w-9"
+        aria-hidden
+      >
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M9 7h8v8" />
+        </svg>
+      </span>
     </Link>
   )
 }
@@ -131,10 +129,10 @@ export default function HomeBrandGrid() {
         <aside className="home-brand-grid__aside mb-7 md:col-span-4 md:mb-0 xl:col-span-3">
           <div className="relative pl-0 lg:pl-1">
             <span
-              className="mb-4 hidden h-16 w-px bg-gradient-to-b from-[var(--palette-gold)] via-[var(--palette-orange)] to-transparent lg:block"
+              className="mb-4 hidden h-16 w-px bg-gradient-to-b from-[var(--palette-flame)] via-[var(--palette-orange)] to-transparent lg:block"
               aria-hidden
             />
-            <p className="section-kicker-minimal text-[var(--palette-gold)]">Marcas que manejamos</p>
+            <p className="section-kicker-minimal">Marcas que manejamos</p>
             <h2 id="marcas-heading" className="section-heading-editorial mt-2 max-w-xs lg:max-w-sm">
               Elegí por marca
             </h2>

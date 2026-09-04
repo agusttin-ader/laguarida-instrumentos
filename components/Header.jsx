@@ -210,8 +210,7 @@ export default function Header() {
   const allowScrollHide = isMobileViewport
   const headerHideClass = allowScrollHide && scrollHidden && scrolled ? 'header-scroll-hidden' : ''
 
-  const navLinkBase =
-    "relative inline-flex items-center py-1 text-[11px] lg:text-[12px] font-semibold uppercase tracking-[0.16em] whitespace-nowrap transition-colors duration-200 rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent after:content-[''] after:absolute after:left-0 after:-bottom-0.5 after:h-px after:bg-[var(--vintage-gold)] after:transition-all after:duration-300 after:ease-out"
+  const navLinkBase = 'header-nav-link focus-visible:ring-0'
 
   const mobileHeader = (
     <>
@@ -294,9 +293,7 @@ export default function Header() {
               {NAV_ITEMS.map((item) => {
                 const active = navItemIsActive(pathname, item)
                 const className = `${navLinkBase} ${
-                  active
-                    ? 'text-white after:w-full'
-                    : 'text-white/62 hover:text-white after:w-0 hover:after:w-full'
+                  active ? 'header-nav-link--active' : 'header-nav-link--inactive'
                 }`
                 if (item.kind === 'section') {
                   return (
@@ -333,7 +330,7 @@ export default function Header() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={trackWhatsAppClick}
-              className="no-custom-btn hidden lg:inline-flex items-center gap-2 rounded-full border border-[rgba(var(--palette-gold-rgb),0.42)] bg-[rgba(var(--palette-gold-rgb),0.08)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--vintage-gold)] transition-colors duration-200 hover:border-[rgba(var(--palette-gold-rgb),0.62)] hover:bg-[rgba(var(--palette-gold-rgb),0.14)] hover:text-[#fff6e4] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+              className="no-custom-btn site-accent-pill site-accent-pill--md hidden lg:inline-flex focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--palette-flame)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             >
               Consultar
             </a>
@@ -425,7 +422,7 @@ function AuthIndicator() {
         </div>
         <a
           href="/admin/productos/catalogo"
-          className="no-custom-btn inline-flex items-center justify-center gap-2 rounded-full border border-[rgba(var(--palette-gold-rgb),0.42)] bg-[rgba(var(--palette-gold-rgb),0.07)] px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--vintage-gold)] transition-colors duration-200 hover:border-[rgba(var(--palette-gold-rgb),0.62)] hover:bg-[rgba(var(--palette-gold-rgb),0.16)] hover:text-[#fff8e7] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+          className="no-custom-btn site-accent-pill site-accent-pill--sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--palette-flame)]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
           aria-label="Ir al administrador (catálogo)"
         >
           <span>Admin</span>

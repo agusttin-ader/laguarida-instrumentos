@@ -8,7 +8,7 @@ export default function CatalogoError({ reset }) {
 
   return (
     <div className={`${shellClass} min-h-[60vh] flex flex-col items-center justify-center text-center`}>
-      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--palette-gold)]">
+      <p className="text-accent-gold text-[10px] font-semibold uppercase tracking-[0.2em]">
         Catálogo
       </p>
       <h1 className="mt-3 font-display text-2xl font-semibold text-[var(--dark-text-primary)] sm:text-3xl">

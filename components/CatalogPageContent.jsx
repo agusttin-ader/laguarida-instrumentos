@@ -41,7 +41,7 @@ function CatalogIntro({ filteredCount, loading, filtersActive }) {
         </ol>
       </nav>
 
-      <p className="section-kicker-minimal text-[var(--palette-gold)]">
+      <p className="section-kicker-minimal">
         Instrumentos · Stock disponible
       </p>
       <h1 className="section-heading-editorial mt-1.5 max-md:text-[1.5rem]">

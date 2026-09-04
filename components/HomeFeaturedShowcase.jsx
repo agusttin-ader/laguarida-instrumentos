@@ -114,7 +114,7 @@ function EditorialBlock({ item, index, reversed = false }) {
           <div className="mt-7 sm:mt-8">
             <span className="home-featured-editorial__cta">
               Ver producto
-              <svg className="h-4 w-4 text-[var(--palette-gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+              <svg className="icon-accent-gold h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </span>

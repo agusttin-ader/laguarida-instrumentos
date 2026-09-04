@@ -20,43 +20,45 @@
   --z-menu-drawer: 10000;
   --mobile-tabbar-h: 3.5rem;
   /* Mobile-first design tokens */
-  /* Paleta Adobe Color (Fender concept): arena, oro, naranja, bermellón, carbón */
-  --palette-sand: #D9C58B;
-  --palette-sand-rgb: 217, 197, 139;
-  --palette-gold: #F2AE30;
-  --palette-gold-rgb: 242, 174, 48;
-  --palette-orange: #F28729;
-  --palette-orange-rgb: 242, 135, 41;
-  --palette-flame: #F23C13;
-  --palette-flame-rgb: 242, 60, 19;
-  --palette-ink: #0D0D0D;
-  --palette-ink-rgb: 13, 13, 13;
-  /* Neutros derivados (legibles sobre oscuro / superficies claras) */
-  --palette-cream: #f5ecd8;
-  --palette-brown: #6c5344;
-  --palette-red: var(--palette-flame);
+  /* Paleta — azul oscuro #1A1B22 + rojo/ocre (contraste alto) */
+  --palette-sand: #D4C4A8;
+  --palette-sand-rgb: 212, 196, 168;
+  --palette-gold: #D99530;
+  --palette-gold-rgb: 217, 149, 48;
+  --palette-orange: #D44038;
+  --palette-orange-rgb: 212, 64, 56;
+  --palette-flame: #D44038;
+  --palette-flame-rgb: 212, 64, 56;
+  --palette-ink: #14151A;
+  --palette-ink-rgb: 20, 21, 26;
+  --palette-cream: #FAF6F0;
+  --palette-brown: #5C4A3A;
+  --palette-red: #D44038;
+  --accent-gold-light: #E8C878;
+  --accent-red-light: #F09080;
 
   --color-black: var(--palette-ink);
   --color-white: var(--palette-cream);
   --color-accent: var(--palette-flame);
   --color-orange: var(--palette-orange);
-  --color-surface: #ebe3d4;
+  --color-surface: #242632;
+  --line-subtle: rgba(255, 255, 255, 0.1);
+  --line-soft: rgba(255, 255, 255, 0.16);
   --shadow-soft: 0 6px 18px rgba(var(--palette-ink-rgb), 0.12);
   --shadow-hover: 0 14px 32px rgba(var(--palette-ink-rgb), 0.18);
   --card-bg: #ebe3d4;
   --auth-bg: var(--color-white); /* login/admin small header background */
 
-  /* Vintage / acentos (alineados a oro + naranja de la paleta) */
-  --vintage-gold: var(--palette-gold);
-  --vintage-gold-soft: rgba(var(--palette-gold-rgb), 0.15);
+  /* Acentos híbridos */
+  --vintage-gold: var(--accent-gold-light);
+  --vintage-gold-soft: rgba(var(--palette-gold-rgb), 0.16);
   --vintage-gold-soft-hover: rgba(var(--palette-gold-rgb), 0.26);
   --vintage-amber: var(--palette-gold);
-  --vintage-amber-dark: #c48a1f;
+  --vintage-amber-dark: #a06f22;
   --vintage-cream: var(--palette-cream);
-  --vintage-muted: #a8987a;
-  /* Price accents: oro + naranja */
+  --vintage-muted: #B5AFA8;
   --price-accent: var(--palette-gold);
-  --price-accent-alt: var(--palette-orange);
+  --price-accent-alt: var(--palette-flame);
 
   /* Design tokens: botones y espaciado responsive */
   --btn-h-mobile: 48px;
@@ -90,32 +92,305 @@
   --mobile-tap: 3rem;
   --mobile-header-h: 4rem;
 
-  /* Oscuros cálidos — carbón suave (menos negro puro, más descansado a la vista) */
-  --dark-bg-page: #181715;
-  --dark-bg-surface: #201e1c;
-  --dark-bg-card: #272522;
-  --dark-bg-elevated: #302d2a;
-  --dark-surface-2: #1e1d1b;
-  --dark-text-primary: #f7f3eb;
-  --dark-text-secondary: #e8e0d4;
-  --dark-muted: #b8aa96;
-  --dark-border: rgba(var(--palette-sand-rgb), 0.17);
-  --dark-ring: rgba(var(--palette-gold-rgb), 0.32);
-  /* CTAs: fondo claro para contraste sobre oscuro */
-  --dark-cta-bg: var(--palette-cream);
-  --dark-cta-text: var(--palette-ink);
-  --dark-cta-hover: #efe4cf;
+  /* Superficies — azul oscuro #1A1B22 base */
+  --dark-bg-page: #1A1B22;
+  --dark-bg-surface: #1E1F28;
+  --dark-bg-card: #242632;
+  --dark-bg-elevated: #2C2E3A;
+  --dark-surface-2: #14151A;
+  --dark-text-primary: #FAF6F0;
+  --dark-text-secondary: #E2DCD4;
+  --dark-muted: #C4BEB6;
+  --dark-border: var(--line-soft);
+  --dark-ring: rgba(var(--palette-gold-rgb), 0.55);
+  --dark-cta-bg: var(--palette-flame);
+  --dark-cta-text: #FFFFFF;
+  --dark-cta-hover: #E85548;
+  --btn-whatsapp-bg: #25D366;
+  --btn-whatsapp-hover: #20bd5a;
+  --btn-whatsapp-shadow: 0 4px 18px rgba(37, 211, 102, 0.45);
+  --btn-red-shadow: 0 8px 24px rgba(var(--palette-flame-rgb), 0.28);
 
-  /* Acentos vivos (gradiente + brillos — paleta Adobe) */
-  --vivid-gradient: linear-gradient(105deg, #f2ae30 0%, #f28729 52%, #f23c13 100%);
+  --vivid-gradient: linear-gradient(105deg, #D99530 0%, #D44038 52%, #1E1F28 100%);
   --vivid-gradient-soft: linear-gradient(
     135deg,
-    rgba(var(--palette-gold-rgb), 0.45) 0%,
-    rgba(var(--palette-orange-rgb), 0.22) 48%,
-    rgba(var(--palette-flame-rgb), 0.14) 100%
+    rgba(var(--palette-gold-rgb), 0.28) 0%,
+    rgba(var(--palette-flame-rgb), 0.2) 48%,
+    rgba(var(--palette-ink-rgb), 0.12) 100%
   );
-  --vivid-glow-gold: 0 0 20px rgba(var(--palette-gold-rgb), 0.55);
-  --vivid-glow-mixed: 0 4px 28px rgba(var(--palette-orange-rgb), 0.35), 0 0 24px rgba(var(--palette-gold-rgb), 0.3);
+  --vivid-glow-gold: 0 0 20px rgba(var(--palette-gold-rgb), 0.35);
+  --vivid-glow-mixed: 0 4px 28px rgba(var(--palette-flame-rgb), 0.22), 0 0 24px rgba(var(--palette-gold-rgb), 0.2);
+}
+
+/* Clases estables para acentos — la paleta cambia vía tokens, no classNames en JSX */
+.site-accent-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(var(--palette-gold-rgb), 0.55);
+  background: rgba(var(--palette-gold-rgb), 0.12);
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--accent-gold-light);
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.site-accent-pill:hover {
+  border-color: var(--dark-cta-bg);
+  background: var(--dark-cta-bg);
+  color: #fff;
+  box-shadow: var(--btn-red-shadow);
+}
+
+a.site-accent-pill[href*='wa.me']:hover {
+  border-color: var(--btn-whatsapp-bg);
+  background: var(--btn-whatsapp-bg);
+  color: #fff;
+  box-shadow: var(--btn-whatsapp-shadow);
+}
+
+.site-accent-pill--sm {
+  padding: 0.375rem 0.875rem;
+  font-size: 0.625rem;
+  letter-spacing: 0.18em;
+}
+
+.site-accent-pill--md {
+  padding: 0.5rem 1rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+}
+
+.site-accent-pill--lg {
+  padding: 0.625rem 1.25rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+}
+
+.text-accent-gold {
+  color: var(--accent-gold-light);
+}
+
+.link-accent-gold {
+  color: var(--accent-gold-light);
+}
+
+.link-accent-gold:hover {
+  text-decoration: underline;
+}
+
+.icon-accent-gold {
+  color: var(--accent-gold-light);
+}
+
+.header-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-radius: 0.125rem;
+  transition: color 200ms ease;
+}
+
+@media (min-width: 1024px) {
+  .header-nav-link {
+    font-size: 0.75rem;
+  }
+}
+
+.header-nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -0.125rem;
+  height: 1px;
+  background: var(--vintage-gold);
+  transition: width 300ms ease-out;
+}
+
+.header-nav-link:focus {
+  outline: none;
+}
+
+.header-nav-link:focus-visible {
+  outline: 2px solid rgba(var(--palette-gold-rgb), 0.5);
+  outline-offset: 2px;
+}
+
+.header-nav-link--active {
+  color: #fff;
+}
+
+.header-nav-link--active::after {
+  width: 100%;
+}
+
+.header-nav-link--inactive {
+  color: rgb(255 255 255 / 0.72);
+}
+
+.header-nav-link--inactive::after {
+  width: 0;
+}
+
+.header-nav-link--inactive:hover {
+  color: #fff;
+}
+
+.header-nav-link--inactive:hover::after {
+  width: 100%;
+}
+
+.faq-question-trigger:hover,
+.faq-question-trigger:active {
+  color: var(--accent-gold-light);
+}
+
+.social-icon-btn:hover {
+  color: var(--accent-gold-light);
+}
+
+.footer-accent-rule {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(var(--palette-gold-rgb), 0.45),
+    transparent
+  );
+}
+
+.hero-kicker {
+  margin-bottom: 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent-gold-light);
+}
+
+.hero-lead {
+  margin-top: 0.75rem;
+  max-width: 28rem;
+  font-size: 0.875rem;
+  line-height: 1.625;
+  color: rgba(250, 246, 240, 0.92);
+}
+
+@media (min-width: 768px) {
+  .hero-lead {
+    margin-top: 1.25rem;
+    font-size: 1rem;
+  }
+}
+
+.btn-gold-gradient {
+  background: var(--vivid-gradient);
+  color: #ffffff;
+  box-shadow: 0 4px 20px rgba(var(--palette-flame-rgb), 0.28);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.btn-gold-gradient:hover {
+  border-color: var(--dark-cta-bg) !important;
+  background: var(--dark-cta-bg) !important;
+  color: #fff !important;
+  box-shadow: var(--btn-red-shadow) !important;
+}
+
+/* CTAs con .no-custom-btn: pill blanco en reposo, rojo al hover */
+.dark .no-custom-btn.btn-gold-gradient,
+.dark .no-custom-btn.btn-pill-light {
+  background: #fff;
+  color: #0b0d0f;
+  border: 1px solid rgba(11, 13, 15, 0.06);
+  box-shadow: 0 10px 22px rgba(11, 13, 15, 0.06);
+}
+
+.dark .no-custom-btn.btn-gold-gradient:hover,
+.dark .no-custom-btn.btn-pill-light:hover {
+  border-color: var(--dark-cta-bg) !important;
+  background: var(--dark-cta-bg) !important;
+  color: #fff !important;
+  box-shadow: var(--btn-red-shadow) !important;
+}
+
+.dark .no-custom-btn.btn-variant-primary:hover {
+  background: var(--dark-cta-hover) !important;
+}
+
+.dark .no-custom-btn.btn-variant-whatsapp:hover {
+  background: var(--btn-whatsapp-hover) !important;
+  box-shadow: var(--btn-whatsapp-shadow) !important;
+}
+
+.btn-variant-primary {
+  background: var(--dark-cta-bg);
+  color: var(--dark-cta-text);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition:
+    background-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+.btn-variant-primary:hover {
+  background: var(--dark-cta-hover);
+}
+
+.btn-variant-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-variant-whatsapp {
+  background: var(--btn-whatsapp-bg);
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(37, 211, 102, 0.35);
+  transition:
+    background-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+.btn-variant-whatsapp:hover {
+  background: var(--btn-whatsapp-hover);
+  box-shadow: var(--btn-whatsapp-shadow);
+}
+
+.btn-variant-whatsapp:active {
+  transform: scale(0.99);
+}
+
+.btn-variant-gold {
+  background: var(--palette-gold);
+  color: var(--palette-ink);
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.btn-variant-gold:hover {
+  background: var(--dark-cta-bg);
+  color: #fff;
+  box-shadow: var(--btn-red-shadow);
 }
 
 html, body, #root {
@@ -299,43 +574,191 @@ body.modal-open .gallery-lightbox {
   }
 }
 
-/* Fondo de página: negro vía --dark-bg-page */
+/* Fondo oscuro suave */
 html, body, #__next, #root, main {
   background-color: var(--dark-bg-page) !important;
 }
 
-/* Dark theme overrides applied when `dark` class is on <html> */
-/* Sin background-attachment: fixed: en móvil/desktop repinta todo el viewport en cada scroll y provoca tirones. */
 .dark html,
 .dark body {
   background-color: var(--dark-bg-page) !important;
-  background-image: radial-gradient(ellipse 100% 55% at 50% -20%, rgba(var(--palette-gold-rgb), 0.055) 0%, transparent 48%),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(var(--palette-flame-rgb), 0.03) 0%, transparent 42%);
-  color: #ffffff;
+  background-image:
+    radial-gradient(ellipse 100% 55% at 50% -15%, rgba(var(--palette-gold-rgb), 0.09) 0%, transparent 50%),
+    radial-gradient(ellipse 55% 40% at 100% 100%, rgba(var(--palette-flame-rgb), 0.05) 0%, transparent 45%);
+  color: var(--dark-text-primary);
 }
 
-/* Dark theme: misma paleta (tokens alineados con :root) */
 :root.dark,
 .dark {
-  --dark-bg-page: #181715;
-  --dark-bg-surface: #201e1c;
-  --dark-bg-card: #272522;
-  --dark-bg-elevated: #302d2a;
-  --dark-surface-2: #1e1d1b;
-  --dark-text-primary: #f7f3eb;
-  --dark-text-secondary: #e8e0d4;
-  --dark-muted: #b8aa96;
-  --dark-border: rgba(var(--palette-sand-rgb), 0.17);
-  --dark-ring: rgba(var(--palette-gold-rgb), 0.32);
-  --dark-cta-bg: var(--palette-cream);
-  --dark-cta-text: var(--palette-ink);
-  --dark-cta-hover: #efe4cf;
+  --dark-bg-page: #1A1B22;
+  --dark-bg-surface: #1E1F28;
+  --dark-bg-card: #242632;
+  --dark-bg-elevated: #2C2E3A;
+  --dark-surface-2: #14151A;
+  --dark-text-primary: #FAF6F0;
+  --dark-text-secondary: #E2DCD4;
+  --dark-muted: #C4BEB6;
+  --dark-border: var(--line-soft);
+  --dark-ring: rgba(var(--palette-gold-rgb), 0.55);
+  --dark-cta-bg: var(--palette-flame);
+  --dark-cta-text: #FFFFFF;
+  --dark-cta-hover: #E85548;
+  --btn-whatsapp-bg: #25D366;
+  --btn-whatsapp-hover: #20bd5a;
+  --btn-whatsapp-shadow: 0 4px 18px rgba(37, 211, 102, 0.45);
+  --btn-red-shadow: 0 8px 24px rgba(var(--palette-flame-rgb), 0.28);
   --auth-bg: var(--dark-bg-page);
-  --vintage-gold: var(--palette-gold);
-  --vintage-gold-soft: rgba(var(--palette-gold-rgb), 0.18);
-  --vintage-gold-soft-hover: rgba(var(--palette-gold-rgb), 0.3);
+  --vintage-gold: var(--accent-gold-light);
+  --vintage-gold-soft: rgba(var(--palette-gold-rgb), 0.16);
+  --vintage-gold-soft-hover: rgba(var(--palette-gold-rgb), 0.26);
   --price-accent: var(--palette-gold);
-  --price-accent-alt: var(--palette-orange);
+  --price-accent-alt: var(--accent-red-light);
+  --line-subtle: rgba(255, 255, 255, 0.1);
+  --line-soft: rgba(255, 255, 255, 0.16);
+  --accent-gold-light: #E8C878;
+  --accent-red-light: #F09080;
+}
+
+/* Hero: texto claro sobre imagen */
+.hero-home {
+  color: #f3ede6;
+}
+
+.hero-home .hero-kicker {
+  color: var(--accent-gold-light);
+}
+
+.hero-home h1,
+.hero-home #home-hero {
+  color: #f3ede6;
+}
+
+.hero-home .hero-lead {
+  color: rgba(243, 237, 230, 0.9);
+}
+
+.hero-btn-ghost {
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #f3ede6 !important;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease !important;
+}
+
+.hero-btn-ghost:hover {
+  border-color: var(--dark-cta-bg) !important;
+  background: var(--dark-cta-bg) !important;
+  color: #fff !important;
+  box-shadow: var(--btn-red-shadow) !important;
+}
+
+.btn-variant-ghost {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  backdrop-filter: blur(4px);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.btn-variant-ghost:hover {
+  border-color: var(--dark-cta-bg);
+  background: var(--dark-cta-bg);
+  color: #fff;
+  box-shadow: var(--btn-red-shadow);
+}
+
+.btn-variant-ghost:active {
+  background: var(--dark-cta-hover);
+}
+
+.btn-variant-ghost-subtle,
+.btn-variant-brand-ghost,
+.btn-pill-light {
+  border: 1px solid rgba(11, 13, 15, 0.06);
+  background: #fff;
+  color: #0b0d0f;
+  font-weight: 600;
+  box-shadow: 0 10px 22px rgba(11, 13, 15, 0.06);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.btn-variant-ghost-subtle:hover,
+.btn-variant-brand-ghost:hover,
+.btn-pill-light:hover {
+  border-color: var(--dark-cta-bg);
+  background: var(--dark-cta-bg);
+  color: #fff;
+  box-shadow: var(--btn-red-shadow);
+}
+
+.btn-variant-editorial {
+  border: 1px solid rgba(var(--palette-gold-rgb), 0.35);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--dark-text-primary);
+  letter-spacing: 0.04em;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.btn-variant-editorial:hover {
+  border-color: var(--dark-cta-bg);
+  background: var(--dark-cta-bg);
+  color: #fff;
+  box-shadow: var(--btn-red-shadow);
+}
+
+.btn-variant-editorial:hover svg {
+  color: #fff;
+}
+
+/* Pill con borde ocre → rojo al hover (uso directo en el botón) */
+.btn-outline-to-red {
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.btn-outline-to-red:hover {
+  border-color: var(--dark-cta-bg);
+  background: var(--dark-cta-bg);
+  color: #fff;
+  box-shadow: var(--btn-red-shadow);
+}
+
+.btn-outline-to-red:hover svg {
+  color: #fff;
+}
+
+.site-header-bar .header-mobile-menu-btn {
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: var(--dark-text-primary) !important;
+}
+
+.site-header-bar .header-mobile-menu-btn:hover {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  color: #fff !important;
+}
+
+.home-grid-product-cell .product-card-mobile-catalog,
+.product-card-mobile-catalog {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
 /* Inputs, selects, textareas: ensure readable colors in dark mode */
@@ -425,7 +848,8 @@ html, body, #__next, #root, main {
 }
 
 .price-highlight {
-  color: var(--palette-gold);
+  color: var(--accent-gold-light);
+  font-weight: 700;
   text-shadow: none;
 }
 
@@ -474,21 +898,21 @@ body.page-home header.site-header-bar.header-home-mobile:not(.header-scrolled) {
   #home-top.home-hero-section,
   body.page-home #home-top,
   .page-home #home-top {
-    background-color: #1c1915 !important;
+    background-color: #1E1F28 !important;
     background-image:
-      radial-gradient(ellipse 110% 70% at 50% 18%, rgba(var(--palette-gold-rgb), 0.12) 0%, transparent 55%),
-      linear-gradient(165deg, #2a241c 0%, #1c1915 52%, #151310 100%) !important;
+      radial-gradient(ellipse 110% 70% at 50% 18%, rgba(var(--palette-gold-rgb), 0.14) 0%, transparent 55%),
+      linear-gradient(165deg, #2C2E3A 0%, #1E1F28 52%, #1A1B22 100%) !important;
   }
 
   /* Hero: fallback cálido bajo la imagen (primer paint / decode) */
   .hero-home__paint-fallback {
     background:
       radial-gradient(ellipse 120% 80% at 48% 22%, rgba(var(--palette-gold-rgb), 0.16) 0%, transparent 58%),
-      linear-gradient(165deg, #2c261e 0%, #1c1915 48%, #151310 100%);
+      linear-gradient(165deg, #2C2E3A 0%, #1E1F28 48%, #1A1B22 100%);
   }
 
   .hero-home {
-    background-color: #1c1915;
+    background-color: #1E1F28;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -844,6 +1268,7 @@ a.button:focus-visible {
     0 2px 6px rgba(0, 0, 0, 0.25) !important;
 }
 .no-custom-btn.whatsapp-float-fab:hover {
+  background: var(--btn-whatsapp-hover) !important;
   box-shadow:
     0 6px 18px rgba(37, 211, 102, 0.5),
     0 3px 8px rgba(0, 0, 0, 0.28) !important;
@@ -852,14 +1277,14 @@ a.button:focus-visible {
 .dark button:not(.no-custom-btn),
 .dark input[type="submit"]:not(.no-custom-btn),
 .dark input[type="button"]:not(.no-custom-btn),
-.dark [class^="btn-"],
-.dark [class*=" btn-"],
+.dark [class^="btn-"]:not(.no-custom-btn),
+.dark [class*=" btn-"]:not(.no-custom-btn),
 .dark a.button,
 .dark .btn,
 .dark-section button:not(.no-custom-btn),
-.dark-section a:not(.no-custom-btn),
+.dark-section a:not(.no-custom-btn):not([class*="btn-variant"]):not([class*="btn-gold"]):not(.site-accent-pill),
 .dark-card button:not(.no-custom-btn),
-.dark-card a:not(.no-custom-btn) {
+.dark-card a:not(.no-custom-btn):not([class*="btn-variant"]):not([class*="btn-gold"]):not(.site-accent-pill) {
   background: #ffffff !important;
   color: #0b0d0f !important;
   border: 1px solid rgba(11,13,15,0.06) !important;
@@ -868,7 +1293,7 @@ a.button:focus-visible {
 
 /* Hover/active states for inverted buttons */
 .dark button:not(.no-custom-btn):hover,
-.dark a:hover:not(.no-custom-btn) {
+.dark a:hover:not(.no-custom-btn):not([class*="btn-variant"]):not([class*="btn-gold"]):not(.site-accent-pill) {
   transform: none;
   /* keep inverted buttons from becoming visually heavy on hover */
   box-shadow: 0 6px 12px rgba(11,13,15,0.06) !important;
@@ -1872,21 +2297,39 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
 
 .home-brand-tile {
   isolation: isolate;
+  overflow: hidden;
 }
 
 .home-brand-grid__aside {
   align-self: start;
 }
 
-@media (min-width: 768px) {
-  .home-brand-grid__aside {
-    position: sticky;
-    top: calc(var(--site-header-h, 68px) + 1.5rem);
-  }
-}
-
 .home-brand-tile:hover .home-brand-logo--mono {
   filter: brightness(0) invert(1) drop-shadow(0 0 12px color-mix(in srgb, var(--brand-accent) 40%, transparent));
+}
+
+.home-brand-tile__content {
+  min-width: 0;
+}
+
+.home-brand-tile__action {
+  transform-origin: center;
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.home-brand-tile:hover .home-brand-tile__action,
+.home-brand-tile:focus-visible .home-brand-tile__action {
+  border-color: color-mix(in srgb, var(--brand-accent) 65%, white);
+  background: color-mix(in srgb, var(--brand-accent) 28%, #14151a);
+  color: #fff;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--brand-accent) 35%, transparent),
+    0 4px 14px color-mix(in srgb, var(--brand-accent) 28%, transparent);
 }
 
 /* Fila catálogo admin: select + acciones (acento tienda) */
@@ -2345,6 +2788,7 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   text-transform: uppercase;
   letter-spacing: 0.18em;
   font-weight: 600;
+  color: var(--accent-gold-light);
 }
 
 .section-title-minimal {
@@ -2403,7 +2847,7 @@ header.header-scrolled .header-logo-wrapper .logo-dark {
   height: 3px;
   border-radius: 9999px;
   background: var(--vivid-gradient);
-  box-shadow: 0 0 14px rgba(var(--palette-gold-rgb), 0.55), 0 0 22px rgba(var(--palette-flame-rgb), 0.25);
+  box-shadow: 0 0 14px rgba(var(--palette-flame-rgb), 0.45), 0 0 22px rgba(var(--palette-orange-rgb), 0.28);
 }
 
 /* Header auto-hide al scroll */
@@ -2516,7 +2960,7 @@ header.site-header-bar.header-scroll-hidden {
   justify-content: center;
   background:
     radial-gradient(ellipse 80% 60% at 50% 42%, rgba(var(--palette-gold-rgb), 0.1) 0%, transparent 62%),
-    linear-gradient(165deg, #2a241c 0%, #1e1d1b 48%, #181715 100%);
+    linear-gradient(165deg, #2C2E3A 0%, #1E1F28 48%, #1A1B22 100%);
 }
 
 .product-card-image-fallback__logo {
@@ -3105,6 +3549,22 @@ header.site-header-bar.header-scroll-hidden {
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--dark-text-primary);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.home-featured-editorial__cta:hover {
+  border-color: var(--dark-cta-bg);
+  background: var(--dark-cta-bg);
+  color: #fff;
+  box-shadow: var(--btn-red-shadow);
+}
+
+.home-featured-editorial__cta:hover svg {
+  color: #fff;
 }
 
 /* ===================== Catalog header + editorial card ===================== */
@@ -3401,6 +3861,11 @@ header.site-header-bar.header-scroll-hidden {
   font-size: 0.875rem;
   font-weight: 600;
   touch-action: manipulation;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease;
 }
 
 .catalog-filters__btn--ghost {
@@ -3409,10 +3874,24 @@ header.site-header-bar.header-scroll-hidden {
   color: var(--dark-text-primary);
 }
 
+.catalog-filters__btn--ghost:hover {
+  border-color: var(--dark-cta-bg);
+  background: var(--dark-cta-bg);
+  color: #fff;
+  box-shadow: var(--btn-red-shadow);
+}
+
 .catalog-filters__btn--primary {
   border: 1px solid rgba(var(--palette-gold-rgb), 0.35);
-  background: linear-gradient(90deg, #f2ae30, #f28729);
+  background: var(--vivid-gradient);
   color: var(--palette-ink);
+}
+
+.catalog-filters__btn--primary:hover {
+  background: var(--dark-cta-bg);
+  border-color: var(--dark-cta-bg);
+  color: #fff;
+  box-shadow: var(--btn-red-shadow);
 }
 
 .catalog-filters__clear {
@@ -3435,8 +3914,9 @@ header.site-header-bar.header-scroll-hidden {
 }
 
 .catalog-filters__clear:hover {
-  color: var(--dark-text-primary);
-  border-color: rgba(var(--palette-gold-rgb), 0.35);
+  color: #fff;
+  border-color: var(--dark-cta-bg);
+  background: var(--dark-cta-bg);
 }
 
 /* ===================== FilterSelect (custom listbox) ===================== */

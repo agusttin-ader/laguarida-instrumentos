@@ -13,6 +13,7 @@
     "test:e2e:install": "playwright install",
     "cleanup:supabase": "node scripts/cleanup-supabase-from-site.mjs",
     "sync:catalog": "node scripts/sync-catalog-backup.mjs",
+    "sync": "npm run sync:catalog",
     "init:product-images": "node scripts/sync-catalog-backup.mjs --skip-download",
     "images:variants": "node scripts/generate-image-variants.mjs"
   },

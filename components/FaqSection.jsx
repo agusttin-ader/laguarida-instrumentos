@@ -111,7 +111,7 @@ export default function FaqSection() {
       <div
         className={`${layoutShellClassName} sm:px-5 md:px-6 lg:px-8 pt-1 max-md:pt-0 sm:pt-3 md:pt-4 lg:pt-5 pb-2 max-md:pb-0 sm:pb-4 md:pb-5 lg:pb-6`}
       >
-        <p className="section-kicker-minimal section-underline-ocre mb-2 text-[var(--palette-gold)] sm:mb-3">
+        <p className="section-kicker-minimal section-underline-ocre mb-2 sm:mb-3">
           Preguntas frecuentes
         </p>
         <h2 id="faq-heading" className="section-heading-editorial mb-3 sm:mb-4 md:mb-5">
@@ -127,7 +127,7 @@ export default function FaqSection() {
                   <button
                     type="button"
                     onClick={() => setOpenId(isOpen ? null : item.id)}
-                    className="no-custom-btn no-custom-btn--rect w-full flex items-center justify-between gap-3 py-4 min-h-[48px] sm:py-4 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-page)] hover:text-[var(--palette-gold)] active:text-[var(--palette-gold)] transition-colors touch-manipulation"
+                    className="faq-question-trigger no-custom-btn no-custom-btn--rect w-full flex items-center justify-between gap-3 py-4 min-h-[48px] sm:py-4 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-page)] transition-colors touch-manipulation"
                     aria-expanded={isOpen}
                     aria-controls={`faq-answer-${item.id}`}
                     id={`faq-question-${item.id}`}
@@ -157,26 +157,26 @@ export default function FaqSection() {
           </div>
 
           <aside className="order-2 mt-2 pt-6 border-t border-white/[0.08] sm:mt-0 sm:pt-0 sm:border-t-0 lg:sticky lg:top-24 lg:col-span-1 lg:pl-8 lg:border-l lg:border-white/[0.08]">
-            <p className="section-kicker-minimal mb-2 text-[var(--palette-gold)]">Contacto</p>
+            <p className="section-kicker-minimal mb-2">Contacto</p>
             <h3 className="mb-3 text-lg font-semibold tracking-tight text-[var(--dark-text-primary)] md:mb-4 md:text-xl">
               Contacto rápido
             </h3>
             <ul className="mb-4 space-y-2.5 text-[13px] text-[var(--dark-text-secondary)] sm:space-y-3 sm:text-sm md:mb-5">
               <li>
                 <strong className="text-[var(--dark-text-primary)]">Teléfono:</strong>{' '}
-                <a href={waLink} target="_blank" rel="noopener noreferrer" onClick={trackWhatsAppClick} className="text-[var(--palette-gold)] hover:underline">
+                <a href={waLink} target="_blank" rel="noopener noreferrer" onClick={trackWhatsAppClick} className="link-accent-gold">
                   {phone}
                 </a>
               </li>
               <li>
                 <strong className="text-[var(--dark-text-primary)]">WhatsApp:</strong>{' '}
-                <a href={waLink} target="_blank" rel="noopener noreferrer" onClick={trackWhatsAppClick} className="text-[var(--palette-gold)] hover:underline">
+                <a href={waLink} target="_blank" rel="noopener noreferrer" onClick={trackWhatsAppClick} className="link-accent-gold">
                   Iniciar chat
                 </a>
               </li>
               <li>
                 <strong className="text-[var(--dark-text-primary)]">Email:</strong>{' '}
-                <a href={`mailto:${mail}`} className="text-[var(--palette-gold)] hover:underline">
+                <a href={`mailto:${mail}`} className="link-accent-gold">
                   {mail}
                 </a>
               </li>
@@ -188,7 +188,7 @@ export default function FaqSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors hover:text-[var(--palette-gold)]"
+                className="social-icon-btn no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors"
               >
                 <IconInstagram />
               </a>
@@ -198,14 +198,14 @@ export default function FaqSection() {
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
                 onClick={trackWhatsAppClick}
-                className="no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors hover:text-[var(--palette-gold)]"
+                className="social-icon-btn no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors"
               >
                 <IconWhatsApp />
               </a>
               <a
                 href={`mailto:${mail}`}
                 aria-label="Email"
-                className="no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors hover:text-[var(--palette-gold)]"
+                className="social-icon-btn no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors"
               >
                 <IconMail />
               </a>
@@ -213,7 +213,7 @@ export default function FaqSection() {
           </aside>
         </div>
         <div className="mt-3 sm:mt-5 md:mt-6 flex justify-center">
-          <Button href="/" onClick={handleVolverAlHome} size="full" className="max-w-[280px] sm:max-w-none sm:w-auto">
+          <Button href="/" onClick={handleVolverAlHome} variant="pill-light" size="full" className="max-w-[280px] sm:max-w-none sm:w-auto">
             Volver al home
           </Button>
         </div>

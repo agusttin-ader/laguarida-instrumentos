@@ -9,7 +9,7 @@ export default function About({ compactTop = false }) {
     <section id="about-section" className="mt-0">
       <div className={`${layoutShellClassName} sm:px-5 md:px-6 lg:px-8 ${topPadding} pb-0 sm:pb-1 md:pb-2 lg:pb-2`}>
         <div className="w-full">
-          <p className="section-kicker-minimal section-underline-ocre mb-2 text-[var(--palette-gold)] sm:mb-3">
+          <p className="section-kicker-minimal section-underline-ocre mb-2 sm:mb-3">
             Sobre La Guarida
           </p>
           <h2 className="section-heading-editorial mb-3 md:mb-4">

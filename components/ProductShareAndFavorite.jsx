@@ -141,7 +141,7 @@ export default function ProductShareAndFavorite({ slug, name, url }) {
         aria-label={fav ? 'Quitar de tu selección' : 'Agregar a tu selección'}
         className={`${iconBtnBase} ${
           fav
-            ? 'border-[rgba(var(--palette-gold-rgb),0.55)] bg-[rgba(var(--palette-gold-rgb),0.14)] text-[var(--vintage-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_20px_rgba(var(--palette-gold-rgb),0.12)] hover:bg-[rgba(var(--palette-gold-rgb),0.22)] hover:border-[rgba(var(--palette-gold-rgb),0.72)] hover:text-[#fff8e7]'
+            ? 'border-[rgba(var(--palette-flame-rgb),0.62)] bg-[rgba(var(--palette-flame-rgb),0.18)] text-[var(--accent-red-light)] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_20px_rgba(var(--palette-flame-rgb),0.12)] hover:bg-[rgba(var(--palette-flame-rgb),0.26)] hover:border-[rgba(var(--palette-flame-rgb),0.78)] hover:text-white'
             : ''
         }`}
       >

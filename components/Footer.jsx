@@ -26,7 +26,7 @@ const footerLinkClass =
   'no-custom-btn inline-flex items-center text-[13px] leading-snug text-[var(--dark-muted)] transition-colors duration-200 hover:text-[var(--dark-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vintage-gold)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--dark-bg-page)] rounded-sm'
 
 const footerKickerClass =
-  'section-kicker-minimal mb-4 text-[var(--palette-gold)] tracking-[0.18em]'
+  'section-kicker-minimal mb-4 tracking-[0.18em]'
 
 const socialBtnClass =
   'no-custom-btn flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-transparent text-[var(--dark-muted)] transition-colors duration-200 hover:border-[rgba(var(--palette-gold-rgb),0.4)] hover:text-[var(--vintage-gold)]'
@@ -175,7 +175,7 @@ export default function Footer({ compact = false }) {
 
   return (
     <footer className={`site-footer ${footerTop} overflow-x-hidden border-0 bg-[var(--dark-bg-surface)]`}>
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-[rgba(var(--palette-gold-rgb),0.38)] to-transparent" aria-hidden />
+      <div className="footer-accent-rule" aria-hidden />
       <div className={`site-footer__inner ${layoutShellClassName} mobile-gutter-x sm:px-5 md:px-8 lg:px-10 min-[1920px]:px-12 ${shellPad}`}>
         {compact ? (
           <div className="site-footer__grid grid grid-cols-1 md:grid-cols-3 items-center gap-3 md:gap-2">
@@ -290,7 +290,7 @@ export default function Footer({ compact = false }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={trackWhatsAppClick}
-                  className="no-custom-btn mt-5 inline-flex items-center justify-center rounded-full border border-[rgba(var(--palette-gold-rgb),0.42)] bg-[rgba(var(--palette-gold-rgb),0.08)] px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--vintage-gold)] transition-colors duration-200 hover:border-[rgba(var(--palette-gold-rgb),0.62)] hover:bg-[rgba(var(--palette-gold-rgb),0.14)] hover:text-[#fff6e4]"
+                  className="no-custom-btn site-accent-pill site-accent-pill--lg mt-5"
                 >
                   Consultar ahora
                 </a>
