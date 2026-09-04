@@ -521,6 +521,18 @@ html, body, #__next, #root, main {
 
 .hero-home__slide {
   will-change: opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.hero-home__img {
+  object-position: center center;
+}
+
+@media (max-width: 767px) {
+  .hero-home__img {
+    object-position: center 38%;
+  }
 }
 
 .hero-btn-ghost {

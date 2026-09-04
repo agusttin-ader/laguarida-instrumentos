@@ -1,12 +1,13 @@
 'use client'
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { layoutShellClassName } from '../lib/layoutShell'
 import Button from './Button'
 
 const SESSION_KEY = 'lg-hero-slide-index'
 const HERO_INTERVAL_MS = 7000
-const HERO_CROSSFADE_MS = 1400
+const HERO_CROSSFADE_MS = 1200
+const HERO_CROSSFADE_EASE = 'cubic-bezier(0.4, 0, 0.2, 1)'
 
 function pickSessionSlideIndex(count) {
   if (count < 1) return 0
@@ -32,9 +33,26 @@ function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
-function HeroSlidePicture({ slide, eager, onLoad }) {
+function heroUrlForViewport(slide) {
+  if (!slide) return ''
+  const isMobile =
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches
+  return isMobile
+    ? slide.mobile || slide.src
+    : slide.desktop || slide.fallback || slide.src
+}
+
+function preloadHeroSlide(slide) {
+  const url = heroUrlForViewport(slide)
+  if (!url || typeof window === 'undefined') return
+  const img = new window.Image()
+  img.src = url
+}
+
+function HeroSlidePicture({ slide, priority, onLoad }) {
   const mobile = slide.mobile || slide.src
   const desktop = slide.desktop || slide.fallback || slide.src
+  const fallback = slide.fallback || slide.src
 
   return (
     <picture className="absolute inset-0 block h-full w-full">
@@ -44,10 +62,16 @@ function HeroSlidePicture({ slide, eager, onLoad }) {
         src={desktop}
         alt=""
         decoding="async"
-        loading={eager ? 'eager' : 'lazy'}
-        fetchPriority={eager ? 'high' : 'low'}
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : 'auto'}
         onLoad={onLoad}
-        className="h-full w-full object-cover object-[center_42%] max-md:object-[center_38%] md:object-center"
+        onError={(event) => {
+          const img = event.currentTarget
+          if (img.dataset.fallbackApplied === '1') return
+          img.dataset.fallbackApplied = '1'
+          img.src = fallback
+        }}
+        className="hero-home__img h-full w-full object-cover"
       />
     </picture>
   )
@@ -55,16 +79,25 @@ function HeroSlidePicture({ slide, eager, onLoad }) {
 
 export default function HeroMarketing({ slides = [] }) {
   const heroSlides = slides.length ? slides : []
+  const [isHydrated, setIsHydrated] = useState(false)
   const [slideIndex, setSlideIndex] = useState(0)
   const [renderIndices, setRenderIndices] = useState([0])
+  const [loadedMap, setLoadedMap] = useState({})
   const [primaryReady, setPrimaryReady] = useState(false)
   const [reduceMotion, setReduceMotion] = useState(false)
   const preloadedRef = useRef(new Set())
+  const slideIndexRef = useRef(0)
 
-  useLayoutEffect(() => {
-    setSlideIndex(pickSessionSlideIndex(heroSlides.length))
+  useEffect(() => {
+    const index = pickSessionSlideIndex(heroSlides.length)
+    slideIndexRef.current = index
+    setSlideIndex(index)
+    setRenderIndices([index])
     setReduceMotion(prefersReducedMotion())
-  }, [heroSlides.length])
+    const slide = heroSlides[index]
+    if (slide) preloadHeroSlide(slide)
+    setIsHydrated(true)
+  }, [heroSlides])
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined
@@ -76,40 +109,71 @@ export default function HeroMarketing({ slides = [] }) {
   }, [])
 
   useEffect(() => {
+    if (!isHydrated) return undefined
     setRenderIndices((prev) => {
-      const next = new Set([slideIndex, ...prev])
-      return [...next].slice(-2)
+      if (prev.includes(slideIndex)) return prev
+      return [...prev, slideIndex].slice(-2)
     })
-  }, [slideIndex])
+  }, [slideIndex, isHydrated])
 
   useEffect(() => {
-    if (heroSlides.length <= 1 || reduceMotion) return undefined
+    if (!isHydrated || !heroSlides.length) return undefined
+
+    const preloadRemaining = () => {
+      heroSlides.forEach((slide, index) => {
+        const key = String(index)
+        if (preloadedRef.current.has(key)) return
+        preloadHeroSlide(slide)
+        preloadedRef.current.add(key)
+      })
+    }
+
+    if (typeof window.requestIdleCallback === 'function') {
+      const id = window.requestIdleCallback(preloadRemaining, { timeout: 3000 })
+      return () => window.cancelIdleCallback(id)
+    }
+
+    const timer = window.setTimeout(preloadRemaining, 500)
+    return () => window.clearTimeout(timer)
+  }, [heroSlides, isHydrated])
+
+  useEffect(() => {
+    if (!isHydrated || heroSlides.length <= 1 || reduceMotion) return undefined
     const id = window.setInterval(() => {
-      setSlideIndex((current) => (current + 1) % heroSlides.length)
+      setSlideIndex((current) => {
+        const next = (current + 1) % heroSlides.length
+        slideIndexRef.current = next
+        return next
+      })
     }, HERO_INTERVAL_MS)
     return () => window.clearInterval(id)
-  }, [heroSlides.length, reduceMotion])
+  }, [heroSlides.length, reduceMotion, isHydrated])
 
   useEffect(() => {
-    if (typeof window === 'undefined' || heroSlides.length <= 1) return undefined
+    if (!isHydrated || heroSlides.length <= 1) return undefined
     const nextIndex = (slideIndex + 1) % heroSlides.length
     const key = String(nextIndex)
-    if (preloadedRef.current.has(key)) return undefined
-
-    const slide = heroSlides[nextIndex]
-    if (!slide) return undefined
-
-    const mobile = slide.mobile || slide.src
-    const desktop = slide.desktop || slide.fallback || slide.src
-    const img = new window.Image()
-    img.src = window.matchMedia('(max-width: 767px)').matches ? mobile : desktop
-    preloadedRef.current.add(key)
+    if (preloadedRef.current.has(`next-${key}`)) return undefined
+    preloadHeroSlide(heroSlides[nextIndex])
+    preloadedRef.current.add(`next-${key}`)
     return undefined
-  }, [slideIndex, heroSlides])
+  }, [slideIndex, heroSlides, isHydrated])
 
-  const onPrimaryLoad = useCallback(() => {
-    setPrimaryReady(true)
+  const markSlideLoaded = useCallback((index) => {
+    setLoadedMap((prev) => (prev[index] ? prev : { ...prev, [index]: true }))
+    if (index === slideIndexRef.current) setPrimaryReady(true)
   }, [])
+
+  const activeLoaded = !isHydrated || Boolean(loadedMap[slideIndex] || reduceMotion)
+
+  function slideOpacity(index) {
+    if (!isHydrated) return index === 0 ? 1 : 0
+    if (reduceMotion) return index === slideIndex ? 1 : 0
+    if (index === slideIndex) return activeLoaded ? 1 : 0
+    return activeLoaded ? 0 : 1
+  }
+
+  const visibleIndices = isHydrated ? renderIndices : [0]
 
   return (
     <div className="hero-home relative w-full max-md:min-h-[min(82dvh,640px)] md:min-h-[min(100dvh,920px)] sm:min-h-[min(84vh,880px)] overflow-hidden bg-[var(--dark-bg-page)] md:bg-transparent text-[var(--dark-text-primary)]">
@@ -117,27 +181,29 @@ export default function HeroMarketing({ slides = [] }) {
 
       <div className="absolute inset-0" aria-hidden>
         {heroSlides.length > 0 ? (
-          renderIndices.map((index) => {
+          visibleIndices.map((index) => {
             const item = heroSlides[index]
             if (!item) return null
-            const isActive = index === slideIndex
-            const eager = isActive && index === renderIndices[renderIndices.length - 1]
+            const isActive = isHydrated ? index === slideIndex : index === 0
+            const opacity = slideOpacity(index)
 
             return (
               <div
-                key={item.src}
-                className={`hero-home__slide absolute inset-0 transition-opacity ease-in-out motion-reduce:transition-none ${
-                  isActive ? 'opacity-100' : 'opacity-0'
-                }`}
+                key={`${item.src}-${index}`}
+                className="hero-home__slide absolute inset-0 motion-reduce:transition-none"
                 style={{
-                  transitionDuration: reduceMotion ? '0ms' : `${HERO_CROSSFADE_MS}ms`,
+                  opacity,
+                  transitionProperty: isHydrated && !reduceMotion ? 'opacity' : 'none',
+                  transitionDuration: isHydrated && !reduceMotion ? `${HERO_CROSSFADE_MS}ms` : '0ms',
+                  transitionTimingFunction: HERO_CROSSFADE_EASE,
                   zIndex: isActive ? 2 : 1,
+                  pointerEvents: 'none',
                 }}
               >
                 <HeroSlidePicture
                   slide={item}
-                  eager={eager}
-                  onLoad={isActive ? onPrimaryLoad : undefined}
+                  priority={!isHydrated ? index === 0 : index === slideIndex}
+                  onLoad={() => markSlideLoaded(index)}
                 />
               </div>
             )

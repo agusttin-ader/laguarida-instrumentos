@@ -12,8 +12,8 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 const VARIANTS = {
-  mobile: { width: 828, quality: 74 },
-  desktop: { width: 1600, quality: 78 },
+  mobile: { width: 828, height: 1104, quality: 74 },
+  desktop: { width: 1920, height: 1080, quality: 78 },
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -50,11 +50,17 @@ function needsWrite(srcPath, destPath) {
   }
 }
 
-async function writeVariant(srcPath, destPath, { width, quality }) {
+async function writeVariant(srcPath, destPath, { width, height, quality }) {
   await fs.promises.mkdir(path.dirname(destPath), { recursive: true })
   await sharp(srcPath, { failOn: 'none' })
     .rotate()
-    .resize({ width, fit: 'inside', withoutEnlargement: true })
+    .resize({
+      width,
+      height,
+      fit: 'cover',
+      position: 'centre',
+      withoutEnlargement: false,
+    })
     .webp({ quality, effort: 4 })
     .toFile(destPath)
 }

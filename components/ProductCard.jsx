@@ -248,7 +248,7 @@ const ProductCard = React.memo(function ProductCard({
 
   const imageBlock = (
     <div
-      className={`product-card-mobile-shell relative w-full overflow-hidden bg-[var(--dark-surface-2)] aspect-[4/5] md:aspect-[3/4] select-none ${hasGallery ? 'touch-pan-y' : inCarousel ? 'touch-pan-x' : 'touch-auto'}`}
+      className={`product-card-mobile-shell relative w-full overflow-hidden bg-[var(--dark-surface-2)] aspect-[4/5] md:aspect-[3/4] select-none ${hasGallery ? 'touch-pan-y' : inCarousel ? 'touch-manipulation' : 'touch-auto'}`}
       onTouchStart={hasGallery ? handleTouchStart : undefined}
       onTouchEnd={hasGallery ? handleTouchEnd : undefined}
       onTouchCancel={hasGallery ? handleTouchEnd : undefined}
