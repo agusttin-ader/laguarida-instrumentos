@@ -25,7 +25,7 @@ export default function PageTransition({ children }) {
         initial={enableEnterAnimation ? PAGE_TRANSITION.initial : false}
         animate={PAGE_TRANSITION.animate}
         exit={enableEnterAnimation ? PAGE_TRANSITION.exit : false}
-        transition={{ duration: MOTION_DURATION.slow, ease: MOTION_EASE }}
+        transition={{ duration: MOTION_DURATION.page, ease: MOTION_EASE }}
       >
         {children}
       </m.div>

@@ -14,6 +14,7 @@ import {
   IconInstagram,
   IconWhatsApp,
 } from './SocialIconButtons'
+import FadeInView from './motion/FadeInView'
 
 const COPYRIGHT_YEAR = new Date().getFullYear()
 const MAIL_HREF = 'mailto:leonardo_ruberti@hotmail.com'
@@ -188,7 +189,7 @@ export default function Footer({ compact = false }) {
           </div>
         ) : (
           <>
-            <div className="site-footer__main grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-8 lg:gap-12">
+            <FadeInView as="div" variant="fade-up" className="site-footer__main grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-8 lg:gap-12">
               <div className="site-footer__brand md:col-span-5 lg:col-span-4">
                 <Link href="/" onClick={handleHome} className="no-custom-btn inline-block" aria-label="Ir al inicio">
                   <img
@@ -259,7 +260,7 @@ export default function Footer({ compact = false }) {
                   Consultar ahora
                 </a>
               </div>
-            </div>
+            </FadeInView>
 
             <div className="site-footer__sub mt-10 md:mt-12 border-t border-white/[0.07] pt-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div className="site-footer__meta text-left w-full md:w-auto">

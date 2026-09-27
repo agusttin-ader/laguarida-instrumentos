@@ -7,7 +7,7 @@
 @keyframes motion-fade-up {
   from {
     opacity: 0;
-    transform: translate3d(0, 10px, 0);
+    transform: translate3d(0, 8px, 0);
   }
   to {
     opacity: 1;
@@ -71,7 +71,7 @@
 
 .motion-reveal--armed.motion-reveal--hidden {
   opacity: 0;
-  transform: translate3d(0, 10px, 0);
+  transform: translate3d(0, 8px, 0);
 }
 
 .motion-reveal--armed.motion-variant-fade-in.motion-reveal--hidden {

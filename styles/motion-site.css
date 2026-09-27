@@ -1,31 +1,18 @@
 /* ===================== Motion: corto y barato en compositor ===================== */
-:root{
+:root {
   --motion-fast: 90ms;
   --motion-base: 140ms;
   --motion-slow: 180ms;
   --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --motion-ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
-  --motion-duration-reveal: 520ms;
-  --motion-duration-grid: 340ms;
-  --motion-stagger-step: 36ms;
+  --motion-duration-reveal: 440ms;
+  --motion-duration-grid: 320ms;
+  --motion-stagger-step: 32ms;
 }
 
-@keyframes premium-enter-up {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Entrada de secciones desactivada: menos trabajo al primer paint y al navegar */
+/* Entrada de página (PageTransition) — sin animar secciones enteras duplicadas */
 main > section {
   animation: none;
-}
-main > section:nth-of-type(2),
-main > section:nth-of-type(3),
-main > section:nth-of-type(4) {
-  animation-delay: 0ms;
-}
-body.page-home main > section {
-  animation: none !important;
 }
 
 @media (max-width: 767px) {
@@ -33,30 +20,20 @@ body.page-home main > section {
     --motion-fast: 80ms;
     --motion-base: 120ms;
     --motion-slow: 160ms;
-    --motion-ease: var(--motion-ease-fluid);
+    --motion-duration-reveal: 400ms;
+    --motion-duration-grid: 300ms;
+    --motion-stagger-step: 28ms;
   }
-  @keyframes premium-enter-up-mobile {
-    from { opacity: 0; transform: translateY(3px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  main > section {
-    animation-name: premium-enter-up-mobile;
-    animation-duration: var(--motion-slow);
-    animation-timing-function: var(--motion-ease);
-    animation-fill-mode: both;
-  }
-  main > section:nth-of-type(2) { animation-delay: 0ms; }
-  main > section:nth-of-type(3) { animation-delay: 12ms; }
-  main > section:nth-of-type(4) { animation-delay: 24ms; }
+
   .filter-grid-updating {
     animation-duration: 160ms;
     animation-timing-function: var(--motion-ease-fluid);
   }
+
   body.menu-open .menu-drawer-panel {
     will-change: transform;
   }
 }
-
 
 /* Cards: hover sin translate (menos repaints); solo sombra/borde suaves */
 .card-interactive {
@@ -105,11 +82,14 @@ button:not(.no-custom-btn):active {
 @media (prefers-reduced-motion: reduce) {
   main > section,
   .card-interactive,
-  a:not(.no-custom-btn),
-  button:not(.no-custom-btn),
   .card-interactive img {
     animation: none !important;
-    transition: none !important;
     transform: none !important;
+  }
+
+  .card-interactive,
+  a:not(.no-custom-btn),
+  button:not(.no-custom-btn) {
+    transition: none !important;
   }
 }

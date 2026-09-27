@@ -11,6 +11,7 @@ import CatalogFiltersPanel from './CatalogFiltersPanel'
 import CatalogEmptyFiltered from './CatalogEmptyFiltered'
 import CatalogEditorialCard from './CatalogEditorialCard'
 import CatalogMobileBrandChips from './CatalogMobileBrandChips'
+import FadeInView from './motion/FadeInView'
 import { useProducts } from '../hooks/useProducts'
 import {
   getCatalogBrandList,
@@ -93,34 +94,36 @@ export default function CatalogPageContent({
   if (catalogBrand) {
     return (
       <div className={`${shellClass} catalog-page catalog-page--brand min-h-screen`}>
-        <CatalogBrandView
-          brand={catalogBrand}
-          products={products}
-          loading={loading}
-          marcaParam={marcaParam}
-          modeloParam={modeloParam}
-        />
+        <FadeInView variant="fade-up">
+          <CatalogBrandView
+            brand={catalogBrand}
+            products={products}
+            loading={loading}
+            marcaParam={marcaParam}
+            modeloParam={modeloParam}
+          />
+        </FadeInView>
       </div>
     )
   }
 
   return (
     <div className={`${shellClass} catalog-page catalog-page--all`}>
-      {/* Móvil: título (banner solo desktop/tablet) */}
-      <div className="md:hidden mb-3">
+      <FadeInView as="div" variant="fade-up" className="md:hidden mb-3">
         <CatalogIntro
           filteredCount={filteredProducts.length}
           loading={loading}
           filtersActive={filtersActive}
         />
-      </div>
+      </FadeInView>
 
       <div id="catalog-results" className="md:contents">
-      {/*
-        Desktop: mismo grid que marcas | filtros.
-        La tarjeta editorial comparte columna (y ancho) con el panel de filtros.
-      */}
-      <div className="catalog-layout-grid catalog-layout-grid--with-header grid gap-6 md:grid-cols-[minmax(220px,280px)_1fr] md:gap-8 lg:gap-10">
+      <FadeInView
+        as="div"
+        variant="fade-up"
+        delay={0.04}
+        className="catalog-layout-grid catalog-layout-grid--with-header grid gap-6 md:grid-cols-[minmax(220px,280px)_1fr] md:gap-8 lg:gap-10"
+      >
         <div className="catalog-layout-grid__intro hidden md:block">
           <CatalogIntro
             filteredCount={filteredProducts.length}
@@ -169,7 +172,7 @@ export default function CatalogPageContent({
             />
           )}
         </div>
-      </div>
+      </FadeInView>
       </div>
     </div>
   )

@@ -6,6 +6,8 @@ import { usePathname } from 'next/navigation'
 import { getHashSectionId, scrollToHomeSectionByIdWhenReady } from '../lib/homeSectionScroll'
 import Header from './Header'
 import Footer from './Footer'
+import MotionProvider from './motion/MotionProvider'
+import PageTransition from './motion/PageTransition'
 
 const WhatsAppFloatButton = dynamic(() => import('./WhatsAppFloatButton'), { ssr: false })
 
@@ -93,7 +95,9 @@ export default function SiteShell({ children }) {
           <main
             className={`min-h-0 w-full min-w-0 max-md:overflow-x-clip pb-[max(1rem,env(safe-area-inset-bottom,0px))] ${mainMobileBottomPad} md:pb-0 ${mainTopPad}`}
           >
-            {children}
+            <MotionProvider>
+              <PageTransition>{children}</PageTransition>
+            </MotionProvider>
           </main>
           <Footer />
           <WhatsAppFloatButton />

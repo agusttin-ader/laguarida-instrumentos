@@ -622,6 +622,13 @@ html, body, #__next, #root, main {
   text-shadow: 0 1px 14px rgba(0, 0, 0, 0.45);
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .home-hero__content {
+    animation: motion-fade-up 720ms var(--motion-ease-fluid, cubic-bezier(0.32, 0.72, 0, 1)) both;
+    animation-delay: 100ms;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .home-hero__photo-blur {
     display: none;

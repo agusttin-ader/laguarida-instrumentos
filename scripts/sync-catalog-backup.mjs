@@ -310,10 +310,29 @@ async function main() {
 
 function formatSupabaseError(error, supabaseUrl) {
   const msg = String(error?.message || error || '')
+  const details = String(error?.details || '')
+  const blob = `${msg}\n${details}`
+
+  if (blob.includes('ENOTFOUND') || blob.includes('getaddrinfo')) {
+    const host = (() => {
+      try {
+        return supabaseUrl ? new URL(supabaseUrl).hostname : 'SUPABASE_URL'
+      } catch {
+        return 'SUPABASE_URL'
+      }
+    })()
+    return [
+      `No se pudo resolver ${host} (DNS).`,
+      'Revisá SUPABASE_URL en .env.local — debe coincidir con Supabase → Project Settings → API.',
+      'Si el proyecto fue eliminado o nunca se restauró, creá/restaurá el proyecto y actualizá la URL y las keys.',
+    ].join('\n')
+  }
+
   if (
     msg.includes('521') ||
     msg.includes('Web server is down') ||
-    msg.trimStart().startsWith('<!DOCTYPE')
+    msg.trimStart().startsWith('<!DOCTYPE') ||
+    blob.includes('521')
   ) {
     const host = supabaseUrl ? new URL(supabaseUrl).hostname : 'tu proyecto Supabase'
     return [
@@ -325,14 +344,36 @@ function formatSupabaseError(error, supabaseUrl) {
   if (msg.length > 400) {
     return `${msg.slice(0, 180)}… (respuesta inesperada; revisá SUPABASE_URL en .env.local)`
   }
-  return msg
+  if (details && msg === 'TypeError: fetch failed') {
+    return details.split('\n').slice(0, 3).join('\n')
+  }
+  return msg || details
 }
 
 function formatFetchError(error, supabaseUrl) {
   const cause = error?.cause
-  if (cause?.code === 'ENOTFOUND') {
-    const host = supabaseUrl ? new URL(supabaseUrl).hostname : 'SUPABASE_URL'
-    return `No se pudo resolver ${host}. Revisá SUPABASE_URL en .env.local.`
+  const code = cause?.code || error?.code
+  const host = (() => {
+    try {
+      return supabaseUrl ? new URL(supabaseUrl).hostname : 'SUPABASE_URL'
+    } catch {
+      return 'SUPABASE_URL (URL inválida)'
+    }
+  })()
+
+  if (code === 'ENOTFOUND') {
+    return [
+      `No se pudo resolver ${host} (DNS ENOTFOUND).`,
+      'Revisá SUPABASE_URL / NEXT_PUBLIC_SUPABASE_URL en .env.local.',
+      'Si el proyecto fue borrado o pausado hace mucho, copiá la URL actual desde Supabase → Project Settings → API.',
+      'Sin conexión a Supabase no podés correr sync:catalog (solo backup local con --skip-download no aplica: también consulta la DB).',
+    ].join('\n')
+  }
+  if (code === 'ECONNREFUSED' || code === 'ETIMEDOUT' || code === 'UND_ERR_CONNECT_TIMEOUT') {
+    return [
+      `No hubo conexión con ${host} (${code}).`,
+      'Revisá red/VPN/firewall o el estado del proyecto en dashboard.supabase.com.',
+    ].join('\n')
   }
   if (cause?.message) return `fetch failed: ${cause.message}`
   return String(error?.message || error)

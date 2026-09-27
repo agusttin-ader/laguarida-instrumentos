@@ -50,16 +50,18 @@ export default function HomePageContent({ featuredProducts = [] }) {
           seleccionados, asesoramiento profesional y envíos dentro de Argentina.
         </p>
 
-        <section className="mt-0 !pt-1 !pb-0 md:!pt-2 md:!pb-0">
+        <FadeInView as="section" variant="fade-up" delay={0.03} className="mt-0 !pt-1 !pb-0 md:!pt-2 md:!pb-0">
           <About compactTop />
-        </section>
+        </FadeInView>
 
         <div
           aria-hidden
           className="mx-auto my-0 h-px w-full max-w-6xl bg-gradient-to-r from-transparent via-white/18 to-transparent"
         />
 
-        <FaqSection />
+        <FadeInView as="div" variant="fade-up" delay={0.05}>
+          <FaqSection />
+        </FadeInView>
       </FadeInView>
     </>
   )
