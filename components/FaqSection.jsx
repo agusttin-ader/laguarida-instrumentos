@@ -5,6 +5,7 @@ import Button from './Button'
 import { usePathname } from 'next/navigation'
 import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
 import { trackWhatsAppClick } from '../lib/trackWhatsAppClick'
+import { SocialIconButtons } from './SocialIconButtons'
 
 const FAQ_ITEMS = [
   {
@@ -45,33 +46,6 @@ function IconMinus() {
   )
 }
 
-function IconInstagram() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.4" cy="6.6" r="0.9" fill="currentColor" stroke="none" />
-    </svg>
-  )
-}
-
-function IconWhatsApp() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-      <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" />
-    </svg>
-  )
-}
-
-function IconMail() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-      <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
-      <path d="M4 7l8 6 8-6" />
-    </svg>
-  )
-}
-
 export default function FaqSection() {
   const [openId, setOpenId] = useState(null)
   const pathname = usePathname()
@@ -99,7 +73,6 @@ export default function FaqSection() {
   const phone = '+5491154661749'
   const waLink = buildWaMeHref(WHATSAPP_DEFAULT_WEB_MESSAGE)
   const mail = 'leonardo_ruberti@hotmail.com'
-  const insta = 'https://www.instagram.com/laguaridainstrumentos/'
 
   return (
     <section
@@ -179,34 +152,7 @@ export default function FaqSection() {
               </li>
             </ul>
             <p className="section-subtitle-minimal mb-2 text-[var(--dark-muted)] md:mb-2.5">Síguenos</p>
-            <nav className="flex items-center gap-4" aria-label="Redes sociales">
-              <a
-                href={insta}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="social-icon-btn no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors"
-              >
-                <IconInstagram />
-              </a>
-              <a
-                href={waLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
-                onClick={trackWhatsAppClick}
-                className="social-icon-btn no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors"
-              >
-                <IconWhatsApp />
-              </a>
-              <a
-                href={`mailto:${mail}`}
-                aria-label="Email"
-                className="social-icon-btn no-custom-btn flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center text-[var(--dark-text-secondary)] transition-colors"
-              >
-                <IconMail />
-              </a>
-            </nav>
+            <SocialIconButtons className="flex items-center gap-3" />
           </aside>
         </div>
         <div className="mt-3 sm:mt-5 md:mt-6 flex justify-center">

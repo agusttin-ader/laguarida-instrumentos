@@ -100,7 +100,8 @@
     max-width: 240px !important;
   }
 
-  .site-footer__social a {
+  .site-footer__social a,
+  .site-footer__social .social-icon-link {
     min-width: var(--mobile-tap);
     min-height: var(--mobile-tap);
   }

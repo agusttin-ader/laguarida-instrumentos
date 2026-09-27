@@ -8,9 +8,14 @@ import { buildWaMeHref, WHATSAPP_DEFAULT_WEB_MESSAGE } from '../lib/whatsappWeb'
 import { trackWhatsAppClick } from '../lib/trackWhatsAppClick'
 import { scrollToHomeSectionById } from '../lib/homeSectionScroll'
 import { SITE_LOGO_SRC } from '../lib/branding/logo'
+import {
+  SocialIconButtons,
+  INSTAGRAM_HREF,
+  IconInstagram,
+  IconWhatsApp,
+} from './SocialIconButtons'
 
 const COPYRIGHT_YEAR = new Date().getFullYear()
-const INSTAGRAM_HREF = 'https://www.instagram.com/laguaridainstrumentos/'
 const MAIL_HREF = 'mailto:leonardo_ruberti@hotmail.com'
 const DEV_CREDIT_URL = 'https://www.agustinaderdev.com/'
 
@@ -27,27 +32,6 @@ const footerLinkClass =
 
 const footerKickerClass =
   'section-kicker-minimal mb-4 tracking-[0.18em]'
-
-const socialBtnClass =
-  'no-custom-btn flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.1] bg-transparent text-[var(--dark-muted)] transition-colors duration-200 hover:border-[rgba(var(--palette-gold-rgb),0.4)] hover:text-[var(--vintage-gold)]'
-
-function IconInstagram({ size = 18 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.4" cy="6.6" r="0.9" fill="currentColor" stroke="none" />
-    </svg>
-  )
-}
-
-function IconWhatsApp({ size = 18 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-      <path d="M12 3.2a8.8 8.8 0 0 0-7.56 13.3L3.2 20.8l4.44-1.16A8.8 8.8 0 1 0 12 3.2Z" />
-    </svg>
-  )
-}
 
 function IconMail({ size = 18 }) {
   return (
@@ -185,20 +169,10 @@ export default function Footer({ compact = false }) {
               </p>
             </div>
 
-            <nav
+            <SocialIconButtons
               className="site-footer__social flex items-center gap-3 justify-center md:justify-self-center max-md:order-1"
-              aria-label="Redes y contacto"
-            >
-              <a href={INSTAGRAM_HREF} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className={`${socialBtnClass} md:w-8 md:h-8`}>
-                <IconInstagram size={20} />
-              </a>
-              <a href={MAIL_HREF} aria-label="Correo" className={`${socialBtnClass} md:w-8 md:h-8`}>
-                <IconMail size={20} />
-              </a>
-              <a href={waHref} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" onClick={trackWhatsAppClick} className={`${socialBtnClass} md:w-8 md:h-8`}>
-                <IconWhatsApp size={20} />
-              </a>
-            </nav>
+              compact
+            />
 
             <div className="flex items-center justify-center md:justify-self-end max-md:order-3">
               <img
@@ -230,17 +204,7 @@ export default function Footer({ compact = false }) {
                 <p className="mt-4 max-w-sm text-[13px] leading-relaxed text-[var(--dark-muted)] sm:text-sm">
                   Guitarras e instrumentos seleccionados. Hecho por un músico, para músicos.
                 </p>
-                <nav className="site-footer__social mt-6 flex items-center gap-2.5" aria-label="Redes sociales">
-                  <a href={INSTAGRAM_HREF} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className={socialBtnClass}>
-                    <IconInstagram size={18} />
-                  </a>
-                  <a href={MAIL_HREF} aria-label="Correo" className={socialBtnClass}>
-                    <IconMail size={18} />
-                  </a>
-                  <a href={waHref} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" onClick={trackWhatsAppClick} className={socialBtnClass}>
-                    <IconWhatsApp size={18} />
-                  </a>
-                </nav>
+                <SocialIconButtons className="site-footer__social mt-6 flex items-center gap-3" iconSize={18} />
               </div>
 
               <div className="grid grid-cols-2 gap-8 md:contents">

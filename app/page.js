@@ -1,6 +1,5 @@
 import HomePageContent from '../components/HomePageContent'
-import HeroPreloads from '../components/HeroPreloads'
-import { getHomeHeroBackgrounds } from '../lib/data/homeHeroBackgrounds'
+import { HOME_HERO_VARIANTS } from '../lib/homeHeroImage'
 import { getWeeklyFeaturedExpensiveProducts } from '../lib/data/homeFeaturedExpensive'
 import { absoluteUrl } from '../lib/siteUrl'
 
@@ -32,12 +31,27 @@ export const metadata = {
 }
 
 export default function Page() {
-  const heroSlides = getHomeHeroBackgrounds()
   const featuredProducts = getWeeklyFeaturedExpensiveProducts()
+
   return (
     <>
-      <HeroPreloads slides={heroSlides} />
-      <HomePageContent heroSlides={heroSlides} featuredProducts={featuredProducts} />
+      <link
+        rel="preload"
+        as="image"
+        href={HOME_HERO_VARIANTS.mobile}
+        media="(max-width: 767px)"
+        type="image/webp"
+        fetchPriority="high"
+      />
+      <link
+        rel="preload"
+        as="image"
+        href={HOME_HERO_VARIANTS.desktop}
+        media="(min-width: 768px)"
+        type="image/webp"
+        fetchPriority="high"
+      />
+      <HomePageContent featuredProducts={featuredProducts} />
     </>
   )
 }

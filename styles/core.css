@@ -138,6 +138,19 @@ a.site-accent-pill[href*='wa.me']:hover {
   color: var(--accent-gold-light);
 }
 
+.social-icon-link--instagram {
+  background: linear-gradient(
+    135deg,
+    #f9ce34 0%,
+    #ee2a7b 52%,
+    #6228d7 100%
+  );
+}
+
+.social-icon-link--instagram:hover {
+  filter: brightness(1.06);
+}
+
 .footer-accent-rule {
   height: 1px;
   width: 100%;
@@ -501,56 +514,123 @@ html, body, #__next, #root, main {
   --accent-red-light: #F09080;
 }
 
-/* Hero: texto claro sobre imagen */
-.hero-home {
-  color: #f3ede6;
-}
-
-.hero-home .hero-kicker {
+.home-hero .hero-kicker {
   color: var(--accent-gold-light);
 }
 
-.hero-home h1,
-.hero-home #home-hero {
-  color: #f3ede6;
+.home-hero .hero-lead {
+  color: rgba(243, 237, 230, 0.92);
 }
 
-.hero-home .hero-lead {
-  color: rgba(243, 237, 230, 0.9);
+.home-hero,
+.home-hero-section {
+  min-height: 100svh;
+  min-height: 100dvh;
 }
 
-.hero-home__slide {
-  will-change: opacity;
+.home-hero__photo {
   transform: translateZ(0);
-  backface-visibility: hidden;
 }
 
-.hero-home__img {
-  object-position: center center;
+.home-hero__picture {
+  margin: 0;
 }
 
-@media (max-width: 767px) {
-  .hero-home__img {
-    object-position: center 38%;
+.home-hero__picture img {
+  display: block;
+}
+
+.home-hero__photo-blur,
+.home-hero__photo-sharp {
+  position: absolute;
+  inset: 0;
+}
+
+.home-hero__photo-blur {
+  z-index: 0;
+  filter: blur(20px) saturate(1.04);
+  transform: scale(1.1);
+}
+
+.home-hero__photo-sharp {
+  z-index: 1;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.4) 42%,
+    rgba(0, 0, 0, 0.9) 54%,
+    #000 66%,
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.4) 42%,
+    rgba(0, 0, 0, 0.9) 54%,
+    #000 66%,
+    #000 100%
+  );
+}
+
+@media (min-width: 768px) {
+  .home-hero__photo-blur {
+    filter: blur(22px) saturate(1.04);
+  }
+
+  .home-hero__photo-sharp {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      transparent 26%,
+      rgba(0, 0, 0, 0.35) 38%,
+      rgba(0, 0, 0, 0.85) 50%,
+      #000 62%,
+      #000 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      transparent 26%,
+      rgba(0, 0, 0, 0.35) 38%,
+      rgba(0, 0, 0, 0.85) 50%,
+      #000 62%,
+      #000 100%
+    );
   }
 }
 
-.hero-btn-ghost {
-  border: 1px solid rgba(255, 255, 255, 0.28) !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: #f3ede6 !important;
-  transition:
-    background-color 200ms ease,
-    border-color 200ms ease,
-    color 200ms ease,
-    box-shadow 200ms ease !important;
+.home-hero__content {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
-.hero-btn-ghost:hover {
-  border-color: var(--dark-cta-bg) !important;
-  background: var(--dark-cta-bg) !important;
-  color: #fff !important;
-  box-shadow: var(--btn-red-shadow) !important;
+.home-hero__content .hero-kicker {
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+}
+
+.home-hero__content #home-hero {
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+}
+
+.home-hero__content .hero-lead {
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__photo-blur {
+    display: none;
+  }
+
+  .home-hero__photo-sharp {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
 }
 
 .btn-variant-ghost {
@@ -795,28 +875,8 @@ body.page-home header.site-header-bar.header-home-mobile:not(.header-scrolled) {
   #home-top.home-hero-section,
   body.page-home #home-top,
   .page-home #home-top {
-    background-color: #1E1F28 !important;
-    background-image:
-      radial-gradient(ellipse 110% 70% at 50% 18%, rgba(var(--palette-gold-rgb), 0.14) 0%, transparent 55%),
-      linear-gradient(165deg, #2C2E3A 0%, #1E1F28 52%, #1A1B22 100%) !important;
-  }
-
-  /* Hero: fallback cálido bajo la imagen (primer paint / decode) */
-  .hero-home__paint-fallback {
-    background:
-      radial-gradient(ellipse 120% 80% at 48% 22%, rgba(var(--palette-gold-rgb), 0.16) 0%, transparent 58%),
-      linear-gradient(165deg, #2C2E3A 0%, #1E1F28 48%, #1A1B22 100%);
-  }
-
-  .hero-home {
-    background-color: #1E1F28;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero-home img {
-      transition: none !important;
-      opacity: 1 !important;
-    }
+    background-color: transparent !important;
+    background-image: none !important;
   }
 }
 

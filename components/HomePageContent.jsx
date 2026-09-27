@@ -1,21 +1,20 @@
-import React from 'react'
 import { homeSectionShellClass } from '../lib/layoutShell'
 import FadeInView from './motion/FadeInView'
-import HeroMarketing from './HeroMarketing'
+import HeroHomeEditorial from './HeroHomeEditorial'
 import FeaturedSelection from './FeaturedSelection'
 import HomeBrandGrid from './HomeBrandGrid'
 import About from './About'
 import FaqSection from './FaqSection'
 
-export default function HomePageContent({ heroSlides = [], featuredProducts = [] }) {
+export default function HomePageContent({ featuredProducts = [] }) {
   return (
     <>
       <section
         id="home-top"
         aria-labelledby="home-hero"
-        className="home-hero-section relative w-full min-w-0 !pt-0 !pb-0 bg-[var(--dark-bg-page)] md:bg-transparent md:mt-0 max-[767px]:mt-0"
+        className="home-hero-section relative w-full min-w-0 !pt-0 !pb-0 min-h-[100svh] min-h-[100dvh] bg-transparent md:mt-0 max-[767px]:mt-0"
       >
-        <HeroMarketing slides={heroSlides} />
+        <HeroHomeEditorial />
       </section>
 
       <FadeInView

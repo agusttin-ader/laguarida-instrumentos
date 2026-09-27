@@ -18,6 +18,7 @@ import DisableZoomInApp from '../components/DisableZoomInApp'
 import { ToastProvider } from '../components/ToastContext'
 import { FavoritesProvider } from '../components/ProductShareAndFavorite'
 import { absoluteUrl, getSiteUrl } from '../lib/siteUrl'
+import { FACEBOOK_HREF, INSTAGRAM_HREF } from '../lib/socialLinks'
 import { Analytics } from '@vercel/analytics/react'
 import { shouldReadCatalogFromBackup } from '../lib/catalog/readSource'
 
@@ -109,6 +110,7 @@ export default function RootLayout({ children }) {
       availableLanguage: 'Spanish',
       areaServed: 'AR',
     },
+    sameAs: [INSTAGRAM_HREF, FACEBOOK_HREF],
   }
 
   const websiteJsonLd = {

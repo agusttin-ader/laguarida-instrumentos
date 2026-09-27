@@ -16,7 +16,7 @@
     "sync": "npm run sync:catalog",
     "init:product-images": "node scripts/sync-catalog-backup.mjs --skip-download",
     "images:variants": "node scripts/generate-image-variants.mjs",
-    "images:hero": "node scripts/generate-hero-variants.mjs",
+    "images:hero": "node scripts/generate-home-hero-variants.mjs",
     "images:all": "npm run images:variants && npm run images:hero"
   },
   "dependencies": {

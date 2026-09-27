@@ -24,8 +24,7 @@ header.site-header-bar,
     box-shadow: none !important;
   }
 
-  header.header-home-mobile:not(.header-scrolled),
-  header[data-hero-bg="true"] {
+  header.header-home-mobile:not(.header-scrolled) {
     background-color: rgba(26, 27, 34, 0.28) !important;
     backdrop-filter: blur(14px) saturate(1.12) !important;
     -webkit-backdrop-filter: blur(14px) saturate(1.12) !important;
@@ -48,9 +47,6 @@ header.site-header-bar,
     background-image: none !important;
   }
 
-  body.page-home .hero-home {
-    background-color: transparent !important;
-  }
 }
 header.header-scrolled.site-header-bar {
   background-color: var(--dark-bg-card) !important;
