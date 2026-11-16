@@ -104,7 +104,10 @@ export function useProducts(options = {}) {
     if (Array.isArray(initialProducts) && initialProducts.length) {
       const list = shuffleCatalog ? weeklyRotateCatalog(initialProducts) : initialProducts
       cache = { data: initialProducts, timestamp: Date.now() }
-      setProducts(list)
+      setProducts((prev) => {
+        if (!shuffleCatalog && prev.length > 0) return prev
+        return list
+      })
       setLoading(false)
       setError(null)
       return

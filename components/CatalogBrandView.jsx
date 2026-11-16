@@ -304,7 +304,7 @@ export default function CatalogBrandView({
               <ProductCard
                 item={item}
                 priority={idx === 0}
-                eager={idx > 0 && idx < 3}
+                eager={idx === 1}
                 maxGalleryImages={1}
               />
             </div>

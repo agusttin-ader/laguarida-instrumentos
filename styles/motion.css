@@ -135,13 +135,13 @@
 .product-grid--enter.product-grid--armed .home-grid-product-cell,
 .product-grid--enter.product-grid--armed .product-enter-cell {
   animation: product-enter-soft-in var(--motion-duration-grid, 340ms) var(--motion-ease) both;
-  animation-delay: calc(min(var(--enter-i, 0), 9) * var(--motion-stagger-step, 36ms));
+  animation-delay: calc(min(var(--enter-i, 0), 5) * var(--motion-stagger-step, 36ms));
 }
 
 .product-grid--slow-enter.product-grid--armed .home-grid-product-cell,
 .product-grid--slow-enter.product-grid--armed .product-enter-cell {
-  animation-duration: 420ms;
-  animation-delay: calc(min(var(--enter-i, 0), 9) * 48ms);
+  animation-duration: 300ms;
+  animation-delay: calc(min(var(--enter-i, 0), 5) * 36ms);
 }
 
 /* ── Hover lift (opcional, compositor-friendly) ────────────────────────── */

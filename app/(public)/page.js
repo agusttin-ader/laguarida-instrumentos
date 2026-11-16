@@ -1,7 +1,8 @@
-import HomePageContent from '../components/HomePageContent'
-import { HOME_HERO_VARIANTS } from '../lib/homeHeroImage'
-import { getWeeklyFeaturedExpensiveProducts } from '../lib/data/homeFeaturedExpensive'
-import { absoluteUrl } from '../lib/siteUrl'
+import '../../styles/home.css'
+import HomePageContent from '../../components/HomePageContent'
+import { HOME_HERO_VARIANTS } from '../../lib/homeHeroImage'
+import { getWeeklyFeaturedExpensiveProducts } from '../../lib/data/homeFeaturedExpensive'
+import { absoluteUrl } from '../../lib/siteUrl'
 
 export const revalidate = 600
 

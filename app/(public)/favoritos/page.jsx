@@ -1,14 +1,14 @@
 "use client"
 
 import React, { useMemo } from 'react'
-import ProductCard from '../../components/ProductCard'
-import Button from '../../components/Button'
-import { useFavorites } from '../../components/ProductShareAndFavorite'
-import { useProducts } from '../../hooks/useProducts'
-import { useSoftEnterAfterSlowLoad } from '../../hooks/useSoftEnterAfterSlowLoad'
-import FadeInView from '../../components/motion/FadeInView'
-import ProductGridMotion from '../../components/motion/ProductGridMotion'
-import { SITE_MARK_SRC } from '../../lib/branding/logo'
+import ProductCard from '../../../components/ProductCard'
+import Button from '../../../components/Button'
+import { useFavorites } from '../../../components/ProductShareAndFavorite'
+import { useProducts } from '../../../hooks/useProducts'
+import { useSoftEnterAfterSlowLoad } from '../../../hooks/useSoftEnterAfterSlowLoad'
+import FadeInView from '../../../components/motion/FadeInView'
+import ProductGridMotion from '../../../components/motion/ProductGridMotion'
+import { SITE_MARK_SRC } from '../../../lib/branding/logo'
 
 export default function FavoritosPage() {
   const { slugs } = useFavorites()
@@ -21,7 +21,7 @@ export default function FavoritosPage() {
   )
 
   const favoritesGridLoading = loading && slugs.length > 0
-  const softGridEnter = useSoftEnterAfterSlowLoad(favoritesGridLoading, 420)
+  const softGridEnter = useSoftEnterAfterSlowLoad(favoritesGridLoading, 300)
 
   return (
     <div className="container-tight favoritos-page pt-6 max-md:pt-5 sm:pt-14 pb-6 max-md:pb-5 md:pb-12">

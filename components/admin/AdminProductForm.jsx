@@ -548,8 +548,8 @@ export default function AdminProductForm({ mode, editingId = null }) {
         : 'Nombre, precio y foto principal alcanzan; el resto es opcional y está agrupado abajo.'
 
   return (
-    <div className="dark overflow-hidden rounded-2xl border border-white/10 bg-[#1a1d26] shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
-      <div className="border-b border-white/10 bg-[#1a1d26] px-5 pb-4 pt-5 sm:px-7 sm:pb-5 sm:pt-6">
+    <div className="admin-desk-card admin-desk-card--accent-top admin-product-form overflow-x-hidden">
+      <div className="border-b border-white/[0.08] px-4 pb-4 pt-4 sm:px-7 sm:pb-5 sm:pt-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0 space-y-2">
             <span className="inline-flex items-center rounded-full border border-white/12 bg-white/[0.06] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-300">
@@ -563,7 +563,7 @@ export default function AdminProductForm({ mode, editingId = null }) {
         </div>
       </div>
 
-      <div className="bg-[#14161e] px-5 py-5 sm:px-7 sm:py-6">
+      <div className="admin-product-form-body px-4 py-4 sm:px-7 sm:py-6">
         {error ? <div className="mb-4 rounded-xl border border-rose-500/35 bg-rose-950/55 p-3 text-sm text-rose-100">{error}</div> : null}
         <form onSubmit={handleSave} className="space-y-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
@@ -826,10 +826,10 @@ export default function AdminProductForm({ mode, editingId = null }) {
           ) : null}
 
           <div className="mt-2 flex flex-col gap-2 border-t border-white/10 pt-5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-            <button type="submit" className="admin-desk-btn-primary no-custom-btn order-2 w-full px-5 py-3 sm:order-1 sm:w-auto sm:min-h-0" disabled={submitting || modalUploadingMain || modalGalleryUploading}>
+            <button type="submit" className="admin-desk-btn-primary admin-touch-target no-custom-btn order-2 w-full px-5 py-3 sm:order-1 sm:w-auto sm:min-h-0" disabled={submitting || modalUploadingMain || modalGalleryUploading}>
               {submitting ? (mode === 'edit' ? 'Guardando…' : 'Creando…') : (modalUploadingMain || modalGalleryUploading) ? 'Subiendo imágenes…' : (mode === 'edit' ? 'Guardar cambios' : 'Crear producto')}
             </button>
-            <button type="button" className="admin-desk-btn-ghost no-custom-btn order-1 w-full px-5 py-3 sm:order-2 sm:w-auto sm:min-h-0" onClick={goBack}>Volver a productos</button>
+            <button type="button" className="admin-desk-btn-ghost admin-touch-target no-custom-btn order-1 w-full px-5 py-3 sm:order-2 sm:w-auto sm:min-h-0" onClick={goBack}>Volver a productos</button>
           </div>
         </form>
       </div>

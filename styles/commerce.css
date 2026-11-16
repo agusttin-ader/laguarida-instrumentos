@@ -1,0 +1,9 @@
+/* Tarjetas de producto (catálogo, favoritos, relacionados PDP) */
+.home-grid-product-cell .product-card-mobile-catalog,
+.product-card-mobile-catalog {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.favorite-heart-btn {
+  border-radius: 999px !important;
+}

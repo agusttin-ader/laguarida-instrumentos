@@ -32,32 +32,57 @@ export default function ClientAuth({ children }){
   }, [])
 
   useEffect(() => {
-    if (loading || splashHiddenRef.current || typeof window === 'undefined') return
-    const hide = window.__adminHideSplash
-    if (typeof hide !== 'function') return
-    const elapsed = Date.now() - (mountTimeRef.current || Date.now())
-    const delay = Math.max(0, ADMIN_SPLASH_MIN_MS - elapsed)
-    const t = setTimeout(() => {
+    if (typeof window === 'undefined') return
+    const hide = () => {
+      if (splashHiddenRef.current) return
       splashHiddenRef.current = true
-      hide()
-    }, delay)
-    return () => clearTimeout(t)
+      window.__adminHideSplash?.()
+    }
+    if (!loading) {
+      const elapsed = Date.now() - (mountTimeRef.current || Date.now())
+      const delay = Math.max(0, ADMIN_SPLASH_MIN_MS - elapsed)
+      const t = setTimeout(hide, delay)
+      return () => clearTimeout(t)
+    }
+    const safety = setTimeout(hide, 1400)
+    return () => clearTimeout(safety)
   }, [loading])
 
   useEffect(() => {
     let mounted = true
 
     async function init() {
+      let clientUser = null
+      let clientSession = null
       try {
-        const { data } = await supabase.auth.getSession()
-        if (!mounted) return
-        setSession(data?.session ?? null)
-        setUser(data?.session?.user ?? null)
+        const sessionResult = await Promise.race([
+          supabase.auth.getSession(),
+          new Promise((resolve) => {
+            setTimeout(() => resolve({ data: { session: null }, timedOut: true }), 3500)
+          }),
+        ])
+        clientSession = sessionResult?.data?.session ?? null
+        clientUser = clientSession?.user ?? null
       } catch {
         /* sin sesión Supabase en cliente */
-      } finally {
-        if (mounted) setLoading(false)
       }
+
+      if (!clientUser && mounted) {
+        try {
+          const res = await fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' })
+          if (res.ok) {
+            const j = await res.json()
+            if (j?.authenticated && j?.user) {
+              clientUser = { id: j.user.id, email: j.user.email || null }
+            }
+          }
+        } catch { /* empty */ }
+      }
+
+      if (!mounted) return
+      setSession(clientSession)
+      setUser(clientUser)
+      setLoading(false)
     }
 
     init()

@@ -1,6 +1,6 @@
 import React from 'react'
-import { absoluteUrl } from '../../lib/siteUrl'
-import LegalPageShell, { LegalSection } from '../../components/LegalPageShell'
+import { absoluteUrl } from '../../../lib/siteUrl'
+import LegalPageShell, { LegalSection } from '../../../components/LegalPageShell'
 
 export const metadata = {
   title: 'Política de privacidad',

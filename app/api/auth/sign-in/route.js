@@ -1,7 +1,12 @@
 export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
-import { getSupabaseServerClient } from '../../../../lib/supabase/server'
+import {
+  getSupabaseServerClient,
+  hasSupabasePublicConfig,
+  SUPABASE_CONFIG_HINT,
+} from '../../../../lib/supabase/server'
+import { buildAuthCookieOptions } from '../../../../lib/auth/sessionCookies'
 
 const SIGNIN_RATE_LIMIT = 5
 const WINDOW_MS = 60 * 1000
@@ -66,6 +71,13 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Missing email or password' }, { status: 400 })
     }
 
+    if (!hasSupabasePublicConfig()) {
+      return NextResponse.json(
+        { error: SUPABASE_CONFIG_HINT, code: 'SUPABASE_NOT_CONFIGURED' },
+        { status: 503 },
+      )
+    }
+
     const supabase = getSupabaseServerClient()
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
@@ -84,25 +96,15 @@ export async function POST(req) {
     const res = NextResponse.json({ user: data.user ?? null }, { status: 200 })
 
     if (session) {
-      const secure = process.env.NODE_ENV === 'production'
+      const requestHost = req.headers.get('host')
       const maxAge = session.expires_in || 60 * 60 // fallback 1h
-      const cookieDomain = process.env.SITE_COOKIE_DOMAIN
-      const sameSiteSetting = 'lax'
-      const baseCookieOptions = {
-        httpOnly: true,
-        path: '/',
-        sameSite: sameSiteSetting,
-        secure,
-      }
-      const cookieOptions = cookieDomain ? { ...baseCookieOptions, domain: cookieDomain } : baseCookieOptions
+      const cookieOptions = buildAuthCookieOptions(requestHost)
 
-      // Access token cookie (used by server-side helpers)
       res.cookies.set('sb-access-token', session.access_token, {
         ...cookieOptions,
         maxAge,
       })
 
-      // Refresh token cookie: 1 year so session only ends when admin clicks "Cerrar sesión"
       if (session.refresh_token) {
         res.cookies.set('sb-refresh-token', session.refresh_token, {
           ...cookieOptions,

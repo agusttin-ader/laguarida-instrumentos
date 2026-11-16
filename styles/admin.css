@@ -1,10 +1,155 @@
-/* ===================== Admin desk (modo oscuro, alto contraste) ===================== */
+/* ===================== Admin desk (La Guarida — backstage premium) ===================== */
 .admin-desk-root {
-  --admin-desk-surface: #1a1d26;
-  --admin-desk-surface-deep: #14161e;
-  --admin-desk-border: rgba(255, 255, 255, 0.12);
-  --admin-desk-text: #f1f5f9;
-  --admin-desk-muted: #cbd5e1;
+  --admin-desk-surface: rgba(26, 28, 36, 0.92);
+  --admin-desk-surface-deep: #12141c;
+  --admin-desk-border: rgba(255, 255, 255, 0.1);
+  --admin-desk-text: #f4f4f5;
+  --admin-desk-muted: #a8b4c4;
+  --admin-accent: var(--palette-gold, #d99530);
+  --admin-accent-soft: rgba(var(--palette-gold-rgb, 217, 149, 48), 0.14);
+  --admin-radius: 18px;
+  --admin-radius-lg: 22px;
+  position: relative;
+  isolation: isolate;
+  color: var(--admin-desk-text);
+  background-color: #0c0e14;
+  background-image:
+    radial-gradient(ellipse 120% 80% at 0% 0%, rgba(var(--palette-gold-rgb, 217, 149, 48), 0.07) 0%, transparent 52%),
+    radial-gradient(ellipse 90% 60% at 100% 8%, rgba(99, 102, 241, 0.05) 0%, transparent 48%),
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(0, 0, 0, 0.55) 0%, transparent 55%),
+    linear-gradient(165deg, #12151c 0%, #0a0c12 42%, #0c0e14 100%);
+}
+
+.admin-desk-root::before {
+  content: '';
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+.admin-desk-root > * {
+  position: relative;
+  z-index: 1;
+}
+
+.admin-desk-sidebar {
+  background: linear-gradient(180deg, rgba(22, 24, 32, 0.98) 0%, rgba(14, 16, 22, 0.99) 100%);
+  box-shadow: 4px 0 40px rgba(0, 0, 0, 0.35);
+}
+
+.admin-desk-brand-mark {
+  box-shadow:
+    0 0 0 1px rgba(var(--palette-gold-rgb, 217, 149, 48), 0.35),
+    0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.admin-nav-link {
+  position: relative;
+  border-radius: 14px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-nav-link--active {
+  background: linear-gradient(90deg, rgba(var(--palette-gold-rgb, 217, 149, 48), 0.14) 0%, rgba(255, 255, 255, 0.06) 100%);
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(var(--palette-gold-rgb, 217, 149, 48), 0.22);
+}
+
+.admin-nav-link--active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 22%;
+  bottom: 22%;
+  width: 3px;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(180deg, #e8b04a 0%, var(--admin-accent) 100%);
+}
+
+.admin-desk-top {
+  background: rgba(20, 23, 32, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+}
+
+.admin-desk-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(var(--palette-gold-rgb, 217, 149, 48), 0.75);
+}
+
+.admin-desk-page-title {
+  font-family: var(--font-display, ui-serif, Georgia, serif);
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: #fafafa;
+}
+
+@media (min-width: 640px) {
+  .admin-desk-page-title {
+    font-size: 1.5rem;
+  }
+}
+
+.admin-user-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 220px;
+  padding: 0.35rem 0.65rem 0.35rem 0.35rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.admin-user-avatar {
+  display: flex;
+  height: 1.75rem;
+  width: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #1a1208;
+  background: linear-gradient(145deg, #f0c56e 0%, var(--admin-accent) 100%);
+  box-shadow: 0 2px 8px rgba(var(--palette-gold-rgb, 217, 149, 48), 0.35);
+}
+
+.admin-page {
+  animation: admin-page-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes admin-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-page-lead {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--admin-desk-muted);
+  max-width: 42rem;
 }
 
 .admin-desk-sidebar nav {
@@ -16,35 +161,324 @@
     transition-duration: 0.01ms !important;
   }
 
-  .admin-desk-card {
+  .admin-desk-card,
+  .admin-page {
+    animation: none;
     transition: none;
   }
 }
 
 .admin-desk-card {
-  border-radius: 18px;
-  background: var(--admin-desk-surface);
+  border-radius: var(--admin-radius-lg);
+  background: linear-gradient(165deg, rgba(32, 35, 46, 0.88) 0%, rgba(22, 25, 34, 0.94) 100%);
   border: 1px solid var(--admin-desk-border);
-  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.35);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow:
+    0 4px 28px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: box-shadow 0.22s ease, border-color 0.22s ease;
 }
 
 .admin-desk-card:hover {
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.42);
+  border-color: rgba(var(--palette-gold-rgb, 217, 149, 48), 0.14);
+  box-shadow:
+    0 12px 44px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.admin-desk-card--accent-top {
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-desk-card--accent-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(var(--palette-gold-rgb, 217, 149, 48), 0.65) 35%,
+    rgba(var(--palette-gold-rgb, 217, 149, 48), 0.35) 65%,
+    transparent 100%
+  );
+  pointer-events: none;
 }
 
 .admin-desk-stat-card {
-  border-radius: 18px;
+  border-radius: var(--admin-radius);
   background: var(--admin-desk-surface);
   border: 1px solid var(--admin-desk-border);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
 }
 
+.admin-kpi {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.12) 100%);
+  padding: 0.85rem 1rem;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.admin-kpi:hover {
+  border-color: rgba(var(--palette-gold-rgb, 217, 149, 48), 0.2);
+  transform: translateY(-1px);
+}
+
+.admin-kpi__label {
+  font-size: 0.625rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.admin-kpi__value {
+  margin-top: 0.35rem;
+  font-size: 1.5rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #f8fafc;
+}
+
+.admin-kpi__value--warn {
+  color: #fbbf24;
+}
+
+.admin-desk-inset {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 14, 20, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.admin-desk-table-wrap {
+  overflow-x: auto;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-desk-table {
+  width: 100%;
+  min-width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.admin-desk-table thead {
+  background: rgba(255, 255, 255, 0.04);
+  color: #cbd5e1;
+}
+
+.admin-desk-table th {
+  padding: 0.65rem 0.85rem;
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-desk-table td {
+  padding: 0.6rem 0.85rem;
+  color: #e2e8f0;
+}
+
+.admin-desk-table tbody tr {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background-color 0.15s ease;
+}
+
+.admin-desk-table tbody tr:hover {
+  background: rgba(var(--palette-gold-rgb, 217, 149, 48), 0.05);
+}
+
+.admin-desk-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid rgba(var(--palette-gold-rgb, 217, 149, 48), 0.28);
+  background: var(--admin-accent-soft);
+  padding: 0.2rem 0.55rem;
+  font-size: 0.6875rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.admin-catalog-row {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(24, 28, 38, 0.95) 0%, rgba(18, 21, 30, 0.98) 100%);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.22);
+}
+
+.admin-catalog-row:hover {
+  border-color: rgba(var(--palette-gold-rgb, 217, 149, 48), 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* Toolbar por fila: select + acciones */
+.admin-catalog-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.4rem;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+@media (min-width: 640px) {
+  .admin-catalog-toolbar {
+    width: auto;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+}
+
+.admin-desk-root .admin-catalog-select {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 2.5rem;
+  padding: 0.5rem 2.15rem 0.5rem 0.8rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #f1f5f9 !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(var(--palette-gold-rgb, 217, 149, 48), 0.28) !important;
+  background-color: rgba(12, 14, 20, 0.92) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 24 24' stroke='%23d99530' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.55rem center;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.2);
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
+}
+
+@media (min-width: 640px) {
+  .admin-desk-root .admin-catalog-select {
+    flex: 0 1 auto;
+    min-width: 9.25rem;
+  }
+}
+
+.admin-desk-root .admin-catalog-select:hover {
+  border-color: rgba(var(--palette-gold-rgb, 217, 149, 48), 0.42) !important;
+  background-color: rgba(18, 20, 28, 0.95) !important;
+}
+
+.admin-desk-root .admin-catalog-select:focus {
+  outline: none;
+  border-color: rgba(var(--palette-gold-rgb, 217, 149, 48), 0.55) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 0 0 3px rgba(var(--palette-gold-rgb, 217, 149, 48), 0.2) !important;
+}
+
+.admin-desk-root .admin-catalog-select option {
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+.admin-row-btn {
+  display: inline-flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  border-radius: 12px !important;
+  border: 1px solid transparent;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+@media (min-width: 640px) {
+  .admin-row-btn {
+    flex: 0 0 auto;
+  }
+}
+
+.admin-row-btn svg {
+  opacity: 0.92;
+}
+
+.admin-row-btn--edit {
+  color: #e2e8f0;
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.admin-row-btn--edit:hover {
+  color: #fff;
+  border-color: rgba(var(--palette-gold-rgb, 217, 149, 48), 0.28);
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.admin-row-btn--edit:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--palette-gold-rgb, 217, 149, 48), 0.22);
+}
+
+.admin-row-btn--sold {
+  color: #fda4af;
+  border-color: rgba(251, 113, 133, 0.22);
+  background: rgba(127, 29, 29, 0.12);
+}
+
+.admin-row-btn--sold:hover:not(:disabled) {
+  color: #fff;
+  border-color: rgba(252, 165, 165, 0.35);
+  background: linear-gradient(145deg, #f87171 0%, #dc2626 100%);
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.28);
+}
+
+.admin-row-btn--sold:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.28);
+}
+
+.admin-row-btn--sold:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.admin-row-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
 .admin-desk-input {
   width: 100%;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   background: var(--admin-desk-surface-deep);
   color: var(--admin-desk-text);
   padding: 0.65rem 0.9rem;
@@ -53,73 +487,80 @@
 }
 
 .admin-desk-input::placeholder {
-  color: #94a3b8;
+  color: #64748b;
 }
 
 .admin-desk-input:focus {
   outline: none;
-  border-color: #818cf8;
-  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.28);
+  border-color: rgba(var(--palette-gold-rgb, 217, 149, 48), 0.5);
+  box-shadow: 0 0 0 3px rgba(var(--palette-gold-rgb, 217, 149, 48), 0.18);
 }
 
 .admin-desk-btn-primary,
 .admin-desk-btn-secondary,
 .admin-desk-btn-danger,
 .admin-desk-btn-ghost {
-  border-radius: 12px;
+  border-radius: 14px;
   font-weight: 600;
   letter-spacing: 0.01em;
-  transition: opacity 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background-color 0.18s ease,
-    filter 0.18s ease;
+  transition:
+    opacity 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    filter 0.18s ease,
+    transform 0.18s ease;
 }
 
 .admin-desk-btn-primary {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 4px 20px rgba(79, 70, 229, 0.45);
+  background: linear-gradient(145deg, #e8b04a 0%, #c88428 48%, #a66a1a 100%);
+  color: #1a1208;
+  border: 1px solid rgba(255, 220, 150, 0.35);
+  box-shadow:
+    0 4px 22px rgba(var(--palette-gold-rgb, 217, 149, 48), 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .admin-desk-btn-primary:hover {
-  filter: brightness(1.08);
+  filter: brightness(1.06);
+  transform: translateY(-1px);
 }
 
 .admin-desk-btn-secondary {
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.06);
   color: #f1f5f9;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .admin-desk-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(var(--palette-gold-rgb, 217, 149, 48), 0.22);
 }
 
 .admin-desk-btn-danger {
-  background: #ef4444;
+  background: linear-gradient(145deg, #f87171 0%, #dc2626 100%);
   color: #fff;
-  border: 1px solid #fca5a5;
-  box-shadow: 0 2px 16px rgba(239, 68, 68, 0.35);
+  border: 1px solid rgba(254, 202, 202, 0.25);
+  box-shadow: 0 4px 18px rgba(239, 68, 68, 0.32);
 }
 
 .admin-desk-btn-danger:hover {
-  background: #f87171;
+  filter: brightness(1.05);
 }
 
-/* Misma intención que danger, pero rojo solo al hover (p. ej. cerrar sesión en sidebar). */
 .admin-desk-btn-danger-on-hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.05);
   color: #e2e8f0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: none;
 }
 
 .admin-desk-btn-danger-on-hover:hover {
-  background: #ef4444;
+  background: #dc2626;
   color: #fff;
   border-color: #fca5a5;
-  box-shadow: 0 2px 16px rgba(239, 68, 68, 0.35);
+  box-shadow: 0 4px 18px rgba(239, 68, 68, 0.35);
 }
 
 .admin-desk-btn-danger-on-hover:focus-visible {
@@ -130,11 +571,11 @@
 .admin-desk-btn-ghost {
   background: transparent;
   color: #e2e8f0;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .admin-desk-btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .admin-desk-btn-primary:active,
@@ -143,6 +584,7 @@
 .admin-desk-btn-danger-on-hover:active,
 .admin-desk-btn-ghost:active {
   opacity: 0.94;
+  transform: translateY(0);
 }
 
 .admin-desk-btn-primary:focus-visible,
@@ -150,25 +592,242 @@
 .admin-desk-btn-danger:focus-visible,
 .admin-desk-btn-ghost:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(165, 180, 252, 0.45);
+  box-shadow: 0 0 0 3px rgba(var(--palette-gold-rgb, 217, 149, 48), 0.4);
 }
 
 .admin-desk-section-title {
-  font-size: 1.0625rem;
-  font-weight: 650;
-  letter-spacing: -0.02em;
-  color: #f8fafc;
+  font-family: var(--font-display, ui-serif, Georgia, serif);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: #fafafa;
 }
 
 @media (min-width: 768px) {
   .admin-desk-section-title {
-    font-size: 1.125rem;
+    font-size: 1.2rem;
   }
 }
 
 .admin-desk-section-desc {
   font-size: 0.8125rem;
-  color: #cbd5e1;
-  margin-top: 0.25rem;
-  line-height: 1.45;
+  color: var(--admin-desk-muted);
+  margin-top: 0.35rem;
+  line-height: 1.5;
+}
+
+.admin-desk-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.625rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.admin-stat-hero {
+  font-size: 2rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #a7f3d0 0%, #34d399 55%, #10b981 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ===================== Mobile / touch (admin) ===================== */
+.admin-desk-root {
+  overflow-x: clip;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-desk-main {
+  min-width: 0;
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+}
+
+.admin-desk-top {
+  padding-top: max(0.65rem, env(safe-area-inset-top, 0px));
+}
+
+.admin-desk-backdrop {
+  animation: admin-backdrop-in 0.2s ease both;
+}
+
+@keyframes admin-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.admin-touch-target {
+  min-height: 2.75rem;
+}
+
+.admin-desk-btn-primary,
+.admin-desk-btn-secondary,
+.admin-desk-btn-ghost,
+.admin-desk-btn-danger-on-hover {
+  min-height: 2.75rem;
+}
+
+.admin-desk-table-wrap {
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+.admin-product-form-body {
+  background: rgba(12, 14, 20, 0.55);
+}
+
+.dark .admin-desk-root .admin-desk-input,
+.admin-desk-root .admin-desk-input {
+  font-size: 16px;
+  min-height: 2.75rem;
+}
+
+@media (max-width: 767px) {
+  .admin-desk-root::before {
+    display: none;
+  }
+
+  .admin-desk-root {
+    display: block;
+    isolation: auto;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: clip;
+  }
+
+  .admin-desk-main-column {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0;
+    min-height: 100dvh;
+    min-height: 100vh;
+    margin: 0;
+  }
+
+  .admin-desk-sidebar {
+    max-width: min(100vw, 288px);
+  }
+
+  .admin-desk-card {
+    border-radius: 18px;
+  }
+
+  .admin-desk-root .admin-desk-card.p-4 {
+    padding: 0.85rem !important;
+  }
+
+  .admin-nav-link {
+    min-height: 2.75rem;
+  }
+
+  .admin-kpi {
+    padding: 0.7rem 0.75rem;
+  }
+
+  .admin-kpi__value {
+    font-size: 1.25rem;
+  }
+
+  .admin-stat-hero {
+    font-size: 1.5rem;
+  }
+
+  .admin-page-lead {
+    font-size: 0.875rem;
+  }
+
+  .admin-catalog-row {
+    padding-left: 0.85rem;
+    padding-right: 0.85rem;
+  }
+
+  .admin-catalog-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    padding: 0.45rem;
+  }
+
+  .admin-catalog-toolbar .admin-desk-root .admin-catalog-select,
+  .admin-desk-root .admin-catalog-toolbar .admin-catalog-select {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 2.75rem;
+    font-size: 16px;
+  }
+
+  .admin-catalog-toolbar .admin-row-btn {
+    min-height: 2.75rem;
+    font-size: 0.8125rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .admin-row-btn--sold {
+    grid-column: 2;
+  }
+
+  .admin-row-btn--edit {
+    grid-column: 1;
+  }
+
+  .admin-desk-section-title {
+    font-size: 1.05rem;
+  }
+
+  .admin-desk-section-desc {
+    font-size: 0.78rem;
+  }
+
+  .admin-products-stack .admin-desk-btn-secondary,
+  .admin-products-stack .admin-desk-btn-primary {
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .admin-desk-root {
+    display: flex;
+  }
+
+  .admin-desk-sidebar--desktop {
+    display: flex;
+  }
+}
+
+.admin-desk-header-actions .admin-user-chip {
+  padding: 0.15rem;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+@media (min-width: 1024px) {
+  .admin-desk-header-actions .admin-user-chip {
+    padding: 0.35rem 0.65rem 0.35rem 0.35rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+@media (max-width: 380px) {
+  .admin-row-btn svg {
+    display: none;
+  }
+
+  .admin-catalog-toolbar .admin-row-btn {
+    font-size: 0.75rem;
+  }
 }

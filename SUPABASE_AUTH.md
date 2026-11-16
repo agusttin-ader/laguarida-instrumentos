@@ -8,6 +8,7 @@ Environment variables
 - Client (exposed to browser): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - Server (only available on server): `SUPABASE_URL`, `SUPABASE_ANON_KEY`
 - Do NOT add or expose the `service_role` key to the client or commit it to the repo.
+- Local dev: copy `env.local.example` to `.env.local` and fill in values from the Supabase dashboard, then restart `npm run dev`.
 
 Client-side helpers (lib/supabase/client.js)
 - Default export: `supabase` (client instance for use in client components)

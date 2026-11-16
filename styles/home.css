@@ -1292,3 +1292,17 @@ header.site-header-bar.header-scroll-hidden {
 .home-featured-editorial__cta:hover svg {
   transform: translateX(3px);
 }
+
+/* Etapa 6: scroll más liviano bajo el hero (mobile) */
+@media (max-width: 767px) {
+  body.page-home .home-below-hero-band,
+  body.page-home #about-section,
+  body.page-home #faq-section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 280px;
+  }
+
+  body.page-home #seleccion-destacada .motion-reveal--armed {
+    --motion-duration-reveal: 280ms;
+  }
+}

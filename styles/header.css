@@ -25,9 +25,9 @@ header.site-header-bar,
   }
 
   header.header-home-mobile:not(.header-scrolled) {
-    background-color: rgba(26, 27, 34, 0.28) !important;
-    backdrop-filter: blur(14px) saturate(1.12) !important;
-    -webkit-backdrop-filter: blur(14px) saturate(1.12) !important;
+    background-color: rgba(26, 27, 34, 0.78) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     border-bottom-color: rgba(255, 255, 255, 0.08) !important;
     box-shadow: none !important;
   }
@@ -35,9 +35,9 @@ header.site-header-bar,
 
 @media (min-width: 768px) {
   body.page-home header.header-home-desktop:not(.header-scrolled) {
-    background-color: rgba(26, 27, 34, 0.28) !important;
-    backdrop-filter: blur(16px) saturate(1.1) !important;
-    -webkit-backdrop-filter: blur(16px) saturate(1.1) !important;
+    background-color: rgba(26, 27, 34, 0.55) !important;
+    backdrop-filter: blur(8px) saturate(1.06) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(1.06) !important;
     border-bottom-color: rgba(255, 255, 255, 0.08) !important;
     box-shadow: none !important;
   }

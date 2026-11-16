@@ -1,7 +1,7 @@
-import CatalogPageContent from '../../components/CatalogPageContent'
-import { getPublicCatalogRows } from '../../lib/data/publicCatalog'
-import normalizeProduct from '../../lib/utils/normalizeProduct'
-import { absoluteUrl } from '../../lib/siteUrl'
+import CatalogPageContent from '../../../components/CatalogPageContent'
+import { getPublicCatalogRows } from '../../../lib/data/publicCatalog'
+import normalizeProduct from '../../../lib/utils/normalizeProduct'
+import { absoluteUrl } from '../../../lib/siteUrl'
 
 export const revalidate = 600
 

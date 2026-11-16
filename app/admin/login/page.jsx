@@ -48,6 +48,20 @@ export default function AdminLoginPage() {
   }
 
   useEffect(() => {
+    let cancelled = false
+    fetch('/api/auth/config', { cache: 'no-store' })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (cancelled || !json || json.publicConfigured) return
+        setError(json.hint || 'Supabase no configurado en este entorno.')
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
     const start = Math.floor(Math.random() * LOGIN_BG_QUOTES.length)
     setSelectedPhrase(LOGIN_BG_QUOTES[start].q)
     setSelectedAuthor(LOGIN_BG_QUOTES[start].a)
@@ -124,7 +138,7 @@ export default function AdminLoginPage() {
         aria-hidden
       />
 
-      <div className="fixed inset-0 z-10 flex flex-col items-center justify-center px-4 py-6">
+      <div className="fixed inset-0 z-10 flex min-h-dvh flex-col items-center justify-center overflow-y-auto overscroll-y-contain px-4 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))] pt-[max(1rem,env(safe-area-inset-top,0px))]">
         <div className="flex justify-center mb-6">
           <Link href="/" className="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-lg" aria-label="Ir al inicio - La Guarida">
             <img

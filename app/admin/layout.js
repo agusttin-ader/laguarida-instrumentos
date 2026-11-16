@@ -1,4 +1,7 @@
 import React from 'react'
+import '../../styles/admin.css'
+import '../../styles/toast.css'
+import { ToastProvider } from '../../components/ToastContext'
 import AdminServiceWorkerRegister from '../../components/AdminServiceWorkerRegister'
 import ClientAuth from './auth/ClientAuth'
 import AdminIOSBootSplash from '../../components/AdminIOSBootSplash'
@@ -17,12 +20,12 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
-  themeColor: '#0f1219',
+  themeColor: '#0c0e14',
 }
 
 export default function AdminLayout({ children }) {
   return (
-    <>
+    <ToastProvider>
       <RegisterAdminHideSplash />
       <div id="admin-boot-splash" className="admin-boot-splash-visible" aria-hidden="false">
         <div className="admin-splash-inner">
@@ -40,6 +43,6 @@ export default function AdminLayout({ children }) {
         </div>
         <AdminServiceWorkerRegister />
       </div>
-    </>
+    </ToastProvider>
   )
 }

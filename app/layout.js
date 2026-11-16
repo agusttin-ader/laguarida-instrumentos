@@ -4,19 +4,10 @@ import '../styles/globals.css'
 import '../styles/core.css'
 import '../styles/motion-site.css'
 import '../styles/header.css'
-import '../styles/pdp.css'
-import '../styles/admin.css'
-import '../styles/home.css'
-import '../styles/catalog.css'
-import '../styles/legal.css'
 import React from 'react'
 import { GeistSans } from 'geist/font/sans'
 import { Fraunces } from 'next/font/google'
-import SiteShell from '../components/SiteShell'
-import ServiceWorkerRegister from '../components/ServiceWorkerRegister'
-import DisableZoomInApp from '../components/DisableZoomInApp'
-import { ToastProvider } from '../components/ToastContext'
-import { FavoritesProvider } from '../components/ProductShareAndFavorite'
+import RootClientBoot from '../components/RootClientBoot'
 import { absoluteUrl, getSiteUrl } from '../lib/siteUrl'
 import { FACEBOOK_HREF, INSTAGRAM_HREF } from '../lib/socialLinks'
 import { Analytics } from '@vercel/analytics/react'
@@ -143,14 +134,9 @@ export default function RootLayout({ children }) {
       <body className={`min-h-screen ${GeistSans.className}`}>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
-        <DisableZoomInApp />
-        <ToastProvider>
-          <FavoritesProvider>
-            <SiteShell>{children}</SiteShell>
-            <ServiceWorkerRegister />
-            <Analytics />
-          </FavoritesProvider>
-        </ToastProvider>
+        <RootClientBoot />
+        {children}
+        <Analytics />
       </body>
     </html>
   )

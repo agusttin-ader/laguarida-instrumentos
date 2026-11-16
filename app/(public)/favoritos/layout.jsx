@@ -1,4 +1,7 @@
-import { absoluteUrl } from '../../lib/siteUrl'
+import { absoluteUrl } from '../../../lib/siteUrl'
+import '../../../styles/commerce.css'
+import '../../../styles/toast.css'
+import StoreInteractionProviders from '../../../components/StoreInteractionProviders'
 
 export const metadata = {
   title: 'Tu selección',
@@ -10,5 +13,5 @@ export const metadata = {
 }
 
 export default function FavoritosLayout({ children }) {
-  return children
+  return <StoreInteractionProviders>{children}</StoreInteractionProviders>
 }

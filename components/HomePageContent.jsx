@@ -1,10 +1,22 @@
+import dynamic from 'next/dynamic'
 import { homeSectionShellClass } from '../lib/layoutShell'
 import FadeInView from './motion/FadeInView'
 import HeroHomeEditorial from './HeroHomeEditorial'
 import FeaturedSelection from './FeaturedSelection'
 import HomeBrandGrid from './HomeBrandGrid'
 import About from './About'
-import FaqSection from './FaqSection'
+
+const FaqSection = dynamic(() => import('./FaqSection'), {
+  loading: () => (
+    <div className={`${homeSectionShellClass} min-h-[12rem]`} aria-hidden>
+      <div className="mx-auto max-w-3xl space-y-3 px-4 sm:px-5 md:px-8">
+        <div className="h-4 w-32 rounded bg-white/10" />
+        <div className="h-8 w-48 rounded bg-white/[0.07]" />
+        <div className="h-24 rounded-xl bg-white/[0.04]" />
+      </div>
+    </div>
+  ),
+})
 
 export default function HomePageContent({ featuredProducts = [] }) {
   return (
@@ -33,36 +45,29 @@ export default function HomePageContent({ featuredProducts = [] }) {
         id="marcas"
         aria-labelledby="marcas-heading"
         variant="fade-up"
-        delay={0.04}
-        className={`${homeSectionShellClass} pt-1 pb-4 sm:pb-6 md:pb-7 md:pt-2 border-t border-white/[0.06]`}
+        delay={0.02}
+        className={`${homeSectionShellClass} home-below-hero-band pt-1 pb-4 sm:pb-6 md:pb-7 md:pt-2 border-t border-white/[0.06]`}
       >
         <HomeBrandGrid />
       </FadeInView>
 
-      <FadeInView
-        as="div"
-        variant="fade-up"
-        delay={0.02}
-        className={`${homeSectionShellClass} pt-0 pb-3 sm:pb-5 md:pb-6 max-[767px]:pb-0`}
+      <section
+        className={`${homeSectionShellClass} home-below-hero-band pt-0 pb-3 sm:pb-5 md:pb-6 max-[767px]:pb-0`}
       >
         <p className="sr-only">
           La Guarida es una tienda especializada en guitarras, bajos y accesorios. Ofrecemos instrumentos
           seleccionados, asesoramiento profesional y envíos dentro de Argentina.
         </p>
 
-        <FadeInView as="section" variant="fade-up" delay={0.03} className="mt-0 !pt-1 !pb-0 md:!pt-2 md:!pb-0">
-          <About compactTop />
-        </FadeInView>
+        <About compactTop />
 
         <div
           aria-hidden
           className="mx-auto my-0 h-px w-full max-w-6xl bg-gradient-to-r from-transparent via-white/18 to-transparent"
         />
 
-        <FadeInView as="div" variant="fade-up" delay={0.05}>
-          <FaqSection />
-        </FadeInView>
-      </FadeInView>
+        <FaqSection />
+      </section>
     </>
   )
 }

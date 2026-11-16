@@ -15,6 +15,10 @@ const ACTIVITY_FETCH_LIMIT = 200
 const CATALOG_PAGE_SIZE = 35
 const LS_DEBOUNCE_MS = 450
 
+function saleSoldTimestampMs() {
+  return Date.now()
+}
+
 function useDebouncedLocalStorage(key, value) {
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -57,7 +61,7 @@ const AdminCatalogRow = React.memo(function AdminCatalogRow({
     imageService.forDisplay(p.image_url || (p.images && p.images[0]), 'adminThumb') || rawSrc
   return (
     <div
-      className="admin-catalog-row flex touch-manipulation flex-col gap-4 rounded-2xl border border-white/[0.09] bg-[#151922]/95 px-4 py-4 shadow-[0_2px_20px_rgba(0,0,0,0.22)] sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:px-5 sm:py-4 hover:border-white/[0.13]"
+      className="admin-catalog-row flex touch-manipulation flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:px-5 sm:py-4"
       onContextMenu={onContextMenu}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
@@ -65,7 +69,7 @@ const AdminCatalogRow = React.memo(function AdminCatalogRow({
       onTouchCancel={onTouchCancel}
     >
       <div className="flex min-w-0 flex-1 items-center gap-3.5 sm:gap-4">
-        <div className="flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#0d1016] ring-1 ring-white/10 sm:h-16 sm:w-16">
+        <div className="flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-black/35 ring-1 ring-white/10 sm:h-16 sm:w-16 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
           {imgSrc ? (
             <ImageWithSkeleton
               src={imgSrc}
@@ -109,7 +113,7 @@ const AdminCatalogRow = React.memo(function AdminCatalogRow({
           id={`listing-${p.id}`}
           value={listingStatus}
           onChange={(e) => onStatusChange(p.id, e.target.value)}
-          className="admin-catalog-select no-custom-btn flex-1 sm:flex-initial"
+          className="admin-catalog-select no-custom-btn no-custom-btn--rect"
           aria-label="Estado del producto"
         >
           {PRODUCT_STATUS_OPTIONS.map((o) => (
@@ -119,19 +123,26 @@ const AdminCatalogRow = React.memo(function AdminCatalogRow({
         <button
           type="button"
           onClick={(e) => onRowEdit(e, p)}
-          className="admin-btn-interact admin-desk-btn-secondary no-custom-btn inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-[11px] px-3 py-2.5 text-[13px] font-semibold sm:flex-initial sm:py-2"
+          className="admin-row-btn admin-row-btn--edit admin-btn-interact no-custom-btn no-custom-btn--rect"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 shrink-0 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20h9" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z" /></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20h9" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z" /></svg>
           Editar
         </button>
         <button
           type="button"
-          className="admin-btn-interact admin-desk-btn-danger no-custom-btn inline-flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-[11px] px-3 py-2.5 text-[13px] font-semibold disabled:cursor-not-allowed disabled:opacity-60 sm:flex-initial sm:py-2"
+          className="admin-row-btn admin-row-btn--sold admin-btn-interact no-custom-btn no-custom-btn--rect"
           onClick={(e) => onRowDelete(e, p.id, p.name)}
           disabled={deletingId === p.id}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 shrink-0 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 7h12M9 7V5h6v2m-7 3v7m4-7v7m4-7v7M5 7l1 13h12l1-13" /></svg>
-          {deletingId === p.id ? 'Procesando…' : 'Vendido / eliminar'}
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 7h12M9 7V5h6v2m-7 3v7m4-7v7m4-7v7M5 7l1 13h12l1-13" /></svg>
+          {deletingId === p.id ? (
+            'Procesando…'
+          ) : (
+            <>
+              <span className="hidden sm:inline">Vendido / eliminar</span>
+              <span className="sm:hidden">Vendido</span>
+            </>
+          )}
         </button>
       </div>
     </div>
@@ -509,7 +520,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
       channel: String(saleDraft.channel || '').trim() || 'WhatsApp',
       finalPrice: String(saleDraft.finalPrice || '').trim(),
       notes: String(saleDraft.notes || '').trim(),
-      soldAt: Date.now(),
+      soldAt: saleSoldTimestampMs(),
     }
     setSalesByProduct((prev) => ({ ...prev, [productId]: record }))
     addProductHistory(productId, `Venta registrada (${record.channel}${record.finalPrice ? ` · ${record.finalPrice}` : ''}).`)
@@ -680,7 +691,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
 
   return (
     <PullToRefresh onRefresh={load}>
-      <div className="w-full space-y-5 pb-24 md:space-y-7 md:pb-14">
+      <div className="admin-products-stack w-full min-w-0 space-y-4 pb-[max(5.5rem,env(safe-area-inset-bottom,0px)+4.5rem)] sm:space-y-5 md:space-y-7 md:pb-14">
         {actionProduct ? (
           <div className="fixed inset-0 z-[96] flex items-end justify-center px-0 sm:items-center sm:px-4">
             <button
@@ -777,7 +788,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
               <div className="flex w-full items-center gap-2 md:w-auto">
                 <button
                   type="button"
-                  className="admin-btn-interact admin-desk-btn-primary no-custom-btn inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold shadow-lg shadow-indigo-500/35 md:w-auto"
+                  className="admin-btn-interact admin-desk-btn-primary no-custom-btn inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold md:w-auto"
                   onClick={() => router.push('/admin/productos/nuevo')}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v14m-7-7h14" /></svg>
@@ -797,7 +808,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
           </section>
         ) : null}
 
-        <section className="admin-desk-card rounded-2xl p-4 sm:p-6 md:p-7">
+        <section className="admin-desk-card admin-desk-card--accent-top p-4 sm:p-6 md:p-7">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="admin-desk-section-title">Resumen del catálogo</h2>
@@ -812,56 +823,57 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
             </button>
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-            <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
-              <p className="text-[11px] uppercase tracking-wide text-slate-400">Total</p>
-              <p className="mt-1 text-lg font-semibold text-slate-100">{dashboardStats.total}</p>
+          <div className="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="admin-kpi">
+              <p className="admin-kpi__label">Total</p>
+              <p className="admin-kpi__value">{dashboardStats.total}</p>
             </div>
-            <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
-              <p className="text-[11px] uppercase tracking-wide text-slate-400">Low Cost</p>
-              <p className="mt-1 text-lg font-semibold text-slate-100">{dashboardStats.lowCost}</p>
+            <div className="admin-kpi">
+              <p className="admin-kpi__label">Low cost</p>
+              <p className="admin-kpi__value">{dashboardStats.lowCost}</p>
             </div>
-            <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
-              <p className="text-[11px] uppercase tracking-wide text-slate-400">Sin precio</p>
-              <p className="mt-1 text-lg font-semibold text-amber-300">{dashboardStats.missingPrice}</p>
+            <div className="admin-kpi">
+              <p className="admin-kpi__label">Sin precio</p>
+              <p className={`admin-kpi__value ${dashboardStats.missingPrice ? 'admin-kpi__value--warn' : ''}`}>{dashboardStats.missingPrice}</p>
             </div>
-            <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
-              <p className="text-[11px] uppercase tracking-wide text-slate-400">Sin imagen</p>
-              <p className="mt-1 text-lg font-semibold text-amber-300">{dashboardStats.missingImage}</p>
+            <div className="admin-kpi">
+              <p className="admin-kpi__label">Sin imagen</p>
+              <p className={`admin-kpi__value ${dashboardStats.missingImage ? 'admin-kpi__value--warn' : ''}`}>{dashboardStats.missingImage}</p>
             </div>
-            <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
-              <p className="text-[11px] uppercase tracking-wide text-slate-400">Desc. corta</p>
-              <p className="mt-1 text-lg font-semibold text-amber-300">{dashboardStats.shortDescription}</p>
+            <div className="admin-kpi">
+              <p className="admin-kpi__label">Desc. corta</p>
+              <p className={`admin-kpi__value ${dashboardStats.shortDescription ? 'admin-kpi__value--warn' : ''}`}>{dashboardStats.shortDescription}</p>
             </div>
           </div>
 
+          <div className={`mt-5 grid grid-cols-1 gap-4 ${canSeeWhatsappStats ? 'lg:grid-cols-2' : ''}`}>
           {canSeeWhatsappStats ? (
-            <div className="mt-4 rounded-xl border border-white/10 bg-[#141a24] p-4">
+            <div className="admin-desk-inset p-4 sm:p-5">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-200">Clicks a WhatsApp</p>
+                  <p className="text-sm font-semibold text-slate-100">Clicks a WhatsApp</p>
                   <p className="mt-1 text-xs text-slate-400">Redirecciones desde la web (total y por mes).</p>
                 </div>
-                <p className="text-2xl font-semibold tabular-nums text-emerald-300">{whatsappStats.total}</p>
+                <p className="admin-stat-hero">{whatsappStats.total}</p>
               </div>
-              <div className="mt-3 overflow-x-auto rounded-lg border border-white/10">
-                <table className="min-w-full text-left text-sm">
-                  <thead className="bg-white/[0.04] text-slate-300">
+              <div className="admin-desk-table-wrap mt-4">
+                <table className="admin-desk-table">
+                  <thead>
                     <tr>
-                      <th className="px-3 py-2 font-semibold">Mes</th>
-                      <th className="px-3 py-2 font-semibold">Clicks</th>
+                      <th>Mes</th>
+                      <th>Clicks</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/10 text-slate-200">
+                  <tbody>
                     {whatsappStats.byMonth.length === 0 ? (
                       <tr>
-                        <td className="px-3 py-3 text-slate-400" colSpan={2}>Todavía no hay clicks registrados.</td>
+                        <td className="text-slate-400" colSpan={2}>Todavía no hay clicks registrados.</td>
                       </tr>
                     ) : (
                       whatsappStats.byMonth.map((m) => (
                         <tr key={m.month}>
-                          <td className="px-3 py-2">{m.month}</td>
-                          <td className="px-3 py-2 tabular-nums font-semibold">{m.count}</td>
+                          <td>{m.month}</td>
+                          <td className="tabular-nums font-semibold">{m.count}</td>
                         </tr>
                       ))
                     )}
@@ -871,12 +883,12 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
             </div>
           ) : null}
 
-          <div className="mt-4 rounded-xl border border-white/10 bg-[#141a24]">
-            <div className="border-b border-white/10 px-4 py-2.5">
-              <p className="text-sm font-medium text-slate-200">Pendientes de calidad</p>
+          <div className="admin-desk-inset overflow-hidden">
+            <div className="border-b border-white/[0.08] px-4 py-3">
+              <p className="text-sm font-semibold text-slate-100">Pendientes de calidad</p>
             </div>
             {qualityAlerts.length === 0 ? (
-              <p className="px-4 py-4 text-sm text-emerald-300">Todo en orden por ahora.</p>
+              <p className="px-4 py-5 text-sm text-emerald-300/95">Todo en orden por ahora.</p>
             ) : (
               <div className="divide-y divide-white/10">
                 {qualityAlerts.map((a) => (
@@ -896,9 +908,10 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
               </div>
             )}
           </div>
+          </div>
         </section>
 
-        <section className="admin-desk-card rounded-2xl p-4 sm:p-6 md:p-7">
+        <section className="admin-desk-card admin-desk-card--accent-top p-4 sm:p-6 md:p-7">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="admin-desk-section-title">Herramientas</h2>
@@ -1028,18 +1041,18 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
               Exportar tabla mensual
             </button>
           </div>
-          <div className="mt-4 overflow-x-auto rounded-xl border border-white/10">
-            <table className="min-w-full text-left text-sm">
-              <thead className="bg-white/[0.04] text-slate-300">
+          <div className="admin-desk-table-wrap mt-4">
+            <table className="admin-desk-table">
+              <thead>
                 <tr>
-                  <th className="px-4 py-2.5 font-semibold">Mes</th>
-                  <th className="px-4 py-2.5 font-semibold">Altas</th>
-                  <th className="px-4 py-2.5 font-semibold">Ediciones</th>
-                  <th className="px-4 py-2.5 font-semibold">Ventas</th>
-                  <th className="px-4 py-2.5 font-semibold">Total</th>
+                  <th>Mes</th>
+                  <th>Altas</th>
+                  <th>Ediciones</th>
+                  <th>Ventas</th>
+                  <th>Total</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/10 text-slate-200">
+              <tbody>
                 {monthlyStats.length === 0 ? (
                   <tr>
                     <td className="px-4 py-4 text-slate-400" colSpan={5}>Sin datos aún para estadísticas mensuales.</td>
@@ -1063,7 +1076,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
           ) : null}
         </section>
 
-        <section className="admin-desk-card rounded-2xl p-4 sm:p-6 md:p-7">
+        <section className="admin-desk-card p-4 sm:p-6 md:p-7">
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
             <div>
               <h2 className="admin-desk-section-title">Actividad reciente</h2>
@@ -1101,13 +1114,13 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
           ) : null}
         </section>
 
-        <section className="admin-desk-card rounded-2xl p-4 sm:p-6 md:p-7">
+        <section className="admin-desk-card admin-desk-card--accent-top p-4 sm:p-6 md:p-7">
           <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="admin-desk-section-title">Catálogo</h2>
+                <h2 className="admin-desk-section-title">Listado</h2>
                 {!loading && items.length > 0 ? (
-                  <span className="rounded-md border border-white/12 bg-white/10 px-2 py-0.5 text-[11px] font-semibold tabular-nums text-slate-200">
+                  <span className="admin-desk-badge">
                     {filteredItems.length === items.length
                       ? `${items.length} ítems`
                       : `${filteredItems.length} de ${items.length}`}
@@ -1129,7 +1142,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
           </div>
 
           <div className="mt-5">
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-300">Buscar</label>
+            <label className="admin-desk-label" htmlFor="admin-search-input">Buscar</label>
             <div className="relative" role="search">
               <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" aria-hidden>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z" /></svg>

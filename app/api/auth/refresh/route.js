@@ -3,6 +3,8 @@ export const runtime = 'nodejs'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { getSupabaseServerClient } from '../../../../lib/supabase/server'
+import { buildAuthCookieOptions } from '../../../../lib/auth/sessionCookies'
+import { headers } from 'next/headers'
 
 const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
 const ACCESS_TOKEN_MAX_AGE = 60 * 60 // 1h (Supabase JWT expiry)
@@ -24,16 +26,8 @@ export async function POST(_req) {
     }
 
     const session = data.session
-    const secure = process.env.NODE_ENV === 'production'
-    const cookieDomain = process.env.SITE_COOKIE_DOMAIN
-    const sameSiteSetting = 'lax'
-    const baseCookieOptions = {
-      httpOnly: true,
-      path: '/',
-      sameSite: sameSiteSetting,
-      secure,
-    }
-    const cookieOptions = cookieDomain ? { ...baseCookieOptions, domain: cookieDomain } : baseCookieOptions
+    const h = await headers()
+    const cookieOptions = buildAuthCookieOptions(h.get('host'))
 
     const res = NextResponse.json({ ok: true }, { status: 200 })
     res.cookies.set('sb-access-token', session.access_token, {

@@ -50,6 +50,7 @@ function HamburgerIcon({ className }) {
 export default function Header() {
   const pathname = usePathname()
   const router = useRouter()
+  const isAdminRoute = typeof pathname === 'string' && pathname.startsWith('/admin')
   const isHome = pathname === '/' || pathname === ''
   const isProductPage =
     typeof pathname === 'string' && /^\/guitars\/[^/]+$/u.test(pathname)
@@ -259,6 +260,10 @@ export default function Header() {
   const mobileShellClass = `site-header-mobile-shell md:hidden fixed top-0 left-0 right-0 z-[var(--z-header)] ${mobileShellImmersive ? 'site-header-mobile-shell--immersive' : ''} ${headerMotionClass} ${headerHideClass}`
 
   const mobileShell = <div ref={mobileShellRef} className={mobileShellClass}>{mobileHeader}</div>
+
+  if (isAdminRoute) {
+    return null
+  }
 
   return (
     <>

@@ -1,7 +1,7 @@
 'use client'
 
-import Button from '../../components/Button'
-import { layoutShellClassName } from '../../lib/layoutShell'
+import Button from '../../../components/Button'
+import { layoutShellClassName } from '../../../lib/layoutShell'
 
 export default function CatalogoError({ reset }) {
   const shellClass = `${layoutShellClassName} mobile-gutter-x sm:px-5 md:px-8 lg:px-10 py-10`

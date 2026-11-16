@@ -2,6 +2,7 @@ export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '../../../../lib/supabase/server'
+import { buildAuthCookieOptions } from '../../../../lib/auth/sessionCookies'
 import { cookies, headers } from 'next/headers'
 
 const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 365
@@ -10,6 +11,7 @@ const ACCESS_TOKEN_MAX_AGE = 60 * 60
 export async function GET() {
   try {
     const requestHeaders = await headers()
+    const requestHost = requestHeaders.get('host')
     const cookieStore = await cookies()
     const tokenCookie = typeof cookieStore.get === 'function' ? cookieStore.get('sb-access-token') : null
     const accessToken = tokenCookie?.value || requestHeaders.get('authorization')?.replace(/^Bearer\s+/i, '') || null
@@ -34,16 +36,7 @@ export async function GET() {
         if (!error && data?.session?.user) {
           user = data.session.user
           const session = data.session
-          const secure = process.env.NODE_ENV === 'production'
-          const cookieDomain = process.env.SITE_COOKIE_DOMAIN
-          const sameSiteSetting = 'lax'
-          const baseCookieOptions = {
-            httpOnly: true,
-            path: '/',
-            sameSite: sameSiteSetting,
-            secure,
-          }
-          const cookieOptions = cookieDomain ? { ...baseCookieOptions, domain: cookieDomain } : baseCookieOptions
+          const cookieOptions = buildAuthCookieOptions(requestHost)
           const res = NextResponse.json({
             authenticated: true,
             user: { id: user.id, email: user.email || null },

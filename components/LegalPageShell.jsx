@@ -1,10 +1,11 @@
+import '../styles/legal.css'
 import Link from 'next/link'
 import { homeSectionShellClass } from '../lib/layoutShell'
 
 export default function LegalPageShell({
   title,
   intro,
-  updatedLabel = `Última actualización: ${new Date().toLocaleDateString('es-AR')}`,
+  updatedLabel = 'Última actualización: consultá la fecha en el sitio',
   children,
 }) {
   return (

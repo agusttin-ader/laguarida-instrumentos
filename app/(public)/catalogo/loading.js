@@ -1,4 +1,4 @@
-import { layoutShellClassName } from '../../lib/layoutShell'
+import { layoutShellClassName } from '../../../lib/layoutShell'
 
 export default function CatalogoLoading() {
   const shellClass = `${layoutShellClassName} mobile-gutter-x sm:px-5 md:px-8 lg:px-10 py-5 max-md:py-4 sm:py-8 md:py-10 min-[1920px]:px-12`

@@ -3,6 +3,7 @@ export const runtime = 'nodejs'
 import { NextResponse } from 'next/server'
 import { cookies, headers } from 'next/headers'
 import { getSupabaseServerClient } from '../../../../lib/supabase/server'
+import { buildAuthCookieOptions } from '../../../../lib/auth/sessionCookies'
 
 export async function POST(req) {
   try {
@@ -37,11 +38,7 @@ export async function POST(req) {
     }
 
     const res = NextResponse.json({ signedOut: true })
-    const secure = process.env.NODE_ENV === 'production'
-    const cookieDomain = process.env.SITE_COOKIE_DOMAIN
-    const sameSite = 'lax'
-    const baseCookieOptions = { httpOnly: true, path: '/', maxAge: 0, secure, sameSite }
-    const cookieOptions = cookieDomain ? { ...baseCookieOptions, domain: cookieDomain } : baseCookieOptions
+    const cookieOptions = buildAuthCookieOptions(host, { maxAge: 0 })
 
     // Clear cookies set by sign-in
     res.cookies.set('sb-access-token', '', cookieOptions)
