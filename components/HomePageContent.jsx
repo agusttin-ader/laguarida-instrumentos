@@ -34,7 +34,7 @@ export default function HomePageContent({ featuredProducts = [] }) {
         id="seleccion-destacada"
         aria-labelledby="destacados-heading"
         variant="fade-up"
-        delay={0.02}
+        delay={0.04}
         className="w-full border-t border-white/[0.06] bg-gradient-to-b from-[var(--dark-bg-page)] via-[var(--dark-bg-page)] to-[var(--dark-bg-page)] pt-[var(--mobile-section-gap)] max-md:pt-5 sm:pt-8 md:pt-10 pb-2 max-md:pb-1.5 sm:pb-4 md:pb-5"
       >
         <FeaturedSelection items={featuredProducts} />
@@ -45,13 +45,16 @@ export default function HomePageContent({ featuredProducts = [] }) {
         id="marcas"
         aria-labelledby="marcas-heading"
         variant="fade-up"
-        delay={0.02}
+        delay={0.06}
         className={`${homeSectionShellClass} home-below-hero-band pt-1 pb-4 sm:pb-6 md:pb-7 md:pt-2 border-t border-white/[0.06]`}
       >
         <HomeBrandGrid />
       </FadeInView>
 
-      <section
+      <FadeInView
+        as="section"
+        variant="fade-up"
+        delay={0.08}
         className={`${homeSectionShellClass} home-below-hero-band pt-0 pb-3 sm:pb-5 md:pb-6 max-[767px]:pb-0`}
       >
         <p className="sr-only">
@@ -67,7 +70,7 @@ export default function HomePageContent({ featuredProducts = [] }) {
         />
 
         <FaqSection />
-      </section>
+      </FadeInView>
     </>
   )
 }

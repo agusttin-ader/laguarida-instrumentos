@@ -344,19 +344,7 @@
   transform: none !important;
 }
 
-.admin-btn-interact {
-  transition: transform 0.2s ease, box-shadow 180ms ease, border-color 180ms ease, background-color 180ms ease;
-}
-.admin-btn-interact:hover {
-  transform: translateY(-1px);
-}
-.admin-btn-interact:active {
-  transform: translateY(0);
-}
-@media (prefers-reduced-motion: reduce) {
-  .admin-btn-interact:hover,
-  .admin-btn-interact:active { transform: none !important; }
-}
+/* .admin-btn-interact: transiciones en admin-motion.css dentro de .admin-motion-root */
 
 /* Admin segment: boot splash (styles live in globals so the admin layout need not render <head>) */
 #admin-boot-splash {
@@ -398,7 +386,7 @@
 #admin-boot-splash.admin-boot-splash-fade {
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.18s ease-out;
+  transition: opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes admin-splash-spin {
   to {

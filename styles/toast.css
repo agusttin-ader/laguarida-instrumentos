@@ -2,11 +2,11 @@
 @keyframes toast-enter {
   from {
     opacity: 0;
-    transform: scale(0.96) translateY(10px);
+    transform: scale3d(0.97, 0.97, 1) translate3d(0, 8px, 0);
   }
   to {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
   }
 }
 
@@ -22,10 +22,10 @@
 }
 
 .toast-item {
-  animation: toast-enter 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: toast-enter 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transform-origin: center center;
 }
 
 .toast-item.toast-exit {
-  animation: toast-exit 0.18s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: toast-exit 0.22s cubic-bezier(0.32, 0.72, 0, 1) forwards;
 }

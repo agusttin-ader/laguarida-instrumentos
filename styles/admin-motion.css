@@ -1,0 +1,211 @@
+/* Admin — motion premium (compositor: opacity + transform). */
+
+.admin-motion-root {
+  --admin-motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --admin-motion-ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+  --admin-motion-duration-page: 520ms;
+  --admin-motion-duration-card: 480ms;
+  --admin-motion-duration-row: 400ms;
+  --admin-motion-stagger-card: 42ms;
+  --admin-motion-stagger-kpi: 36ms;
+  --admin-motion-stagger-row: 30ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-motion-root .admin-desk-card,
+  .admin-motion-root .admin-catalog-row,
+  .admin-motion-root .admin-kpi,
+  .admin-motion-root .admin-page,
+  .admin-motion-root .admin-page-lead,
+  .admin-motion-root .admin-desk-top,
+  .admin-motion-root .admin-desk-backdrop,
+  .admin-motion-root .admin-desk-sidebar--drawer,
+  .admin-motion-root .admin-desk-sidebar--drawer-out,
+  .admin-motion-root .admin-desk-backdrop--out {
+    animation: none !important;
+  }
+
+  .admin-motion-root .admin-btn-interact,
+  .admin-motion-root .admin-nav-link,
+  .admin-motion-root .admin-desk-card,
+  .admin-motion-root .admin-kpi {
+    transition: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .admin-motion-root .admin-page {
+    animation: admin-fade-up var(--admin-motion-duration-page) var(--admin-motion-ease) both;
+  }
+
+  .admin-motion-root .admin-page-lead {
+    animation: admin-fade-up-soft 0.52s var(--admin-motion-ease) 0.06s both;
+  }
+
+  .admin-motion-root .admin-desk-top {
+    animation: admin-header-in 0.44s var(--admin-motion-ease-fluid) both;
+  }
+
+  .admin-motion-root .admin-desk-card {
+    animation: admin-fade-up var(--admin-motion-duration-card) var(--admin-motion-ease) both;
+    animation-delay: calc(min(var(--admin-card-i, 0), 8) * var(--admin-motion-stagger-card));
+  }
+
+  .admin-motion-root .admin-kpi {
+    animation: admin-fade-up-soft 0.46s var(--admin-motion-ease) both;
+    animation-delay: calc(min(var(--admin-kpi-i, 0), 6) * var(--admin-motion-stagger-kpi));
+  }
+
+  .admin-motion-root .admin-catalog-row--motion {
+    animation: admin-fade-up-soft var(--admin-motion-duration-row) var(--admin-motion-ease) both;
+    animation-delay: calc(min(var(--admin-row-i, 0), 12) * var(--admin-motion-stagger-row));
+  }
+
+  .admin-motion-root .admin-desk-sidebar--drawer:not(.admin-desk-sidebar--drawer-out) {
+    animation: admin-drawer-in 0.36s var(--admin-motion-ease) both;
+  }
+
+  .admin-motion-root .admin-desk-sidebar--drawer-out {
+    animation: admin-drawer-out 0.32s var(--admin-motion-ease) both;
+  }
+
+  .admin-motion-root .admin-desk-backdrop:not(.admin-desk-backdrop--out) {
+    animation: admin-backdrop-in 0.32s var(--admin-motion-ease-fluid) both;
+  }
+
+  .admin-motion-root .admin-desk-backdrop--out {
+    animation: admin-backdrop-out 0.28s var(--admin-motion-ease-fluid) both;
+  }
+
+  @media (min-width: 768px) {
+    .admin-motion-root .admin-desk-card {
+      transition:
+        transform var(--motion-base, 140ms) var(--admin-motion-ease),
+        box-shadow 0.24s var(--admin-motion-ease-fluid),
+        border-color 0.24s var(--admin-motion-ease-fluid);
+    }
+
+    .admin-motion-root .admin-desk-card:hover {
+      transform: translate3d(0, -2px, 0);
+    }
+
+    .admin-motion-root .admin-desk-card:active {
+      transform: translate3d(0, -1px, 0) scale3d(0.998, 0.998, 1);
+    }
+  }
+}
+
+@keyframes admin-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes admin-fade-up-soft {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes admin-header-in {
+  from {
+    opacity: 0.94;
+    transform: translate3d(0, -6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes admin-drawer-in {
+  from {
+    opacity: 0.9;
+    transform: translate3d(-20px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes admin-drawer-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0.88;
+    transform: translate3d(calc(-100% - 8px), 0, 0);
+  }
+}
+
+@keyframes admin-backdrop-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes admin-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .admin-motion-root .admin-btn-interact {
+    transition:
+      transform 0.22s var(--admin-motion-ease),
+      box-shadow 0.22s var(--admin-motion-ease-fluid),
+      border-color 0.22s var(--admin-motion-ease-fluid),
+      background-color 0.22s var(--admin-motion-ease-fluid);
+  }
+
+  .admin-motion-root .admin-btn-interact:hover {
+    transform: translate3d(0, -1px, 0);
+  }
+
+  .admin-motion-root .admin-btn-interact:active {
+    transform: translate3d(0, 0, 0) scale3d(0.985, 0.985, 1);
+  }
+
+  .admin-motion-root .admin-nav-link {
+    transition:
+      background-color 0.2s var(--admin-motion-ease-fluid),
+      color 0.2s var(--admin-motion-ease-fluid),
+      transform 0.2s var(--admin-motion-ease);
+    border-radius: 12px;
+  }
+
+  .admin-motion-root .admin-nav-link:active {
+    transform: scale3d(0.99, 0.99, 1);
+  }
+
+  .admin-motion-root .admin-row-btn {
+    transition:
+      transform 0.18s var(--admin-motion-ease),
+      background-color 0.18s ease,
+      border-color 0.18s ease,
+      color 0.18s ease;
+  }
+
+  .admin-motion-root .admin-row-btn:active {
+    transform: scale3d(0.97, 0.97, 1);
+  }
+}

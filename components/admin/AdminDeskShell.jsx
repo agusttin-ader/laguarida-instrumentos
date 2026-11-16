@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -70,7 +70,49 @@ export default function AdminDeskShell({
 }) {
   const pathname = usePathname() || ''
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerClosing, setDrawerClosing] = useState(false)
+  const drawerOpenRef = useRef(false)
+  const drawerPresent = drawerOpen || drawerClosing
   const { eyebrow, title } = useMemo(() => pageMetaFromPath(pathname), [pathname])
+
+  useEffect(() => {
+    drawerOpenRef.current = drawerOpen
+  }, [drawerOpen])
+
+  const openDrawer = useCallback(() => {
+    setDrawerClosing(false)
+    setDrawerOpen(true)
+  }, [])
+
+  const requestCloseDrawer = useCallback(() => {
+    if (!drawerOpenRef.current) return
+    setDrawerOpen(false)
+    setDrawerClosing(true)
+  }, [])
+
+  const finishDrawerClose = useCallback(() => {
+    setDrawerClosing(false)
+    releaseBodyScrollLock()
+  }, [])
+
+  const onDrawerAnimationEnd = useCallback(
+    (e) => {
+      if (e.target !== e.currentTarget) return
+      if (!drawerClosing) return
+      if (e.animationName === 'admin-drawer-out') finishDrawerClose()
+    },
+    [drawerClosing, finishDrawerClose],
+  )
+
+  useEffect(() => {
+    if (!drawerClosing) return undefined
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      finishDrawerClose()
+      return undefined
+    }
+    const t = window.setTimeout(finishDrawerClose, 480)
+    return () => window.clearTimeout(t)
+  }, [drawerClosing, finishDrawerClose])
 
   const userInitial = useMemo(() => {
     const email = String(user?.email || '').trim()
@@ -79,8 +121,13 @@ export default function AdminDeskShell({
   }, [user?.email])
 
   useEffect(() => {
-    setDrawerOpen(false)
-    releaseBodyScrollLock()
+    if (drawerOpenRef.current) {
+      setDrawerOpen(false)
+      setDrawerClosing(true)
+    } else {
+      setDrawerClosing(false)
+      releaseBodyScrollLock()
+    }
   }, [pathname])
 
   useEffect(() => {
@@ -91,13 +138,13 @@ export default function AdminDeskShell({
   useEffect(() => {
     if (typeof window === 'undefined') return
     const mq = window.matchMedia('(max-width: 767px)')
-    if (mq.matches && drawerOpen) {
+    if (mq.matches && drawerPresent) {
       document.body.style.overflow = 'hidden'
-    } else {
+    } else if (!drawerClosing) {
       releaseBodyScrollLock()
     }
     return () => releaseBodyScrollLock()
-  }, [drawerOpen])
+  }, [drawerPresent, drawerClosing])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -105,6 +152,7 @@ export default function AdminDeskShell({
     const onChange = () => {
       if (mq.matches) {
         setDrawerOpen(false)
+        setDrawerClosing(false)
         releaseBodyScrollLock()
       }
     }
@@ -113,13 +161,13 @@ export default function AdminDeskShell({
   }, [])
 
   useEffect(() => {
-    if (!drawerOpen) return
+    if (!drawerPresent) return
     const onKey = (e) => {
-      if (e.key === 'Escape') setDrawerOpen(false)
+      if (e.key === 'Escape' && drawerOpen) requestCloseDrawer()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [drawerOpen])
+  }, [drawerPresent, drawerOpen, requestCloseDrawer])
 
   const sidebarNav = (
     <>
@@ -142,7 +190,7 @@ export default function AdminDeskShell({
         <button
           type="button"
           className="ml-auto flex h-10 w-10 items-center justify-center rounded-xl text-slate-300 transition-transform duration-150 hover:bg-white/10 active:scale-[0.96] md:hidden no-custom-btn"
-          onClick={() => setDrawerOpen(false)}
+          onClick={requestCloseDrawer}
           aria-label="Cerrar"
         >
           <X size={22} weight="bold" />
@@ -161,7 +209,7 @@ export default function AdminDeskShell({
                 <li key={href}>
                   <Link
                     href={href}
-                    onClick={() => setDrawerOpen(false)}
+                    onClick={requestCloseDrawer}
                     className={`admin-nav-link flex items-center gap-3 px-3 py-2.5 text-sm font-medium no-custom-btn ${
                       active
                         ? 'admin-nav-link--active text-white'
@@ -185,7 +233,7 @@ export default function AdminDeskShell({
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => setDrawerOpen(false)}
+            onClick={requestCloseDrawer}
             className="admin-nav-link flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-400 transition-colors hover:bg-white/[0.05] hover:text-slate-100 no-custom-btn"
           >
             <Storefront size={22} weight="regular" className="text-[var(--admin-accent)]" />
@@ -198,7 +246,7 @@ export default function AdminDeskShell({
         <button
           type="button"
           onClick={() => {
-            setDrawerOpen(false)
+            requestCloseDrawer()
             onLogout()
           }}
           className="admin-desk-btn-danger-on-hover group flex w-full items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-semibold no-custom-btn"
@@ -214,13 +262,15 @@ export default function AdminDeskShell({
   )
 
   return (
-    <div className="admin-desk-root w-full max-w-[100vw] text-slate-100 max-md:block md:flex md:min-h-dvh">
-      {drawerOpen ? (
+    <div className="admin-desk-root admin-motion-root w-full max-w-[100vw] text-slate-100 max-md:block md:flex md:min-h-dvh">
+      {drawerPresent ? (
         <button
           type="button"
-          className="admin-desk-backdrop fixed inset-0 z-[65] bg-black/55 backdrop-blur-[2px] md:hidden no-custom-btn"
+          className={`admin-desk-backdrop fixed inset-0 z-[65] bg-black/55 backdrop-blur-[2px] md:hidden no-custom-btn${
+            drawerClosing ? ' admin-desk-backdrop--out' : ''
+          }`}
           aria-label="Cerrar menú"
-          onClick={() => setDrawerOpen(false)}
+          onClick={requestCloseDrawer}
         />
       ) : null}
 
@@ -230,12 +280,16 @@ export default function AdminDeskShell({
       </aside>
 
       {/* Mobile: drawer solo cuando está abierto (nada superpuesto en reposo) */}
-      {drawerOpen ? (
+      {drawerPresent ? (
         <aside
-          className="admin-desk-sidebar admin-desk-sidebar--drawer fixed inset-y-0 left-0 z-[70] flex h-dvh w-[min(100vw,288px)] max-w-[min(100vw,288px)] flex-col overflow-hidden border-r border-white/[0.08] shadow-2xl md:hidden"
+          className={`admin-desk-sidebar admin-desk-sidebar--drawer fixed inset-y-0 left-0 z-[70] flex h-dvh w-[min(100vw,288px)] max-w-[min(100vw,288px)] flex-col overflow-hidden border-r border-white/[0.08] shadow-2xl md:hidden max-md:will-change-transform${
+            drawerClosing ? ' admin-desk-sidebar--drawer-out' : ''
+          }`}
           role="dialog"
           aria-modal="true"
           aria-label="Menú de administración"
+          aria-hidden={drawerClosing}
+          onAnimationEnd={onDrawerAnimationEnd}
         >
           {sidebarNav}
         </aside>
@@ -246,7 +300,7 @@ export default function AdminDeskShell({
           <button
             type="button"
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-slate-200 transition-transform duration-150 hover:border-[rgba(var(--palette-gold-rgb),0.25)] hover:bg-white/[0.08] active:scale-[0.96] md:hidden no-custom-btn"
-            onClick={() => setDrawerOpen(true)}
+            onClick={openDrawer}
             aria-label="Abrir menú"
             aria-expanded={drawerOpen}
           >

@@ -1,5 +1,6 @@
 import React from 'react'
 import '../../styles/admin.css'
+import '../../styles/admin-motion.css'
 import '../../styles/toast.css'
 import { ToastProvider } from '../../components/ToastContext'
 import AdminServiceWorkerRegister from '../../components/AdminServiceWorkerRegister'

@@ -171,7 +171,7 @@ export default function HomeFeaturedShowcase({ items = [], loading = false }) {
   }
 
   return (
-    <ProductGridMotion className="home-featured-editorial product-grid--enter w-full">
+    <ProductGridMotion className="home-featured-editorial product-grid--enter product-grid--slow-enter w-full">
       {picks.map((item, idx) => (
         <EditorialBlock key={item.slug || item.id || idx} item={item} index={idx} reversed={idx === 1} />
       ))}

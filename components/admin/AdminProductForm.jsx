@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import normalizeProduct from '../../lib/utils/normalizeProduct'
+import imageService from '../../lib/utils/imageService'
 import ImageWithSkeleton from '../ImageWithSkeleton'
 import { useToast } from '../ToastContext'
 import { hapticLight } from '../../lib/haptics'
@@ -548,7 +549,7 @@ export default function AdminProductForm({ mode, editingId = null }) {
         : 'Nombre, precio y foto principal alcanzan; el resto es opcional y está agrupado abajo.'
 
   return (
-    <div className="admin-desk-card admin-desk-card--accent-top admin-product-form overflow-x-hidden">
+    <div className="admin-desk-card admin-desk-card--accent-top admin-product-form admin-motion-root overflow-x-hidden" style={{ '--admin-card-i': 0 }}>
       <div className="border-b border-white/[0.08] px-4 pb-4 pt-4 sm:px-7 sm:pb-5 sm:pt-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0 space-y-2">
@@ -671,7 +672,17 @@ export default function AdminProductForm({ mode, editingId = null }) {
               <div>
                 {form.image_url ? (
                   <div className="relative mb-2 h-36 w-full overflow-hidden rounded-xl border border-white/10 bg-[#0f1117] sm:h-40">
-                    <ImageWithSkeleton src={form.image_url} alt="Imagen principal" fill quality={70} className="h-full w-full" disableClientPreview />
+                    <ImageWithSkeleton
+                      src={imageService.forDisplay(form.image_url, 'galleryMain') || imageService.resolve(form.image_url) || form.image_url}
+                      fallbackSrc={imageService.resolve(form.image_url) || form.image_url}
+                      srcSet={imageService.forDisplaySrcSet(form.image_url, 'galleryMain') || undefined}
+                      alt="Imagen principal"
+                      fill
+                      sizes="(max-width: 640px) 100vw, 480px"
+                      unoptimized
+                      className="h-full w-full"
+                      disableClientPreview
+                    />
                     {modalUploadingMain ? (
                       <div className="absolute inset-0 flex items-center justify-center bg-black/35">
                         <svg className="h-6 w-6 animate-spin text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" /></svg>
@@ -796,7 +807,16 @@ export default function AdminProductForm({ mode, editingId = null }) {
                             onDrop={(e) => handleGalleryDrop(e, i)}
                             onDragEnd={handleGalleryDragEnd}
                           >
-                            <ImageWithSkeleton src={p.url} alt={p.name || (`Imagen ${i + 1}`)} fill quality={68} className="h-full w-full" disableClientPreview />
+                            <ImageWithSkeleton
+                              src={imageService.forDisplay(p.url, 'galleryThumb') || imageService.resolve(p.url) || p.url}
+                              fallbackSrc={imageService.resolve(p.url) || p.url}
+                              alt={p.name || (`Imagen ${i + 1}`)}
+                              fill
+                              sizes="120px"
+                              unoptimized
+                              className="h-full w-full"
+                              disableClientPreview
+                            />
                             {p.uploading ? (
                               <div className="absolute inset-0 flex items-center justify-center bg-black/35">
                                 <svg className="h-5 w-5 animate-spin text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" /></svg>

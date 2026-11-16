@@ -44,7 +44,7 @@ export default function HeroHomeEditorial() {
       </div>
 
       <div
-        className={`${layoutShellClassName} home-hero__content relative z-[1] flex min-h-[100svh] min-h-[100dvh] w-full flex-col justify-center px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[calc(var(--site-header-h,var(--mobile-header-h,4rem))+0.75rem)] sm:px-5 md:px-8 lg:px-10 xl:px-12`}
+        className={`${layoutShellClassName} home-hero__content home-hero__content--motion relative z-[1] flex min-h-[100svh] min-h-[100dvh] w-full flex-col justify-center px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[calc(var(--site-header-h,var(--mobile-header-h,4rem))+0.75rem)] sm:px-5 md:px-8 lg:px-10 xl:px-12`}
       >
         <p className="hero-kicker mb-2.5 sm:mb-3">La Guarida</p>
         <h1

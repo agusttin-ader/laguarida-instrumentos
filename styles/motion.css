@@ -7,7 +7,7 @@
 @keyframes motion-fade-up {
   from {
     opacity: 0;
-    transform: translate3d(0, 8px, 0);
+    transform: translate3d(0, 6px, 0);
   }
   to {
     opacity: 1;
@@ -56,11 +56,11 @@
 @keyframes product-enter-soft-in {
   from {
     opacity: 0;
-    transform: translate3d(0, 8px, 0);
+    transform: translate3d(0, 6px, 0) scale3d(0.992, 0.992, 1);
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
   }
 }
 
@@ -71,7 +71,7 @@
 
 .motion-reveal--armed.motion-reveal--hidden {
   opacity: 0;
-  transform: translate3d(0, 8px, 0);
+  transform: translate3d(0, 6px, 0);
 }
 
 .motion-reveal--armed.motion-variant-fade-in.motion-reveal--hidden {
@@ -91,7 +91,7 @@
 }
 
 .motion-reveal--in.motion-variant-fade-up {
-  animation: motion-fade-up var(--motion-duration-reveal, 520ms) var(--motion-ease-fluid) both;
+  animation: motion-fade-up var(--motion-duration-reveal, 520ms) var(--motion-ease-premium, cubic-bezier(0.16, 1, 0.3, 1)) both;
 }
 
 .motion-reveal--in.motion-variant-fade-in {
@@ -127,14 +127,14 @@
 
 /* ── Stagger group ─────────────────────────────────────────────────────── */
 .motion-stagger > .motion-stagger-item {
-  animation: motion-fade-up var(--motion-duration-reveal, 520ms) var(--motion-ease-fluid) both;
+  animation: motion-fade-up var(--motion-duration-reveal, 520ms) var(--motion-ease-premium, cubic-bezier(0.16, 1, 0.3, 1)) both;
   animation-delay: calc(min(var(--stagger-i, 0), 10) * var(--motion-stagger-step, 36ms));
 }
 
 /* ── Product grids ─────────────────────────────────────────────────────── */
 .product-grid--enter.product-grid--armed .home-grid-product-cell,
 .product-grid--enter.product-grid--armed .product-enter-cell {
-  animation: product-enter-soft-in var(--motion-duration-grid, 340ms) var(--motion-ease) both;
+  animation: product-enter-soft-in var(--motion-duration-grid, 340ms) var(--motion-ease-premium, cubic-bezier(0.16, 1, 0.3, 1)) both;
   animation-delay: calc(min(var(--enter-i, 0), 5) * var(--motion-stagger-step, 36ms));
 }
 
@@ -155,8 +155,25 @@
   transform: translate3d(0, -2px, 0);
 }
 
+/* ── Image reveal (sin depender de /_next/image) ───────────────────────── */
+.image-premium-enter {
+  transform: scale3d(1.018, 1.018, 1);
+  transition:
+    opacity 0.48s var(--motion-ease-premium, cubic-bezier(0.16, 1, 0.3, 1)),
+    transform 0.58s var(--motion-ease-premium, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.image-premium-enter.image-premium-enter--done {
+  transform: scale3d(1, 1, 1);
+}
+
 /* ── Reduced motion ────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
+  .image-premium-enter {
+    transform: none !important;
+    transition: opacity 0.15s ease !important;
+  }
+
   .motion-reveal,
   .motion-reveal--armed.motion-reveal--hidden,
   .motion-reveal-view,

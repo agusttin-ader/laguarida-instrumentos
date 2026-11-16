@@ -29,6 +29,9 @@ export function usePremiumImageFade(src) {
     loaded && fadeIn
       ? 'transition-opacity duration-[380ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none'
       : 'transition-none'
+  const revealClass = loaded
+    ? 'image-premium-enter image-premium-enter--done'
+    : 'image-premium-enter'
 
-  return { loaded, fadeIn, onImageLoad, opacityClass, transitionClass }
+  return { loaded, fadeIn, onImageLoad, opacityClass, transitionClass, revealClass }
 }

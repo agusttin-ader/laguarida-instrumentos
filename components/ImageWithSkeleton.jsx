@@ -30,7 +30,7 @@ export default function ImageWithSkeleton({
   const fallback = typeof fallbackSrc === 'string' ? fallbackSrc.trim() : ''
   const [activeSrc, setActiveSrc] = useState(requestedSrc)
   const srcKey = typeof activeSrc === 'string' ? activeSrc.trim() : activeSrc
-  const { loaded, onImageLoad: markImageLoaded, opacityClass, transitionClass } = usePremiumImageFade(srcKey)
+  const { loaded, onImageLoad: markImageLoaded, opacityClass, transitionClass, revealClass } = usePremiumImageFade(srcKey)
   const [errored, setErrored] = useState(false);
   const [blurDataURL, setBlurDataURL] = useState(null)
 
@@ -124,7 +124,7 @@ export default function ImageWithSkeleton({
           priority={priority}
           fill={fill}
           decoding="async"
-          className={`${(fit === 'contain' || (style && style.objectFit === 'contain')) ? 'object-contain' : 'object-cover'} ${opacityClass} ${transitionClass} ${imgClassName}`}
+          className={`${(fit === 'contain' || (style && style.objectFit === 'contain')) ? 'object-contain' : 'object-cover'} ${opacityClass} ${transitionClass} ${revealClass} ${imgClassName}`}
           onLoad={(e) => {
             markImageLoaded();
             try {

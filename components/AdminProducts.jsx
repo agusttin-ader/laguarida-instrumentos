@@ -46,6 +46,7 @@ const AdminCatalogRow = React.memo(function AdminCatalogRow({
   product: p,
   listingStatus,
   deletingId,
+  rowIndex = 0,
   onRowEdit,
   onRowDelete,
   onStatusChange,
@@ -59,9 +60,11 @@ const AdminCatalogRow = React.memo(function AdminCatalogRow({
     imageService.resolve(p.image_url || (p.images && p.images[0])) || null
   const imgSrc =
     imageService.forDisplay(p.image_url || (p.images && p.images[0]), 'adminThumb') || rawSrc
+  const thumbSrcSet = imageService.forCardSrcSet(p.image_url || (p.images && p.images[0])) || undefined
   return (
     <div
-      className="admin-catalog-row flex touch-manipulation flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:px-5 sm:py-4"
+      className="admin-catalog-row admin-catalog-row--motion flex touch-manipulation flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:px-5 sm:py-4"
+      style={{ '--admin-row-i': rowIndex }}
       onContextMenu={onContextMenu}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
@@ -74,12 +77,14 @@ const AdminCatalogRow = React.memo(function AdminCatalogRow({
             <ImageWithSkeleton
               src={imgSrc}
               fallbackSrc={rawSrc}
+              srcSet={thumbSrcSet}
               alt=""
-              width={64}
-              height={64}
-              sizes="64px"
+              width={96}
+              height={96}
+              sizes="(max-width: 640px) 80px, 96px"
               qualityPreset="adminThumb"
               loading="lazy"
+              unoptimized
               className="h-full w-full"
               imgClassName="object-cover"
               disableClientPreview
@@ -691,7 +696,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
 
   return (
     <PullToRefresh onRefresh={load}>
-      <div className="admin-products-stack w-full min-w-0 space-y-4 pb-[max(5.5rem,env(safe-area-inset-bottom,0px)+4.5rem)] sm:space-y-5 md:space-y-7 md:pb-14">
+      <div className="admin-products-stack admin-motion-root w-full min-w-0 space-y-4 pb-[max(5.5rem,env(safe-area-inset-bottom,0px)+4.5rem)] sm:space-y-5 md:space-y-7 md:pb-14">
         {actionProduct ? (
           <div className="fixed inset-0 z-[96] flex items-end justify-center px-0 sm:items-center sm:px-4">
             <button
@@ -808,7 +813,7 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
           </section>
         ) : null}
 
-        <section className="admin-desk-card admin-desk-card--accent-top p-4 sm:p-6 md:p-7">
+        <section className="admin-desk-card admin-desk-card--accent-top p-4 sm:p-6 md:p-7" style={{ '--admin-card-i': 0 }}>
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="admin-desk-section-title">Resumen del catálogo</h2>
@@ -824,26 +829,18 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
           </div>
 
           <div className="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
-            <div className="admin-kpi">
-              <p className="admin-kpi__label">Total</p>
-              <p className="admin-kpi__value">{dashboardStats.total}</p>
-            </div>
-            <div className="admin-kpi">
-              <p className="admin-kpi__label">Low cost</p>
-              <p className="admin-kpi__value">{dashboardStats.lowCost}</p>
-            </div>
-            <div className="admin-kpi">
-              <p className="admin-kpi__label">Sin precio</p>
-              <p className={`admin-kpi__value ${dashboardStats.missingPrice ? 'admin-kpi__value--warn' : ''}`}>{dashboardStats.missingPrice}</p>
-            </div>
-            <div className="admin-kpi">
-              <p className="admin-kpi__label">Sin imagen</p>
-              <p className={`admin-kpi__value ${dashboardStats.missingImage ? 'admin-kpi__value--warn' : ''}`}>{dashboardStats.missingImage}</p>
-            </div>
-            <div className="admin-kpi">
-              <p className="admin-kpi__label">Desc. corta</p>
-              <p className={`admin-kpi__value ${dashboardStats.shortDescription ? 'admin-kpi__value--warn' : ''}`}>{dashboardStats.shortDescription}</p>
-            </div>
+            {[
+              { label: 'Total', value: dashboardStats.total, warn: false },
+              { label: 'Low cost', value: dashboardStats.lowCost, warn: false },
+              { label: 'Sin precio', value: dashboardStats.missingPrice, warn: dashboardStats.missingPrice > 0 },
+              { label: 'Sin imagen', value: dashboardStats.missingImage, warn: dashboardStats.missingImage > 0 },
+              { label: 'Desc. corta', value: dashboardStats.shortDescription, warn: dashboardStats.shortDescription > 0 },
+            ].map((kpi, i) => (
+              <div key={kpi.label} className="admin-kpi" style={{ '--admin-kpi-i': i }}>
+                <p className="admin-kpi__label">{kpi.label}</p>
+                <p className={`admin-kpi__value ${kpi.warn ? 'admin-kpi__value--warn' : ''}`}>{kpi.value}</p>
+              </div>
+            ))}
           </div>
 
           <div className={`mt-5 grid grid-cols-1 gap-4 ${canSeeWhatsappStats ? 'lg:grid-cols-2' : ''}`}>
@@ -1181,12 +1178,13 @@ export default function AdminProducts({ showNewProductHeroSection = true }) {
           {listOpen && !loading && items.length > 0 ? (
             <>
               <div className="mt-4 space-y-2.5">
-                {pagedCatalogItems.map((p) => {
+                {pagedCatalogItems.map((p, rowIndex) => {
                   const listingStatus = p.listing_status === 'reserved' ? 'reserved' : 'available'
                   return (
                     <AdminCatalogRow
                       key={p.id}
                       product={p}
+                      rowIndex={rowIndex}
                       listingStatus={listingStatus}
                       deletingId={deletingId}
                       onRowEdit={handleRowEdit}

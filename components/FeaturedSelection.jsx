@@ -1,4 +1,5 @@
 import { layoutShellClassName } from '../lib/layoutShell'
+import FadeInView from './motion/FadeInView'
 import HomeFeaturedShowcase, { HomeFeaturedCatalogLink } from './HomeFeaturedShowcase'
 
 export default function FeaturedSelection({ items = [], loading = false }) {
@@ -20,9 +21,14 @@ export default function FeaturedSelection({ items = [], loading = false }) {
 
       <HomeFeaturedShowcase items={items} loading={loading} />
 
-      <div className={`${layoutShellClassName} px-4 sm:px-5 md:px-8 lg:px-10 min-[1920px]:px-12 min-[2560px]:px-14`}>
+      <FadeInView
+        as="div"
+        variant="fade-up"
+        delay={0.14}
+        className={`${layoutShellClassName} px-4 sm:px-5 md:px-8 lg:px-10 min-[1920px]:px-12 min-[2560px]:px-14`}
+      >
         <HomeFeaturedCatalogLink />
-      </div>
+      </FadeInView>
     </div>
   )
 }
